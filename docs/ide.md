@@ -70,9 +70,11 @@ Python 的解释器只提供了最简单的命令行界面。在命令行环境�
 
 ### Visual Studio Code （VS Code） 
 
-是一个轻量级、高度可配置的代码编辑器，支持各种语言和工具。在 [Visual Studio Code 官方网站](https://code.visualstudio.com/ )可以下载并安装 VS Code。　VS Code
- 可用于编写和运行多种编程语言的程序，针对 Python，在 VS Code 中，点击左侧工具栏的扩展图标（或按 Ctrl+Shift+X），然后搜索“Python”。选择由 Microsoft 提供的 Python 扩展并安装，就可以获得专为 Python 提供的语法高亮、智能感知、代码格式化、调试、Linting 等功能。
+VS Code 是一个轻量级、高度可配置的代码编辑器，支持各种语言和工具。在 [Visual Studio Code 官方网站](https://code.visualstudio.com/ )可以下载并安装 VS Code。　VS Code 可用于编写和运行多种编程语言的程序，针对 Python，在 VS Code 中，点击左侧工具栏的扩展图标（或按 Ctrl+Shift+X），然后搜索“Python”。选择由 Microsoft 提供的 Python 扩展并安装，就可以获得专为 Python 提供的语法高亮、智能感知、代码格式化、调试、Linting 等功能。
+ 
+下图是在 VS Code 中打开的一个 Python 程序：
 
+![](images/003.png "VS Code")
 
 打开一个 Python 文件或新建一个。在文件右上角或底部状态栏，你可以选择 Python 解释器版本。点击它，然后选择与你的项目匹配的 Python 解释器。
 
@@ -90,6 +92,10 @@ PyCharm 是 JetBrains 提供的一款专业的 Python IDE（集成开发环境�
 
 PyCharm 的用法与 VS Code 非常类似，只是界面略有不同。在 PyCharm 中，可以创建多个 Python 项目，然后为每个项目选择合适的解释器和虚拟环境。除了运行、调试、代码管理等基本功能，PyCharm 也有大量的扩展插件可供选择。无论是新手还是资深开发者，PyCharm 都可以极大地提高 Python 开发的效率和质量。
 
+下图是同样一段程序在 PyCharm 中打开：
+
+![](images/004.png "PyCharm")
+
 ## 基于网页的编程环境
 
 传统的 IDE 往往是一个独立的用程序，但近些年，一类没有自己独立用户界面，依赖于网页浏览器提供界面的编程环境开始流行开来了。Jupyter Notebook 是这其中的典型代表。
@@ -104,6 +110,10 @@ Jupyter Notebook 是一个开源的交互式编程环境。它本身不是一个
 其它的传统 IDE 具备的优点，比如，插件扩展、跨平台等，Jupyter Notebook 也同样都具备。
 
 Jupyter Notebook 尤其受到数据科学家、研究人员和学者的欢迎。笔者平时在从事数据统计、机器学习等类型的项目时，也是倾向于使用 Jupyter Notebook 进行开发。当然它也并非没有缺点，它不适合用于用户界面、网络应用等的开发，在处理这一类项目时，笔者还是倾向于使用传统 IDE。
+
+下图是使用 Jupyter Notebook 打开的一段程序：
+
+![](images/005.png "Jupyter Notebook")
 
 ### 安装与使用：
 
@@ -121,8 +131,8 @@ pip install notebook
 jupyter notebook
 ```
 
-它会在你的默认浏览器中打开一个 Jupyter Notebook 实例，并显示文件和文件夹列表。如果网页没有自动打开，活不小心被关闭了，读者也可以自己打开浏览器，输入网址：  
+它会在你的默认浏览器中打开一个 Jupyter Notebook 实例，并显示文件和文件夹列表。如果网页没有自动打开，活不小心被关闭了，读者也可以自己打开浏览器，输入网址： http://localhost:8888/ 重新打开编程页面。
 
 在打开的主页面上，点击“New”按钮，选择你的目标编程语言，如 Python 3，就可以创建一个新的程序。我们称每个程序为一个“Notebook”。在新的 Notebook 中，你可以输入 Python 代码并点击“Run”按钮（或按 Shift + Enter）执行。点击页面上方的“+”按钮可以添加新的单元格。你可以在单元格中选择“Markdown”模式，然后输入 Markdown 文本或 LaTeX 方程。点击页面上方的保存按钮（或按 Ctrl + S）可以保存当前的程序。如果需要退出编程环境，可以关闭浏览器标签后，回到命令行并按 Ctrl + C 终止 Jupyter Notebook 服务。
 
-Jupyter Notebook 保存下来的程序的后缀名不是 .py 而是 .. 因为，它不但要保存程序代码，还会保存程序的运行结果，富文本文档等内容。不过在 Jupyter Notebook 的菜单选项中，可以导出并保存一个只包含代码的 .py 文件。
+Jupyter Notebook 保存下来的程序的后缀名不是 .py 而是 .ipynb。 这是因为，这个文件中不但要保存程序代码，还会保存程序的运行结果，富文本文档等内容。不过在 Jupyter Notebook 的菜单选项中，可以导出并保存一个只包含代码的 .py 文件。

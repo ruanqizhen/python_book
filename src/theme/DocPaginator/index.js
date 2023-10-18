@@ -8,15 +8,16 @@ export default function DocPaginatorWrapper(props) {
       <DocPaginator {...props} />
 	  <br />
 	  <Giscus
-		repo='ruanqizhen/labview_book'
-		repoId='R_kgDOGYjRCQ'
+		repo='ruanqizhen/python_book'
+		repoId='R_kgDOKhrU6g'
 		category='Announcements'
 		categoryId='DIC_kwDOGYjRCc4B_4dq'
 		mapping='pathname'
+		strict='1'
 		reactionsEnabled='1'
 		emitMetadata='1'
 		inputPosition='top'
-		theme='light'
+		theme='preferred_color_scheme'
 		lang='zh-CN'
 	  />
     </>

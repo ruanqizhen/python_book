@@ -12,6 +12,8 @@ const sidebars = {
       },
       items: [ 
         'ide', 
+		'hello_world',
+		'data',
 		{
           type: 'link',
           label: '作者个人主页',
