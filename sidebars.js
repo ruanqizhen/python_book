@@ -17,6 +17,8 @@ const sidebars = {
 		'calculation',
 		'string',
 		'list',
+		'condition',
+		'loop',
 		'placeholder',
 		{
           type: 'link',

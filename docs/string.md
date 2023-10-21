@@ -201,3 +201,6 @@ age = 60
 print(f"My name is {name.upper()} and I am {age + 5} years old in 5 years.")
 # 输出： My name is DAVID and I am 65 years old in 5 years.
 ```
+
+
+用函数 str() 可以把其它类型的数据转换成字符串
