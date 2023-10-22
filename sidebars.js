@@ -19,6 +19,8 @@ const sidebars = {
 		'list',
 		'condition',
 		'loop',
+		'dict',
+		'function',
 		'placeholder',
 		{
           type: 'link',
