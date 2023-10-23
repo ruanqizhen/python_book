@@ -162,6 +162,23 @@ for key, value in dictionary.items():
 # c 3
 ```
 
+### 拆包
+
+与列表的拆包相似，字典可以使用双星号 `**` 操作符拆包，假设有 `dict1 = {'a': 1, 'b': 2}`，那么就过拆包操作 `**dict1` 的值就是 `'a'=1, 'b'=2`。
+
+利用拆包操作可以方便的合并两个字典：
+
+```
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'c': 3, 'd': 4}
+
+merged_dict = {**dict1, **dict2}
+print(merged_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+```
+
+字典拆包最主要的用途是[为函数传递参数](function#函数的不定数量参数)。
+
+
 ## 常用的字典的方法
 
 * dict.get(key, default): 返回给定键的值。如果键不存在，则返回default值。

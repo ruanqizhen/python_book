@@ -21,6 +21,8 @@ const sidebars = {
 		'loop',
 		'dict',
 		'function',
+		'recursive',
+		'module',
 		'placeholder',
 		{
           type: 'link',

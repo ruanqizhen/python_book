@@ -4,9 +4,9 @@
 
 
 
-## 定义函数
+## 函数的定义和调用
 
-### 定义函数的关键组成部分
+### 函数定义的关键组成部分
 
 * def 关键字： 函数的定义以 def 关键字开始。
 * 函数名称： def 关键字之后是函数的名称。这应该是一个描述性名称。函数与变量遵循相同的命名规则：只包含大小写字母下划线和数字，但不能以数字开头。
@@ -15,23 +15,63 @@
 * 函数体： 函数体是一组缩进的语句，它们定义了函数要执行的操作。
 * 返回值： 使用 return 语句，可以从函数返回一个值。如果函数不包含 return 语句，它默认返回 None。
 
-最简单的函数可以既无参数也无返回值：
+最简单的函数是无参数的：
 
 ```python
 def greet():
     print("Hello, World!")
 ```
 
-### 函数的参数
+在 Python 中，调用函数非常简单。写上函数名，后跟括号，并在括号中提供所需的参数（如果有的话）来调用它。在之前的示例中已经演示过很多函数调用了，尤其是 print() 函数。
 
-一个带有参数的函数定义如下：
+
+### 函数的返回值
+
+一般的函数都有且只有一个返回值。如果函数体内，没有 return 语句，函数会返回 None；如果 return 后面只有一个数据，就返回这个数据；如果有多个数据，就把他们打包成一个元组返回。
+
+一个带有参数和返回值的函数定义如下：
 
 ```python
-def add(a, b):
-    return a + b
+def sub(a, b):
+    return a - b
     
-print(2, 3)  # 输出： 5
+print(sub(8, 3))  # 输出： 5
 ```
+
+调用函数时，输入参数的顺序一定要与函数定义的参数顺序保持一致。这种参数传递方式叫做位置参数，因为参数的顺序至关重要。比如上面的示例，如果调用时，写反了参数顺序，得到的结果就是错误得了。为了防止参数顺序错误，尤其是当被调用函数有非常多的参数的时候，可以使用关键字参数调用函数，也就是，在调用函数时，把参数的名字写出来，比如：
+
+```python
+def describe_person(first_name, last_name, age):
+    print(f"{first_name} {last_name} is {age} years old.")
+
+# 调用函数
+describe_person(age=28, last_name="Doe", first_name="John")  # 输出：John Doe is 28 years old.
+```
+
+这时候因为已经提供了参数的名字，顺序就不那么重要了。这在函数参数有默认值的时候非常有用，我们在调用某个函数式，可能只需要设置其中某几个参数，其它参数都采用默认值，这时候，就可以采用关键字参数调用函数。
+
+
+二是，如果函数有多个返回值，实际上返回的是一个元组，可以在调用函数的时候直接以元组拆包的方式直接得到多个返回数据，比如：
+
+```python
+def compute_stats(numbers):
+    """Compute the length, sum, and average of a list of numbers."""
+    length = len(numbers)
+    total = sum(numbers)
+    average = total / length
+    return length, total, average
+
+# 使用函数
+numbers = [10, 20, 30, 40, 50]
+length, total, average = compute_stats(numbers)
+
+print(f"Length: {length}")      # 输出： 5
+print(f"Total: {total}")        # 输出： 150
+print(f"Average: {average}")    # 输出： 30.0
+```
+
+
+### 默认参数
 
 函数的参数可以带有默认值，这样，如果调用这个函数时，没有提供相应的输入值，函数就是用默认值。没有默认值的参数，必须要调用时提供一个输入数据。
 
@@ -43,23 +83,8 @@ greet("Alice")  # 输出： "Hello, Alice!"
 greet()         # 输出： "Hello, World!"
 ```
 
-函数可以有不定数量的参数，这是利用了元组的打包拆包来实现的，比如：
 
-```python
-def print_all(*args):
-    for arg in args:
-        print(arg)
-        
-print(1, 2)         # 输出： 1 2
-print(1, 2, 3, 4)   # 输出： 1 2 3 4
-```
-
-在上面这个函数中，参数 args 前面有一个星号，表示它可以接受多个参数。在函数体内，args 是一个由所有输入参数组成的元组。我们常用的 print() 函数就是一个可以接收不定数量参数的函数，可以调用一个 print() 函数打印多个数据。
-
-
-### 默认参数
-
-在 Python 中，使用可变数据类型（如列表、字典或集合）作为函数的默认参数是一种常见的陷阱，因为这可能导致预料之外的行为。
+在 Python 中，默认参数的数据类型必须是不可变类型的。使用可变数据类型（如列表、字典或集合）作为函数的默认参数是一种常见的陷阱，因为这可能导致预料之外的行为。
 
 当使用可变数据类型作为默认参数并修改它时，该修改会在多次函数调用之间持续存在。原因是函数默认参数在函数定义时只计算一次，而不是每次调用时都重新计算。比如：
 
@@ -73,9 +98,9 @@ print(add_item(2))  # 期望输出：[2]，但实际输出：[1, 2]
 print(add_item(3))  # 期望输出：[3]，但实际输出：[1, 2, 3]
 ```
 
-如上所示，items 列表在多次函数调用间保持了状态。
+如上所示，items 列表在多次函数调用之间持了状态。
 
-为了避免这种问题，可以将默认参数设置为 None，并在函数体内检查它，然后赋予它应有的初始值：
+为了避免这种问题，可以将默认参数设置为 None，并在函数体内检查它，如果调用是没有提供新的数据，就赋予它应有的初始值：
 
 ```python
 def add_item(item, items=None):
@@ -84,14 +109,70 @@ def add_item(item, items=None):
     items.append(item)
     return items
 
-print(add_item(1))  # 输出：[1]
-print(add_item(2))  # 输出：[2]
-print(add_item(3))  # 输出：[3]
+print(add_item(1))    # 输出：[1]
+print(add_item(2))    # 输出：[2]
+print(add_item('a'))  # 输出：['a']
 ```
 
-### 函数的返回值
+### 函数的不定数量参数
 
-一般的函数都有且只有一个返回值。如果函数体内，没有 return 语句，函数会返回 None；如果 return 后面只有一个数据，就返回这个数据；如果有多个数据，就把他们打包成一个元组返回。
+函数可以有不定数量的参数，这是利用了元组的打包拆包来实现的，比如：
+
+```python
+def print_all(*args):
+    for arg in args:
+        print(arg)
+        
+print_all(1, 2)         # 输出： 1 2
+print_all(1, 2, 3, 4)   # 输出： 1 2 3 4
+```
+
+在上面这个函数中，参数 args 前面有一个星号，表示它可以接受多个参数。在函数体内，args 是一个由所有输入参数组成的元组。上面的代码只是用来演示一下不定数量参数，实际上， print() 函数本身就是一个可以接收不定数量参数的函数，可以调用一个 print() 函数打印多个数据，比如 `print(1, 2)`。
+
+同样利用字典的打包拆包，可以为函数传递不定数量的关键字参数。在 Python 中，通常使用 `**kwargs`（“keyword arguments”的缩写）来处理不定数量的关键字参数。这会将传入的所有关键字参数收集到一个字典中，其中参数的名字作为键，对应的值作为字典的值。
+
+例如：
+
+```python
+def display_data(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key} = {value}")
+
+# 调用函数
+display_data(name="John", age=25, country="USA")
+
+# 输出：
+# name = John
+# age = 25
+# country = USA
+```
+
+无论是 `*args` 还是 `**kwargs`， 它们都会捕获所有的参数，所以它们一定要放在函数定义参数的最后，并且 `*args` 要在 `**kwargs`前面。这样，函数就可以先处理普通参数，然后再用这两个可变参数捕获其余的所有参数。比如：
+
+```python
+def example_function(arg1, arg2, *args, **kwargs):
+    # 打印普通参数
+    print(arg1, arg2)
+
+    # 打印不定数量的位置参数
+    for arg in args:
+        print(arg)
+    
+    # 打印关键字参数
+    for key, value in kwargs.items():
+        print(f"{key} = {value}")
+
+# 调用函数
+example_function('a', 'b', 1, 2, 3, name="John", country="USA")
+
+# 输出：
+# a b
+# 1
+# 2
+# 3
+# name = John
+# country = USA
+```
 
 
 ### 参数与返回值的类型提示
@@ -120,6 +201,7 @@ def filter_even_numbers(numbers: List[int]) -> List[int]:
 
 
 ### 函数文档
+
 在 Python 中，为函数添加文档通常使用三引号的多行字符串，这个字符串被紧挨着放在函数头的下面。这种字符串也被称为“文档字符串”（docstring）。
 
 通常，文档字符串首行简洁地总结函数的功能。随后的行可以提供更详细的描述、参数的信息、返回值、例子以及其他相关信息。比如
@@ -153,44 +235,6 @@ help(add)
 我们也可以通过以上的函数和方法获得 Python 自带函数的文档。
 
 为函数编写文档是一个好的编程习惯，尤其是代码可能会被其他人阅读、维护的时候。有了清晰的文档，其他开发者能够快速理解和使用一个函数，而不必深入研究实现细节。
-
-
-
-## 调用函数
-
-在 Python 中，调用函数非常简单。写上函数名，后跟括号，并在括号中提供所需的参数（如果有的话）来调用它。在之前的示例中已经演示过很多函数调用了，尤其是 print() 函数。
-
-需要补充两点，一是调用时，输入参数的顺序一定要与函数定义的参数顺序保持一致，除非，使用关键字参数调用函数，也就是，在调用函数时，把参数的名字写出来，比如：
-
-```python
-def describe_person(first_name, last_name, age):
-    print(f"{first_name} {last_name} is {age} years old.")
-
-# 调用函数
-describe_person(age=28, last_name="Doe", first_name="John")  # 输出：John Doe is 28 years old.
-```
-
-这时候因为已经提供了参数的名字，顺序就不那么重要了。这在函数参数有默认值的时候非常有用，我们在调用某个函数式，可能只需要设置其中某几个参数，其它参数都采用默认值，这时候，就可以采用关键字参数调用函数。
-
-二是，如果函数有多个返回值，实际上返回的是一个元组，可以在调用函数的时候直接以元组拆包的方式直接得到多个返回数据，比如：
-
-```python
-def compute_stats(numbers):
-    """Compute the length, sum, and average of a list of numbers."""
-    length = len(numbers)
-    total = sum(numbers)
-    average = total / length
-    return length, total, average
-
-# 使用函数
-numbers = [10, 20, 30, 40, 50]
-length, total, average = compute_stats(numbers)
-
-print(f"Length: {length}")      # 输出： 5
-print(f"Total: {total}")        # 输出： 150
-print(f"Average: {average}")    # 输出： 30.0
-```
-
 
 
 ## 嵌套函数
