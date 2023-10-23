@@ -79,8 +79,8 @@ print(f"Average: {average}")    # 输出： 30.0
 def greet(name="World"):
     print(f"Hello, {name}!")
     
-greet("Alice")  # 输出： "Hello, Alice!"
-greet()         # 输出： "Hello, World!"
+greet("ruanqizhen")  # 输出： "Hello, ruanqizhen!"
+greet()              # 输出： "Hello, World!"
 ```
 
 

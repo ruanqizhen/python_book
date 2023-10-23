@@ -23,6 +23,8 @@ const sidebars = {
 		'function',
 		'recursive',
 		'module',
+		'exception',
+		'file_io',
 		'placeholder',
 		{
           type: 'link',

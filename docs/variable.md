@@ -85,7 +85,7 @@ x = 5  # 创建一个名为 x 的整数变量，并赋值 5
 创建变量的时候，也可以为其添加类型提示（Type Hints），比如：
 
 ```python
-name: str = "John Doe"
+name: str = "Qizhen Ruan"
 age: int = 30
 height: float = 5.9
 is_student: bool = False
@@ -94,7 +94,7 @@ is_student: bool = False
 上面程序，变量名之后跟了一个冒号，冒号后面的文字指明了变量的数据类型。大多数编程语言，一旦指定了变量的数据类型，编译器或解释器就会自动检查变量的数据类型是否正确，如果有错误会报错。但是 Python 并不会并不会施加任何真正的数据类型限制，这些类型提示仅仅是暗示了预期的变量类型。运行下面的程序，Python 不会汇报任何错误提示：
 
 ```python
-age: int = "John Doe"
+age: int = "ruanqizhen"
 ```
 
 Python 自己虽然不会检查变量数据类型，但是类型提示对于代码的可读性和工具（如 mypy）的类型检查非常有帮助。笔者建议在编写程序时尽量为所有变量都是用类型提示。

@@ -170,4 +170,8 @@ sys.path.append('/path/to/directory')
 如果想永久地添加路径到 Python 的搜索路径，可以修改 PYTHONPATH 环境变量，将其指向想添加到搜索路径的目录。这种方法在 Python 启动时会自动读取这个环境变量并把它添加到搜索路径中。或者，也可以在 Python 的 site-packages 目录下，创建一个 .pth 文件（例如 mymodules.pth），并在其中列出你想添加的目录。每行一个路径。
 
 
+## 第三方库
+
+......
+
 
