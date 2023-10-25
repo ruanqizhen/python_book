@@ -180,6 +180,76 @@ functionA(10)
 
 在上述示例中，functionA 调用 functionB，而 functionB 再次调用 functionA，直到 n 达到或小于 0 时停止。
 
+下面看一个稍微复杂一点的例子，编写一个程序，解析一个四则运算表达式，并计算结果。作为示例，我们简化了程序要求：
+* 表达式中的数据只能是正整数
+* 运算符只有加减乘除
+* 可以使用括号
+* 表达式必须正确，且没有空格等其它符号
+
+比如，程序需要运算 "30+8*(13-5)/6" 这样的表达式。我们可以考虑使用使用递归的算法：
+
+```python
+# 处理加法和减法
+def process_add_sub(s):
+    # 从一个项开始解析
+    value, pos = process_mul_div(s)
+    # 如果位置未到字符串末尾，且当前字符是加号或减号
+    while pos < len(s) and (s[pos] == '+' or s[pos] == '-'):
+        # 解析下一个项
+        next_value, next_pos = process_mul_div(s[pos+1:])
+        # 根据加号或减号进行操作
+        value = value + next_value if s[pos] == '+' else value - next_value
+        pos += next_pos + 1
+    return value, pos
+
+# 处理乘法和除法
+def process_mul_div(s):
+    # 从一个因子开始解析
+    value, pos = process_number(s)
+    # 如果位置未到字符串末尾，且当前字符是乘号或除号
+    while pos < len(s) and (s[pos] == '*' or s[pos] == '/'):
+        # 解析下一个因子
+        next_value, next_pos = process_number(s[pos+1:])
+        # 根据乘号或除号进行操作
+        value = value * next_value if s[pos] == '*' else value / next_value
+        pos += next_pos + 1
+    return value, pos
+
+# 处理数字和括号
+def process_number(s):
+    # 如果当前字符是数字
+    if s[0].isdigit():
+        i = 1
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        return int(s[0:i]), i
+    # 如果当前字符是左括号
+    if s[0] == '(':
+        # 解析一个表达式直到遇到右括号
+        value, pos = process_add_sub(s[1:])
+        return value, pos + 2  # 跳过右括号
+    # 如果不是数字或括号，继续解析为一个表达式
+    return process_add_sub(s)
+
+# 解析并计算四则运算表达式
+def parse_and_eval(s):
+    value, _ = process_add_sub(s)
+    return value
+
+# 测试
+expr = "3+5*2"
+print(parse_and_eval(expr))  # 输出 13，因为 5*2 是先计算的
+
+expr = "(3+5)*2"
+print(parse_and_eval(expr))  # 输出 16，因为 (3+5) 是先计算的
+```
+
+上面的程序采用了一种自顶向下的解析方法，通过使用一组递归的函数来实现，其中每个函数负责处理一种运算符或数据。
+* 函数 process_add_sub() 调用函数 process_mul_div() 并将其结果相加或相减；
+* 函数 process_mul_div() 调用函数 process_number() 并将其结果相乘或相除；
+* 函数 process_number() 在处理完当前数据后，又调用函数 process_add_sub()去处理后续的字符，由此构成了递归调用。
+
+
 ## 递归与循环的比较
 
 任何使用递归实现的逻辑都可以转换成循环，反之亦然，任何使用循环实现的逻辑都可以转换成递归。也是因为这个原因，有些编程语言中，尤其是纯函数式编程的语言，是没有循环结构的；而另一些编程语言是没有递归的，比如一些早期版本的 Basic 语言。那么，我们在编程的时候，是应该选择循环，还是递归呢？

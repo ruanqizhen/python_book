@@ -26,6 +26,7 @@ const sidebars = {
 		'exception',
 		'file_io',
 		'placeholder',
+		'oop',
 		{
           type: 'link',
           label: '作者个人主页',
