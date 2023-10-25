@@ -25,8 +25,8 @@ const sidebars = {
 		'module',
 		'exception',
 		'file_io',
-		'placeholder',
 		'oop',
+		'placeholder',
 		{
           type: 'link',
           label: '作者个人主页',
