@@ -10,7 +10,6 @@
 
 面向对象编程（OOP）将在后文介绍。
 
-
 这一节，我们再介绍 Python 中其它一些函数式编程的特性。
 
 ## 函数是一等公民
@@ -102,6 +101,70 @@ operation = math_operation('-')
 print(operation(5, 3))  # 输出：2
 ```
 
+## 闭包（Closure）
+
+闭包的核心思想是一个函数可以访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。
+
+闭包是编程语言中的一个重要概念，它涉及函数和与其相关的引用环境。在Python中，闭包允许一个函数访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。
+
+比如：
+
+```python
+def outer_function(x):
+    def inner_function(y):
+        return x + y
+    return inner_function
+
+closure_instance = outer_function(10)
+print(closure_instance(5))  # 输出：15
+```
+
+在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，它实际上调用的是在 outer_function 之外，也就是 inner_function 的定义域之外调用了 inner_function。但 inner_function 仍然可以访问 outer_function 之内的变量 x，其值为10。
+
+闭包涉及至少两个函数，外部函数和一个或多个内部函数。内部函数引用了外部函数的局部变量。内部函数保留了对外部函数局部变量的引用，这样当内部函数被调用时，即使外部函数已经完成执行，这些变量仍然是可用的。
+
+闭包可以用来隐藏数据（把外部函数中的局部变量隐藏），提供一种将数据与函数一同封装的方法。在Python中，闭包经常与装饰器一起使用，装饰器是修改其他函数或类的功能的强大工具。
+
+闭包也可能会导致一些意外的行为，尤其是在循环中创建闭包时。因为闭包在其定义环境中捕获变量，所以必须确保捕获的变量的值是预期的那样，例如：
+
+```python
+
+
+def outer_function():
+	functions = []
+	for i in range(3):
+		def func(x): 
+			return x + i     # 捕获 i
+		functions.append(func)
+	return functions
+
+functions = outer_function()
+print(functions[0](10))  
+print(functions[1](10)) 
+print(functions[2](10)) 
+```
+
+上面的代码中，使用循环创建了三个内部函数，创建这三个内部函数的时候，i 的值分别是 0, 1, 2。因此，当 x= 10 的时候，  我们期望这三个内部函数分别返回 10, 11, 12，也就是 x+i 的值。然而，执行这段程序，三个 print 语句的输出都是 12。要知道，这时候环境中就只有一个名为 i 的变量，所以三个内部函数使用的都是这同一个 i。它们计算的结果自然也就相同。
+
+如果需要记录不同的 i 的值，那么需要多个变量才行，比如我们可以使用了默认参数 i=i 来捕获循环中的当前 i 值：
+
+```python
+def outer_function():
+	functions = []
+	for i in range(3):
+		def func(x, i=i):  # 注意这里我们使用了默认参数来捕获当前的i值
+			return x + i
+		functions.append(func)
+	return functions
+
+functions = outer_function()
+print(functions[0](10))  # 输出：10
+print(functions[1](10))  # 输出：11
+print(functions[2](10))  # 输出：12
+```
+
+这样，程序运行结果就符合预期了。
+
 ## 匿名函数（lambda 函数）
 
 匿名函数就是没有函数名的函数。这些函数通过 lambda 关键字定义，因此也被称为 lambda 函数。至于为什么要用 lambda 可以参考这一段关于 [Lambda Calculus 编程语言](https://lv.qizhen.xyz/appendix_languages#lambda-calculus-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80)的介绍。
@@ -123,16 +186,12 @@ print(f(2, 3))  # 输出: 5
 
 在上面的示例中，我们定义了一个 lambda 函数，该函数接受两个参数 x 和 y 并返回它们的和。然后，我们将该函数分配给变量 f ，后续的程序可以使用变量 f 来调用这个 lambda 函数。
 
+## 
 
 高阶函数：Python支持可以接受其他函数作为参数或返回函数的函数。例如，内置的map(), filter(), 和reduce()都是高阶函数。
 
-Lambda函数：Python支持匿名函数，也称为lambda函数，这是一个简单的、可以在单行中定义的函数。
 
-列表推导式和生成器表达式：这些是Python中的函数式工具，可以用更声明式的方式构建列表和生成器。
 
-不变性：虽然Python的数据结构（如列表和字典）是可变的，但你可以通过编程风格和某些不可变的数据结构（如元组）来保持不变性。
-
-内置的functools模块：此模块提供了一系列高阶函数和其他函数式编程的工具。
 
 ```
 
@@ -240,46 +299,5 @@ print(next(gen))  # 输出：3
 
 
 
-闭包是编程语言中的一个重要概念，它涉及函数和与其相关的引用环境。在Python中，闭包允许一个函数访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。
 
-闭包的定义有以下几个要点：
-
-内嵌函数：闭包涉及至少两个函数，外部函数和一个或多个内部函数。内部函数引用了外部函数的局部变量。
-引用环境：内部函数保留了对外部函数局部变量的引用，这样当内部函数被调用时，即使外部函数已经完成执行，这些变量仍然是可用的。
-简单地说，闭包允许函数“记住”其定义环境，并允许在函数之外的地方使用该环境。
-
-示例：
-python
-Copy code
-def outer_function(x):
-    def inner_function(y):
-        return x + y
-    return inner_function
-
-closure_instance = outer_function(10)
-print(closure_instance(5))  # 输出：15
-在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，它实际上调用的是 inner_function，并且它仍然可以访问变量 x（值为10）。
-
-为什么使用闭包？
-数据隐藏和封装：闭包可以用来隐藏数据，提供一种将数据与函数一同封装的方法。
-动态函数生成：可以动态地生成并返回函数，如上面的例子所示。
-轻量级匿名函数：闭包提供了一种定义能访问外部作用域变量的小函数的方法。
-装饰器：在Python中，闭包经常与装饰器一起使用，装饰器是修改其他函数或类的功能的强大工具。
-注意：
-闭包可能会导致一些意外的行为，尤其是在循环中创建闭包时。因为闭包在其定义环境中捕获变量，所以你必须确保捕获的变量的值是你预期的那样。
-
-例如：
-
-python
-Copy code
-functions = []
-for i in range(3):
-    def func(x, i=i):  # 注意这里我们使用了默认参数来捕获当前的i值
-        return x + i
-    functions.append(func)
-
-print(functions[0](10))  # 输出：10
-print(functions[1](10))  # 输出：11
-print(functions[2](10))  # 输出：12
-上面的代码中，我们使用了默认参数 i=i 来捕获循环中的当前 i 值。如果没有这样做，所有的闭包函数都会使用相同的 i 值，即最后的值 2。
 ```
