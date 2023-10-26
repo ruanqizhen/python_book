@@ -229,14 +229,14 @@ except:
 * s 或 step: 执行下一行代码，如果是函数则会进入该函数。
 * c 或 continue: 继续执行，直到遇到下一个断点。
 * q 或 quit: 退出调试器。
-* p <expression> 或 print <expression>: 打印表达式的值。
+* p \<expression\> 或 print \<expression\>: 打印表达式的值。
 * l 或 list: 显示当前位置的源代码。
 * ll 或 longlist: 显示当前函数的所有源代码。
 * u 或 up: 在调用堆栈中向上移动。
 * d 或 down: 在调用堆栈中向下移动。
-* b <line_number>: 在指定行设置一个断点。
+* b \<line_number\>: 在指定行设置一个断点。
 * b: 显示所有断点。
-* cl <breakpoint_number>: 清除指定的断点。
+* cl \<breakpoint_number\>: 清除指定的断点。
 
 ## 使用 pdb 命令行工具
 
