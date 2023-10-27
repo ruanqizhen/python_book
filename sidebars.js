@@ -26,6 +26,9 @@ const sidebars = {
 		'exception',
 		'file_io',
 		'debug',
+		'functional',
+		'generator',
+		'high_order',
 		'oop',
 		'placeholder',
 		{

@@ -221,68 +221,7 @@ print(my_dict)                # 输出: {}
 
 
 
-## 字典推导式
 
-### 基本用法
-
-与列表推导式类似，字典推导式可以创建字典。字典推导式的基本格式：
-
-```python
-{key_expr: value_expr for item in iterable}
-```
-
-与列表推导式的区别在于，字典推导式中要提供两个数据键和值。
-
-下面的简单例子，将一个列表的值映射为其平方：
-
-```python
-numbers = [1, 2, 3, 4, 5]
-squared = {x: x**2 for x in numbers}
-print(squared)  # 输出：{1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
-```
-
-### 带条件的字典推导式
-
-字典推导式也可以添加条件语句来过滤出符合条件的元素：
-
-```python
-numbers = [1, 2, 3, 4, 5]
-even_squares = {x: x**2 for x in numbers if x % 2 == 0}
-print(even_squares)  # 输出：{2: 4, 4: 16}
-```
-
-
-### 使用两个不同的可迭代对象
-
-通过使用 zip，可以将两个不同的可迭代对象换为一个字典：
-
-```python
-keys = ['a', 'b', 'c']
-values = [1, 2, 3]
-dictionary = {k: v for k, v in zip(keys, values)}
-print(dictionary)  # 输出：{'a': 1, 'b': 2, 'c': 3}
-```
-
-### 字典推导式中的双重循环：
-
-可以在字典推导式中使用多个循环：
-
-```python
-names = ['Alice', 'Bob', 'Charlie']
-letters = [name[0] for name in names]
-name_dict = {letter: name for letter, name in zip(letters, names)}
-print(name_dict)  # 输出：{'A': 'Alice', 'B': 'Bob', 'C': 'Charlie'}
-```
-
-### 从字典生成字典
-
-假设已经有了一个字典，需要创建一个新的字典，其中的值是原始字典值的一部分或是对元字典的修改：
-
-```python
-price = {'apple': 0.5, 'banana': 0.25, 'orange': 0.75}
-discounted_price = {fruit: price * 0.9 for fruit, price in price.items()}
-print(discounted_price)  # 输出：{'apple': 0.45, 'banana': 0.225, 'orange': 0.675}
-```
 
 ## 字典的优缺点
 
