@@ -45,7 +45,7 @@ print(list(summed))  # [11, 22, 33]
 
 在上面这个示例中，lambda 函数接收两个参数，并将它们加在一起。如果传递给 map() 的可迭代对象长度不同，map() 将在最短的可迭代对象结束时停止。
 
-### 如何实现 map() 函数
+### 实现 map() 函数
 
 我们可以进一步探究一下，我们自己如何能实现一个类似 map() 的函数。我们有如下考虑
 * map() 可以接收多个可迭代对象，说明这个函数具有可变数量的参数
@@ -125,27 +125,23 @@ print(list(evens))  # 输出: [2, 4, 6, 8]
 ### 生成素数序列
 
 使用 filter() 函数的一个经典示例是生成素数序列，它使用“埃拉托斯特尼筛选法”(Sieve of Eratosthenes)生成素数序列。其基本思路如下：
-1. 列出从 2 开始到所需范围的所有整数
-2. 从当前位置向后，找到列表中的第一个数字，这就是一个素数，在初始情况下，这是 2
-3. 把列表中所有该素数的倍数从列表中滤除
+1. 列出从 2 开始往后的的所有整数
+2. 找到列表中的第一个数字，这就是一个素数，在初始情况下，这是 2
+3. 把所有该素数的倍数从列表中滤除
 4. 跳回到 2 步，寻找下一个素数
 
 程序的代码如下：
 
 ```python
+from itertools import count
+
 def prime_generator():
-    def _integers_from(n):
-        # 生成从n开始的整数序列
-        while True:
-            yield n
-            n += 1
-        
     # 生成素数序列的生成器
-    numbers = _integers_from(2)  # 从2开始的整数序列
+    numbers = count(2)         # 从2开始的整数序列
     while True:
         prime = next(numbers)  # 获取序列中的下一个数字
         yield prime            # 返回当前素数
-        # 过滤掉所有能被当前素数整除的整数
+        # 过滤掉序列中所有能被当前素数整除的整数
         numbers = filter(lambda x, prime=prime: x % prime, numbers)
 
 # 测试
@@ -153,6 +149,17 @@ gen = prime_generator()
 for _ in range(10):  # 获取前 10 个素数
     print(next(gen))
 ```
+
+在上面程序里，itertools 库中的 count() 函数用于生成一个整数序列。它的实现方法如下：
+
+```python
+def count(n):
+	# 生成从n开始的整数序列
+	while True:
+		yield n
+		n += 1
+```
+
 
 ## reduce
 
@@ -179,4 +186,53 @@ from functools import reduce
 numbers = [1, 2, 3, 4, 5]
 sum_result = reduce(lambda x, y: x + y, numbers)
 print(sum_result)  # 输出: 15
+```
+
+找到最大值：
+
+```python
+from functools import reduce
+
+numbers = [5, 8, 2, 1, 9, 3]
+max_value = reduce(lambda x, y: x if x > y else y, numbers)
+print(max_value)  # 输出：9
+```
+
+字符串反转：
+
+```python
+from functools import reduce
+
+s = "Hello"
+reversed_string = reduce(lambda x, y: y + x, s)
+print(reversed_string)  # 输出："olleH"
+```
+
+### 实现
+
+
+```python
+def my_reduce(func, sequence, initial=None):
+    # 如果初始值被设置，先考虑它
+    if initial is not None:
+        if not sequence:
+            return initial
+        else:
+            return my_reduce(func, sequence[1:], func(initial, sequence[0]))
+    
+    # 如果序列只有一个元素，返回这个元素
+    if len(sequence) == 1:
+        return sequence[0]
+    
+    # 对序列的剩余部分调用 my_reduce
+    # 将当前的元素和剩余部分的归约结果应用于 func
+    return func(sequence[0], my_reduce(func, sequence[1:]))
+
+# 测试
+numbers = [1, 2, 3, 4, 5]
+total = my_reduce(lambda x, y: x + y, numbers)
+print(total)  # 输出：15
+
+product = my_reduce(lambda x, y: x * y, numbers)
+print(product)  # 输出：120
 ```
