@@ -333,6 +333,20 @@ outer_function()
 # 外部函数的计数: 2
 ```
 
+下面的程序会出错：
+
+```python
+def outer_function():
+    x = 0
+    def inner_function():
+        x += 1
+        print(x)
+    inner_function()
+
+outer_function()
+```
+
+
 ### 全局作用域（Global Scope）
 
 在主程序体中定义的变量拥有全局作用域。它们被称为全局变量。这些变量在整个程序执行期间都存在，可以在当前文件内的任何函数内部被读取。但如果修改的话，必须通过 global 关键字进行修改。

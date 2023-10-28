@@ -90,6 +90,20 @@ result = my_map(lambda x: x*x, lst1)
 print(list(result))  # 输出: [1, 4, 9]
 ```
 
+上面的程序复杂在要处理可变多个可迭代对象，如果使用 Python 内置的 zip 函数，就可以大大简化程序。zip() 函数从每个传入的可迭代对象中取一个元素，然后将这些元素组成一个元组，作为新迭代器的一个元素。然后它再从每个可迭代对象中取下一个元素，再次组成一个元组，依此类推。当其中任意一个可迭代对象被遍历完后，zip() 停止创建元组。
+
+如果使用 zip() 函数，上面的代码可以被一句简单的生成器表达式替代：
+
+```python
+def my_map(func, *iterables):
+    return (func(*items) for items in zip(*iterables))
+
+# 测试
+lst1 = [1, 2, 3]
+lst2 = [4, 5, 6]
+result = my_map(lambda x, y: x + y, lst1, lst2)
+print(list(result))  # 输出: [5, 7, 9]
+```
 
 ## filter
 
@@ -176,7 +190,9 @@ functools.reduce(function, iterable[, initializer])
 * iterable: 是输入序列或可迭代对象
 * initializer: 是可选的，它是一个初始值，它会被放在累积结果的前面。如果提供了它，则迭代会从iterable中的第一个元素开始。
 
-reduce() 函数首先把输入的 funtion 作用于列表中的前两个元素；然后再把 funciton 作用于刚才的结果和第三个元素；再把 funciton 作用于刚才的结果和第四个元素，以此类推，直到列表中的所有元素都被处理。
+reduce() 函数首先把输入的 funtion 作用于列表中的前两个元素；然后再把 funciton 作用于刚才的结果和第三个元素；再把 funciton 作用于刚才的结果和第四个元素，以此类推，直到列表中的所有元素都被处理。也就是最终展开的结果是类似如下的表达式：
+
+result = ... function( function( function(initializer, iterable[0]), iterable[1] ), iterable[2]), ...
 
 比如，使用 reduce() 函数计算一个列表中所有整数的和：
 
@@ -208,8 +224,19 @@ reversed_string = reduce(lambda x, y: y + x, s)
 print(reversed_string)  # 输出："olleH"
 ```
 
+字典合并：
+
+```python
+from functools import reduce
+
+list_of_dicts = [{"a": 1, "b": 2}, {"c": 3}, {"d": 4}]
+combined_dict = reduce(lambda x, y: {**x, **y}, list_of_dicts)
+print(combined_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+```
+
 ### 实现
 
+reduce() 函数的结果通常是一个值，而不是迭代器。所以，也不需要利用生成器来实现它的功能。我们当然可以用循环来实现它的功能，不过下面给出一个使用递归实现的示例，帮助大家熟悉递归：
 
 ```python
 def my_reduce(func, sequence, initial=None):

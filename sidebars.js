@@ -29,6 +29,7 @@ const sidebars = {
 		'functional',
 		'generator',
 		'high_order',
+		'decorator',
 		'oop',
 		'placeholder',
 		{
