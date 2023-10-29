@@ -263,3 +263,5 @@ print(total)  # 输出：15
 product = my_reduce(lambda x, y: x * y, numbers)
 print(product)  # 输出：120
 ```
+
+reducer 函数采用的左归并。如果需要右归并，把上面程序稍微改一下即可。

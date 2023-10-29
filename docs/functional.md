@@ -20,7 +20,7 @@
 
 ## 函数是一等公民
 
-在 Python 中，函数是一等公民（first-class citizen）。这句话的意思是：函数可以作为参数传递、作为返回值返回、赋值给变量或存储在数据结构中。这样的特性提供了大量的灵活性和动态性，特别是在更高阶的函数编程中。
+在 Python 中，函数是一等公民（first-class citizen），也就是地位非常高的意思。函数地位高的体现是：函数可以作为参数传递、作为返回值返回、赋值给变量或存储在数据结构中。这样的特性提供了大量的灵活性和动态性，特别是在更高阶的函数编程中。
 
 ### 函数作为参数
 
@@ -107,7 +107,7 @@ operation = math_operation('-')
 print(operation(5, 3))  # 输出：2
 ```
 
-## 闭包（Closure）
+### 闭包（Closure）
 
 闭包的核心思想是一个函数可以访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。
 
@@ -170,6 +170,46 @@ print(functions[2](10))  # 输出：12
 ```
 
 这样，程序运行结果就符合预期了。
+
+
+### 函数柯里化
+
+函数柯里化（Currying）是一种将一个多参数函数转换为一系列单参数函数的方法。这听起来可能是一个有趣但不实用的技巧，但在某些上下文中，柯里化可以非常有用。在一些更高级的功能中，比如创建高阶函数、装饰器等都需要使用到函数柯里化技术。
+
+柯里化的一个经典例子是对于一个二元函数 f(x, y)，柯里化后，得到一个函数 g(x)，其返回值是另一个函数，这个返回的函数用于处理 y。比如，下面示例是一个简单的加法函数，它需要两个输入参数，但是我们可以把它做成一些列单参数函数：
+
+```python
+# 这是实现加法的单参数函数
+def curried_add(x):
+    def add_y(y):
+        return x + y
+    return add_y
+
+# 计算 3 + 4 可以写成：
+print(curried_add(3)(4))  # 输出: 7
+
+# 也可以把其中某个参数固定下来
+add_five = curried_add(5)
+print(add_five(10))       # 输出: 15
+```
+
+### 偏函数
+
+偏函数 (Partial Functions) 是柯里化的一个特例。使用偏函数，可以固定一个或多个参数的值，并返回一个新函数。这个新函数可以使用剩余的参数调用原始函数。偏函数的主要用途是简化一些特别常用的函数的参数数量。Python 的 functools.partial 可以用来创建偏函数。例如：
+
+```python
+from functools import partial
+
+def multiply(x, y):
+    return x * y
+
+# 创建一个新的函数，预先设置 y 为 2
+double = partial(multiply, y=2)
+
+print(double(4))  # 输出: 8
+print(double(7))  # 输出: 14
+```
+
 
 ## 匿名函数（lambda 函数）
 
@@ -272,3 +312,7 @@ math_operation = lambda operator: lambda x, y: (x - y, x + y)[operator == '+']
 print(math_operation('+')(5, 3))  # 输出：8
 print(math_operation('-')(5, 3))  # 输出：2
 ```
+
+
+
+

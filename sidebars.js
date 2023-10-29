@@ -31,6 +31,7 @@ const sidebars = {
 		'high_order',
 		'decorator',
 		'oop',
+		'magic_methods',
 		'placeholder',
 		{
           type: 'link',
