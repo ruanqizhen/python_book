@@ -32,6 +32,7 @@ const sidebars = {
 		'decorator',
 		'oop',
 		'magic_methods',
+		'multiple_inheritance',
 		'placeholder',
 		{
           type: 'link',
