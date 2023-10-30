@@ -33,6 +33,9 @@ const sidebars = {
 		'oop',
 		'magic_methods',
 		'multiple_inheritance',
+		'oop2',
+		'design_method',
+		'solid',
 		'placeholder',
 		{
           type: 'link',
