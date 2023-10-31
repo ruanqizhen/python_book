@@ -161,14 +161,190 @@ try:
         content = file.read()
         print(content)
 except FileNotFoundError:
-    print("The file does not exist.")
+    print("文件不存在！")
 except PermissionError:
-    print("You do not have the permission to read the file.")
+    print("没有文件访问权限！")
 except IOError:
-    print("General input/output error occurred.")
+    print("输入输出错误！")
 finally:
-    print("This code will run whether an exception occurred or not.")
+    print("无论是否发生错误都会运行这里。")
+```
+
+## 文本或二进制
+
+在 Python 中，读写文件时可以选择文本模式或二进制模式。这两种模式的差异主要体现在数据处理和文件打开的方式上。选择文本模式还是二进制模式取决于程序的具体需求。如果正在处理的是纯文本数据，文本模式可能更适合。但如果正在处理的是二进制数据（例如图像、音频或其他非文本文件），则应使用二进制模式。
+
+打开文本文件的时候使用 't' 作为文件模式的一部分（例如，'rt' 或 'wt'）。但实际上，我们经常会省略模式中的 't'，只使用 'r' 或 'w'；二进制文件使用 'b' 作为文件模式的一部分（例如，'rb' 或 'wb'）。读取或写入文本文件件时，数据被处理为字符串 (str)；读取或写入二进制文件时，数据被处理为字节 (bytes)。例如：
+
+```python
+# 写入文本文件
+with open('text_file.txt', 'wt') as file:
+    file.write("Hello, Text World!")
+
+# 读取文本文件
+with open('text_file.txt', 'rt') as file:
+    content = file.read()
+    print(content)  # 输出: Hello, Text World!
+	
+# 写入二进制文件
+with open('binary_file.bin', 'wb') as file:
+    file.write(b"Hello, Binary World!")
+
+# 读取二进制文件
+with open('binary_file.bin', 'rb') as file:
+    byte_content = file.read()
+    print(byte_content.decode('utf-8'))  # 输出: Hello, Binary World!
 ```
 
 
+## 内存文件
+
+相对内存来说，硬盘读写速度慢很多。我们会需要在内存中创建一个文件对象，这个文件对象的访问方式与硬盘上的文件完全一样，唯一不同是它处于内存而不是硬盘，这样读写速度就会非常快。Python 通过 io 模块中的 BytesIO 和 StringIO 类来创建和操作内存中的文件对象。StringIO 用于在内存中存储字符串数据的文件对象；BytesIO 用于在内存中存储字节数据的文件对象。
+
+下面是一些详细的示例：
+
+使用 StringIO
+```python
+import io
+
+# 创建一个内存中的字符串文件对象
+output = io.StringIO()
+
+# 写入数据
+output.write("Hello, ")
+output.write("Memory File World!\n")
+output.write("Another line.")
+
+# 将文件指针移动到文件开始位置
+output.seek(0)
+
+# 读取数据
+content = output.read()
+print(content)
+
+# 关闭内存文件
+output.close()
+```
+
+使用 BytesIO
+
+```python
+import io
+
+# 创建一个内存中的字节文件对象
+output = io.BytesIO()
+
+# 写入数据 (需要提供字节数据)
+output.write(b"Hello, ")
+output.write(b"Memory File World!\n")
+output.write(b"Another line.")
+
+# 将文件指针移动到文件开始位置
+output.seek(0)
+
+# 读取数据
+byte_content = output.read()
+print(byte_content.decode('utf-8'))
+
+# 关闭内存文件
+output.close()
+```
+
+这些内存文件对象与常规文件对象在使用上几乎是相同的，但它们只存在于内存中，不会写入到磁盘。这使得它们在需要快速、短暂的文件操作时非常有用，例如解析数据、暂存数据等场景。
+
+
 ## 路径处理
+
+读写文件，必然需要先找到文件，那就离不开处理文件的路径。在 Python 中，处理文件和目录路径的最常用的库是 os.path 和 pathlib。其中，pathlib 是一个比较新的库，提供了面向对象的方式来处理路径。
+
+以下是常用的路径处理函数和相应的示例：
+
+### 使用 os.path:
+
+```python
+import os
+
+# 获取两个或多个路径名组件的连接
+joined_path = os.path.join('folder', 'subfolder', 'file.txt')
+
+# 获取路径的绝对路径
+abs_path = os.path.abspath('./folder/file.txt')
+
+# 获取路径的基名（文件名或最后的目录名）
+base_name = os.path.basename('/folder/subfolder/file.txt')  # 返回 'file.txt'
+
+# 获取路径的目录名
+dir_name = os.path.dirname('/folder/subfolder/file.txt')  # 返回 '/folder/subfolder'
+
+# 检查路径是否存在
+exists = os.path.exists('/folder/subfolder/file.txt')
+
+# 检查路径是否是目录
+is_dir = os.path.isdir('/folder/subfolder')
+
+# 检查路径是否是文件
+is_file = os.path.isfile('/folder/subfolder/file.txt')
+
+# 分割路径的目录名和文件名
+dir_part, file_part = os.path.split('/folder/subfolder/file.txt')  # 返回 ('/folder/subfolder', 'file.txt')
+```
+
+
+### 使用 pathlib:
+
+```python
+from pathlib import Path
+
+# 创建一个 Path 对象
+p = Path('folder/subfolder/file.txt')
+
+# 连接路径
+new_path = p.parent / 'another_file.txt'
+
+# 获取路径的绝对路径
+abs_path = p.resolve()
+
+# 获取路径的基名（文件名或最后的目录名）
+base_name = p.name  # 返回 'file.txt'
+
+# 获取路径的目录名
+dir_name = p.parent  # 返回 a Path object: 'folder/subfolder'
+
+# 检查路径是否存在
+exists = p.exists()
+
+# 检查路径是否是目录
+is_dir = p.is_dir()
+
+# 检查路径是否是文件
+is_file = p.is_file()
+
+# 分割路径的目录名和文件名
+dir_part, file_part = p.parent, p.name  # 返回 (Path('folder/subfolder'), 'file.txt')
+```
+
+在新的 Python 代码中，建议使用 pathlib，因为它提供了更直观和面向对象的接口，同时具有丰富的功能。但在处理旧的代码或与其他人合作时，可能仍然会遇到 os.path。
+
+### 临时文件
+
+在学习或者做实验的时候，常常会需要把数据保存到文件中，但是因为不需要长期保存文件，我们可能会懒得给文件起名，这时候可以让系统把数据保存到系统临时文件夹的临时文件中。这样过后，系统自动清理这些不再需要的文件。Python 使用 tempfile 模块来创建临时文件。以下是一个示例，我们入一些数据到一个临时文件，并返回其路径：
+
+```python
+import tempfile
+
+def write_to_temp_file(data: str) -> str:
+    # 创建一个临时文件，该文件在关闭后不会自动删除
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(data.encode('utf-8'))
+        return temp_file.name
+
+data = "Hello, Temp World!"
+temp_file_path = write_to_temp_file(data)
+print(f"Data has been written to: {temp_file_path}")
+```
+
+在这个例子中：
+
+使用 tempfile.NamedTemporaryFile 创建了一个临时文件。默认情况下，当临时文件关闭时，它就会被自动删除。如果想保留这个文件，可以设置参数 delete=False。函数返回了临时文件的路径，以后可以使用这个路径来访问或处理该文件。
+
+

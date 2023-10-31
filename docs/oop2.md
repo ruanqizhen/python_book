@@ -249,7 +249,7 @@ print(Color(1))       # 输出: Color.RED
 print(Color['RED'])   # 输出: Color.RED
 ```
 
-### 枚举与比较
+### 枚举的比较
 
 枚举成员不能进行大小比较，但可以进行身份和等值比较：
 
@@ -262,7 +262,7 @@ print(Color.RED == Color.GREEN) # 输出: False
 
 枚举也可以具有方法：
 
-``python
+```python
 from enum import Enum
 
 class Color(Enum):

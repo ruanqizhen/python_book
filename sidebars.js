@@ -36,6 +36,8 @@ const sidebars = {
 		'oop2',
 		'design_method',
 		'solid',
+		'asyncio',
+		'multithread',
 		'placeholder',
 		{
           type: 'link',
