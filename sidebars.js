@@ -38,6 +38,9 @@ const sidebars = {
 		'solid',
 		'asyncio',
 		'multithread',
+		'multiprocess',
+		'algorithm',
+		'array',
 		'placeholder',
 		{
           type: 'link',

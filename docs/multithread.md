@@ -6,7 +6,9 @@
 
 进程是一个独立运行的程序实例，拥有自己的独立内存空间和系统资源。从操作系统的视角看，进程是一个执行中的程序和其状态的组合，包括程序计数器、寄存器、虚拟内存等。线程，是进程内部的一个单独的执行流程。线程在进程内共享同一地址空间和资源，但拥有自己的调用栈、程序计数器和寄存器状态。一个进程可以有多个线程。无论进程还是线程都是由操作系统来调度的。每个进程有自己的独立地址空间，但线程没有。在多核或多处理器系统中，多个线程可以不同的 CPU 内核并行执行。
 
-简单的理解，虽然不那么精确：一个应用程序就是一个进程，为了多个任务同时执行，一个进程可以多开几个线程。
+简单来说：一个应用程序至少有一个进程，一个进程至少有一个线程。
+
+我们之前编写的简单程序，都是只有一个进程一个线程的。接下来我们会讨论一下如何开启多个线程和进程。
 
 ## threading 模块
 
@@ -166,9 +168,9 @@ thread.start()
 
 同步原语（Synchronization Primitives）是一组用于协调多个线程对共享资源访问的工具。Python 的 threading 模块提供了多种同步原语，以支持线程安全和避免潜在的竞争条件。
 
-### 资源锁
+### 互斥锁
 
-锁（Lock）是最基本的同步原语之一。主要用于保证在给定时刻只有一个线程可以访问某个资源或代码段。
+锁（Lock）是最基本的同步原语之一，也被称为互斥锁、资源锁。主要用于保证在给定时刻只有一个线程可以访问某个资源或代码段。
 
 比如：
 
@@ -449,57 +451,4 @@ if __name__ == "__main__":
 
 由于 Python 的全局解释器锁（GIL）的存在，多线程的程序不一定会加快执行速度，尤其是 CPU 密集型的任务。但是对于加速 I/O 密集行的任务还是有帮助的。只不过，有了异步 I/O，其实也不需要多线程了。
 
-
-## 多进程
-
-为了利用上多 CPU，可以把上面的多线程程序改为多进程。
-
-```python
-import time
-from multiprocessing import Pool
-
-
-def prime_factors(n):
-    """Return a list of the prime factors for a natural number."""
-    factors = []
-
-    for i in range(2, int(n**0.5) + 1):
-        while n % i == 0:
-            factors.append(i)
-            n //= i
-
-    if n > 2:
-        factors.append(n)
-
-    return factors
-
-
-def process_range(start, end):
-    for i in range(start, end):
-        prime_factors(i)
-
-
-def main():
-    num_processes = 72
-    start_num = 1000000000
-    end_num = 1000010000
-    step = (end_num - start_num) // num_processes
-
-    chunks = [
-        (start_num + i * step, start_num + (i + 1) * step) for i in range(num_processes)
-    ]
-
-    start_time = time.time()
-
-    with Pool(processes=num_processes) as pool:
-        pool.starmap(process_range, chunks)
-
-    end_time = time.time()
-    print(f"程序运行时间: {end_time - start_time:.6f} 秒")
-
-
-if __name__ == "__main__":
-    main()
-```
-
-运行上面的程序，耗时 0.8 秒，速度提高了 25 倍。考虑到任务分配不均匀，额外的开销，测量的误差等因素，提高 25 倍已经非常好了。
+为了利用上多 CPU，需要把上面的多线程程序改为多进程。
