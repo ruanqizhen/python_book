@@ -63,7 +63,7 @@ print(a.dtype)  # 输出：int64 (这可能会因平台和Python版本而异)
 ```python
 def find_max_value(arr):
     """查找数组中的最大值"""
-	# 检查输入数组是否为空
+    # 检查输入数组是否为空
     if not len(arr):
         return none
     
@@ -73,7 +73,7 @@ def find_max_value(arr):
     # 遍历数组
     for num in arr:
         if num > max_value:
-			# 如果有更大值，就更新当前结果
+            # 如果有更大值，就更新当前结果
             max_value = num
             
     return max_value

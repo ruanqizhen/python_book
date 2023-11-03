@@ -262,6 +262,8 @@ print(Color.RED == Color.GREEN) # 输出: False
 
 枚举也可以具有方法：
 
+比如有时候需要加上 string_value()
+
 ```python
 from enum import Enum
 
