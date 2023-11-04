@@ -4,9 +4,19 @@
 
 这是编程语言书籍的一个传统，第一句话永远是上面这句问候。而第一个编写的程序就是打印出“Hello World!”这句话。我们也沿用这一传统，从 Hello World 开始。
 
-### 在 Python 解释器中编写
+实现这一功能只需要运行以下的语句：
 
-如果不使用任何 IDE，那么可以打开计算机的命令行终端，然后输入 `python` 并回车，启动 Python 解释器。读者现在应该看到 >>> 这样的提示符，表示 Python 解释器已经准备好接受命令了。
+```python
+print("Hello, World!")
+```
+
+### 使用在线编辑环境
+
+使用在线编辑环境非常简单，不要任何额外工作。打开编辑环境的页面，输入上面那句代码，运行即可。比如： <https://qizhen.xyz/python>
+
+### 直接在 Python 解释器中运行
+
+如果不使用任何 IDE，那么可以打开计算机的命令行终端，然后输入 `python` 并回车，系统会启动 Python 解释器。读者现在应该看到 >>> 这样的提示符，表示 Python 解释器已经准备好接受命令了。
 
 在 >>> 提示符后，输入以下代码：
 
@@ -39,8 +49,8 @@ print("Hello, World!")
 对于任何已经保存好的 .py 文件，我们在 IDE 中打开他们运行。也可以在命令行中端里运行它们。比如我们有一个名为“welcome.py”的文件，其内容是如下代码：
 
 ```python
-name = input("What's your name? ")
-print(f"Hello, {name}! Welcome to the world of Python!")
+name = input("你叫什么名？ ")
+print(f"你好，{name}！欢迎来到 Python 的编程世界！")
 ```
 
 打开命令行或终端，导航到 welcome.py 文件所在的目录。输入以下命令并回车：
@@ -51,7 +61,7 @@ python welcome.py
 
 当程序提示输入名字时，输入你的名字并回车。
 
-现在应该看到一个类似 `Hello, [你的名字]! Welcome to the world of Python!` 的消息了。
+现在应该看到一个类似 `你好，xxxxx！欢迎来到 Python 的编程世界！` 的消息了。
 
 ## Python 的语法
 
@@ -76,8 +86,8 @@ print(1+2)
 如果程序有多行代码，比如：
 
 ```python
-name = input("What's your name? ")
-print(f"Hello, {name}! Welcome to the world of Python!")
+name = input("你叫什么名？ ")
+print(f"你好，{name}！欢迎来到 Python 的编程世界！")
 ```
 
 那么程序一般会按照从上到下的顺序逐句运行。
