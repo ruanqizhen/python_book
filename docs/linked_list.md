@@ -327,8 +327,141 @@ print(llist.has_cycle())  # True
 
 ### 删除倒数第 n 个节点
 
-删除单向链表中的倒数第 n 个节点。因为是单向链表，我们没发从后往前找，只能从前向后遍历。为了不错过倒数第 n 个节点，直观的做法就是开辟一个缓存，在遍历过程中保存遍历过的 n 个节点，当走到链表尾的时候，把倒数第 n 个节点删除。但是这个方法有点浪费空间。
+删除单向链表中的倒数第 n 个节点。因为是单向链表，我们没发从后往前找，只能从前向后遍历。为了不错过倒数第 n 个节点，直观的做法就是开辟一个缓存，在遍历过程中保存遍历过的最后 n 个节点，当走到链表尾的时候，把倒数第 n 个节点删除。但是这个方法有点浪费空间，毕竟我们只需要倒数第 n 个，而不需要把倒数的 n 个都记录下来。比较节约内存的方法是使用两个指针，让它们之间保持 n 个位置，这样当前一个指针遍历到最后一个节点的时候，后面的指针正好指向倒数第 n 个节点：
+
+```python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+            return
+        last_node = self.head
+        while last_node.next:
+            last_node = last_node.next
+        last_node.next = new_node
+
+    def print_list(self):
+        cur_node = self.head
+        while cur_node:
+            print(cur_node.data, end=" -> ")
+            cur_node = cur_node.next
+        print("None")
+
+    def remove_nth_from_end(self, n):
+        first = self.head
+        second = self.head
+
+        # Advance the second pointer by n nodes.
+        for _ in range(n):
+            if not second.next:  # If n is equal to the length of the linked list
+                if second == self.head:  # Move head to the next node
+                    self.head = self.head.next
+                return
+            second = second.next
+
+        # Move both pointers until the second reaches the end
+        while second:
+            second = second.next
+            prev = first
+            first = first.next
+
+        # Now, the first pointer points to the node to be removed
+        prev.next = first.next
+
+# Using the LinkedList
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.append(4)
+llist.append(5)
+
+print("Original List:")
+llist.print_list()
+
+llist.remove_nth_from_end(2)
+print("\nAfter removing the 2nd node from the end:")
+llist.print_list()
+```
 
 
 
-两个链表的交点：找到两个链表的交点。
+### 两个链表的交点
+
+要找到两个链表的交叉点，可以先遍历两个链表，得到它们的长度。计算长度差，并在较长的链表上先行遍历这个差值的步数。然后同时遍历两个链表，直到找到一个共同的节点。
+
+```python
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+def get_intersection_node(headA, headB):
+    def get_count(node):
+        count = 0
+        while node:
+            count += 1
+            node = node.next
+        return count
+    
+    countA = get_count(headA)
+    countB = get_count(headB)
+    diff = abs(countA - countB)
+    
+    # Move the pointer for the longer list by the difference in counts
+    long_list = headA if countA > countB else headB
+    short_list = headB if countA > countB else headA
+    for _ in range(diff):
+        long_list = long_list.next
+    
+    # Move both pointers of both lists till they collide
+    while long_list and short_list:
+        if long_list == short_list:
+            return long_list  # Intersection point
+        long_list = long_list.next
+        short_list = short_list.next
+    
+    return None  # No intersection
+
+# 测试：
+# 创建两个链表，让它们相交与值为 8 的节点
+intersect_val = 8
+listA = [4,1,8,4,5]
+listB = [5,0,1,8,4,5]
+intersect_node = ListNode(intersect_val)
+headA = curA = ListNode(0)
+headB = curB = ListNode(0)
+
+# 链表 A
+for val in listA:
+    curA.next = ListNode(val)
+    curA = curA.next
+    if val == intersect_val:
+        break
+
+# 链表，加入交叉点
+for val in listB:
+    curB.next = ListNode(val)
+    curB = curB.next
+    if val == intersect_val:
+        curB.next = intersect_node
+        break
+
+# 找到交点
+result = get_intersection_node(headA.next, headB.next)
+if result:
+    print(f"The intersection point's value is: {result.val}")
+else:
+    print("No intersection found.")
+```
+
+如果两个链表完全不相交，那么函数将返回 None。

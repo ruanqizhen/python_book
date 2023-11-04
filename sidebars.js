@@ -13,10 +13,9 @@ const sidebars = {
       label: '编程基础',
       link: {
         type: 'doc',
-        id: 'basic',
+        id: 'ide',
       },
       items: [ 
-        'ide', 
 		'hello_world',
 		'variable',
 		'calculation',
@@ -26,7 +25,6 @@ const sidebars = {
 		'loop',
 		'dict',
 		'function',
-		'recursive',
 		'module',
 		'exception',
 		'file_io',
@@ -41,6 +39,8 @@ const sidebars = {
         id: 'functional',
       },
       items: [ 
+		'recursive',
+        'first_class_func',
 		'generator',
 		'high_order',
 		'decorator',
@@ -75,18 +75,30 @@ const sidebars = {
 		'algorithm',
 		'array',
 		'linked_list',
-		'placeholder',
-        {
-          type: 'link',
-          label: 'GitHub 项目',
-          href: 'https://github.com/ruanqizhen/py_book',
-        },
-		{
-          type: 'link',
-          label: '作者个人主页',
-          href: 'https://qizhen.xyz',
-        },
+        'tree',
       ],
+    },
+    {
+      type: 'category',
+      label: '无所不能',
+      link: {
+        type: 'doc',
+        id: 'all_powerful',
+      },
+      items: [ 
+		'placeholder',
+      ],
+    },
+    'epilogue',
+    {
+      type: 'link',
+      label: 'GitHub 项目',
+      href: 'https://github.com/ruanqizhen/py_book',
+    },
+    {
+      type: 'link',
+      label: '作者个人主页',
+      href: 'https://qizhen.xyz',
     },
   ],
 
