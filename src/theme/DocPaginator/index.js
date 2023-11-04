@@ -11,7 +11,7 @@ export default function DocPaginatorWrapper(props) {
 		repo='ruanqizhen/python_book'
 		repoId='R_kgDOKhrU6g'
 		category='Announcements'
-		categoryId='DIC_kwDOGYjRCc4B_4dq'
+		categoryId='DIC_kwDOKhrU6s4CaOFt'
 		mapping='pathname'
 		strict='1'
 		reactionsEnabled='1'
@@ -19,6 +19,7 @@ export default function DocPaginatorWrapper(props) {
 		inputPosition='top'
 		theme='preferred_color_scheme'
 		lang='zh-CN'
+        loading="lazy"
 	  />
     </>
   );
