@@ -72,7 +72,6 @@ const sidebars = {
 		'asyncio',
 		'multithread',
 		'multiprocess',
-		'algorithm',
 		'array',
 		'linked_list',
         'tree',

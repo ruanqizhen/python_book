@@ -8,8 +8,8 @@ const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Python 编程',
-  tagline: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例',
+  title: 'Python 教程',
+  tagline: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试',
   url: 'https://py.qizhen.xyz',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -61,7 +61,7 @@ const config = {
       },
       navbar: {
 		hideOnScroll: true,
-        title: 'Python 编程',
+        title: 'Python 教程',
         logo: {
           alt: 'Python',
           src: 'img/logo.png',
@@ -74,8 +74,8 @@ const config = {
       },
 	  zoomSelector: '.markdown img',
 	  metadata: [
-		{name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例'},
-		{name: 'description', content: 'Python 。'},
+		{name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试'},
+		{name: 'description', content: 'Python 学习 面试'},
 		{name: 'author', content: 'Qizhen Ruan 阮奇桢'},
 	  ],
     }
