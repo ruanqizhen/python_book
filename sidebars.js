@@ -74,6 +74,7 @@ const sidebars = {
 		'multiprocess',
 		'array',
 		'linked_list',
+        'deque',
         'tree',
       ],
     },
@@ -85,6 +86,8 @@ const sidebars = {
         id: 'all_powerful',
       },
       items: [ 
+        'gui',
+        'animation',
 		'placeholder',
       ],
     },

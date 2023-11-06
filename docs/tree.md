@@ -88,11 +88,36 @@ BinaryTree 类用于创建和操作二叉树。类中维护了一个属性 root 
 
 
 ## 广度优先搜索
-（Breadth-First Search, BFS）
+
+广度优先搜索（Breadth-First Search, BFS）从树的根开始，探索邻近的节点，然后再移向下一个层次的节点。为了实现广度优先搜索，通常使用队列，把当前层次的每个节点放入队列，然后再遍历队列中每个元素，处理下一层的节点。
+
+```python
+from collections import deque
+
+def bfs_queue(node):
+    queue = deque([node])
+    while queue:
+        current = queue.popleft()
+        print(current.value)  # 访问当前节点
+        for child in current.children:
+            queue.append(child)
+            
+# 使用示例
+root = Node('A')
+root.add_child(Node('B'))
+root.add_child(Node('C'))
+root.children[0].add_child(Node('D'))
+root.children[0].add_child(Node('E'))
+root.children[1].add_child(Node('F'))
+
+dfs_recursive(root)
+```
+
+
 
 适合处理层级信息，例如，在社交网络中查找与个人在特定距离内的所有联系人。
 
 
 ## 深度优先搜索
-Depth-First Search, DFS）
+Depth-First Search, DFS 
 适合路径搜索，在需要找到所有可能路径的问题中，如迷宫解决方案、括号生成问题。
