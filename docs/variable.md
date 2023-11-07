@@ -32,7 +32,7 @@
    * NoneType：只有一个值 None。用于表示一个值的缺失或空。
    
 * 二进制类型:
-   * 字节 (bytes)： 包含字节的不可变序列，例如：b'hello'。
+   * [字节序列（bytes）](string#字节)： 包含字节的不可变序列，例如：b'hello'。
    * 字节数组 (bytearray)： 包含字节的可变序列。
    * 内存视图 (memoryview)： 通过 memoryview 对象对其它的数据结构的内存进行访问。
    

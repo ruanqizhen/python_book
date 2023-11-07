@@ -58,7 +58,7 @@ for letter in word:
 # n
 ```
 
-## range() 函数
+### range() 函数
 
 range() 是 Python 内置的一个函数，它返回一个迭代器，用于生成一系列连续的整数。这个函数在循环中特别有用。
 
@@ -109,40 +109,84 @@ for i in range(5):
 # 4
 ```
 
-大多数编程语言的 for 循环语句都是依赖一个计数器来控制循环次数的，比如要迭代 20 次，那就每迭代一次，计数器加一。计数器从 0 增长到 19，正好循环 20 次。Python 并没有这种带计数器的循环，Python 的 for 语句更类似其它语言的 foreach 语句。那么，在 Python 里当循环体中需要一个计数器的时候，可以使用 `for i in range()` 语句来代替。
+### emumerate() 函数
+
+在很多编程语言中，比如 C 语言，在循环中，主要使用一个由变量表示的索引值去获取所需数据。比如：
+
+```c
+for (int i=0; i<10; i++) {
+    print(array[i]);
+}
+```
+
+上面的 C 代码中，整数变量 i 的值会在每次迭代时，从 0 依次增加到 9，然后循环中使用 i 去索引输入数据 array，从而得到每次迭代所需的数据。
+
+有的用户可能会在 Python 中沿用这样的习惯，析出如下代码：
 
 ```python
-fruits = ['apple', 'banana', 'cherry', 'date']
+fruits = ['苹果', '香蕉', '草莓', '桔子']
 
 for i in range(len(fruits)):
-    print(f"Element {i} is {fruits[i]}")
+    print(f"第 {i} 个水果是： {fruits[i]}")
 
 # 输出:
-# Element 0 is apple
-# Element 1 is banana
-# Element 2 is cherry
-# Element 3 is date
+# 第 0 个水果是： 苹果
+# 第 1 个水果是： 香蕉
+# 第 2 个水果是： 草莓
+# 第 3 个水果是： 桔子
 ```
 
-
-### 带有 else 子句的 for 循环
-
-for 循环可以有一个可选的 else 块，当循环正常完成（没有被 break 语句中断）时执行。
+但实际上，Python 是利用可迭代数据控制循环的，它不需要一个索引变量来控制。这样的代码效率不高，也不符合 Python 的书写习惯，会降低程序可读性。如果在循环体内，只需要用到列表里的数据，可以使用 `for fruit in fruits:` 直接得到每个数据；如果在循环体内需要知道每个数据的索引，可以使用 enumerate 函数得到可迭代对象的索引：
 
 ```python
-for i in range(5):
-    print(i)
-else:
-    print("Loop finished")
+fruits = ['苹果', '香蕉', '草莓', '桔子']
+
+for i, fruit in enumerate(fruits):
+    print(f"Element {i} is {fruit}")
 
 # 输出:
-# 0
-# 1
-# 2
-# 3
-# 4
-# Loop finished
+# 第 0 个水果是： 苹果
+# ......
 ```
+
+虽然计算机总是从 0 开始索引，但我们的自然习惯还是从 1 开始计数，如果需要打印结果更符合人类阅读习惯，可以为 enumerate 添加一个输入，指定索引从几开始，比如：
+
+```python
+fruits = ['苹果', '香蕉', '草莓', '桔子']
+
+for i, fruit in enumerate(fruits, 1):
+    print(f"Element {i} is {fruit}")
+
+# 输出:
+# 第 1 个水果是： 苹果
+# 第 2 个水果是： 香蕉
+# 第 3 个水果是： 草莓
+# 第 4 个水果是： 桔子
+```
+
+### zip() 函数
+
+如果需要在一个循环中处理多个可迭代对象，也同样不需要使用索引。符合 Python 习惯的代码是使用 zip() 函数，将两个（或多个）可迭代对象的对应元素配对，创建一个元组的可迭代对象。然后再在循环中迭代这个元组的可迭代对象，即可拿到所有数据。
+
+下面是一个使用 zip 函数的示例，它遍历两个列表：一个包含学生姓名，另一个包含他们的成绩。zip 将这两个列表的元素一一对应起来，使得我们可以在一个 for 循环中同时访问每个学生的姓名和成绩。
+
+```python
+students = ['张三', '李四', '王五', '马六', '小明']
+scores = [90, 85, 88, 92, 95]
+
+for student, score in zip(students, scores):
+    print(f'{student} 的成绩是: {score}')
+    
+# 这段代码的输出会是：
+# 张三 的成绩是: 90
+# 李四 的成绩是: 85
+# 王五 的成绩是: 88
+# 马六 的成绩是: 92
+# 小明 的成绩是: 95
+```
+
+如果两个列表的长度不同，zip 会在到达任何一个列表的末尾时停止配对。 如果希望按照最常的列表进行配对，可以使用 itertools 模块中的 zip_longest 函数，它会按照最常的列表配对，并使用默认值补全缺失的数据。
+
 
 
 ### break 语句
@@ -156,13 +200,13 @@ numbers = [1, 3, 7, 9, 2, 5, 6]
 
 for num in numbers:
     if num % 2 == 0:
-        print(f"Found an even number: {num}")
+        print(f"找到一个偶数：{num}")
         break
 
 # 输出：
-# Found an even number: 2
+# 找到一个偶数：2
 ```
-	
+    
 ### continue 语句
 
 当 continue 语句在循环中被执行，当前迭代会被中断，并且程序控制会回到循环的开始，进入下一次迭代。
@@ -176,12 +220,49 @@ for num in numbers:
     if num % 2 == 0:
         continue
     print(num)
-	
+    
 # 输出：
 # 1
 # 3
 # 5
 ```
+
+### 带有 else 子句的 for 循环
+
+for 循环可以有一个带一个 else 块，当循环正常完成（没有被 break 语句中断）时执行。
+
+```python
+for i in range(3):
+    print(i)
+else:
+    print("循环正常结束")
+
+# 输出:
+# 0
+# 1
+# 2
+# 循环正常结束
+```
+
+循环带着一个 else 块是比较独特的，在其它编程语言中比较少见。而且，这个 else 比较容易引起歧义，直觉的理解是，如果条件不满足就进入 else 块，在这里可能应该是循环出了意外则进入 else，但实际上恰恰相反，它是当循环正常完成时，进入这里。而且，对于迭代次数为 0 （输入的可迭代对象时空）的时候，程序也会进入这里。确实比较迷惑，所以有些人建议避免在循环语句后面添加 else 块，毕竟它不是必须的，其它语言都没有这个功能。不过，在熟悉了它的用法之后，它还是有一些用处的，可以让某些程序逻辑更清晰简洁。最常见的示例是在列表里搜索某个目标数据，如果找到做一些事，然后跳出循环；如果没找到，程序会进入 else 块，我们就可以在这里加入处理没找到情况的代码，比如打印一些信息等：
+
+```python
+def search_in_list(lst, target):
+    for index, value in enumerate(lst):
+        if value == target:
+            print(f'找到目标值 {target}，索引为 {index}')
+            break
+    else:  # 如果循环没有被break终止，则执行这个分支
+        print('没找到')
+
+# 测试：
+my_list = [1, 2, 3, 4, 5]
+search_in_list(my_list, 3)  # 应该找到目标值 3
+search_in_list(my_list, 6)  # 应该输出“没找到”
+```
+
+
+
 
 
 ## while 循环
@@ -227,7 +308,7 @@ while count < 5:
         break
     print(count)
     count += 1
-	
+    
 # 输出：
 # 0
 # 1

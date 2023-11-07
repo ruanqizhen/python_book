@@ -247,3 +247,37 @@ result = (word.upper() for word in words if len(word) > 2)
 for word in result:
     print(word)
 ```
+
+
+## 赋值表达式
+
+赋值表达式（Assignment Expression）使用运算符 `:=` 来为变量赋值。它也被你称为“海象运算符”，因为它看起来就像是海象的眼睛和大牙。与 Python 中的赋值语句（使用等号，比如 `a = 5`）相比，赋值语句是一个“语句”，它不能出现在需要表达式的地方，比如在 if 或 while 语句的条件中，或者作为其他表达式的一部分。但赋值表达式，是一个表达式，它可以出现在任何使用表达式的地方。
+
+海象运算符可以避免重复运算，提高代码的简洁性。比如，在不使用海象运算符的情况下，如果一个值在逻辑判断和后续代码中都要使用，那么通常需要分两步写：先计算一次赋值给变量，然后在逻辑判断和后续代码中使用这个变量。海象运算符允许在逻辑判断中进行赋值，并在后续代码中直接使用这个赋值结果。
+
+比如在 while 循环中：
+
+```python
+# 不使用海象运算符：
+line = input("请输入文字：")
+while line != "结束":
+    print(f'您输入的内容是：{line}')
+    line = input("请输入文字：")
+    
+
+# 使用海象运算符：
+while (line := input("请输入文字：")) != "结束":
+    print(f'您输入的内容是：{line}')
+```
+
+在列表推导式中：
+
+```python
+# 不使用海象运算符， complicated_function 被调用两遍
+results = [complicated_function(x) for x in data if complicated_function(x) > 0]
+
+
+# 使用海象运算符， complicated_function 只会被调用一次
+results = [y for x in data if (y := complicated_function(x)) > 0]
+```
+

@@ -204,3 +204,37 @@ print(f"My name is {name.upper()} and I am {age + 5} years old in 5 years.")
 
 
 用函数 str() 可以把其它类型的数据转换成字符串
+
+
+## 字节序列
+
+在 Python 当中，字节序列类型（bytes，有时候就简称为“字节”）也可以用来表示一串字符，它和字符串的主要区别在于它们各自存储的内容和应用场景。
+
+字符串是由字符组成的序列，通常用于存储文本信息。在 Python 3 中，字符串由 Unicode 字符组成，可以表示几乎所有语言中的字符。字符串主要用于读取或写入文本文件、处理表单输入的文本、在屏幕上显示文本等。
+
+字节序列保存的数据除了语言文字之外，也可以是任何二进制数据。字节序列顾名思义，是字节的序列。字节是 8 位长的二进制数，可以表示 0 到 255 的数值。字节序列通常用于读取或写入二进制文件（如图片或视频文件）、网络套接字通信、数据加解密等。
+
+```python
+# s 是字符串
+s = "Hello, World!"
+print(s)
+
+# b 是字节序列
+b = b'\x48\x65\x6c\x6c\x6f\x2c\x20\x57\x6f\x72\x6c\x64\x21'
+print(b)        # 输出: b'Hello, World!'
+```
+
+### 字符串和字节之间的转换
+
+有时候，我们会中网络上或其它设备中读取到以字节方式保存的文字数据，这时候，可以使用字符串的 encode() 方法和字节的 decode() 方法在字符串和字节之间转换：
+
+```python
+# 字符串转字节
+string = "Hello, World!"
+bytes_from_string = string.encode('utf-8')
+
+# 字节转字符串
+bytes_object = b'Hello, World!'
+string_from_bytes = bytes_object.decode('utf-8')
+```
+

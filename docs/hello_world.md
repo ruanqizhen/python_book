@@ -92,3 +92,31 @@ print(f"你好，{name}！欢迎来到 Python 的编程世界！")
 
 那么程序一般会按照从上到下的顺序逐句运行。在上面的示例中，input 也是一个函数，跟 print 函数相似，它也会把它的参数打印在屏幕上，区别在于，input 函数会随后读取用户使用键盘输入的内容。name 是一个[变量](variable#变量)，用于保存 input 函数返回的数据，也就是用户使用键盘输入的内容。接下来的 print 函数会把它的数据，连同变量 name 里的内容一起打印在屏幕上。
 
+## Python 的版本
+
+Python 一直在改进中，每隔几个月就会有一个较大的版本更新。笔者建议尽量使用 Python 的最新版本。如果想查看你的 Python 版本，在计算机的命令行终端可以使用如下命令：
+
+```bash
+python --version
+```
+
+然后会看到类似 `Python 3.11.2` 的输出，它表示了 Python 的版本是 3.11.2
+
+如果是在 Python 的编辑环境中，可以运行如下 Python 代码查看其版本：
+
+```python
+import sys
+print(sys.version_info)
+print(sys.version)
+```
+
+这会显示一些更详细的版本信息，比如：
+
+```
+sys.version_info(major=3, minor=11, micro=2, releaselevel='final', serial=0)
+3.11.2 (main, May  3 2023, 04:00:05) [Clang 17.0.0]
+```
+
+除了版本号，还会显示版本发布的日期，编译平台等信息。
+
+
