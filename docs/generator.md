@@ -196,7 +196,7 @@ def fibonacci(n):
 
 for num in fibonacci(5):
     print(num)
-	
+    
 # 输出： 0  1  1  2  3
 ```
 
@@ -214,7 +214,7 @@ def fibonacci(n):
 
 for num in fibonacci(5):
     print(num)
-	
+    
 # 输出： 0  1  1  2  3
 ```
 

@@ -70,7 +70,7 @@ def montgomery(n, p, m):
     n %= m 
     while p != 1:  
         if 0 != (p & 1):
-    	    k = (k * n) % m
+            k = (k * n) % m
         n= (n * n) % m
         p >>= 1
     return (n * k) % m

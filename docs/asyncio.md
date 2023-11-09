@@ -99,7 +99,7 @@ async def write_file(filename, content):
 
 async def main():
     await write_file('sample.txt', 'Hello, Async World!')
-	content = await read_file('sample.txt')
+    content = await read_file('sample.txt')
     print(content)
 
 asyncio.run(main())

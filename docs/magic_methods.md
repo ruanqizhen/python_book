@@ -431,8 +431,8 @@ print(obj.__dict__)  # 输出：{'x': 1, 'y': 2, 'value': 3}
 
 ```python
 class Fraction:
-	__slots__ = ('numerator', 'denominator')
-	
+    __slots__ = ('numerator', 'denominator')
+    
     def __init__(self, numerator, denominator=1):
         if denominator == 0:
             raise ValueError("Denominator cannot be zero.")
@@ -446,10 +446,10 @@ f = Fraction(1, 2)  # 1/2
 
 # 下面的代码会报错，因为 __slots__ 限制了只能有 'numerator' 和 'denominator' 这两个属性
 # f.value = 3
-```	
-	
+```    
+    
 在上面的例子中，我们只能为 Fraction 的实例设置 numerator 和 denominator 这两个属性。尝试设置其他属性会抛出一个 AttributeError。
-		
+        
 
 ### `__doc__`
 

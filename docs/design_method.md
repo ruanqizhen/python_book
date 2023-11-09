@@ -77,10 +77,10 @@ class Leg:
     def walk(self):
         for joint in self.joints:
             joint.move("for walking")
-			
+            
 class Tail:
     def wag(self):
-        print("The tail is wagging.")	
+        print("The tail is wagging.")    
 ```
 
 随后，创建 Dog 类，每一个 Dog 对象将使用四个 Leg 类的实例和一个 Tail 类的实例：

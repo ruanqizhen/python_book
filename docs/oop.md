@@ -93,7 +93,7 @@ Python 中要区分类的属性，和对象的属性。在很多语言中，这�
 
 ```python
 class Animal:
-	total_animals = 0  # 类变量，跟踪创建的动物数量
+    total_animals = 0  # 类变量，跟踪创建的动物数量
 
 dog = Animal()
 print(Animal.total_animals)   # 输出： 0， 直接使用类名进行访问
@@ -106,7 +106,7 @@ print(dog.total_animals)      # 输出： 0， 也可以通过实例进行访问
 
 ```python
 class Animal:
-	name = 'Buddy'
+    name = 'Buddy'
 
 dog = Animal()
 dog.age = 3
@@ -177,7 +177,7 @@ class Animal:
     @classmethod
     def total_animals(cls):
         return cls.total_animals
-		
+        
 cat = Animal("Cat")
 dog = Animal("Dog")
 
@@ -269,7 +269,7 @@ class Dog(Animal):  # 在括号内指定父类名字，表示继承
     def wag_tail(self):
         print(f"{self.name} is wagging its tail!")
 ```
-		
+        
 在上面的程序中，Animal 是一个基类，有一个 species 属性和一个 speak 方法。Dog 类在其定义时通过在括号内指定 Animal 来表示它从 Animal 类继承。
 
 在子类的方法中，使用 super() 函数允许我们调用父类的方法。在 Dog 的构造方法中，我们使用 super().__init__(species="Dog") 来调用 Animal 类的初始化方法。

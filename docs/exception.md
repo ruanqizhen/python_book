@@ -45,7 +45,7 @@ Python 使用 try...except 语句来捕捉和处理异常：
 try:
     # 可能会抛出异常的代码
     x = 1 / 0
-	print("Program continues...")
+    print("Program continues...")
 except ZeroDivisionError:
     # 当 ZeroDivisionError 异常发生时的处理代码
     print("Cannot divide by zero!")
@@ -73,7 +73,7 @@ except ValueError:
 
 except IndexError:
     print("Index out of range!")
-```	
+```    
 
 这个示例中，用户首先被要求输入一个数字。如果用户输入 0，则会触发除法操作的除零异常 ZeroDivisionError；如果用户输入的不是一个有效的整数（例如，输入了一个字符串），在尝试将输入转换为整数时会引发数据错误异常 ValueError；如果用户输入的数字大于 2， 超出了 some_list 的索引范围，则会触发索引越界异常 IndexError。
 
@@ -84,8 +84,8 @@ try:
     x = int("a")
 except (ZeroDivisionError, ValueError):
     print("An error occurred!")
-```	
-	
+```    
+    
 ### else 子句
 
 在 try...except 语句中，可以使用一个可选的 else 子句来定义一段只有在没有异常发生时才会执行的代码，比如：
@@ -104,13 +104,13 @@ else:
 ```python
 try:
     x = 1 / 1
-	print("Everything went fine!")
+    print("Everything went fine!")
 except ZeroDivisionError:
     print("Cannot divide by zero!")
 ```
 
 使用 else 主要是为了提高了代码的可读性。因为它可以清晰地区分可能会引发异常的代码（放在 try 块中）和一定会正常执行的代码（放在 else 块中）。
-	
+    
 ### finally 子句
 
 在 try...except 语句中，还可以使用一个 finally 子句。无论 try 块中的操作是否触发了异常，finally 子句中的代码都会被执行。finally 子句 中不应该添加主要的业务逻辑，它的唯一用途就是清理和结束任务，比如关闭代开的文件、释放资源、重置某些状态等。
@@ -143,13 +143,13 @@ try:
     x = 1 / 0
 except ZeroDivisionError:
     print("Cannot divide by zero!")
-	# 下面这句只是用来演示，它主动抛出一个演示用的异常
-	raise ValueError("just for demo")
+    # 下面这句只是用来演示，它主动抛出一个演示用的异常
+    raise ValueError("just for demo")
 except FileNotFoundError:
     print("File not found!")
 
 # 由于上面的语句中又出现了没有被处理的异常，下面的关闭文件操作不会被执行
-file.close()	
+file.close()    
 ```
 
 ## 主动触发异常
@@ -162,7 +162,7 @@ if x < 0:
 ```
 
 通过在代码中检查错误条件并主动抛出异常，我们可以确保程序不会在不合适的状态下继续执行。我们还可以为异常提供一个明确的错误消息，说明为什么会出现错误，从而在异常出现时，可以更快地定位问题。在某些情况下，抛出异常也可以作为一种强制退出函数或方法的方法，而不是继续执行。
-	
+    
 ## 自定义异常
 
 在 Python 中，用户自定义的异常通常是标准异常的子类。这一段在学习了面向对象编程和类的概念之后会容易理解。
@@ -208,4 +208,4 @@ def set_salary(employee_id, salary):
 ```
 
 使用描述性名称的自定义异常可以使代码更具可读性，并且可以为特定情况提供更多的上下文信息，帮助调用者更精确地处理不同的异常。
-	
+    

@@ -124,8 +124,8 @@ def apply_discount(product_price, discount):
     final_price = product_price * (1.0 - discount)
     assert 0 <= final_price <= product_price, "Invalid final price"
     return final_price
-```	
-	
+```    
+    
 在上面的例子中，我们期望 final_price 始终介于 0 和 product_price 之间。如果不是这样，断言将失败，并引发一个 AssertionError。
 
 断言提供了一种明确地声明你对代码行为的期望的方法。如果程序中存在问题，断言可以早期捕获它们，而不是让错误影响到程序的其它部分。断言可以确保函数的调用者提供了正确的参数或确保某些预条件得到满足。

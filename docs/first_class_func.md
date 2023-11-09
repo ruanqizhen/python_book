@@ -117,12 +117,12 @@ print(closure_instance(5))  # 输出：15
 
 
 def outer_function():
-	functions = []
-	for i in range(3):
-		def func(x): 
-			return x + i     # 捕获 i
-		functions.append(func)
-	return functions
+    functions = []
+    for i in range(3):
+        def func(x): 
+            return x + i     # 捕获 i
+        functions.append(func)
+    return functions
 
 functions = outer_function()
 print(functions[0](10))  
@@ -136,12 +136,12 @@ print(functions[2](10))
 
 ```python
 def outer_function():
-	functions = []
-	for i in range(3):
-		def func(x, i=i):  # 注意这里我们使用了默认参数来捕获当前的i值
-			return x + i
-		functions.append(func)
-	return functions
+    functions = []
+    for i in range(3):
+        def func(x, i=i):  # 注意这里我们使用了默认参数来捕获当前的i值
+            return x + i
+        functions.append(func)
+    return functions
 
 functions = outer_function()
 print(functions[0](10))  # 输出：10

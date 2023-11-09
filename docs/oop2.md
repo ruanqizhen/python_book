@@ -22,12 +22,12 @@ class Circle:
         if value <= 0:
             raise ValueError("半径必须是正数")
         self._radius = value
-		
+        
     @radius.deleter
     def radius(self):
         """禁止删除半径属性，并打印一条消息"""
         print("半径属性不能被删除!")
-		# 如果需要删除，可以调用 del self._radius
+        # 如果需要删除，可以调用 del self._radius
     
     @property
     def area(self):

@@ -14,25 +14,25 @@ import tempfile
 import time
 
 def my_slow_function():
-	start_time = time.time()    # 记录开始时间
-	
-	# 这下面一段是原本函数中的代码，在一个临时文件中写入一些数据
-	# 创建一个临时文件
-	with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
-		# 随便写入一些数据
-		for i in range(1000):
-			# 将字符串转换为字节对象并写入一个新行
-			temp_file.write((str(i) + '\n').encode('utf-8')) 
-			
-		# 获取临时文件的路径以便稍后使用	
-		temp_file_path = temp_file.name  
-	# 原函数中的代码到此结束
-	
-	end_time = time.time()       # 记录结束时间
-	print(end_time - start_time) # 打印函数运行的总时间
-	
-	# 下面是原函数的返回语句
-	return temp_file_path
+    start_time = time.time()    # 记录开始时间
+    
+    # 这下面一段是原本函数中的代码，在一个临时文件中写入一些数据
+    # 创建一个临时文件
+    with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
+        # 随便写入一些数据
+        for i in range(1000):
+            # 将字符串转换为字节对象并写入一个新行
+            temp_file.write((str(i) + '\n').encode('utf-8')) 
+            
+        # 获取临时文件的路径以便稍后使用    
+        temp_file_path = temp_file.name  
+    # 原函数中的代码到此结束
+    
+    end_time = time.time()       # 记录结束时间
+    print(end_time - start_time) # 打印函数运行的总时间
+    
+    # 下面是原函数的返回语句
+    return temp_file_path
 ```
 
 上面程序中，my_slow_function() 函数创建了一个临时文件，然后再里面写了一些数据。在函数开始和结束的地方，我们使用了 time.time() 函数来得到当时的系统时间。两个时间之差，就是这个函数的运行时间。
@@ -47,25 +47,25 @@ import time
 
 # 这是通用的计时函数
 def timer(func):
-	start_time = time.time()      # 记录开始时间
-	result = func()               # 运行目标函数
-	end_time = time.time()        # 记录结束时间
-	print(end_time - start_time)  # 打印函数运行的总时间
-	return result
-	
+    start_time = time.time()      # 记录开始时间
+    result = func()               # 运行目标函数
+    end_time = time.time()        # 记录结束时间
+    print(end_time - start_time)  # 打印函数运行的总时间
+    return result
+    
 def my_slow_function():
-	# 创建一个临时文件
-	with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
-		# 随便写入一些数据
-		for i in range(1000):
-			# 将字符串转换为字节对象并写入一个新行
-			temp_file.write((str(i) + '\n').encode('utf-8')) 
-			
-		# 获取临时文件的路径以便稍后使用	
-		temp_file_path = temp_file.name  
-	
-	return temp_file_path # 返回临时文件的路径
-	
+    # 创建一个临时文件
+    with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
+        # 随便写入一些数据
+        for i in range(1000):
+            # 将字符串转换为字节对象并写入一个新行
+            temp_file.write((str(i) + '\n').encode('utf-8')) 
+            
+        # 获取临时文件的路径以便稍后使用    
+        temp_file_path = temp_file.name  
+    
+    return temp_file_path # 返回临时文件的路径
+    
 # 试验一下： 下面的调用会打印出程序运行时间
 print(timer(my_slow_function))
 ```

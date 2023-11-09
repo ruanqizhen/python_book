@@ -17,7 +17,7 @@ if __name__ == "__main__":
     p = Process(target=worker_function, args=(1,))
     p.start()
     p.join()
-	
+    
 ```
 
 在上面的示例中，我们定义了一个名为worker_function的函数，该函数接受一个参数number并打印一个关于工作的消息。这个函数将在子进程中运行。 `p = Process(target=worker_function, args=(1,))` 这一行创建了一个新的进程对象。通过 target 参数，我们告诉它要运行的函数是 worker_function，并为这个函数提供了参数(1,)。 `p.start()` 告诉进程开始执行。此时，一个新的子进程将被创建并开始运行。join()方法会阻塞主进程，直到子进程执行完毕。这确保主进程不会在子进程完成之前结束。

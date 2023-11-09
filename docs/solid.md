@@ -113,7 +113,7 @@ class JSONReportGenerator(ReportGenerator):
 class User:
     def __init__(self, name: str):
         self.name = name
-		
+        
 class UserReport:
     def __init__(self, generator: ReportGenerator):
         self.generator = generator
@@ -181,7 +181,7 @@ class Square(Rectangle):
     def height(self, value):
         self._width = value
         self._height = value
-		
+        
 ```
 
 上述设计中，Square 是 Rectangle 的子类。但是，正方形的宽和高是相等的，所以当我们尝试修改正方形的宽或高时，会导致问题，因为这违反了正方形的基本定义。这违反了里氏替换原则，因为我们不能替换 Rectangle 为 Square 而不改变行为。

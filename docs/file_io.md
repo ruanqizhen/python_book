@@ -114,20 +114,20 @@ with open('filename.bin', 'rb') as file:
 with open('sample.txt', 'r') as file:
     position = file.tell()
     print(f"Current file position: {position}")
-	
+    
 with open('sample.txt', 'rb') as file:
     # 从当前位置向后移动5个字节
     file.seek(5, 1)
     
     # 从文件末尾向前移动5个字节
     file.seek(-5, 2)
-	
-	# 移动到文件的第10个字节位置
+    
+    # 移动到文件的第10个字节位置
     file.seek(10)
-	
-	# 因为文件指针被指向了文件的第10个字节位置，
-	# 下面的 read 方法会读取文件第10个字节的数据
-	file.read(1)
+    
+    # 因为文件指针被指向了文件的第10个字节位置，
+    # 下面的 read 方法会读取文件第10个字节的数据
+    file.read(1)
 ```
 
 ## 写入文件
@@ -146,9 +146,9 @@ with open('sample.txt', 'w') as file:
 lines = ["Line 1", "Line 2", "Line 3"]
 
 with open('sample.txt', 'w') as file:
-	for line in lines:
+    for line in lines:
         file.write(line)
-		file.write('\n')
+        file.write('\n')
 ```
 
 ## 处理文件异常
@@ -185,7 +185,7 @@ with open('text_file.txt', 'wt') as file:
 with open('text_file.txt', 'rt') as file:
     content = file.read()
     print(content)  # 输出: Hello, Text World!
-	
+    
 # 写入二进制文件
 with open('binary_file.bin', 'wb') as file:
     file.write(b"Hello, Binary World!")
