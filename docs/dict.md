@@ -59,9 +59,26 @@ my_dict = dict(zip(keys, values))
 
 ## 字典的常用操作
 
+### 检查键是否存在
+
+与检查一个元素是否在列表中一样，检查键是否在字典中也可以使用 in 关键字。这会返回一个布尔值，指示键是否存在于字典中。
+
+```python
+person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
+
+if "name" in person:
+    print("Name is present in the dictionary.")
+```
+
+由于字典的数据存储方式，检查键是否存在于字典的效率要远高于检查元素是否存在在列表中。
+
 ### 访问值
 
-使用键可以从字典中获取相应的值：
+使用中括号和键，类似索引列表的方法，可以从字典中获取相应的值：
 
 ```python
 person = {
@@ -73,7 +90,8 @@ person = {
 print(person["name"])  # 输出: Alice
 ```
 
-### 添加/修改键值对：
+有可能，需要访问的键是不存在的，如果访问一个不存在的键，程序会抛出一个 KeyError 异常。关于异常极其处理，可以参考[异常处理](exception)一节。
+为了避免异常，我们可以先检查键是否存在，然后再访问键。这样比较麻烦，一个更简洁的办法是使用字典的 get() 方法来访问值。如果键不存在，get() 方法不会抛出异常，而是返回 None。我们还可以为 get() 方法指定键不存在时的默认值，这样，它就会在键不存在时，返回默认值：
 
 ```python
 person = {
@@ -82,9 +100,85 @@ person = {
     "city": "New York"
 }
 
-person["job"] = "Engineer"
-person["age"] = 31
+# 使用 get 方法，如果键不存在，返回 None
+gender = person.get('gender')
+print(gender)  # 输出: None
+
+# 使用 get 方法，同时指定键不存在时的默认值
+gender = person.get('gender', 'Not Specified')
+print(gender)  # 输出: Not Specified
 ```
+
+
+### 添加或修改键值对：
+
+同样使用中括号与键，可以修改字典中的数据。
+
+```python
+person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
+
+# 更新 age
+person["age"] = 31
+# 添加 job
+person["job"] = "Engineer"
+
+print(person)
+# 输出: {'name': 'Alice', 'age': 31, 'city': 'New York', 'job': 'Engineer'}
+```
+
+这样直接的修改，是不检查一个键是否已经存在了的。有时候，如果一个键已经存在，我们可能不希望直接覆盖它，而是要保留原来的值。这与访问值时候遇到的问题类似，我们可以先检查键是否存在，再决定如何操作。同样，也有更简洁的方法，使用字典的 setdefault() 方法。setdefault() 方法用于获取某个键对应的值，如果键不存在于字典中，则将键及指定的默认值插入到字典中。如果键已经存在，那么它将返回键对应的值，不会改变字典。比如：
+
+```python
+person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
+
+# 使用 setdefault 获取已存在的值，这里 "city" 键已存在
+city = person.setdefault('city', 'Unknown City')
+print(city)  # 输出: New York
+
+# 使用 setdefault 为不存在的键设置默认值，这里 "salary" 键不存在
+salary = person.setdefault('salary', 50000)
+print(salary)  # 输出: 50000
+
+print(person)
+# 输出: {'name': 'Alice', 'age': 30, 'city': 'New York', 'salary': 50000}
+```
+
+setdefault() 一个常见的用例是计数，比如我们要统计一句话里每个单词出现了多少次，可以使用类似下面的程序：
+
+```python
+counts = {}
+words = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
+
+for word in words:
+    counts.setdefault(word, 0)
+    counts[word] += 1
+
+print(counts)  # 输出: {'apple': 3, 'banana': 2, 'orange': 1}
+```
+
+在这个例子中，setdefault() 方法用于确保每个单词在 counts 字典中都有一个对应的计数值。如果单词还没有在字典中，它将单词和计数值 0 插入字典。然后字典中单词对应的计数就可以安全地增加了。
+
+当然上面这段程序也可以使用 get() 方法，有同样的效果。如果字典的值是简单数据类型，get() 方法可以使代码更精简，如果值本身也是列表，字典等复杂类型的数据，则 setdefault() 方法更好。下面是使用 get() 方法实现的同样功能的代码：
+
+```python
+counts = {}
+words = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
+
+for word in words:
+    counts[word] = counts.get(word, 0) + 1
+
+print(counts)  # 输出: {'apple': 3, 'banana': 2, 'orange': 1}
+```
+
+（使用 defaultdict）
 
 
 ### 删除键值对
@@ -99,18 +193,7 @@ person = {
 del person["age"]
 ```
 
-### 检查键是否存在
 
-```python
-person = {
-    "name": "Alice",
-    "age": 30,
-    "city": "New York"
-}
-
-if "name" in person:
-    print("Name is present in the dictionary.")
-```
 
 ### 获取所有的键和值：
 
@@ -137,16 +220,16 @@ items = person.items()
 dictionary = {"a": 1, "b": 2, "c": 3}
 for key in dictionary:
     print(key)
-	
+    
 # 输出： a  b  c
-```	
+``` 
 
 如果只需要遍历字典中的值，可以使用 dict.values() 方法获取字典的所有值，然后遍历这些值：
 
 ```python
 for value in dictionary.values():
     print(value)
-	
+    
 # 输出： 1  2  3
 ```
 
@@ -179,10 +262,13 @@ print(merged_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 字典拆包最主要的用途是[为函数传递参数](function#函数的不定数量参数)。
 
 
+
+
+
 ## 常用的字典的方法
 
-* dict.get(key, default): 返回给定键的值。如果键不存在，则返回default值。
-* dict.setdefault(key, default): 如果键不存在于字典中，将键和default加入字典。返回键的值。
+除了介绍过的 get，setdefault 方法，字典还有其它一些常用的方法：
+
 * dict.update(another_dict): 将另一个字典的键值对合并到当前字典中。
 * dict.pop(key): 删除并返回指定键的值。如果键不存在，则引发KeyError。
 * dict.clear(): 清除字典中的所有项。
@@ -192,17 +278,6 @@ print(merged_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 ```python
 # 创建一个初始字典
 my_dict = {'a': 1, 'b': 2, 'c': 3}
-
-# 使用 get 方法
-print(my_dict.get('a'))        # 输出: 1
-print(my_dict.get('d'))        # 输出: None
-print(my_dict.get('d', 4))     # 输出: 4
-
-# 使用 setdefault 方法
-my_dict.setdefault('d', 4)
-print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
-my_dict.setdefault('d', 5)    # 'd' 的值不会被更改，因为键 'd' 已经存在
-print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 
 # 使用 update 方法
 another_dict = {'e': 5, 'f': 6}
@@ -218,6 +293,10 @@ print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}
 my_dict.clear()
 print(my_dict)                # 输出: {}
 ```
+
+
+
+
 
 
 
