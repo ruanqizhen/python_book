@@ -178,7 +178,7 @@ for word in words:
 print(counts)  # 输出: {'apple': 3, 'banana': 2, 'orange': 1}
 ```
 
-（使用 defaultdict）
+实际上，处理字典中缺失的键的默认值还有一些更灵活的处理方式，我们将会在[统计次数](counter)一节中做详细介绍。
 
 
 ### 删除键值对
