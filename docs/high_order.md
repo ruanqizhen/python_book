@@ -2,11 +2,10 @@
 
 高阶函数（Higher-Order Function，HOF）是函数式编程中的一个重要概念。高阶函数满足以下两个条件之一：
 
-接受一个或多个函数作为参数。这允许函数的行为在运行时基于传递给它的函数进行动态更改。
+* 接受一个或多个函数作为参数。这允许函数的行为在运行时基于传递给它的函数进行动态更改。
+* 返回一个函数。这允许高阶函数产生新的函数。
 
-返回一个函数。这允许高阶函数产生新的函数。
-
-Python 中有一些内置的高阶函数，最常见的是 map(), filter(), 和 reduce()。此外，sorted() 也可以视为高阶函数，当使用其 key 参数时。
+Python 中有一些内置的高阶函数，包括函数式编程中经常使用到的 map(), filter(), 和 reduce() 等。其中 map(), filter() 虽然在函数式编程中使用非常频繁，但是由于 Python 中列表（或字典）推导式的存在，它们的功能已经被列表推导式给取代了。在 Python 程序中，应该尽量使用列表推导式，但是作为函数式编程中最基本的高阶函数，这一节还是会对它们做一详细介绍。
 
 ## map
 
@@ -173,6 +172,36 @@ def count(n):
         yield n
         n += 1
 ```
+
+素数的生成器并非必须使用 filter，但是如果不使用 filter，我们就需要自己维护一张表，列出所有的已知的非素数，这样程序会稍微繁琐一些，下面是不使用 filter 的素数生成器程序：
+
+```python
+def prime_generator():
+    # 生成素数序列的生成器
+    factors = {}  # 记录所有非素数的因子的字典
+    q = 2         # 从 2 开始
+
+    while True:
+        if q not in factors:
+            # q 不在非素数字典中，是一个新的素数
+            yield q
+            # q 的平方是仅以 q 为因子的最小合数
+            factors[q*q] = [q]
+        else:
+            # q 不是素数，要找有同样因子的更大一点的其它合数
+            for p in factors[q]:
+                # p 是 q 的因子，比 q 大的下一个包含 p 因子的合数一定是 p+q  
+                factors.setdefault(p + q, []).append(p)
+            # q 已经处理过，删除以节省内存
+            del factors[q]
+        q += 1
+
+# 测试：
+gen = prime_generator()
+for _ in range(10):
+    print(next(gen))
+```
+
 
 
 ## reduce
