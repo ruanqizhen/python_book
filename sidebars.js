@@ -57,6 +57,7 @@ const sidebars = {
         'magic_methods',
         'multiple_inheritance',
         'oop2',
+        'iterator',
         'design_method',
         'solid',
       ],
