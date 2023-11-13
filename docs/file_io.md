@@ -253,6 +253,64 @@ output.close()
 这些内存文件对象与常规文件对象在使用上几乎是相同的，但它们只存在于内存中，不会写入到磁盘。这使得它们在需要快速、短暂的文件操作时非常有用，例如解析数据、暂存数据等场景。
 
 
+
+## 数据转换成字节序列
+
+
+这种转换对于处理二进制数据、进行网络通信或文件 I/O 非常有用。
+
+### 整数与字节序列
+
+整数可以通过使用 int.to_bytes(length, byteorder) 方法转换为字节序列，而字节序列可以通过使用 int.from_bytes(bytes, byteorder) 方法转换回整数。
+
+```python
+# 整数转换为字节序列
+num = 1024
+byte_seq = num.to_bytes(2, 'big')  # 使用大端字节序
+print(byte_seq)  # 输出: b'\x04\x00'
+
+# 字节序列转换回整数
+num_from_bytes = int.from_bytes(byte_seq, 'big')
+print(num_from_bytes)  # 输出: 1024
+```
+
+转换过程中的字节序（大端或小端）对于数字类型非常重要，转换和逆转换时要使用相同的字节序。
+
+### 浮点数与字节序列
+
+浮点数可以通过使用 struct 模块转换为字节序列，反之亦然。
+
+```python
+import struct
+
+# 浮点数转换为字节序列
+num = 3.14159
+byte_seq = struct.pack('f', num)
+print(byte_seq)  # 输出类似于 b'\xdb\x0fI@'
+
+# 字节序列转换回浮点数
+num_from_bytes = struct.unpack('f', byte_seq)[0]
+print(num_from_bytes)  # 输出: 3.14159
+```
+struct.pack 和 struct.unpack 需要一个格式字符串（例如 'f' 表示单精度浮点数），这个格式字符串指定了如何解读和构造字节序列。
+
+### 列表或元组与字节序列
+
+列表或元组通常包含多个数据项。要将它们转换为字节序列，你需要序列化这些数据。Python 标准库中的 pickle 模块可以用来序列化和反序列化对象。
+
+```python
+import pickle
+
+# 列表转换为字节序列
+my_list = [1, 2, 3, 'Hello', True]
+byte_seq = pickle.dumps(my_list)
+print(byte_seq)  # 输出: 一串代表序列化列表的字节
+
+# 字节序列转换回列表
+list_from_bytes = pickle.loads(byte_seq)
+print(list_from_bytes)  # 输出: [1, 2, 3, 'Hello', True]
+```
+
 ## 路径处理
 
 读写文件，必然需要先找到文件，那就离不开处理文件的路径。在 Python 中，处理文件和目录路径的最常用的库是 os.path 和 pathlib。其中，pathlib 是一个比较新的库，提供了面向对象的方式来处理路径。
