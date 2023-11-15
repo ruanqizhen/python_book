@@ -61,7 +61,7 @@ python welcome.py
 
 当程序提示输入名字时，输入你的名字并回车。
 
-现在应该看到一个类似 `你好，xxxxx！欢迎来到 Python 的编程世界！` 的消息了。
+现在应该看到一个类似 `你好，ruanqizhen！欢迎来到 Python 的编程世界！` 的消息了。
 
 ## Python 的语法
 

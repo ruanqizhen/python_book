@@ -107,20 +107,21 @@ print(list(result))  # 输出: [5, 7, 9]
 ## filter
 
 ### 基本用法
+
 filter() 用于从一个可迭代对象中过滤出满足某个条件的元素。它接受一个函数和一个可迭代对象。它返回一个新的迭代对象，其中只包含使输入函数返回 True 的原始元素。
 
-在介绍生成器表达式的时候，使用的另一个例子正好可以演示 filter：假设我们需要从一个列表中选出长度大于 3 的字符串，如果使用生成器表达式，代码如下：
+在介绍生成器表达式的时候，使用的另一个例子正好可以演示 filter：假设我们需要从一个列表中选出长度大于 5 的字符串，如果使用生成器表达式，代码如下：
 
 ```python
-result = (word for word in words if len(word) > 3)
+result = (word for word in words if len(word) > 5)
 ```
 
 这个示例也可以使用 filter() 函数来实现：
 
 ```python
 words = ["apple", "banana", "cherry", "date", "fig", "kiwi"]
-long_words = filter(lambda x: len(x) > 3, words)
-print(list(long_words))  # 输出: ['apple', 'banana', 'cherry']
+long_words = filter(lambda x: len(x) > 5, words)
+print(list(long_words))  # 输出: [banana', 'cherry']
 ```
 
 filter() 函数只能接收一个迭代对象，因此，它的实现比 map() 简单的多，甚至不需要使用生成器函数，只要使用上面的生成器表达式就可以了：
@@ -150,11 +151,11 @@ from itertools import count
 
 def prime_generator():
     # 生成素数序列的生成器
-    numbers = count(2)         # 从2开始的整数序列
+    numbers = count(2)         # 生成一个从 2 开始的整数序列
     while True:
-        prime = next(numbers)  # 获取序列中的下一个数字
+        prime = next(numbers)  # 序列中，下一个没有被过滤掉的数字，是一个新的素数
         yield prime            # 返回当前素数
-        # 过滤掉序列中所有能被当前素数整除的整数
+        # 过滤掉序列中所有能被当前素数整除的数
         numbers = filter(lambda x, prime=prime: x % prime, numbers)
 
 # 测试

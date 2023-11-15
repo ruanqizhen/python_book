@@ -14,7 +14,7 @@ empty_dict = {}
 
 # 创建字典有内容的字典
 person = {
-    "年龄": "张三",
+    "年龄": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
@@ -33,14 +33,14 @@ person = {
 
 ```python
 # 使用关键字参数
-my_dict = dict(姓名="张三", 年龄=25, 城市="上海")
+my_dict = dict(姓名="阮奇桢", 年龄=25, 城市="上海")
 ```
 
 另一种使用 dict() 的方式是，传递一个一个可迭代对象给它，输入的可迭代对象的每个元素又是一个包含两个数据的元组或列表。比如：
 
 ```python
 # 使用 (key, value) 的元组列表
-pairs = [("姓名", "张三"), ("年龄", 25), ("城市", "上海")]
+pairs = [("姓名", "阮奇桢"), ("年龄", 25), ("城市", "上海")]
 my_dict = dict(pairs)
 ```
 
@@ -48,7 +48,7 @@ my_dict = dict(pairs)
 
 ```python
 keys = ["姓名", "年龄", "城市"]
-values = ["张三", 25, "上海"]
+values = ["阮奇桢", 25, "上海"]
 my_dict = dict(zip(keys, values))
 ```
 
@@ -60,7 +60,7 @@ my_dict = dict(zip(keys, values))
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
@@ -77,12 +77,12 @@ if "姓名" in person:
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
 
-print(person["姓名"])  # 输出: 张三
+print(person["姓名"])  # 输出: 阮奇桢
 ```
 
 有可能，需要访问的键是不存在的，如果访问一个不存在的键，程序会抛出一个 KeyError 异常。关于异常极其处理，可以参考[异常处理](exception)一节。
@@ -90,7 +90,7 @@ print(person["姓名"])  # 输出: 张三
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
@@ -115,18 +115,18 @@ print(gender)  # 输出: Not Specified
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
 
 # 更新年龄
-person["年龄"] = 31
+person["年龄"] = 35
 # 添加职业
 person["职业"] = "工程师"
 
 print(person)
-# 输出: {'姓名': '张三', '年龄': 31, '城市': '上海', '职业': '工程师'}
+# 输出: {'姓名': '阮奇桢', '年龄': 35, '城市': '上海', '职业': '工程师'}
 ```
 
 这样的赋值语句是不会检查一个键是否已经存在的。如果键不存在，则添加它；如果键已经存在，则更新对应的值。
@@ -135,7 +135,7 @@ print(person)
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
@@ -149,7 +149,7 @@ city = person.setdefault('城市', '魔都')
 print(city)  # 输出: 上海
 
 print(person)
-# 输出: {'姓名': '张三', '年龄': 30, '城市': '上海', '工资': 50000}
+# 输出: {'姓名': '阮奇桢', '年龄': 30, '城市': '上海', '工资': 50000}
 ```
 
 setdefault() 一个常见的使用案例，是用于计数，比如我们要统计一句话里每个单词出现了多少次，可以使用类似下面的程序：
@@ -188,14 +188,14 @@ print(counts)  # 输出: {'苹果': 3, '香蕉': 2, '桔子': 1}
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
 
 del person["年龄"]
 
-print(person)  # 输出：  {'姓名': '张三', '城市': '上海'}
+print(person)  # 输出：  {'姓名': '阮奇桢', '城市': '上海'}
 ```
 
 
@@ -206,15 +206,15 @@ print(person)  # 输出：  {'姓名': '张三', '城市': '上海'}
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
 
 keys = person.keys()
 print(keys)             # 输出：  dict_keys(['姓名', '年龄', '城市'])
-print(person.values())  # 输出：  dict_values(['张三', 30, '上海'])
-print(person.items())   # 输出：  dict_items([('姓名', '张三'), ('年龄', 30), ('城市', '上海')])
+print(person.values())  # 输出：  dict_values(['阮奇桢', 30, '上海'])
+print(person.items())   # 输出：  dict_items([('姓名', '阮奇桢'), ('年龄', 30), ('城市', '上海')])
 
 del person["年龄"]       # 从字典中删除一对键值，所有的字典视图也会跟随变化
 print(keys)             # 输出：  dict_keys(['姓名', '城市'])
@@ -224,7 +224,7 @@ print(keys)             # 输出：  dict_keys(['姓名', '城市'])
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
@@ -232,14 +232,14 @@ person = {
 for value in person.values():
     print(value)
     
-# 输出： 张三  30  上海
+# 输出： 阮奇桢  30  上海
 ```
 
 更常见的情况是要同时遍历字典中所有的键和值，需要使用 items 视图：
 
 ```python
 person = {
-    "姓名": "张三",
+    "姓名": "阮奇桢",
     "年龄": 30,
     "城市": "上海"
 }
@@ -248,7 +248,7 @@ for key, value in person.items():
     print(key, value)
 
 # 输出：
-# 姓名 张三
+# 姓名 阮奇桢
 # 年龄 30
 # 城市 上海
 ```
@@ -304,29 +304,16 @@ print(my_dict)                # 输出: {}
 
 一个元素为键值对的列表，与一个字典保存的数据可能是完全相同的。但是它们内部对于数据不同的保存结构决定了它们各有一些不同的特点和擅长的应用场合。我们现在这里做一个简单总结，等到介绍[数据结构与算法](algorithm)的时候，还会在对它们做深入探讨。
 
-### 有序性
-
-列表和字典中的元素都可以按照添加顺序遍历，这点两者类似。
-
-
-### 读取和查找
-
-列表可以使用整数索引来访问数据，这一操作的速度非常快。但是在列表中插入、删除和查找数据是比较慢的。
-字典是通过键，快速查找访问其对应的值。键可以是整数类型，也可以使字符串等其它不可变类型数据。
-
-### 重复数据
-
-列表中可以有重复的元素。字典的键必须是唯一的，但值可以有重复。
-
-### 总结
-
-列表适合保存那些按固定顺序保存的，根据位置索引来读取的数据。
-字典适合保存那些需要经常通过键来查找值的数据。
+* 有序性： 列表和字典中的元素都可以按照添加顺序遍历，这点两者类似。
+* 读取和查找： 列表可以使用整数索引来访问数据，这一操作的速度非常快。但是在列表中插入、删除和查找数据是比较慢的。字典是通过键，快速查找访问其对应的值。键可以是整数类型，也可以使字符串等其它不可变类型数据。
+* 重复数据： 列表中可以有重复的元素。字典的键必须是唯一的，但值可以有重复。
+* 总结： 列表适合保存那些按固定顺序保存的，根据位置索引来读取的数据。字典适合保存那些需要经常通过键来查找值的数据。
 
 
 ## 集合
 
-集合可以被认为是不带值，只有键的字典。
+集合（Set）是数学上一个常用的概念，它是由不同元素组成的一个无序的集。集合可以包含任何类型的对象，如数字、字符、其他集合等，但每个元素在集合中必须是唯一的，集合不允许重复元素。Python 语言中的集合与数学定义的集合非常类似，它也是无序的，也要求元素的唯一性，并且也支持集合的基本数学操作，比如交集、并集等。但也有一些差别，数学上的集合，一般创建之后就不会改变，但程序里的集合创建后还可以增加、删除元素。Python 集合对元素的类型有额外的限制：只能采用不可变类型数据作为元素，这一点与字典的键类似，集合元素可以是数值、字符串等，但不是是列表或其它集合。
+
 
 ### 创建集合
 
@@ -339,65 +326,87 @@ print(my_set)  # 输出：{1, 2, 3, 4}
 my_list = [1, 2, 2, 3, 4, 4, 5]
 my_set = set(my_list)
 print(my_set)  # 输出：{1, 2, 3, 4, 5}
+
+# 创建一个空集合
+empty_set = set()
 ```
 
-集合中的元素是唯一的，这意味着重复的元素会被自动移除。此外，集合中的元素必须是不可变类型，这意味着不能在集合中放置例如列表或其他集合这样的可变对象。
-
-需要注意的是，我们不能使用空花括号 {} 创建空集合，因为空花括号默认表示的是一个空字典，而不是集合。如果需要空集合，只能使用 `set([])` 来创建。
+集合中的元素是唯一的，这意味着重复的元素会被自动移除。需要注意的是，我们不能使用空花括号 {} 创建空集合，因为空花括号默认表示的是一个空字典，而不是集合。如果需要空集合，只能使用 `set()` 来创建。
 
 ### 常用操作
 
-* 添加元素： 使用 add() 方法。
-* 删除元素： 使用 remove() 或 discard() 方法。remove() 方法在元素不存在时会引发一个错误，而 discard() 方法则不会。
-* 长度： 使用 len() 函数来获取集合的大小。
-* 成员测试： 可以使用 in 关键字来检查一个元素是否存在于集合中。
+集合的用法与字典是非常类似的，在数据查询的功能方面，他可以被看作是只有键的字典。下面列出了集合最常用的几种操作：
 
-示例：
+* 添加元素： 使用 add() 方法。
 
 ```python
 # 创建一个空集合
 s = set()
 
 # 使用 add() 方法添加元素
-s.add("apple")
-s.add("banana")
-s.add("cherry")
-print(s)  # 输出: {'apple', 'banana', 'cherry'}
+s.add("苹果")
+s.add("香蕉")
+s.add("桔子")
 
-# 使用 remove() 方法删除一个存在的元素
-s.remove("banana")
-print(s)  # 输出: {'apple', 'cherry'}
+# 集合是无序的，print 可以打印出所有元素，但顺序并不确定
+print(s)  # 输出: {'苹果', '香蕉', '桔子'}
+```
 
-# 如果尝试使用 remove() 删除一个不存在的元素，会引发 KeyError
-# 为避免此错误, 可以先检查元素是否存在
-if "banana" in s:
-    s.remove("banana")
+* 成员测试： 可以使用 in 关键字来检查一个元素是否存在于集合中。
 
-# 使用 discard() 删除元素，即使该元素不存在，也不会引发错误
-s.discard("banana")  # 由于 "banana" 已经被删除, 这一行不会有任何效果
-s.discard("apple")
-print(s)  # 输出: {'cherry'}
-
-# 使用 len() 函数获取集合的大小
-length = len(s)
-print(f"The set has {length} element(s).")  # 输出: The set has 1 element(s).
+```python
+s = set(['苹果', '香蕉', '桔子'])
 
 # 使用 in 关键字检查一个元素是否存在于集合中
-if "cherry" in s:
-    print("Cherry is in the set!")  # 输出: Cherry is in the set!
+if "桔子" in s:
+    print("集合中包含桔子") 
+    
+if "桔子" not in s:
+    print("集合没有桔子") 
 ```
+
+* 删除元素： 使用 remove() 或 discard() 方法。remove() 方法在元素不存在时会引发一个错误，而 discard() 方法则不会。
+
+```python
+s = set(['苹果', '香蕉', '桔子'])
+
+# 使用 remove() 方法删除一个存在的元素
+s.remove("香蕉")
+print(s)  # 输出: {'苹果', '桔子'}
+
+# 如果尝试使用 remove() 删除一个不存在的元素，会引发 KeyError 异常
+# 为避免此错误, 可以先检查元素是否存在
+if "香蕉" in s:
+    s.remove("香蕉")
+
+# 使用 discard() 删除元素，即使该元素不存在，也不会引发错误
+s.discard("香蕉")    # 由于 "香蕉" 已经被删除, 这一行不会有任何效果
+s.discard("苹果")
+print(s)  # 输出: {'桔子'}
+```
+
+* 长度： 可以使用 len() 函数来获取集合的大小，也就是元素的个数。
+
+```python
+s = set(['苹果', '香蕉', '桔子'])
+
+# 使用 len() 函数获取集合的大小
+print(len(s))  # 输出: 3
+```
+
 
 ### 集合的数学运算
 
 使用集合常常是因为需要用到它做一些相关的数学运算，包括：
 
-* 并集： 使用 union() 方法或 | 运算符。
-* 交集： 使用 intersection() 方法或 & 运算符。
-* 差集： 使用 difference() 方法或 - 运算符。
-* 对称差集（在 A 或 B 中，但不同时在 A 和 B 中的元素）：使 用 symmetric_difference() 方法或 ^ 运算符。
-* 子集与超集： 使用 issubset() 和 issuperset() 方法。
+* 并集： 是包含两个集合中所有元素的集合，使用 union() 方法或 `|` 运算符。
+* 交集： 是同时属于这两个集合的所有元素的集合，使用 intersection() 方法或 `&` 运算符。
+* 差集： 是属于第一个集合但不属于第二个集合的所有元素的集合，使用 difference() 方法或 `-` 运算符。
+* 对称差集： 是在第一个集合或第二个集合中，但不同时在第一个集合和第二个集合的所有元素的集合，使用 symmetric_difference() 方法或 `^` 运算符。
+* 子集： 检查是否第一个集合的所有元素也都在第二个集合中，使用 issubset() 方法。
+* 超集： 检查是否第一个集合包含了第二个集合的所有元素，使用 issuperset() 方法。
 
-示例：
+运算示例：
 
 ```python
 # 定义两个集合
@@ -405,43 +414,43 @@ A = {1, 2, 3, 4}
 B = {3, 4, 5, 6}
 
 # 并集
-union_set = A.union(B)
-print(f"Union of A and B: {union_set}")  # 输出: {1, 2, 3, 4, 5, 6}
-# 或者使用 | 运算符
-union_set_operator = A | B
-print(f"Union of A and B using | operator: {union_set_operator}")  # 输出: {1, 2, 3, 4, 5, 6}
+print(A.union(B))           # 输出: {1, 2, 3, 4, 5, 6}
+print(A | B)                # 输出: {1, 2, 3, 4, 5, 6}
 
 # 交集
-intersection_set = A.intersection(B)
-print(f"Intersection of A and B: {intersection_set}")  # 输出: {3, 4}
-# 或者使用 & 运算符
-intersection_set_operator = A & B
-print(f"Intersection of A and B using & operator: {intersection_set_operator}")  # 输出: {3, 4}
+print(A.intersection(B))    # 输出: {3, 4}
+print(A & B)                # 输出: {3, 4}
 
 # 差集
-difference_set = A.difference(B)
-print(f"Difference of A from B: {difference_set}")  # 输出: {1, 2}
-# 或者使用 - 运算符
-difference_set_operator = A - B
-print(f"Difference of A from B using - operator: {difference_set_operator}")  # 输出: {1, 2}
+print(A.difference(B))      # 输出: {1, 2}
+print(A - B)                # 输出: {1, 2}
 
 # 对称差集
-symmetric_difference_set = A.symmetric_difference(B)
-print(f"Symmetric difference between A and B: {symmetric_difference_set}")  # 输出: {1, 2, 5, 6}
-# 或者使用 ^ 运算符
-symmetric_difference_set_operator = A ^ B
-print(f"Symmetric difference between A and B using ^ operator: {symmetric_difference_set_operator}")  # 输出: {1, 2, 5, 6}
+print(A.symmetric_difference(B))  # 输出: {1, 2, 5, 6}
+print(A ^ B)                # 输出: {1, 2, 5, 6}
 
 # 子集
-is_subset = A.issubset(B)
-print(f"Is A a subset of B? {is_subset}")  # 输出: False
+print(A.issubset(B))        # 输出: False
 
 # 超集
-is_superset = A.issuperset(B)
-print(f"Is A a superset of B? {is_superset}")  # 输出: False
-这些示例展示了如何对两个集合A和B执行各种基本的集合操作。
+print(A.issuperset(B))      # 输出: False
 ```
 
 
+下面是一个更实用一些的示例，假设我们有两个列表，一个是朋友名单，另一个是同事名单，现在需要找出既是朋友又是同事的人的名单：
 
+```python
+# 朋友名单
+friends = ["张三", "李四", "王五", "赵六"]
+
+# 同事名单
+colleagues = ["孙七", "周八", "张三", "李四"]
+
+# 使用集合找出既是朋友又是同事的人
+friends_set = set(friends)
+colleagues_set = set(colleagues)
+common = friends_set.intersection(colleagues_set)
+
+print("既是朋友又是同事的人：", common)
+```
 
