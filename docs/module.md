@@ -287,6 +287,74 @@ if __name__ == "__main__":
 
 ## 第三方库
 
-......
+### 常用功能
 
+除了 Python 自带的标准库，还拥有一个极其活跃的开源社区。这个社区为 Python 贡献了庞大而丰富的第三方库，覆盖了从网络编程到数据分析，再到图像处理和机器学习等各个领域。下面列举了几个最知名的第三方库，我们会在后续章节内介绍它们以及其它一些第三方库的使用方法：
 
+* Web 开发
+   * Flask: 一个轻量级的Web应用框架，易于学习，适合小到中型项目。
+   * Django: 一个高级的Web框架，提供了完整的功能，适用于大型项目。
+* 数据科学与分析
+   * NumPy: 提供强大的多维数组对象和大量的科学计算功能。
+   * Pandas: 提供数据结构和数据分析工具，特别适合处理表格数据。
+   * Matplotlib: 用于数据可视化的绘图库，可以创建高质量的图表和图形。
+* 机器学习与人工智能
+   * Scikit-learn: 一个简单有效的机器学习库，提供了很多常用的机器学习算法。
+   * TensorFlow: Google 开发的一个强大的机器学习框架，广泛用于深度学习。
+   * PyTorch: 由 Facebook 开发，是一个灵活且强大的深度学习框架。
+* 网络编程与爬虫
+   * Requests: 用于发送 HTTP 请求的库，简单易用。
+   * Scrapy: 一个强大的网页爬虫框架，适用于大规模的数据抓取。
+* 图像处理
+   * Pillow: Python Imaging Library (PIL) 的一个现代化的分支，提供了丰富的图像处理功能。
+   * OpenCV: 用于计算机视觉以及图像处理的强大库，支持多种语言和平台。
+* 数学与统计
+   * SciPy: 基于 NumPy，提供了一系列用于数学、科学和工程的函数。
+   * Statsmodels: 用于统计分析和计量经济学的库。
+* 文件和数据格式处理
+   * Beautiful Soup: 解析 HTML 和 XML 文件的库，适合网页数据抓取。
+   * PyYAML: 用于读写 YAML 文件的库。
+* GUI 开发
+   * Tkinter: Python 自带的 GUI 工具包，可以快速创建简单的 GUI 应用。
+   * PyQt/PySide: 基于 Qt 的跨平台 GUI 工具包。
+
+### 安装
+
+与 Python 自带的标准库不同，第三方库在使用前需要先安装。大多数库都可以直接使用 Python 的包管理工具 pip 进行安装。比如，假设我们需要使用一个名为 qrcode 的库，它依赖于 pillow 库。在命令行终端，可以使用下面的命令进行安装：
+
+```bash
+pip install qrcode[pil]
+```
+
+有一些特别复杂的库，比如 pytorch，对于不同系统，不同硬件的电脑，在安装时会有一些不同配置。对于这样复杂的库，最好去它们的主页，按照说明文档的指导进行安装。
+
+### 使用
+
+安装好库之后，就可以在 Python 代码中导入并使用它了，方法与使用 Python 自己的标准库完全一样。依然以 qrcode 库为例，运行下面的代码，就可以为本书的网址产生一个二维码：
+
+```python
+import qrcode
+from PIL import Image
+
+# 创建一个 QRCode 对象
+qr = qrcode.QRCode(
+    version=1,  # 控制二维码的大小，1~40，1 是最小的
+    error_correction=qrcode.constants.ERROR_CORRECT_L,  # 控制二维码的错误纠正功能
+    box_size=10,  # 控制二维码中每个小格子包含的像素数
+    border=4,  # 控制二维码四周留白包含的格子数
+)
+
+# 添加数据
+qr.add_data('https://www.example.com')
+qr.make(fit=True)
+
+# 创建二维码图片
+img = qr.make_image(fill='black', back_color='white')
+
+# 显示图片
+img.show()
+```
+
+运行结果如下：
+
+![](images/014.png "本书网址")
