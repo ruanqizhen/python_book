@@ -97,7 +97,7 @@ const sidebars = {
     {
       type: 'link',
       label: 'GitHub 项目',
-      href: 'https://github.com/ruanqizhen/py_book',
+      href: 'https://github.com/ruanqizhen/python_book',
     },
     {
       type: 'link',
