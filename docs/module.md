@@ -81,24 +81,24 @@ Python 有一个丰富的标准库，提供了许多内置模块，帮助用户�
 
 * math: 提供数学运算函数和常量。
 * datetime: 提供日期和时间处理的类。
-* os: 提供与操作系统交互的功能，如文件和目录操作。
-* sys: 提供Python解释器和它的环境交互的功能。
+* os: 提供与操作系统交互的功能，如文件和目录操作。参考：[路径处理](file_io#路径处理)
+* sys: 提供 Python 解释器和它的环境交互的功能。
 * re: 提供正则表达式相关功能。
-* json: 提供JSON格式数据的编码和解码功能。
-* urllib: 提供URL处理模块，用于读取Web数据。
+* json: 提供 JSON 格式数据的编码和解码功能。
+* urllib: 提供 URL 处理模块，用于读取Web数据。
 * random: 提供随机数生成器和随机操作函数。
 * collections: 提供额外的数据结构，如命名元组、双端队列等。
-* sqlite3: 提供SQLite数据库的接口。
+* sqlite3: 提供 SQLite 数据库的接口。
 * subprocess: 提供启动和与子进程交互的功能。
 * threading: 提供基于线程的并行处理。
 * multiprocessing: 提供基于进程的并行处理。
 * socket: 提供底层网络通信功能。
 * email: 提供电子邮件相关的功能，如发送和解析邮件。
-* csv: 提供CSV文件的读写功能。
-* xml: 提供XML处理功能。
+* csv: 提供C SV 文件的读写功能。
+* xml: 提供 XML 处理功能。
 * argparse: 提供命令行参数解析功能。
 * gzip, tarfile, zipfile: 提供文件压缩和解压缩功能。
-* logging: 提供日志记录功能。
+* logging: 提供日志记录功能。参考：[日志记录](debug#日志记录)
 
 在后续的章节中，我们会陆续介绍到标准库中一些最常用的函数。以上列出的也只是标准库中模块的一部分。Python的标准库非常庞大，涵盖了许多领域和功能，使Python成为一种真正的通用编程语言。要查看完整的标准库列表，可以查看 Python 官方文档： <https://docs.python.org/3/library/>
 
