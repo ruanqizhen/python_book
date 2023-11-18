@@ -4,7 +4,7 @@
 
 ## 函数作为参数
 
-我们之前介绍过一个函数 help()，它可以返回一个函数的帮助文档。这个 help() 函数接收的参数就是一个函数，比如 `help(print)` 就会打印出 print() 函数的帮助文档。
+我们之前介绍过一个函数 [help()](function#函数文档)，它可以返回一个函数的帮助文档。这个 help() 函数接收的参数就是一个函数，比如 `help(print)` 就会打印出 print() 函数的帮助文档。
 
 我们自己也可以定义这样的，把其它函数作为参数的函数：
 
@@ -39,16 +39,12 @@ print(result3)  # 输出：21
 
 这样实现的代码允许用户在不改变 operate 函数的内部逻辑的情况下，就能够使用不同的操作、策略。这样可以避免重复的代码，因为所有的操作都使用了同一个 operate 函数。同时使代码更加清晰和可读，特别是当操作变得更加复杂时。
 
-在面向对象的编程中，通常利用类的多态特性，实现这种调用同一个函数，就可以使用不同的操作、策略的功能；在面向过程的编程中，只能依赖条件语句实现类似功能；而在函数式编程中，则采用把函数作为参数的方式来实现这种功能。
+在面向对象的编程中，通常会利用类的多态特性，来实现这种调用同一个函数却表现出不同的行为的功能；在面向过程的编程中，只能依赖条件语句实现类似功能；而在函数式编程中，则采用把函数作为参数的方式来实现这种功能。
 
 
 ## 函数作为返回值
 
-我们可以定义一个函数，该函数返回另一个函数。这通常在需要动态创建和返回函数的情况下非常有用，例如在闭包、工厂模式或装饰器模式中。
-
-下面我们深入了解如何在Python中创建并返回函数：
-
-这是一个简单的示例，其中一个函数返回另一个函数：
+函数不但能够作为另一个函数的参数，也可以作为另一个函数的返回值。下面我们看一个简单的示例，其中一个函数返回了另一个函数：
 
 ```python
 def get_function(power):
@@ -63,7 +59,7 @@ print(square(4))  # 输出：16
 print(cube(4))   # 输出：64
 ```
 
-在上述示例中，get_function 接受一个参数 power 并返回一个函数 raise_to_power。返回的函数在其内部作用域中保留了 power 的值，使我们能够创建并使用不同的函数，如 square 和 cube。
+在上述示例中，get_function 接受一个参数 power（指数） 并返回了一个[内部函数](function#嵌套函数) raise_to_power。返回的函数在其内部保留了 power 的值，使我们能够创建并使用不同指数的函数，如平方 square 和立方 cube。
 
 有时，我们可能希望根据某些条件动态地创建并返回不同的函数。例如：
 
@@ -80,20 +76,16 @@ def math_operation(operator):
     else:
         return subtract
 
-operation = math_operation('+')
+operation = math_operation('+')  # 返回加法函数
 print(operation(5, 3))  # 输出：8
 
-operation = math_operation('-')
+operation = math_operation('-')  # 返回减法函数
 print(operation(5, 3))  # 输出：2
 ```
 
 ## 闭包
 
-闭包（Closure）的核心思想是一个函数可以访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。
-
-闭包是编程语言中的一个重要概念，它涉及函数和与其相关的引用环境。在Python中，闭包允许一个函数访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。
-
-比如：
+闭包（Closure）的核心思想是一个函数可以访问并操作其定义所在作用域的局部变量，即使该函数是在其定义作用域之外被调用的。比如：
 
 ```python
 def outer_function(x):
@@ -105,11 +97,9 @@ closure_instance = outer_function(10)
 print(closure_instance(5))  # 输出：15
 ```
 
-在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，它实际上调用的是在 outer_function 之外，也就是 inner_function 的定义域之外调用了 inner_function。但 inner_function 仍然可以访问 outer_function 之内的变量 x，其值为10。
+在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，调用放生在 outer_function 之外。也就是说，在定义 inner_function 的域之外调用了 inner_function，但 inner_function 仍然可以访问在定义它的域之内的局部变量 x，其值为10。
 
 闭包涉及至少两个函数，外部函数和一个或多个内部函数。内部函数引用了外部函数的局部变量。内部函数保留了对外部函数局部变量的引用，这样当内部函数被调用时，即使外部函数已经完成执行，这些变量仍然是可用的。
-
-闭包可以用来隐藏数据（把外部函数中的局部变量隐藏），提供一种将数据与函数一同封装的方法。在Python中，闭包经常与装饰器一起使用，装饰器是修改其他函数或类的功能的强大工具。
 
 闭包也可能会导致一些意外的行为，尤其是在循环中创建闭包时。因为闭包在其定义环境中捕获变量，所以必须确保捕获的变量的值是预期的那样，例如：
 
@@ -151,6 +141,9 @@ print(functions[2](10))  # 输出：12
 
 这样，程序运行结果就符合预期了。
 
+闭包可以用于读数据和函数的[封装](oop#封装)，因为，闭包可以用来隐藏数据，把外部函数中的局部变量隐藏起来。外部程序需要访问数据，只能通过定义好的函数进行访问。
+
+闭包经常与[装饰器](decorator)一起使用，装饰器是修改其他函数或类的功能的强大工具。
 
 ## 函数柯里化
 
@@ -195,9 +188,9 @@ print(double(7))  # 输出: 14
 ```
 
 
-## 匿名函数（lambda 函数）
+## 匿名函数
 
-匿名函数就是没有函数名的函数。这些函数通过 lambda 关键字定义，因此也被称为 lambda 函数。至于为什么要用 lambda 可以参考这一段关于 [Lambda Calculus 编程语言](https://lv.qizhen.xyz/appendix_languages#lambda-calculus-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80)的介绍。
+匿名函数就是没有函数名的函数。这些函数通过 lambda 关键字定义，因此也被称为 lambda 函数。lambda 这个词正是借用了函数式编程的鼻祖 [Lambda Calculus 编程语言](https://lv.qizhen.xyz/appendix_languages#lambda-calculus-编程语言)中的 Lambda。
 
 ### 基本用法
 
@@ -256,17 +249,9 @@ combined 是一个函数，它就是调用 h 之后返回的 lambda 函数。在
 嵌套定义的 lambad 函数与嵌套定义的普通函数一样支持闭包，也就是内部的 lambad 函数可以访问并操作外层函数的变量与参数。
 
 
-## 没有 if else 的选择语句
+### 精简代码
 
-有些函数式编程语言是没有 if else 语句的，它们利用元组的索引实现类似功能。比如下面是一个带有索引的元组：
-
-```python
-(a, b)[x]
-```
-
-上面程序的元组中有两个元素： a, b。当索引值 x 为 False 也就是 0 的时候，整个表达式返回元组的第 0 个元素，也就是 a；当索引值 x 为 True 也就是 1 的时候，整个表达式返回元组的第 1 个元素，也就是 b。
-
-我们在考虑一下上文使用过的一个示例：
+lambda 函数去掉了啰嗦的函数定义，很多时候可以帮助代码变得非常精简。我们再考虑一下，上文使用过的一个示例：
 
 ```python
 def math_operation(operator):
@@ -288,10 +273,10 @@ operation = math_operation('-')
 print(operation(5, 3))  # 输出：2
 ```
 
-如果使用匿名函数实现同样逻辑，可以让代码简洁的多，实际上一行代码即可：
+如果使用匿名函数实现完全相同的逻辑，可以让代码简洁的多，实际上一行代码即可：
 
 ```python
-math_operation = lambda operator: lambda x, y: (x - y, x + y)[operator == '+']
+math_operation = lambda op: (lambda x, y: x - y, lambda x, y: x + y)[op == '+']
 
 print(math_operation('+')(5, 3))  # 输出：8
 print(math_operation('-')(5, 3))  # 输出：2
