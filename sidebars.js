@@ -41,6 +41,7 @@ const sidebars = {
       items: [ 
         'recursive',
         'first_class_func',
+        'comprehension',
         'generator',
         'high_order',
         'decorator',
