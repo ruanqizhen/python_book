@@ -123,7 +123,7 @@ print(two_dim_list)
 {key_expr: value_expr for item in iterable}
 ```
 
-与列表推导式的区别在于，字典推导式中要提供两个数据键和值。
+与列表推导式的区别在于，字典推导式中要提供两个数据：键和值。
 
 下面的简单例子，将一个列表的值映射为其平方：
 
@@ -136,9 +136,9 @@ print(squared)  # 输出：{1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
 下面示例是对已有字典中的数据做修改，然后生成新字典：
 
 ```python
-price = {'apple': 0.5, 'banana': 0.25, 'orange': 0.75}
-discounted_price = {fruit: price * 0.9 for fruit, price in price.items()}
-print(discounted_price)  # 输出：{'apple': 0.45, 'banana': 0.225, 'orange': 0.675}
+fruits = {'苹果': 0.5, '香蕉': 0.25, '桔子': 0.75}
+discounted_price = {fruit: price * 0.9 for fruit, price in fruits.items()}
+print(discounted_price)  # 输出：{'苹果': 0.45, '香蕉': 0.225, '桔子': 0.675}
 ```
 
 ### 过滤条件
@@ -176,7 +176,7 @@ print(product_dict)
 
 ## 赋值表达式
 
-赋值表达式（Assignment Expression）使用运算符 `:=` 来为变量赋值。它也被你称为“海象运算符”，因为它看起来就像是海象的眼睛和大牙。与 Python 中的赋值语句（使用等号，比如 `a = 5`）相比，赋值语句是一个“语句”，它不能出现在需要表达式的地方，比如在 if 或 while 语句的条件中，或者作为其他表达式的一部分。但赋值表达式，是一个表达式，它可以出现在任何使用表达式的地方。
+赋值表达式（Assignment Expression）使用运算符 `:=` 来为变量赋值。它也被你称为“海象运算符”，因为它看起来就像是海象的眼睛和大牙。与 Python 中的[赋值语句](variable#声明和赋值)（使用等号，比如 `a = 5`）相比，赋值语句是一个“[语句](condition#语句)”，它不能出现在需要[表达式](condition#表达式)的地方，比如在 if 或 while 语句的条件中，或者作为其他表达式的一部分。但赋值表达式，是一个表达式，它可以出现在任何使用表达式的地方。
 
 海象运算符可以避免重复运算，提高代码的简洁性。比如，在不使用海象运算符的情况下，如果一个值在逻辑判断和后续代码中都要使用，那么通常需要分两步写：先计算一次赋值给变量，然后在逻辑判断和后续代码中使用这个变量。海象运算符允许在逻辑判断中进行赋值，并在后续代码中直接使用这个赋值结果。
 
@@ -206,7 +206,7 @@ results = [complicated_function(x) for x in data if complicated_function(x) > 0]
 results = [y for x in data if (y := complicated_function(x)) > 0]
 ```
 
-更具体一些的例子，比如要计算列表中每个元素的平方，值保留那些大于 5 的平方值，使用海象运算符可以只计算一次平方：
+更具体一些的例子，比如要计算列表中每个元素的平方，但只保留那些结果大于 5 的平方值，使用海象运算符可以只计算一次平方：
 
 ```python
 numbers = [1, 2, 3, 4, 5]
