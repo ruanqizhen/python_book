@@ -55,9 +55,10 @@ const sidebars = {
         id: 'oop',
       },
       items: [ 
-        'magic_methods',
+        'class',
         'multiple_inheritance',
         'oop2',
+        'magic_methods',
         'iterator',
         'design_method',
         'solid',

@@ -2,7 +2,6 @@
 
 装饰器可以在不修改现有代码的情况下增加或修改函数的功能。本质上，装饰器是一个接受函数作为参数的函数，并返回一个新的函数。返回新的函数，对输入的函数的功能进行了修改或拓展。
 
-
 ## 基本用法
 
 ### 为函数运行计时
@@ -35,7 +34,7 @@ def my_slow_function():
     return temp_file_path
 ```
 
-上面程序中，my_slow_function() 函数创建了一个临时文件，然后再里面写了一些数据。在函数开始和结束的地方，我们使用了 time.time() 函数来得到当时的系统时间。两个时间之差，就是这个函数的运行时间。
+上面程序中，my_slow_function() 函数创建了一个临时文件，然后在里面写了一些数据。在函数开始和结束的地方，我们使用了 time.time() 函数来得到当时的系统时间。两个时间之差，就是这个函数的运行时间。
 
 ### 通用的计时函数
 
@@ -212,7 +211,8 @@ greet("Qizhen")  # 输出 "Hello Qizhen" 四次
 上文用来记录函数运行时间的应用就是一个装饰器一个非常有用的地方。除了记录运行时间，装饰器还可以帮我们做很多其它工作。比如：
 
 ### 记录函数的调用信息
-为调试目的，记录函数调用的顺序和次数
+
+我们可以编写一个装饰器，记录函数的调用细节，包括函数名和传递给函数的参数。它可以帮助我们跟踪函数的使用情况或分析程序的性能问题。
 
 ```python
 from functools import wraps
@@ -221,14 +221,36 @@ import logging
 def log(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logging.info(f"Running {func.__name__} with arguments {args} and keyword arguments {kwargs}")
+        logging.info(f"【调试】 调用函数 {func.__name__}；位置参数：{args}；关键字参数：{kwargs}")
         return func(*args, **kwargs)
     return wrapper
 ```
 
+上面这个装饰器的 wrapper 函数在调用原始函数之前，使用 logging.info 记录了一个消息，包含原始函数的名称、位置参数和关键字参数。这就是用来帮助我们调试程序用的信息。我们可以按照如下方法使用这个装饰器：
+
+```
+# 配置日志记录系统以在控制台打印消息
+logging.basicConfig(level=logging.INFO)
+
+@log   # 装饰器
+def add(x, y):
+    """加法函数，只是用来测试装饰器"""
+    return x + y
+
+# 调用测试函数并观察日志输出
+print(f"测试函数结果： {add(5, y=7)}")
+```
+
+运行上面的测试程序，我们不但会看到程序本身打印的结果，还会看到高亮的日志打印结果：
+
+``` {1}
+INFO:root:【调试】 调用函数 add；位置参数：(5,)；关键字参数：{'y': 7}
+测试函数结果： 12
+```
+
 ### 缓存函数的结果
 
-避免重复计算
+先看下面的代码：
 
 ```python
 from functools import wraps
@@ -243,8 +265,25 @@ def memoize(func):
     return wrapper
 ```
 
+上面的装饰器中， wrapper 函数首先检查 args 是否已经在 cache 中。如果在，直接返回缓存的结果。如果不在，调用原始函数，并将结果存储在 cache 中，然后返回该结果。当使用这个装饰器装饰一个函数时，该函数的结果会被缓存起来，使得相同的输入参数在下次调用时能够直接返回已缓存的结果，而无需再次执行函数。这种技术特别适用于优化那些调用开销大且经常以相同参数重复调用的函数。
+
+我们在介绍递归函数时介绍了一种[带缓存的递归](recursive#带缓存的递归)算法。有了这个装饰器，就不比额外再改变函数代码以增加缓存了，只需要在之前没有缓存的函数上加上装饰器：
+
+```python
+@memoize
+def fibonacci(n):
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+# 测试
+print(fibonacci(30))  # 有了缓存可以轻松计算很大的斐波那契数
+```
+
 ### 参数验证
-检查传递给函数的参数是否有效
+
+在编写一个新的函数的时候，一种稳妥的做法是，首先检查每个输入参数的数据都是否有效。如果输入参数无效，则应该停止函数运行，启动错误处理机制。不过，给每个参数都编写一段检查代码，还是比较繁琐的。好在，我们可以使用装饰器，编写一些常用的检查逻辑，这样就可以大大简化函数中检查参数有效性的代码。比如，我们下面编写一个装饰器，它回家查函数的每个输入参数，如果有参数小于等于零，则抛出异常。
 
 ```python
 from functools import wraps
@@ -253,12 +292,36 @@ def validate_positive(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if any([arg <= 0 for arg in args]):
-            raise ValueError("All arguments must be positive")
+            raise ValueError("所有参数都必须为正数！")
         return func(*args, **kwargs)
     return wrapper
 ```
 
+上面的装饰器中，wrapper 函数在调用原始函数之前，先检查所有位置参数是否都是正数。any() 函数来实现的。如果发现有非正数的参数，会引发 ValueError。如果所有参数都是正数，调用原始函数并返回结果。
+
+any() 函数是 Python 中的一个内置函数，它用来检查可迭代对象（如列表、元组、集合、字典等）中的元素是否至少有一个为 True。如果可迭代对象中的任何一个元素的布尔值为 True，则 any 函数返回 True；否则，如果所有元素都为 False 或者可迭代对象为空，则返回 False。与之类似的还有一个 all() 函数，它在所有元素都是 True 时返回 True；否则返回 False。
+
+下面的函数用于计算几个物品的总重量，当有输入物品的重量小于等于零，它将会报错：
+
+```python
+@validate_positive
+def get_toal_weight(*args):
+    result = 0
+    for weight in args:
+        result += weight
+    return result
+
+# 测试
+print(get_toal_weight(1, 2, 3, 4, 5))
+
+# 运行下面的代码会抛出一个 ValueError 异常，因为参数中有负数
+# print(get_toal_weight(1, 2, 3, 4, -5))
+```
+
+
 ### 验证用户权限
+
+有时候，出于保护隐私、法律、公司政策等原因，需要对某些函数的访问加以限制，只有取得许可的人员，才可以访问特定的函数。我们可以使用装饰器来实现这样的功能：
 
 ```python
 from functools import wraps
@@ -269,16 +332,53 @@ def requires_permission(permission):
         def wrapper(user, *args, **kwargs):
             if user.permissions.get(permission):
                 return func(user, *args, **kwargs)
-            raise PermissionError(f"User lacks the necessary {permission} permission")
+            raise PermissionError(f"用户 {user.name} 没有 {permission} 的权限")
         return wrapper
     return decorator
 ```
 
-### 重试
-
-如果函数失败，尝试多次执行
+上面的装饰器中，wrapper 函数调用 user.permissions.get(permission) 来检查当前用户是否有相应权限，如果有权限，才会调用原函数 func()，否则会抛出 PermissionError 异常。函数  user.permissions.get(permission) 是我们假定的已经存在的一个用于检查用户权限的函数，为了演示上面的装饰器，我们实现了一个非常简易的查验机制：
 
 ```python
+# 用于演示的 User 类，它简单的定义了每个用户是否有某项操作的权限
+class User:
+    def __init__(self, name, permissions):
+        self.name = name
+        self.permissions = permissions
+
+# 假设两个用户，一个有文档编辑权限，一个没有：
+editor = User("贾经理", {'编辑': True})
+viewer = User("小明", {'编辑': False})
+
+# 下面是一个需要检查访问权限的函数
+@requires_permission('编辑')
+def edit_document(user, document):
+    return f"{user.name} 编辑了文档： {document}"
+
+
+# 测试：
+print(edit_document(editor, "项目计划2033"))     # 应该允许编辑
+
+try:
+    print(edit_document(viewer, "工资调整计划"))  # 应该引发异常
+except PermissionError as e:
+    print(e)  # 输出错误信息
+```
+
+运行上面的测试程序，可以看到如下输出：
+
+```
+贾经理 编辑了文档： 项目计划2033
+用户 小明 没有 编辑 的权限
+```
+
+
+### 重试
+
+有些函数在运行时出错概率是比较高的，比如链接某网页的函数，很可能因为偶发性的网络错误无法打开预设的网页。我们可以编写一个装饰器，让类似的函数在出错时，重复运行几次，直到运行成功为止：
+
+```python
+import time
 from functools import wraps
 
 def retry(attempts=3, delay=1):
@@ -290,10 +390,30 @@ def retry(attempts=3, delay=1):
                     return func(*args, **kwargs)
                 except Exception as e:
                     if attempt < attempts - 1:
-                        time.sleep(delay)
+                        time.sleep(delay)  # 延时
                         continue
                     else:
                         raise e
         return wrapper
     return decorator
+```
+
+上面的装饰器中，wrapper 函数会尝试执行 func。如果执行过程中发生异常，并且当前尝试次数未达到 attempts 指定的次数，则在等待 delay 指定的秒数后，再一次尝试前。如果尝试次数达到上限，则重新抛出异常。我们可以编写一个有可能失败的函数来测试上面的装饰器。测试函数内会在 0 和 1 之间随机选取一个数，如果选 0 则表示函数运行失败； 1 表示成功。如果我们尝试运行这个有可能失败的函数 5 次，基本上总会碰上一次运行成功的：
+
+```python
+import random
+
+@retry(attempts=5, delay=2)
+def may_fail_func():
+    """一个可能失败的函数"""
+    if random.randint(0, 1) == 0:
+        print("函数运行失败！")
+        raise ValueError("多个随机数都是 0。")
+    return "函数运行成功！"
+
+try:
+    result = may_fail_func()
+    print(result)
+except ValueError as e:
+    print(f"多次尝试后，依然失败： {e}")
 ```
