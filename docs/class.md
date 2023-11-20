@@ -11,7 +11,7 @@ class Animal:
 
 class 后面紧接着是类名，我们给动物类起名 Animal，类名通常是大写开头的单词。有时候类名后面会在跟一个括号，括号中的是新定义的类的父类，后文会演示如何指定父类。如果没有指明父类，表示默认从 Python 预定义的 object 类继承。Python 程序中，所有的类都是 object 类的子孙类。
 
-### 创建类的对象
+### 类的对象
 
 在程序中直接使用一个类的情况是比较少的，多数情况下，我们会为一个类创建一个或数个对象，然后访问对象的属性或方法。在程序中写出类的名字，然后加上一个括号，就可以生成一个新的类的对象。如果在变量赋值表达式的右侧生成新的对象，就可以让变量指向这个新生成的对象：
 
@@ -19,11 +19,11 @@ class 后面紧接着是类名，我们给动物类起名 Animal，类名通常�
 dog = Animal()
 ```
 
-## 添加属性
+## 属性
 
 Python 中要区分“类的属性”，和“对象的属性”。在多数其它语言中，这两项是不区分的。
 
-在类中添加一些变量，这些变量就会成为类的属性。类的属性可以被变量访问。比如，我们可以为类添加一个属性 total_animals，用于统计总共创建了多少个动物：
+在类中添加一些变量，这些变量就会成为类的属性。比如，我们可以为类添加一个属性 total_animals，用于统计总共创建了多少个动物：
 
 ```python
 class Animal:
@@ -34,23 +34,28 @@ print(Animal.total_animals)   # 输出： 0， 直接使用类名进行访问
 print(dog.total_animals)      # 输出： 0， 也可以通过实例进行访问
 ```
 
-访问类的属性的时候，在类名的后面加一个点号 `.` 然后加上属性的名字即可。
+访问类的属性的时候，在类名的后面加一个点号 `.` 然后加上属性的名字即可。如果类的对象中没有同名的属性，那么通过对象读取这个属性，它会自动返回类的属性的值。比如上面示例中 `dog.total_animals`，dog 对象并没有 total_animals 属性，但是它会返回 Animal 类相应的属性的值。
 
 对象的属性，可以通过变量赋值语句进行添加，比如，为新生成的对象 dog 添加一个名为 age 的属性：
 
 ```python
 class Animal:
-    name = 'Buddy'
+    name = '旺财'
 
 dog = Animal()
 dog.age = 3
 print(dog.age)   # 输出： 3
 ```
 
-## 初始化函数（构造函数）
+`dog.age` 就表示 dog 对象的名为 age 的属性。
 
-创建实例之后，再为其设置属性值，并不是好的编程方式。最好是在创建的同时，就制定好属性的值。我们可以使用类的初始化方法来达到这一目的。初始化方法也被称为构造函数。
-类的初始化函数式 `__init__` 方法，是一个特殊的方法，当创建类的新实例时，它会自动被调用。将来我们还会看到其它一些 Python 定义的特殊的类的方法，它们的函数名都是用双下划线开始和结尾的。`__init__` 方法的第一个参数必须是 self。self 是一个指向实例本身的参数，它必须作为类中每一个对象方法的第一个参数（包括__init__）。当调用对象的方法时，Python 会自动传递当前对象的引用给 self。
+## 方法
+
+### 初始化函数
+
+初始函数也被称为构造函数、构造方法。
+
+创建对象之后，再为其设置属性值，并不是好的编程方式。最好是在创建对象的同时，就把属性的初始值都设置好。我们可以使用类的初始化方法来达到这一目的。类的初始化函数 `__init__` 是一个特殊的方法，当创建类的新实例时，它会自动被调用。后文，我们将还会介绍其它一些 Python 定义的[类的特殊方法](magic_methods)，它们的函数名都是用双下划线开始和结尾的。`__init__` 方法的第一个参数必须是 self。self 是一个指向实例本身的参数，它也必须作为类中每一个对象方法的第一个参数。当调用对象的方法时，Python 会自动传递当前对象的引用给 self。
 
 ```python
 class Animal:
@@ -59,15 +64,18 @@ class Animal:
         self.species = species
 
 # 使用：
-dog = Animal("Buddy", "Dog")
-chick = Animal("Charlie", "Chick")
+dog = Animal("旺财", "狗")
+chick = Animal("花冠", "Chick")
 
-print(dog.name)       # 输出： Buddy
-print(chick.name)     # 输出： Charlie
-
+print(dog.name)       # 输出： 旺财
+print(chick.name)     # 输出： 花冠
 ```
 
-## 添加对象方法
+上面程序中，Animal 类的 `__init__` 初始化函数，除了 self 之外，还有两个参数 name 和 species，分别表示动物的名字和品种。有了初始化函数，我们就可以在创建对象时，为类传递必要的参数了，比如 `Animal("旺财", "狗")` 会创建一个名为旺财，品种为狗的动物类实例。
+
+Python 中，每个类只能有一个构造函数，不像其它很多编程语言，可以为一个类创建具有不同参数的多个构造函数。
+
+### 对象方法
 
 大多数支持面向对象的编程语言（C++、Java 等），为了数据的安全性，都允许把类的变量设为私有，也就是不允许在类之外访问。但是 Python 中没有这样的设置，为了保证数据安全，我们应该尽量避免在类的外部直接访问类的数据，而是应该通过调用类定义的方法，来间接的方位类中的数据。比如，为了得到动物的名字，我们可以在类中定义一个函数来负责得到 name 数据。需要得到某个实例的 name 属性时，应该调用这个函数，而不是直接方位属性：
 
@@ -84,12 +92,12 @@ class Animal:
         print(f"{self.name} is eating.")
 
 # 使用：
-dog = Animal("Buddy", "Dog")
+dog = Animal("旺财", "Dog")
 dog.speak()       # 输出： Some generic sound
-dog.eat()         # 输出： Buddy is eating.
+dog.eat()         # 输出： 旺财 is eating.
 ```
 
-## 类方法
+### 类方法
 
 与属性类似，方法也分对象方法和类方法。
 
@@ -122,7 +130,7 @@ print(cat.total_animals())     # 输出： 2， 等价于直接使用类型调�
 
 在上面的程序中，每次 `__init__()` 方法被调用，也就是每创建新实例，变量 total_animals 的数值就会增加 1。由此，我们就可以统计目前总共有多少动物了。
 
-## 静态方法：
+### 静态方法：
 
 如果在实现某个功能时，不需要访问实例或类的任何属性，那么应该使用静态方法。静态方法如果放在类的外面，作为一个普通函数，功能上也不会有任何区别。放在类里面更多的是为了实现类的封装，相关的方法和数据应该尽量组织在一起。
 
@@ -213,9 +221,9 @@ class Dog(Animal):  # 在括号内指定父类名字，表示继承
 下面的代码是对以上两个类的演示：
 
 ```python
-dog = Dog(name="Buddy", breed="Golden Retriever")
-dog.speak()     # 输出: I am a Golden Retriever named Buddy and I bark!
-dog.wag_tail()  # 输出: Buddy is wagging its tail!
+dog = Dog(name="旺财", breed="Golden Retriever")
+dog.speak()     # 输出: I am a Golden Retriever named 旺财 and I bark!
+dog.wag_tail()  # 输出: 旺财 is wagging its tail!
 
 cat = Animal(species="Cat")
 cat.speak()     # 输出: I am an Cat
