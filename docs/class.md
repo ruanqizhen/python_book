@@ -147,9 +147,12 @@ print(Animal.get_total_animals())  # 输出： 2
 print(cat.get_total_animals())     # 输出： 2， 这等价于直接使用类型调用
 ```
 
-在上面的程序中，每次 `__init__()` 方法被调用，也就是每创建新实例，变量 total_animals 的数值就会增加 1。由此，我们就可以统计目前总共有多少动物了。要注意的是，与属性不同，类中不能有同名的类方法和对象方法。如果两个函数定义重名，后定义的函数会覆盖前面的函数。
+在上面的程序中，每次 `__init__()` 方法被调用，也就是每创建新实例，变量 total_animals 的数值就会增加 1。由此，我们就可以统计目前总共有多少动物了。
 
-其它多数主流语言中，不存在类方法这一概念。
+要注意的是，与属性不同，类中不能有同名的类方法和对象方法。如果两个函数定义重名，后定义的函数会覆盖前面的函数。
+
+在其它多数主流语言中，是不存在类方法、类属性这种概念的，它们所有的方法都是针对对象的。但是在 Python 语言中，一切都是对象：数据是对象；函数是对象；类本身也是一种对象，尽管它还能去生成别的对象。因此，类本身作为一种对象，可以有它自己的属性和方法。
+
 
 #### 工厂方法
 
@@ -190,9 +193,7 @@ print(f"类型：{complex_animal.species}；年龄：{complex_animal.age}；性�
 
 如果在实现某个功能时，不需要访问实例或类的任何属性，那么应该使用静态方法。静态方法如果放在类的外面，作为一个普通函数，功能上也不会有任何区别。放在类里面更多的是为了实现类的封装，相关的方法和数据应该尽量组织在一起。
 
-静态方法使用 @staticmethod 装饰器来声明。它的使用方法与类方法相同。
-
-比如，我们可以为 Animal 类添加一个静态方法，根据动物的叫声来判断动物是否健康。它不需要用到任何类或实例的属性，仅根据输入的声音做判断：
+静态方法使用 @staticmethod 装饰器来声明。它的使用方法与类方法相同。比如，我们可以为 Animal 类添加一个静态方法，根据动物的叫声来判断动物是否健康。它不需要用到任何类或实例的属性，仅根据输入的声音做判断：
 
 ```python
 class Animal:
@@ -206,15 +207,117 @@ sound = "barking"
 print(Animal.is_healthy(sound))   输出： True
 ```
 
+静态方法非常适合存放一些公共函数、常用的工具函数、辅助函数等。这样不需要创建对象，这些函数即可被其它代码调用。比如下面的示例中，一个作为工具函数的计算两点间距离的函数设置为了静态方法：
+
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    @staticmethod
+    def distance(p1, p2):
+        """计算两点之间的距离"""
+        return ((p1.x - p2.x)**2 + (p1.y - p2.y)**2)**0.5
+
+
+p1 = Point(1, 2)
+p2 = Point(3, 4)
+
+print(Point.distance(p1, p2))
+```
+
+本质上，在 Python 中，属性和方法是同一种东西，并没有太大区别。关于这一点，我们将在[动态访问属性和方法](objects#动态访问属性和方法)中进行解释。
+
+## 继承
+
+一个类（子类）可以继承另一个类（父类或基类）的属性和方法。这种机制允许使得子类能够直接利用父类的功能，并加以扩展。以下是一个示例，其中有一个 Animal 类和一个从 Animal 类继承的 Dog 类：
+
+```python
+# 定义父类
+class Animal:
+    def __init__(self, species):
+        self.species = species
+
+    def speak(self):
+        print(f"我是一只{self.species}")
+
+# 定义子类
+class Dog(Animal):  # 在括号内指定父类名字，表示继承
+    def __init__(self, name, breed):
+        # 调用父类的构造方法
+        super().__init__(species="狗")
+        self.name = name
+        self.breed = breed
+
+    # 重写父类的方法
+    def speak(self):
+        print(f"我是一条{self.breed}，名叫：{self.name}。我会汪汪叫。")
+
+    # 子类特有的方法
+    def wag_tail(self):
+        print(f"{self.name}正在摇尾巴。")
+```
+        
+在上面的程序中，Animal 是一个基类，有一个 species 属性和一个 speak 方法。Dog 类在其定义时通过在括号内指定 Animal 来表示它从 Animal 类继承。子类 Dog 直接就具备了父类 Animal 的所有属性和方法。如果在子类中不重写这些属性和方法的话，对于子类的对象，程序会自动使用它们父类中的属性和方法。如果子类重写了这些属性和方法，也就定义了重名的属性和方法，那么针对子类的对象，程序会采用子类中重新定义的属性与方法。
+
+在这个示例中，Dog 类重写了父类的 构造方法和 speak 方法。在子类重写的方法中，可以使用 super() 函数来调用父类中相对应的方法。比如在 Dog 的构造方法中，我们使用 `super().__init__(species="狗")` 来调用 Animal 类的初始化方法。
+
+子类也可以定义全新的方法。例如，Dog 类定义了一个新方法 wag_tail。
+
+下面的代码是对以上两个类的演示：
+
+```python
+dog = Dog(name="旺财", breed="金毛猎犬")
+dog.speak()     # 输出: 我是一条金毛猎犬，名叫：旺财。我会汪汪叫。
+dog.wag_tail()  # 输出: 旺财正在摇尾巴。
+
+cat = Animal(species="猫")
+cat.speak()     # 输出: 我是一只猫
+```
+
+类继承为我们提供了一个有效的方法来组织和重用代码，同时还能够利用多态性提高代码的灵活性。
+
+## 多态
+
+有 Java、C++ 经验的读者应该已经比较了解多态的概念了。但是 Python 中对于多态的实现与 Java 等经典的面向对象的编程语言有所不同。Java 中的多态是基于类或接口的继承来实现的，父类中的方法，可以在不同子类中有不同的实现。但 Python 的多态是基于“鸭子类型”实现的。
+
+“鸭子类型”是一个编程术语，它来自于这样一个说法：“如果有一只鸟走路像鸭子、游泳像鸭子、叫声像鸭子，那么它就是鸭子。” 在 Python 中，鸭子类型意味着：对象的类型或类别是由它的行为（即它所拥有的方法）决定的，而不是由它所继承父类或它自身的类型决定的。相比基于继承实现的多态，鸭子类型重点关注对象中实现的方法，而不是对象的类型。它提高了代码的灵活性和可重用性。允许开发者更加关注功能和行为，而不是形式。
+
+下面的代码演示了鸭子类型：
+
+```python
+class Cat:
+    def speak(self):
+        return "喵喵！"
+
+class Dog:
+    def speak(self):
+        return "汪汪！"
+
+def animal_voice(animal):
+    return animal.speak()
+
+cat = Cat()
+dog = Dog()
+
+# 由于 Cat 和 Dog 都有 speak 方法，所以它们可以被 animal_voice 函数所处理
+print(animal_voice(cat))  # 输出: 喵喵！
+print(animal_voice(dog))  # 输出: 汪汪！
+```
+
+在上面的代码中，我们并不关心 animal 的具体类型，只关心它是否有一个 speak 方法。这就是鸭子类型的体现。当动物们的 speak 方法被调用时，它们的行为是不同的，属于不同类的对象给出了不同的声音。这就是多态的体现。
+Python 之所以可以采用鸭子类型，是因为 Python 语言并不检查变量与参数的数据类型，我们可以把任何类型的对象传递给一个函数。而在 Java 这类轻质类型检查的语言中，是不可能把任何对象都传递给一个函数的，它必须限定输入的对象只能是某各个类极其子孙类的对象。
+
+
+
 ## 访问限制
 
-大多数支持面向对象的编程语言（C++、Java 等），为了数据的安全性，都允许把类的变量设为私有，也就是不允许在类之外访问。但是 Python 中没有这样的设置，为了保证数据安全，我们应该尽量避免在类的外部直接访问类的数据，而是应该通过调用类定义的方法，来间接的方位类中的数据。比如，为了得到动物的名字，我们可以在类中定义一个函数来负责得到 name 数据。需要得到某个实例的 name 属性时，应该调用这个函数，而不是直接访问属性：
+大多数支持面向对象的编程语言（C++、Java 等），为了数据的安全性，都允许把类的变量设为私有，也就是不允许在类之外访问。比如 Java 中可以使用 private 关键字限制成员变量和函数。但是 Python 中没有这样的设置，类中的任何数据与方法都是对外公开的。
 
+### 命名规范
 
-
-多数面向对象的编程语言都可以限制类成员变量与方法的访问权限，以保护安全，比如 Java 中可以使用 private 关键字限制成员变量和函数。但 Python 对此的限制过于宽松了，类中的任何数据与方法都是对外公开的。我们只能使用一些命名规范，来提醒其它人，某些变量与函数应当是私有的，不要强行访问。
-
-最常见的方法在变量或函数的名字前面加一个下划线。这意味着它们不应该在类的外部被访问，虽然实际上仍然可以被访问。这只是一种命名约定，而不是强制性的访问控制。比如：
+尽管我们无法阻止数据和方法被访问，但还是还可以使用一些命名规范，来提醒其他人，某些变量与函数应当是私有的，不要强行访问。最常见的方法在变量或函数的名字前面加一个下划线。这意味着它们不应该在类的外部被访问，虽然这只是一种命名约定，而不是强制性的访问控制，但多数情况下，提醒作用就已经足够了。比如：
 
 ```python
 class MyClass:
@@ -222,7 +325,7 @@ class MyClass:
         self._protected_variable = "Protected"
     
     def _protected_method(self):
-        return "This is a protected method"
+        return "这是一个受保护方法"
 ```
 
 变量或函数的名字前面加双下划线会更安全一些，因为这样的变量或函数会在内部被名称改写，使其变得不容易从外部访问。比如：
@@ -233,91 +336,93 @@ class MyClass:
         self.__private_variable = "Private"
     
     def __private_method(self):
-        return "This is a private method"
+        return "这是一个私有方法"
 ```
 
 在上面的代码中，`__private_variable` 和 `__private_method` 在内部实际上被改写为 `_MyClass__private_variable` 和 `_MyClass__private_method`。这种改写是自动的，所以从类的外部直接访问 `__private_variable` 会导致一个属性错误。
 
 总的来说，Python 依赖于命名约定和开发者的自律来控制访问权限。
 
-## 继承
+### 隐藏数据
 
-在 Python 中，一个类（子类）可以继承另一个类（父类或基类）的属性和方法。这种机制允许我们在创建了一个通用的父类之后，派生出特定的子类，子类能够复用利用父类的功能，并加以扩展。
-
-以下是一个示例，其中有一个 Animal 类和一个从 Animal 类继承的 Dog 类：
+Python 中类的属性不是特别安全，它不能控制访问权限，也无法限制取值范围。一个解决思路是：把所有属性都当做是私有的，不直接读写属性，而是通过调用方法来间接访问类中的数据。方法中可以实现更复杂的功能，比如，加入数值范围检查等。这样，就可以实现一些更复杂的逻辑来确保数据安全、正确。比如，为了得到动物的名字，我们可以在类中定义一个函数来负责得到 name 数据。需要得到某个实例的 name 属性时，应该调用这个函数，而不是直接访问属性：
 
 ```python
-# 定义父类
 class Animal:
-    def __init__(self, species):
-        self.species = species
+    def __init__(self, name):
+        self._name = name
 
-    def speak(self):
-        print(f"I am an {self.species}")
+    def get_name(self):
+        return self._name
 
-# 定义子类
-class Dog(Animal):  # 在括号内指定父类名字，表示继承
-    def __init__(self, name, breed):
-        # 调用父类的构造方法
-        super().__init__(species="Dog")
-        self.name = name
-        self.breed = breed
 
-    # 重写父类的方法
-    def speak(self):
-        print(f"I am a {self.breed} named {self.name} and I bark!")
+def main():
+    animal = Animal("旺财")
 
-    # 子类特有的方法
-    def wag_tail(self):
-        print(f"{self.name} is wagging its tail!")
+    # 不推荐直接访问类的数据
+    # print(animal._name)
+
+    # 推荐通过调用方法访问类的数据
+    print(animal.get_name())
+
+if __name__ == "__main__":
+    main()
 ```
+
+Python 中已经有一些现成的工具来帮助编写用于数据访问的方法，就是属性装饰器。
+
+### 属性装饰器
+
+类的方法使用起来，比访问类的属性稍微麻烦一点：有的方法用来读数据，有的用来写数据，如果命名又不规则，就更不方便了。为了解决这个问题，Python 内建了一个名为 @property 的装饰器，专门用于装饰器将类的方法转换为相同名称的属性。@property 经常与 setter 和 deleter 装饰器一起使用，用以控制属性的读取、设置和删除行为。这使得开发者可以在访问、设置和删除属性时插入自定义的逻辑，从而提供更好的封装和数据验证。
+
+以下是一个 Circle 类的简单示例，它使用了 @property 等装饰器来管理圆的半径和面积：
+
+```python
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+    
+    @property
+    def radius(self):
+        """获取圆的半径"""
+        return self._radius
+    
+    @radius.setter
+    def radius(self, value):
+        """设置圆的半径，并确保它是一个正数"""
+        if value <= 0:
+            raise ValueError("半径必须是正数")
+        self._radius = value
         
-在上面的程序中，Animal 是一个基类，有一个 species 属性和一个 speak 方法。Dog 类在其定义时通过在括号内指定 Animal 来表示它从 Animal 类继承。
+    @radius.deleter
+    def radius(self):
+        """禁止删除半径属性，并打印一条消息"""
+        print("半径属性不能被删除!")
+        # 如果需要删除，可以调用 del self._radius
+    
+    @property
+    def area(self):
+        """计算圆的面积"""
+        return 3.14 * self._radius * self._radius
 
-在子类的方法中，使用 super() 函数允许我们调用父类的方法。在 Dog 的构造方法中，我们使用 super().__init__(species="Dog") 来调用 Animal 类的初始化方法。
+# 测试：
+c = Circle(5)    # 创建一个半径为 5 的圆的对象
+print(c.radius)  # 输出: 5
+print(c.area)    # 输出: 78.5
 
-如果子类有与父类同名的方法，那么子类的方法会覆盖父类的方法。在这里，Dog 类重写了 speak 方法。子类可以定义新的方法。例如，Dog 类定义了一个新方法 wag_tail。
+c.radius = 3     # 通过 setter 方法设置半径
+print(c.radius)  # 输出: 3
+print(c.area)    # 输出: 28.26
 
-下面的代码是对以上两个类的演示：
-
-```python
-dog = Dog(name="旺财", breed="Golden Retriever")
-dog.speak()     # 输出: I am a Golden Retriever named 旺财 and I bark!
-dog.wag_tail()  # 输出: 旺财 is wagging its tail!
-
-cat = Animal(species="Cat")
-cat.speak()     # 输出: I am an Cat
+# 运行下列代码，程序会出错
+# c.radius = -2  # 无效半径，这将抛出 ValueError
+# c.area = 5     # 只读属性不可写，这将抛出 AttributeError
 ```
 
-类继承为我们提供了一个有效的方法来组织和重用代码，同时还能够利用多态性提高代码的灵活性。
+在上面的示例中，radius 是一个使用 @property 装饰的方法，因此可以像访问普通属性一样访问它。@radius.setter 是一个设置器，用它装饰的方法负责设置 radius 属性的值，在示例中，设置圆的半径之前，还对输入数据进行了验证，确保输入的半径不是负数。@radius.deleter 装饰的方法会在删除属性时调用，在示例中，我们用它禁止了删除半径这一行为，因为圆必须有一个半径属性。
 
-## 多态
+@property 装饰器本身只能装饰属性的读取行为，因此，只有 @property 装饰的 area 是一个只读属性，定义了读取方法，没有定义设置方法。
 
-有 Java、C++ 经验的读者应该已经比较了解多态的概念了。但是 Python 中对于多态的实现与 Java 等经典的面向对象的编程语言有所不同。Java 中的多态是基于类或接口的继承来实现的，父类中的方法，可以在不同子类中有不同的实现。但 Python 的多态是基于“鸭子类型”实现的。
+通过使用 @property，我们可以确保 Circle 类的状态始终保持一致，并简化了调用代码。笔者建议类中的属性都应该尽量使用属性装饰器来实现。
 
-“鸭子类型”是一个编程术语，它来自于这样一个说法：“如果有一只鸟走路像鸭子、游泳像鸭子、叫声像鸭子，那么它就是鸭子。” 在 Python 中，鸭子类型意味着对象的类型或类别是由它的行为（即它所拥有的方法）决定的，而不是它所继承父类或它自身的类型决定的。相比基于继承实现的多态，鸭子类型重点关注对象的行为，而不是对象的类型。它提高了代码的灵活性和可重用性。允许开发者更加关注功能和行为，而不是细节和形式。
 
-下面的代码演示了鸭子类型：
-
-```python
-class Cat:
-    def speak(self):
-        return "Meow!"
-
-class Dog:
-    def speak(self):
-        return "Woof!"
-
-def animal_voice(animal):
-    return animal.speak()
-
-cat = Cat()
-dog = Dog()
-
-# 由于 Cat 和 Dog 都有 speak 方法，所以它们可以被 animal_voice 函数所处理
-print(animal_voice(cat))  # 输出: Meow!
-print(animal_voice(dog))  # 输出: Woof!
-```
-
-在上面的代码中，我们并不关心 animal 的具体类型，只关心它是否有一个 speak 方法。这就是鸭子类型的体现。当动物们的 speak 方法被调用时，它们的行为是不同的，属于不同类的对象给出了不同的声音。这就是多态的体现。
-Python 之所以可以采用鸭子类型，是因为 Python 语言并不检查变量与参数的数据类型，我们可以把任何类型的对象传递给一个函数。而在 Java 这类轻质类型检查的语言中，是不可能把任何对象都传递给一个函数的，它必须限定输入的对象只能是某各个类极其子孙类的对象。
