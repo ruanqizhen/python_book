@@ -57,7 +57,7 @@ const sidebars = {
       items: [ 
         'class',
         'multiple_inheritance',
-        'objiects',
+        'objects',
         'magic_methods',
         'iterator',
         'design_method',
