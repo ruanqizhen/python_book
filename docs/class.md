@@ -67,17 +67,34 @@ class Animal:
 dog = Animal("旺财", "狗")
 chick = Animal("花冠", "Chick")
 
-print(dog.name)       # 输出： 旺财
+print(dog.name)       # 输出： 旺财 
 print(chick.name)     # 输出： 花冠
 ```
 
-上面程序中，Animal 类的 `__init__` 初始化函数，除了 self 之外，还有两个参数 name 和 species，分别表示动物的名字和品种。有了初始化函数，我们就可以在创建对象时，为类传递必要的参数了，比如 `Animal("旺财", "狗")` 会创建一个名为旺财，品种为狗的动物类实例。
+上面程序中，Animal 类的 `__init__` 初始化函数，除了 self 之外，还有两个参数 name 和 species，分别表示动物的名字和品种。有了初始化函数，我们就可以在创建对象时，为类传递必要的参数了，比如 `Animal("旺财", "狗")` 会创建一个名为旺财，品种为狗的动物类实例。在构造函数中，它通过为 `self.name` 和 `self.species` 赋值，创建了两个对象属性的值。
 
-Python 中，每个类只能有一个构造函数，不像其它很多编程语言，可以为一个类创建具有不同参数的多个构造函数。
+在一个类中，是可以存在同名的类属性，和对象属性的。如果用重名存在，就不能再通过对象来访问类属性了：
+
+```python
+class Animal:
+    name = "动物"
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+
+# 使用：
+dog = Animal("旺财", "狗")
+
+print(Animal.name)     # 输出： 动物 - 使用类名访问类属性
+print(dog.name)        # 输出： 旺财 - 通过对象访问对象属性
+```
+
+Python 中，每个类只能有一个构造函数，不像其它很多编程语言，可以为一个类创建具有不同参数的多个构造函数。如果需要使用多种不同的参数创建一个类的实例，可以使用使用[工厂方法](class#工厂方法)。
+
 
 ### 对象方法
 
-大多数支持面向对象的编程语言（C++、Java 等），为了数据的安全性，都允许把类的变量设为私有，也就是不允许在类之外访问。但是 Python 中没有这样的设置，为了保证数据安全，我们应该尽量避免在类的外部直接访问类的数据，而是应该通过调用类定义的方法，来间接的方位类中的数据。比如，为了得到动物的名字，我们可以在类中定义一个函数来负责得到 name 数据。需要得到某个实例的 name 属性时，应该调用这个函数，而不是直接方位属性：
+对象的方法（简称为“方法”）是属于对象的函数。它们在类中被定义，可以在该类的对象上被调用。方法用于实现对象的一些行为或操作。比如，一个动物可以吃饭，可以发出叫声，那么我们就可以为 Animal 的对象添加一个 eat() 方法和一个 speak() 方法：
 
 ```python
 class Animal:
@@ -86,26 +103,28 @@ class Animal:
         self.species = species
 
     def speak(self):
-        print("Some generic sound")
+        print("这是默认声音。")
 
     def eat(self):
-        print(f"{self.name} is eating.")
+        print(f"{self.name} 正在吃饭。")
 
 # 使用：
-dog = Animal("旺财", "Dog")
-dog.speak()       # 输出： Some generic sound
-dog.eat()         # 输出： 旺财 is eating.
+dog = Animal("旺财", "狗")
+dog.speak()       # 输出： 这是默认声音。
+dog.eat()         # 输出： 旺财 正在吃饭。
 ```
+
+方法与对象是绑定的，这意味着方法可以访问与它绑定的对象的属性和其他方法，也可以修改绑定对象的数据。但是它不能够直接访问其它对象的数据。在定义对象方法时，第一个参数必须是 self，它代表对象本身。通过 self，方法可以访问和修改对象的属性和调用其他方法。
 
 ### 类方法
 
-与属性类似，方法也分对象方法和类方法。
+与属性类似，除了有对象方法，还有类方法。
 
-类方法是与类而非其实例关联的方法。类方法的第一个参数通常是指代类本身的参数，习惯上命名为 cls。这与实例方法的第一个参数为 self 不同。如果我们希望某个方法不与任何实例特定的状态相关，而是与类的状态相关时，类方法就派上了用场。或者当方法不需要访问任何实例特定的属性或方法，但仍需要了解类的一些属性时，也可以使用它。
+类方法是与类而非其对象绑定的方法。类方法的第一个参数通常是指代类本身的参数，习惯上命名为 cls。这与对象方法的第一个参数为 self 不同。如果我们希望某个方法不与任何特定对象的状态相关，而是与类的状态相关时，类方法就派上了用场。或者当方法不需要访问任何实例特定的属性或方法，但仍需要了解类的一些属性时，也可以使用它。
 
-比如我们需要统计，总共创建了多少个动物，这一数据与任何一个具体的动物实例都无关，它只与 Animal 本身相关。那么我们就可以定义一个类方法 total_animals() 来返回我们需要的数据。
+比如我们需要统计，总共创建了多少个动物，这一数据与任何一个具体的动物实例都无关，它只与 Animal 本身相关。那么我们就可以定义一个类方法 get_total_animals() 来返回我们需要的数据。
 
-类方法使用 @classmethod 装饰器来声明，也就是在定义 total_animals() 函数的上方要加上 `@classmethod` 这一行文字。关于装饰器，后文会有详解。在类方法内，使用 cls 获取类本身的数据。在类方法之外，直接使用类名获取类的数据：
+类方法使用 @classmethod [装饰器](decorator)来声明，也就是在定义 get_total_animals() 函数的上方要加上 `@classmethod` 这一行文字。在类方法内，使用 cls 获取类本身的数据。在类方法之外，直接使用类名获取类的数据：
 
 ```python
 class Animal:
@@ -117,18 +136,55 @@ class Animal:
 
     # 类方法
     @classmethod
-    def total_animals(cls):
+    def get_total_animals(cls):
         return cls.total_animals
         
-cat = Animal("Cat")
-dog = Animal("Dog")
+cat = Animal("猫")
+dog = Animal("狗")
 
 # 使用类方法
-print(Animal.total_animals())  # 输出： 2
-print(cat.total_animals())     # 输出： 2， 等价于直接使用类型调用
+print(Animal.get_total_animals())  # 输出： 2
+print(cat.get_total_animals())     # 输出： 2， 这等价于直接使用类型调用
 ```
 
-在上面的程序中，每次 `__init__()` 方法被调用，也就是每创建新实例，变量 total_animals 的数值就会增加 1。由此，我们就可以统计目前总共有多少动物了。
+在上面的程序中，每次 `__init__()` 方法被调用，也就是每创建新实例，变量 total_animals 的数值就会增加 1。由此，我们就可以统计目前总共有多少动物了。要注意的是，与属性不同，类中不能有同名的类方法和对象方法。如果两个函数定义重名，后定义的函数会覆盖前面的函数。
+
+其它多数主流语言中，不存在类方法这一概念。
+
+#### 工厂方法
+
+类方法一个比较典型的应用是用于工厂方法。工厂方法是一种用于创建对象的函数，它可以比构造函数更复杂，通常用于创建具有一定复杂度的对象，特别是当对象的创建需要依赖于某些动态条件或者涉及到复杂的初始化过程时。复杂的工厂函数可以创建多种不同类的对象，我们这里用一个简单示例做演示，它可以生成一个 Animal 对象，但是它具备一些和 Animal 构造函数不同的参数：
+
+```python
+class Animal:
+    total_animals = 0  # 类变量，跟踪创建的动物数量
+
+    def __init__(self, species):
+        self.species = species
+        Animal.total_animals += 1
+
+    # 类方法，用于获取总动物数
+    @classmethod
+    def get_total_animals(cls):
+        return cls.total_animals
+
+    # 工厂方法，用于创建复杂的动物对象
+    @classmethod
+    def create_complex_animal(cls, species, age, gender):
+        animal = cls(species, age, gender)
+        animal.age = age
+        animal.gender = gender
+        return animal
+
+# 使用工厂方法创建一个动物
+complex_animal = Animal.create_complex_animal("熊猫", 5, "雄性")
+
+# 检查新创建的复杂动物的属性
+print(f"类型：{complex_animal.species}；年龄：{complex_animal.age}；性别：{complex_animal.gender}")
+
+# 输出：
+# 类型：熊猫；年龄：5；性别：雄性
+```
 
 ### 静态方法：
 
@@ -151,6 +207,10 @@ print(Animal.is_healthy(sound))   输出： True
 ```
 
 ## 访问限制
+
+大多数支持面向对象的编程语言（C++、Java 等），为了数据的安全性，都允许把类的变量设为私有，也就是不允许在类之外访问。但是 Python 中没有这样的设置，为了保证数据安全，我们应该尽量避免在类的外部直接访问类的数据，而是应该通过调用类定义的方法，来间接的方位类中的数据。比如，为了得到动物的名字，我们可以在类中定义一个函数来负责得到 name 数据。需要得到某个实例的 name 属性时，应该调用这个函数，而不是直接访问属性：
+
+
 
 多数面向对象的编程语言都可以限制类成员变量与方法的访问权限，以保护安全，比如 Java 中可以使用 private 关键字限制成员变量和函数。但 Python 对此的限制过于宽松了，类中的任何数据与方法都是对外公开的。我们只能使用一些命名规范，来提醒其它人，某些变量与函数应当是私有的，不要强行访问。
 
