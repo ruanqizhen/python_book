@@ -351,36 +351,6 @@ print(obj.history_of('y'))  # 输出：[5]
 ```
 
 
-## 函数调用
-
-函数调用魔法方法是 `__call__`。这个方法允许对象的实例像函数一样被调用。当你尝试调用一个对象的实例（而不是类的方法或函数）时，Python 会自动调用该实例的 `__call__` 方法。这是一个特别的方法，它的存在可以让对象行为看起来像函数，这使得对象更加灵活和多变。
-
-假设我们想创建一个类，它的对象可以被调用来计算多项式的值。例如，为输入的 x，计算 3x^2 + 4x + 10 的值。
-
-```python
-class Polynomial:
-    def __init__(self, coefficients):
-        """coefficients应该是一个列表，其中第i个元素是x^i的系数。"""
-        self.coefficients = coefficients
-
-    def __call__(self, x):
-        """计算多项式的值给定x."""
-        return sum([coef * (x ** (len(self.coefficients) - i - 1)) for i, coef in enumerate(self.coefficients)])
-
-    def __repr__(self):
-        return " + ".join([f"{coef}x^{(len(self.coefficients) - i - 1)}" for i, coef in enumerate(self.coefficients) if coef])
-
-# 创建一个多项式对象：3x^2 + 4x + 10
-p = Polynomial([3, 4, 10])
-
-# 调用这个对象来计算 x=2 的值
-print(p(2))  # 输出: 30
-
-# 输出多项式本身
-print(p)  # 输出: 3x^2 + 4x^1 + 10x^0
-```
-
-在上面的示例中，`__call__` 方法使得 Polynomial 类的实例可以被调用。我们只需使用一个数字作为参数（在上述例子中是2），就可以计算多项式在该点的值。
 
 ## 上下文管理
 

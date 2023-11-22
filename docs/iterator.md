@@ -251,3 +251,146 @@ result = list(combinations_with_replacement([1, 2, 3], 2))
 print(result)  # 输出: [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
 ```
 
+## 枚举
+
+枚举在很多编程语言里都是基本的数据类型。在 Python 中，枚举不是基础数据类型，而是一个表示固定集合中元素的类。这些元素都是常量，不应该被更改。使用枚举可以为一组相关的常量提供有意义的名称，使代码更具可读性。
+
+### 创建枚举
+要在 Python 中创建枚举，需要使用 enum 模块中的 Enum 类：
+
+```python
+from enum import Enum
+
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+```
+
+在这里，Color 是一个枚举，它有三个成员：RED、GREEN 和 BLUE。
+
+### 访问枚举成员
+
+可以通过成员的名称或值来访问枚举成员：
+
+```python
+print(Color.RED)        # 输出: Color.RED
+print(Color.RED.name)   # 输出: RED
+print(Color.RED.value)  # 输出: 1
+```
+
+### 遍历枚举
+
+可以遍历枚举的所有成员：
+
+```python
+for color in Color:
+    print(color.name, color.value)
+```
+
+### 使用自动分配值
+
+如果不为枚举成员指定值，它们会自动分配整数值，从 1 开始递增：
+
+```python
+from enum import auto, Enum
+
+class Color(Enum):
+    RED = auto()
+    GREEN = auto()
+    BLUE = auto()
+```
+
+此时，RED 的值为 1，GREEN 的值为 2，BLUE 的值为 3。
+
+### 检查枚举成员
+
+可以检查某个值或名称是否是枚举中的成员：
+
+```python
+print(Color(1))       # 输出: Color.RED
+print(Color['RED'])   # 输出: Color.RED
+```
+
+### 枚举的比较
+
+枚举成员不能进行大小比较，但可以进行身份和等值比较：
+
+```python
+print(Color.RED is Color.RED)   # 输出: True
+print(Color.RED == Color.GREEN) # 输出: False
+```
+
+### 定义更复杂的枚举
+
+枚举也可以具有方法：
+
+比如有时候需要加上 string_value()
+
+```python
+from enum import Enum
+
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+    PURPLE = 4
+
+    def describe(self):
+        return f"This is a {self.name} color with value {self.value}"
+
+    @classmethod
+    def mix(cls, color1, color2, ratio=0.5):
+        if color1 == cls.RED and color2 == cls.BLUE or color1 == cls.BLUE and color2 == cls.RED:
+            if ratio == 0.5:  # 这里是一个简化的示例，假设只有 0.5 的比例是 PURPLE
+                return cls.PURPLE
+            else:
+                return f"Mixing {color1.name} and {color2.name} with a ratio of {ratio} doesn't give a predefined color in this model."
+        return f"Mixing {color1.name} and {color2.name} doesn't give a predefined color in this model."
+
+print(Color.RED.describe())  # 输出: This is a RED color with value 1
+
+# 演示颜色组合
+result = Color.mix(Color.RED, Color.BLUE)
+if isinstance(result, Color):
+    print(f"The resulting color is {result.name}.")  # 输出: The resulting color is PURPLE.
+else:
+    print(result)
+
+result = Color.mix(Color.RED, Color.BLUE, 0.3)
+print(result)  # 输出: Mixing RED and BLUE with a ratio of 0.3 doesn't give a predefined color in this model.
+```
+
+
+## 命名元组 
+
+Python 中可以给元组的元素命名，这样的元组就是命名元组（Namedtuples）。相比于普通的元组，命名元组可读性更好，它可以通过名称（而不是索引）获取元组的元素。Python 中使用 namedtuple 函数来创建命名元组。比如：
+
+```python
+from collections import namedtuple
+
+# 定义一个命名元组
+Person = namedtuple("Person", ["name", "age", "gender"])
+
+# 创建一个Person对象
+p1 = Person(name="John", age=30, gender="Male")
+
+print(p1.name)    # 输出: John
+print(p1.age)     # 输出: 30
+print(p1.gender)  # 输出: Male
+
+# 使用索引
+print(p1[0])      # 输出: John
+
+# 将命名元组转化为字典
+print(p1._asdict())  # 输出: OrderedDict([('name', 'John'), ('age', 30), ('gender', 'Male')])
+
+# 替换命名元组的字段值
+p2 = p1._replace(name="Jane")
+print(p2)  # 输出: Person(name='Jane', age=30, gender='Male')
+
+# 获取所有字段名称
+print(Person._fields)  # 输出: ('name', 'age', 'gender')
+```
+
+虽然命名元组提供了类似于类的功能，但它们仍然是元组，因此它们的值是不可变的。这意味着你不能更改已创建的命名元组的字段值，但可以使用 ._replace() 方法返回一个新的命名元组，其某些字段值已更改。

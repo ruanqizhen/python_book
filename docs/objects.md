@@ -2,30 +2,7 @@
 
 几乎所有在 Python 代码中使用的东西都是对象，无论是数据，如数字、字符串、列表等，还是函数、类、模块等。这意味着它们都具有对象的特性和行为，比如都具有属性和方法，并且可以被赋值给变量、作为参数传递给函数，或者作为函数的返回值。
 
-## 反射
-
-反射（Reflection）是指程序在运行时能够访问、检测和修改自身状态或行为的能力。
-
-### 静态访问属性和方法
-
-我们之前所有的示例中，访问对象的属性或方法，使用的都是静态方法。比如：
-
-```python
-class Animal:
-    def __init__(self, species):
-        self.species = species
-
-    def speak(self):
-        print(f"{self.species}发出了声音")
-
-# 创建对象
-dog = Animal("狗")
-dog.speak() 
-```
-
-在上面的示例程序中，我们生成了一个 Animal 的对象 dog，并且静态调用了它的方法 speak()。注意，这里并不是说 speak 是“静态方法”，它是一个对象方法，我们是“静态调用”了这个方法。所谓静态调用，就是在程序代码中已经写好了这个方法的名字。程序在运行时不能改变了。除了这种静态访问属性和调用方法的方式，Python 中，我们还可以在程序中动态的去查看一个对象有哪些属性和方法，然后访问和调用这些属性和方法。
-
-### 对象的类型
+## 对象的类型
 
 type() 函数是 Python 中的一个内置函数，它主要有两种用途，一是用于获取对象的类型；另一个更复杂的功能，我们将在下文的“元类”中介绍。
 
@@ -58,7 +35,70 @@ print(type(MyClass))  # 输出: <class 'type'>
 print(type(type))     # 输出: <class 'type'>
 ```
 
-从上面的示例中可以看出，数据、函数、对象或类本身都是对象，它们分别是一些不同类型的对象。比如： 7 属于 class int；自定义函数属于 class function；而自定义类则属于 class type。
+从上面的示例中可以看出，数据、函数、对象或类本身都是对象，它们分别是一些不同类型的对象。比如： 7 是 int 类的对象；print 函数是 builtin_function_or_method 类的对象；自定义函数式 function 类的对象；而自定义的类则是 type 类的对象。
+
+## 函数对象
+
+从上文已经知道了，函数也是一种对象，那么它和其它对象有什么区别呢？
+
+简单来说，如果一个对象实现了 `__call__` 方法，那么它就可以被当做是函数。`__call__` 方法是 Python 预定义的一个特殊方法，就好比 `__init__` 也是一个预定义的特殊方法一样。
+
+当程序试图去调用一个对象的时候，它实际上会去自动调用该实例的 `__call__` 方法，所以，如果这个对象实现了 `__call__` 方法，调用就会成功，这个对象也就是一个函数了。这是一个比较有趣的方法，它可以把任何一个对象都转换成函数，或者说可以让对象行为看起来像函数，这使得对象更加灵活和多变。
+
+例如：假设我们想创建一个类，它的对象可以被调用来计算多项式的值。例如，为输入的 x，计算 $3x^2 + 4x + 10$ 的值。
+
+
+```python
+class Polynomial:
+    def __init__(self, coefficients):
+        """coefficients 是一个列表，其中第 i 个元素是 x^i 的系数"""
+        self.coefficients = coefficients
+
+    def __call__(self, x):
+        """计算多项式的值给定 x"""
+        return sum([coef * (x ** (len(self.coefficients) - i - 1)) for i, coef in enumerate(self.coefficients)])
+
+    def __repr__(self):
+        return " + ".join([f"{coef}x^{(len(self.coefficients) - i - 1)}" for i, coef in enumerate(self.coefficients) if coef])
+
+# 创建一个多项式对象：3x^2 + 4x + 10
+p = Polynomial([3, 4, 10])
+
+# 调用这个对象来计算 x=2 的值
+print(p(2))  # 输出: 30
+
+# 输出多项式本身
+print(p)  # 输出: 3x^2 + 4x^1 + 10x^0
+```
+
+在上面的示例中，`__call__` 方法使得 Polynomial 类的实例可以被调用。我们只需使用一个数字作为参数（在上述例子中是2），就可以计算多项式在该输入时的值。
+
+Python 自带的 callable() 函数可以检查一个对象是否“可调用”。如果一个对象实现了 `__call__` 方法，对它调用 callable() 函数会返回真。这也就意味着这个对象是一个函数，我们可以使用函数的方式来调用这个对象。
+
+当我们现在再来审视“[函数是一等公民](first_class_func)”这句话的时候，我们会意识到，原来在 Python 中，函数并没有什么特殊：在 Python 中，人人平等，大家都是对象。
+
+## 反射
+
+反射（Reflection）是指程序在运行时能够访问、检测和修改自身状态或行为的能力。
+
+### 静态访问属性和方法
+
+我们之前所有的示例中，访问对象的属性或方法，使用的都是静态方法。比如：
+
+```python
+class Animal:
+    def __init__(self, species):
+        self.species = species
+
+    def speak(self):
+        print(f"{self.species}发出了声音")
+
+# 创建对象
+dog = Animal("狗")
+dog.speak() 
+```
+
+在上面的示例程序中，我们生成了一个 Animal 的对象 dog，并且静态调用了它的方法 speak()。注意，这里并不是说 speak 是“静态方法”，它是一个对象方法，我们是“静态调用”了这个方法。所谓静态调用，就是在程序代码中已经写好了这个方法的名字。程序在运行时不能改变了。除了这种静态访问属性和调用方法的方式，Python 中，我们还可以在程序中动态的去查看一个对象有哪些属性和方法，然后访问和调用这些属性和方法。
 
 ### 列出所有属性和方法
 
@@ -84,7 +124,7 @@ print(dir(dog))
 
 为什么没有区分属性和方法呢？哪些是属性，哪些是方法？我们下面来仔细分析：
 
-### 动态访问属性和方法
+### 动态访问属性
 
 使用 getattr, setattr, 和 hasattr 等函数动态地访问和设置对象的属性和方法，也就是实现了反射功能。
 
@@ -92,7 +132,7 @@ print(dir(dog))
 * getattr(object, name[, default])  函数用于获取对象的属性或方法。如果属性或方法不存在，它会返回指定的默认值，若没有指定默认值则会抛出 AttributeError。
 * setattr(object, name, value) 函数用于设置对象的属性或方法。如果属性或方法已存在，它的值会被更新；如果属性或方法不存在，将创建一个新的属性或方法。
 
-比如：
+上面这三个函数中都有类似的参数，其中 object 参数表示被访问或设置的对象； name 表示属性或方法的名字，这是一个字符串表示的名字。换句话说，我们可以把一个字符串变量表示的属性名传递给上面几个函数，然后用这些名字去访问属性。这些字符串表示的属性名并不是写死在代码中的，它们在程序运行时可变，甚至可以是程序启动后才临时生成的，这样，就真正实现了对于属性和方法的动态访问。比如：
 
 ```python
 class Animal:
@@ -120,7 +160,13 @@ method = getattr(animal, 'speak')
 method()  # 输出 猫发出了声音
 ```
 
-在上面的程序中，可以看出，对象的属性与方法并没有本质区别：所谓方法，本质也是属性，只不过这个属性的值是一个函数。比如下面的程序，我们就使用设置属性的代码为 dog 对象添加了一个名为 speak 的方法：
+在上面的程序中，我们使用字符串表示的属性名 "species" 和 "speak" 访问了这两个属性。
+
+### 属性和方法
+
+可能在看过上面的介绍与示例后，很多读者已经意识到了，属性与方法并没有本质区别：它们都是指向一个对象的变量，如果某个属性指向的对象恰好实现了 `__call__` 方法，那么，也可以把这个属性称为方法。
+
+比如在下面的程序中，我们使用设置属性的代码，为 dog 对象添加了一个名为 eat 的方法：
 
 ```python
 class Animal:
@@ -129,28 +175,24 @@ class Animal:
 
 dog = Animal("狗")
 # 添加一个方法
-dog.speak = lambda: print("发出了声音")
+dog.eat = lambda: print("吃饱了")
 
-dog.speak()   # 输出： "发出了声音"
+dog.eat()   # 输出： "吃饱了"
 ```
 
-### 区分属性和方法
-
-既然属性和方法本质上是一回事，也都是对象，它们的唯一区别就在于这个对象是不是函数了：如果是函数，就被叫做方法；否则就是属性。我们可以使用 callable() 函数来检查一个对象是否“可调用”。一个对象如果是可调用的，意味着它是一个函数。或者说，我们可以使用函数的方式来调用这个对象。在 Python 中，函数、方法、类，以及实现了 `__call__` 方法的对象都可以是可调用的，都可以被当做函数来使用。
-
-我们可以使用 callable() 函数检查对象的每一个属性，如果某个属性可调用，那么它是一个方法：
+既然属性和方法本质上是一回事，都是对象，它们的唯一区别就在于这个对象是不是函数了：如果是函数，就被可以被叫做方法；否则就是属性。我们可以使用 callable() 函数来检查一个属性是不是方法：
 
 ```python
 class Animal:
     def __init__(self, species):
         self.species = species
 
-    def eat(self):
-        print(f"{self.species}吃饱了")
+    def speak(self):
+        print(f"{self.species}发出了声音")
 
 # 创建对象
 dog = Animal("狗")
-dog.speak = lambda: print("发出了声音")
+dog.eat = lambda: print("吃饱了")
 
 print(callable(dog.species))  # 输出: False
 print(callable(dog.eat))      # 输出: True
@@ -183,7 +225,7 @@ print(obj.new_attribute)  # 输出: 我是一个新属性
 
 ### 使用类作为装饰器
 
-我们还可以定义一个类作为装饰器。这个类需要实现 [`__call__` 魔法方法](magic_methods#函数调用)，它能够使得一个类的对象就像函数一样被使用。下面的示例展示了如何使用类装饰器来记录对象的创建次数：
+我们还可以定义一个类作为装饰器。这个类需要实现 `__call__` 方法，这样，它就能够像函数一样被使用了。下面的示例展示了如何使用类装饰器来记录对象的创建次数：
 
 ```python
 class CountInstances:
@@ -238,6 +280,9 @@ print(obj.greet())  # 输出: 方法不可使用
 
 
 ## 元类
+
+《动物庄园》中有一句著名的话：“All animals are equal, but some animals are more equal than others.”。换成 Python 庄园，这句话就应该是：在 Python 中，所有对象一律平等，但有些对象比其它对象更平等。
+
 
 正如我们用类来创建对象实例，元类（Metaclass）就是用来创建类的。换句话说，类是对象的模板，而元类是类的模板。这是一个相当抽象的概念，但它为 Python 提供了极大的灵活性和动态性。
 
@@ -296,146 +341,3 @@ print(obj.new_attribute)  # 输出: value
 
 
 
-## 枚举
-
-枚举在很多编程语言里都是基本的数据类型。在 Python 中，枚举不是基础数据类型，而是一个表示固定集合中元素的类。这些元素都是常量，不应该被更改。使用枚举可以为一组相关的常量提供有意义的名称，使代码更具可读性。
-
-### 创建枚举
-要在 Python 中创建枚举，需要使用 enum 模块中的 Enum 类：
-
-```python
-from enum import Enum
-
-class Color(Enum):
-    RED = 1
-    GREEN = 2
-    BLUE = 3
-```
-
-在这里，Color 是一个枚举，它有三个成员：RED、GREEN 和 BLUE。
-
-### 访问枚举成员
-
-可以通过成员的名称或值来访问枚举成员：
-
-```python
-print(Color.RED)        # 输出: Color.RED
-print(Color.RED.name)   # 输出: RED
-print(Color.RED.value)  # 输出: 1
-```
-
-### 遍历枚举
-
-可以遍历枚举的所有成员：
-
-```python
-for color in Color:
-    print(color.name, color.value)
-```
-
-### 使用自动分配值
-
-如果不为枚举成员指定值，它们会自动分配整数值，从 1 开始递增：
-
-```python
-from enum import auto, Enum
-
-class Color(Enum):
-    RED = auto()
-    GREEN = auto()
-    BLUE = auto()
-```
-
-此时，RED 的值为 1，GREEN 的值为 2，BLUE 的值为 3。
-
-### 检查枚举成员
-
-可以检查某个值或名称是否是枚举中的成员：
-
-```python
-print(Color(1))       # 输出: Color.RED
-print(Color['RED'])   # 输出: Color.RED
-```
-
-### 枚举的比较
-
-枚举成员不能进行大小比较，但可以进行身份和等值比较：
-
-```python
-print(Color.RED is Color.RED)   # 输出: True
-print(Color.RED == Color.GREEN) # 输出: False
-```
-
-### 定义更复杂的枚举
-
-枚举也可以具有方法：
-
-比如有时候需要加上 string_value()
-
-```python
-from enum import Enum
-
-class Color(Enum):
-    RED = 1
-    GREEN = 2
-    BLUE = 3
-    PURPLE = 4
-
-    def describe(self):
-        return f"This is a {self.name} color with value {self.value}"
-
-    @classmethod
-    def mix(cls, color1, color2, ratio=0.5):
-        if color1 == cls.RED and color2 == cls.BLUE or color1 == cls.BLUE and color2 == cls.RED:
-            if ratio == 0.5:  # 这里是一个简化的示例，假设只有 0.5 的比例是 PURPLE
-                return cls.PURPLE
-            else:
-                return f"Mixing {color1.name} and {color2.name} with a ratio of {ratio} doesn't give a predefined color in this model."
-        return f"Mixing {color1.name} and {color2.name} doesn't give a predefined color in this model."
-
-print(Color.RED.describe())  # 输出: This is a RED color with value 1
-
-# 演示颜色组合
-result = Color.mix(Color.RED, Color.BLUE)
-if isinstance(result, Color):
-    print(f"The resulting color is {result.name}.")  # 输出: The resulting color is PURPLE.
-else:
-    print(result)
-
-result = Color.mix(Color.RED, Color.BLUE, 0.3)
-print(result)  # 输出: Mixing RED and BLUE with a ratio of 0.3 doesn't give a predefined color in this model.
-```
-
-
-## 命名元组 
-
-Python 中可以给元组的元素命名，这样的元组就是命名元组（Namedtuples）。相比于普通的元组，命名元组可读性更好，它可以通过名称（而不是索引）获取元组的元素。Python 中使用 namedtuple 函数来创建命名元组。比如：
-
-```python
-from collections import namedtuple
-
-# 定义一个命名元组
-Person = namedtuple("Person", ["name", "age", "gender"])
-
-# 创建一个Person对象
-p1 = Person(name="John", age=30, gender="Male")
-
-print(p1.name)    # 输出: John
-print(p1.age)     # 输出: 30
-print(p1.gender)  # 输出: Male
-
-# 使用索引
-print(p1[0])      # 输出: John
-
-# 将命名元组转化为字典
-print(p1._asdict())  # 输出: OrderedDict([('name', 'John'), ('age', 30), ('gender', 'Male')])
-
-# 替换命名元组的字段值
-p2 = p1._replace(name="Jane")
-print(p2)  # 输出: Person(name='Jane', age=30, gender='Male')
-
-# 获取所有字段名称
-print(Person._fields)  # 输出: ('name', 'age', 'gender')
-```
-
-虽然命名元组提供了类似于类的功能，但它们仍然是元组，因此它们的值是不可变的。这意味着你不能更改已创建的命名元组的字段值，但可以使用 ._replace() 方法返回一个新的命名元组，其某些字段值已更改。
