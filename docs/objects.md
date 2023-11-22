@@ -24,11 +24,16 @@ print(type(print))    # 输出: <class 'builtin_function_or_method'>
 my_func = lambda x: x*x
 print(type(my_func))  # 输出: <class 'function'>
 
+import sys
+print(type(sys))      # 输出: <class 'module'>
+
 class MyClass:
     pass
 
 obj = MyClass()
 print(type(obj))      # 输出: <class '__main__.MyClass'>
+
+print(type(object))   # 输出: <class 'type'>
 
 print(type(MyClass))  # 输出: <class 'type'>
 
@@ -283,60 +288,105 @@ print(obj.greet())  # 输出: 方法不可使用
 
 《动物庄园》中有一句著名的话：“All animals are equal, but some animals are more equal than others.”。换成 Python 庄园，这句话就应该是：在 Python 中，所有对象一律平等，但有些对象比其它对象更平等。
 
+元类（Metaclass）是用来创建类的类，正如我们用类来创建对象。也可以说：类是对象的模板，而元类就是类的模板。
 
-正如我们用类来创建对象实例，元类（Metaclass）就是用来创建类的。换句话说，类是对象的模板，而元类是类的模板。这是一个相当抽象的概念，但它为 Python 提供了极大的灵活性和动态性。
+### type
 
-
-### 默认的元类：type
-在 Python 中，标准的、内置的元类是 type。它的三个参数的版本允许我们动态地创建新的类：
-
-```python
-MyClass = type('MyClass', (object,), {'x': 5})
-```
-
-这与以下传统的类定义是等效的：
+在 Python 中，标准的、内置的元类是 type。上文使用了 type() 函数查看一个对象的类型。type() 函数还有另一种用法，它可以接收三个参数，然后返回呢一个动态创建的类：
 
 ```python
-class MyClass(object):
-    x = 5
+Animal = type('Animal', (object), {'species': '狗'})
 ```
 
+上面的程序动态的创建了一个新的 Animal 类。之所以说是动态，因为这个新类的类型，继承关系，属性设置等，都是不是固定写在代码里的，是可以程序运行时临时产生的。它与下面的静态创建类的代码产生的结果是相同的：
+
+```python
+class Animal(object):
+    species = '狗'
+```
+
+### `__new__` 方法
+
+应为后面内容要用到，所以我们在这里介绍一下 Python 的一个预定义的特殊的类方法： `__new__`。`__new__` 是一个类方法，而不是对象方法。在使用类创建对象的时候，Python 会首先调用类中的 `__new__` 方法，然后才去调用对象的构造函数 `__init__` 。大部分程序中，我们都是需要对新的对象进行初始化，所以会使用 `__init__` 方法。但在某些情况下，我们可能需要更多地控制对象的创建过程，这时 `__new__` 就派上了用场。`__new__` 方法负责创建（并返回）类的新实例。它是一个类方法，所以不需要实例化，但它必须返回一个实例。如果没有正确地返回一个实例，那么 `__init__` 就不会被调用。
+
+以下是 `__new__` 的一些典型用法：
+
+#### 实现单例模式
+
+单例模式（Singleton Pattern）意味着一个类只能创建一个实例。这时候，我们可以利用 `__new__` 检查是否已经存在一个实例。如果不存在，创建一个；如果存在，就直接返回已存在的实例：
+
+```python
+class Singleton:
+    _instance = None   # 用于记录已创建的对象
+
+    def __new__(cls):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+s1 = Singleton()
+s2 = Singleton()       # s2 不是一个新对象，它指向了已有的对象
+
+print(s1 == s2)        # 输出: True
+```
+
+在上面的程序中，它通过调用 `super().__new__(cls)` 来创建新对象，也就是调用了父类的 `__new__` 方法。Singleton 的父类是 objects，所以其实在这个程序中不用调用父类的方法，直接返回一个新的 objects 效果是同样的。但是，在有继承关系的复杂情况下，调用父类中相应的方法就是必须的了，我么需要与父类的行为保持一致。所以最好是养成习惯，无论一个类是否有父类，在程序中，都一致使用 super() 函数去调用父类相应方法完成所需功能。 
+
+#### 创建不可变对象
+
+例如，我们想创建一个扩展的元组（tuple）类型，可以通过 `__new__` 来定制对象的创建过程。
+
+```python
+class ExtendedTuple(tuple):  # 继承
+    def __new__(cls, *args):
+        new_args = (x*2 for x in args)
+        return super().__new__(cls, new_args)
+
+t = ExtendedTuple(1, 2, 3)
+print(t)  # 输出: (2, 4, 6)
+```
+
+由于 tuple 是不可变类型，其内容必须在创建实例时就确定，不能再改，因此 `__new__` 方法是创建自定义不可变类型实例的地方。在上面的例子中，我们使用 `__new__` 为元组中的每个元素乘以 2，并传递新的参数给 tuple 的构造函数。
 
 ### 自定义元类
 
-自定义元类主要用于类的自定义创建和修改。例如，你可能想在创建类时自动添加某些方法或属性，或确保类遵循某种特定模式。
+元类定义了类的行为，就像类定义了实例的行为一样。自定义元类主要用于类的自定义创建和修改。自定义元类通常用于高级用途，比如拦截类的创建、修改类的定义、自动化某些处理流程或实现特定的模式。例如，我们可以使用元类实现在一个项目中，创建类的时候，都自动添加某些方法或属性，或确保所有的类都遵循某种特定模式。
 
-创建元类通常涉及继承 type 并重写它的一些方法。例如，`__new__` 或 `__init__` 可能是你想重写的方法。
+自定义元类通常继承 type 类，并通常需要重写它的 `__new__` 或 `__init__` 方法。
 
 ```python
-class Meta(type):
-    def __new__(cls, name, bases, attrs):
-        # 添加新的属性
-        attrs['new_attribute'] = "value"
-        return super().__new__(cls, name, bases, attrs)
+# 定义元类
+class MyMeta(type):
+    def __new__(cls, name, bases, dct):
+        # 在类创建时自动添加新方法
+        dct["new_class_method"] = cls.class_method
+        return super().__new__(cls, name, bases, dct)
 
-class MyClass(metaclass=Meta):
+    # 这是被自动添加的新方法
+    @staticmethod
+    def class_method():
+        print("这是一个新的静态方法")
+
+# 使用自定义元类
+class MyClass(metaclass=MyMeta):
     pass
 
-obj = MyClass()
-print(obj.new_attribute)  # 输出: value
+# 测试： 新的类中已经有了自动添加的方法
+MyClass.new_class_method()  # 输出: 这是一个新的静态方法
 ```
+
+上面是一个简单的自定义元类示例，该元类会在创建新类时自动添加一个新的类方法。在用户自定义类时，可以通过 metaclass 关键字指定使用的元类。
 
 ### 何时使用元类
 
 元类是一个非常强大的工具，但也是一个复杂的工具。它们常用于以下场景：
 
-框架构建：例如 Django 的 ORM，其中模型类被转化为数据库表。
-代码自动生成：例如，自动创建 getter 和 setter 方法。
-单例模式的实施：确保一个类只有一个实例。
-验证和约束：确保子类遵循某些约定或模式。
+* 控制类的创建：可以在类创建过程中拦截类的定义，对其进行修改或验证。或者确保子类遵循某些约定或模式。
+* 注册类：在类创建时自动注册类，例如在某个注册表中添加类引用。
+* 代码自动生成，自动添加属性或方法：就像上面示例中那样，可以自动向类添加属性或方法。
+* 实现特定的编程模式：例如单例模式、工厂模式等。
 
-
-复杂性：元类增加了代码的复杂性。除非真的需要，否则应该避免使用它们。
-调试：由于元类在编译时而不是运行时更改代码，所以可能会导致调试困难。
-可读性：不熟悉元类的开发者可能会发现使用了元类的代码难以理解。
-元类是 Python 提供的一个强大的工具，允许开发者在编译时更改或扩展类的行为。不过，由于其高级和复杂性，它们应该在确实需要时谨慎使用。
-
+元类的缺点也很明显：它增加了代码的复杂性，在大多数情况下可能并不必要。只有在需要深入控制类的行为时才需要考虑使用元类。元类的使用可能会使代码更难理解，所以要确保提供充分的文档说明。
 
 
 

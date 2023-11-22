@@ -243,11 +243,11 @@ numbers = [34, 12, 89, 5, 73, 23]
 
 # 使用 max(list) 返回列表中的最大值
 max_value = max(numbers)
-print(f"Maximum value in the list: {max_value}")  # 输出: 89
+print(f"列表中最大值是：{max_value}")  # 输出: 89
 
 # 使用 min(list) 返回列表中的最小值
 min_value = min(numbers)
-print(f"Minimum value in the list: {min_value}")  # 输出: 5
+print(f"列表中最小值是：{min_value}")  # 输出: 5
 ```
 
 与 len() 函数类似，max() 和 min() 函数也可以被应用于字符串、元组等数据类型。 
