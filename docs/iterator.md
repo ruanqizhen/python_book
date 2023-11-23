@@ -236,9 +236,11 @@ for key, group in groupby(students, key=lambda x: x["class"]):
     print(key, list(group))
 ```
 
+#### 打包、拆包
+
 * starmap(function, iterable): 使用参数从 iterable 中解包得到，并将它们应用到 function。
 
-与 [map()](high_order#map) 函数功能相同，但参数格式不同。如果每次操作的所有参数已经被组织成元组或列表，那么使用 starmap 更为合适；如果参数是分开的几个列表，或者每次操作只有一个参数，那么使用 map 更为方便。
+与 [map() 函数](high_order#map)功能相同，但参数格式不同。如果每次操作的所有参数已经被组织成元组或列表，那么使用 starmap 更为合适；如果参数是分开的几个列表，或者每次操作只有一个参数，那么使用 map 更为方便。
 
 ```python
 from itertools import starmap
@@ -248,7 +250,8 @@ result = list(starmap(pow, [(2, 3), (3, 2)]))
 print(result)  # 输出: [8, 9]
 ```
 
-* zip_longest(*iterables, fillvalue=None): 与内置的 zip() 类似，但以最长的可迭代对象为准。
+* zip_longest(*iterables, fillvalue=None): 与内置的 [zip() 函数](loop#zip-函数)类似，但以最长的可迭代对象为准。
+
 ```python
 from itertools import zip_longest
 
