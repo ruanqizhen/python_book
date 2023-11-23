@@ -262,7 +262,9 @@ print(result)  # 输出: [('A', 'x'), ('B', 'y'), ('C', '-'), ('D', '-')]
 
 ### 排列组合
 
-* product(*iterables, repeat=1): 计算笛卡尔积。
+这一组函数，都是用来产生排列组合结果的。
+
+* product(*iterables, repeat=1): 计算笛卡尔积（Cartesian product）。笛卡尔积是来自两个或多个集合的所有可能的有序对组合。它会从每个集合中取出一个元素，组合成所有可能的元组。
 
 ```python
 from itertools import product
@@ -273,7 +275,7 @@ print(result)  # 输出: [(1, 'a'), (1, 'b'), (2, 'a'), (2, 'b')]
 ```
 
 
-* permutations(iterable, r=None): 产生序列的所有可能排列。r 指定排列的长度。
+* permutations(iterable, r=None): 产生序列的所有可能排列。r 指定排列的长度，默认是全部元素。
 ```python
 from itertools import permutations
 
@@ -283,6 +285,7 @@ print(result)  # 输出: [(1, 2, 3), (1, 3, 2), (2, 1, 3), (2, 3, 1), (3, 1, 2),
 ```
 
 * combinations(iterable, r): 产生序列的所有组合，不考虑元素的顺序。r 指定组合的长度。
+
 ```python
 from itertools import combinations
 
@@ -303,9 +306,10 @@ print(result)  # 输出: [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
 
 ## 枚举
 
-枚举在很多编程语言里都是基本的数据类型。在 Python 中，枚举不是基础数据类型，而是一个表示固定集合中元素的类。这些元素都是常量，不应该被更改。使用枚举可以为一组相关的常量提供有意义的名称，使代码更具可读性。
+枚举在很多编程语言里都是基本的数据类型。在 Python 中，枚举不是基础数据类型，而是一个表示固定集合中元素的类。这些元素都是常量，不应该被更改。使用枚举可以为一组相关的[常量](variable#常量)提供有意义的名称，使代码更具可读性。
 
 ### 创建枚举
+
 要在 Python 中创建枚举，需要使用 enum 模块中的 Enum 类：
 
 ```python
@@ -318,6 +322,8 @@ class Color(Enum):
 ```
 
 在这里，Color 是一个枚举，它有三个成员：RED、GREEN 和 BLUE。
+
+枚举成员有名称和值，每个成员都是唯一的。枚举成员是不可变的，一旦定义就不能更改。
 
 ### 访问枚举成员
 
@@ -371,11 +377,40 @@ print(Color.RED is Color.RED)   # 输出: True
 print(Color.RED == Color.GREEN) # 输出: False
 ```
 
+### 类型检查
+
+在使用枚举数据的时候，可以进行类型检查，防止使用无效的值。比如：
+
+```python
+from enum import Enum
+
+# 定义一个枚举类
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+def print_color(color):
+    if not isinstance(color, Color):
+        raise ValueError("不是一个有效的 Color 枚举成员")
+    print("选中的颜色是:", color.name)
+
+# 正确使用枚举
+print_color(Color.RED)  # 输出: 选中的颜色是: RED
+
+# 错误使用枚举
+try:
+    print_color(1)  # 尝试传入一个非枚举值
+except ValueError as e:
+    print(e)  # 输出: 不是一个有效的 Color 枚举成员
+```
+
+上面程序中的 print_color() 函数，对输入数据的类型进行了检查，看看输入参数是否是 Color 枚举类型，如果不是，它会抛出一个异常。
+
+
 ### 定义更复杂的枚举
 
-枚举也可以具有方法：
-
-比如有时候需要加上 string_value()
+枚举作为一个类，也可以具有一些方法。下面的程序为 Color 枚举类添加了打印描述的方法，和混合不同颜色的方法：
 
 ```python
 from enum import Enum
@@ -387,28 +422,27 @@ class Color(Enum):
     PURPLE = 4
 
     def describe(self):
-        return f"This is a {self.name} color with value {self.value}"
+        return f"颜色名：{self.name}；颜色值：{self.value}"
 
+    # 混合颜色
     @classmethod
     def mix(cls, color1, color2, ratio=0.5):
         if color1 == cls.RED and color2 == cls.BLUE or color1 == cls.BLUE and color2 == cls.RED:
             if ratio == 0.5:  # 这里是一个简化的示例，假设只有 0.5 的比例是 PURPLE
                 return cls.PURPLE
-            else:
-                return f"Mixing {color1.name} and {color2.name} with a ratio of {ratio} doesn't give a predefined color in this model."
-        return f"Mixing {color1.name} and {color2.name} doesn't give a predefined color in this model."
+        return f"按照比例 {ratio} 混合 {color1.name} 和 {color2.name} 无法产生已定义的颜色"
 
-print(Color.RED.describe())  # 输出: This is a RED color with value 1
+print(Color.RED.describe())              # 输出: 颜色名：RED；颜色值：1
 
 # 演示颜色组合
 result = Color.mix(Color.RED, Color.BLUE)
 if isinstance(result, Color):
-    print(f"The resulting color is {result.name}.")  # 输出: The resulting color is PURPLE.
+    print(f"混合后的颜色是 {result.name}")   # 输出: 混合后的颜色是 PURPLE
 else:
     print(result)
 
 result = Color.mix(Color.RED, Color.BLUE, 0.3)
-print(result)  # 输出: Mixing RED and BLUE with a ratio of 0.3 doesn't give a predefined color in this model.
+print(result)         # 输出: 按照比例 0.3 混合 RED 和 BLUE 无法产生已定义的颜色
 ```
 
 
@@ -423,21 +457,21 @@ from collections import namedtuple
 Person = namedtuple("Person", ["name", "age", "gender"])
 
 # 创建一个Person对象
-p1 = Person(name="John", age=30, gender="Male")
+p1 = Person(name="阮奇桢", age=40, gender="男")
 
-print(p1.name)    # 输出: John
-print(p1.age)     # 输出: 30
-print(p1.gender)  # 输出: Male
+print(p1.name)         # 输出: 阮奇桢
+print(p1.age)          # 输出: 40
+print(p1.gender)       # 输出: 男
 
 # 使用索引
-print(p1[0])      # 输出: John
+print(p1[0])           # 输出: 阮奇桢
 
 # 将命名元组转化为字典
-print(p1._asdict())  # 输出: OrderedDict([('name', 'John'), ('age', 30), ('gender', 'Male')])
+print(p1._asdict())    # 输出: OrderedDict([('name', '阮奇桢'), ('age', 40), ('gender', '男')])
 
 # 替换命名元组的字段值
-p2 = p1._replace(name="Jane")
-print(p2)  # 输出: Person(name='Jane', age=30, gender='Male')
+p2 = p1._replace(name="男")
+print(p2)              # 输出: Person(name='男', age=40, gender='男')
 
 # 获取所有字段名称
 print(Person._fields)  # 输出: ('name', 'age', 'gender')

@@ -4,11 +4,9 @@
 
 在编写自己的类的方法的时候，有些属性或方法的名字是不能随便用的，因为 Python 已经预定义了一些有特殊含义的的名字，它们被称为魔法方法（Magic Methods）和魔法属性。在 Python 中，魔法方法和属性也被称为特殊方法和属性或者双下划线方法和属性。它们以双下划线为前后缀，例如，之前介绍过的 `__init__` 、 `__new__` 、 `__call__` 方法，`__name_`、 `__doc__` 属性等。
 
-魔法方法和属性使得我们可以自定义对象的内部行为，这样就可以实现运算符符重载（比如重新定义加减乘除的行为）、函数调用、属性访问等高级功能。
+魔法方法和属性使得我们可以自定义对象的内部行为，这样就可以实现运算符符重载（比如重新定义加减乘除的行为）、属性访问等高级功能。
 
-## 基本方法
-
-### 构造、销毁、打印
+## 构造、销毁、打印
 
 我们通过一个简单的例子来了解这一些基本的魔法方法。假设我们要创建一个简单的 Point 类，表示二维平面上的一个点：
 
@@ -44,16 +42,13 @@ del p                # 输出: Point (1, 2) is being deleted!
 * repr（） 函数会调用 `__repr__` 方法。它返回一个字符串，表示Python表达式，重新创建这个对象时可以用这个表达式。在我们的例子中，repr(point) 将返回像 Point(1, 2) 这样的字符串。
 * 当我们打印一个对象或将其转化为字符串时，`__str__` 方法会被调用。在我们的例子中，str(point)将返回(1, 2)。
 
-
-
-
 ## 运算符
 
 ### 算数运算符
 
 算术魔法方法用于重新定义对象的算术运算符行为。最常用的方法包括：
 
-* `__add__(self, other)`: 定义加法行为。
+* `__add__(self, other)`: 定义加法行为。当程序中，使用 + 符号计算加法时，调用的就是对象的这个方法。
 * `__sub__(self, other)`: 定义减法行为。
 * `__mul__(self, other)`: 定义乘法行为。
 * `__truediv__(self, other)`: 定义实数除法行为（Python 3 中的 /）。
@@ -70,7 +65,7 @@ from math import gcd
 class Fraction:
     def __init__(self, numerator, denominator=1):
         if denominator == 0:
-            raise ValueError("Denominator cannot be zero.")
+            raise ValueError("分母不能为 0！")
         
         common = gcd(numerator, denominator)
         self.numerator = numerator // common
@@ -109,6 +104,51 @@ print(f"{f1} * {f2} = {f1 * f2}")       # 输出: 3/4 * 5/6 = 5/8
 print(f"{f1} / {f2} = {f1 / f2}")       # 输出: 3/4 / 5/6 = 9/10
 ```
 
+需要注意的是，这几个常用的运算符都是二元运算符，是两个对象之间的运算。在运算时，程序调用的是第一个对象的对应方法。以加法为例，在运算 `f1 + f2` 时，它会调用对象 f1 的 `__add__(self, other)` 方法。并且传递给这个方法的参数中，self 是 f1，other 是 f2。
+
+运算符两端的对象可以不是同类型的数据，只要第一个对象的 `__add__` 方法支持就行。比如，我们可以把这个 Fraction 类中的 `__add__` 方法改造一下，让它能够与一个整数相加：
+
+```python
+from math import gcd
+
+class Fraction:
+    def __init__(self, numerator, denominator=1):
+        if denominator == 0:
+            raise ValueError("分母不能为 0！")
+        
+        common = gcd(numerator, denominator)
+        self.numerator = numerator // common
+        self.denominator = denominator // common
+
+    def __add__(self, other):
+        if isinstance(other, Fraction):
+            new_numerator = self.numerator * other.denominator + other.numerator * self.denominator
+            new_denominator = self.denominator * other.denominator
+        elif isinstance(other, int):
+            new_numerator = self.numerator + other * self.denominator
+            new_denominator = self.denominator
+        else:
+            raise TypeError("加法运算仅支持 Fraction 或整数类型")
+        
+        return Fraction(new_numerator, new_denominator)
+
+    def __repr__(self):
+        return f"{self.numerator}/{self.denominator}"
+        
+# 测试代码
+frac1 = Fraction(1, 2)
+frac2 = Fraction(3, 4)
+
+result1 = frac1 + frac2  # Fraction 类实例相加
+result2 = frac1 + 3      # Fraction 类实例与整数相加
+
+print(result1)           # 输出:  5/4
+print(result2)           # 输出:  7/2
+```
+
+在上面的程序中，`__add__` 方法中检查了 other 参数的数据类型，如果它是另一个分数，那么使用分数的算法；如果它是一个整数，则采用整数的算法。因此，我们可以计算 `frac1 + 3`，分数与整数相加。但是如果试图计算 `3 + frac1` 就会出错，因为 int 对象的 `__add__` 方法并没有实现对 Fraction 对象的支持。
+
+
 ### 比较运算符
 
 顾名思义，比较魔法方法用于重新定义象之间的比较行为，常见的比较魔法方法包括：
@@ -128,7 +168,7 @@ from math import gcd
 class Fraction:
     def __init__(self, numerator, denominator=1):
         if denominator == 0:
-            raise ValueError("Denominator cannot be zero.")
+            raise ValueError("分母不能为 0！")
         
         common = gcd(numerator, denominator)
         self.numerator = numerator // common
@@ -178,7 +218,7 @@ print(f1 >= f2)  # False
 class Fraction:
     def __init__(self, numerator, denominator):
         if denominator == 0:
-            raise ValueError("Denominator cannot be zero.")
+            raise ValueError("分母不能为 0！")
         self.numerator = numerator
         self.denominator = denominator
 
@@ -210,7 +250,7 @@ print(bool(f_zero))  # False, 因为分子是 0
 
 ## 数据结构
 
-容器魔法方法用于定义自定义那种类似于Python 容器（例如列表、字典）的对象。以下是一些常见的容器魔法方法：
+容器魔法方法用于定义自定义那种类似于 Python 容器（例如列表、字典）的对象。以下是一些常见的容器魔法方法：
 
 * `__len__(self)`: 返回容器中的元素数。对应于内置函数 len()。
 * `__getitem__(self, key)`: 用于访问容器中的元素。对应于 obj[key] 的行为。
@@ -347,7 +387,7 @@ with Timer() as t:
 
 ## 常用属性
 
-### `__dict__`
+* `__dict__`
 
 这是一个字典，包含了对象的所有属性。当创建一个对象时，Python 通常会为其创建一个字典来保存所有属性，这样可以在运行时动态地向对象添加新的属性。
 
@@ -364,7 +404,7 @@ obj.value = 3        # 为对象添加一个新属性
 print(obj.__dict__)  # 输出：{'x': 1, 'y': 2, 'value': 3}
 ```
 
-### `__slots__`
+* `__slots__`
 
 使用字典保存对象的属性虽然灵活，但字典有额外的内存开销。如果我们已经知道对象只需要固定的几个属性，那么使用 `__slots__` 可以避免这种字典开销，从而更有效地使用内存。定义 `__slots__` 的方法是在类中创建一个名为 `__slots__` 的属性，并将期望的属性名作为字符串保存在一个元组或列表中。
 
@@ -374,7 +414,7 @@ class Fraction:
     
     def __init__(self, numerator, denominator=1):
         if denominator == 0:
-            raise ValueError("Denominator cannot be zero.")
+            raise ValueError("分母不能为 0！")
         
         common = gcd(numerator, denominator)
         self.numerator = numerator // common
@@ -390,7 +430,7 @@ f = Fraction(1, 2)  # 1/2
 在上面的例子中，我们只能为 Fraction 的实例设置 numerator 和 denominator 这两个属性。尝试设置其他属性会抛出一个 AttributeError。
         
 
-### `__doc__`
+* `__doc__`
 
 这个属性返回类的文档。
 
@@ -402,7 +442,7 @@ class MyClass:
 print(MyClass.__doc__)  # 输出：This is a docstring for MyClass.
 ```
 
-### `__name__`
+* `__name__`
 
 对于类，这返回类的名称。对于模块，返回模块的名称。
 
@@ -410,7 +450,7 @@ print(MyClass.__doc__)  # 输出：This is a docstring for MyClass.
 print(MyClass.__name__)  # 输出：MyClass
 ```
 
-### `__module__`
+* `__module__`
 
 这个属性保存了定义这个类或函数的模块名。
 
@@ -418,7 +458,7 @@ print(MyClass.__name__)  # 输出：MyClass
 print(MyClass.__module__)  # 通常输出：__main__
 ```
 
-### `__bases__`
+* `__bases__`
 
 这个属性是一个包含所有基类的元组。
 
@@ -432,7 +472,7 @@ class Child(Parent):
 print(Child.__bases__)  # 输出：(<class '__main__.Parent'>,)
 ```
 
-### `__class__`
+* `__class__`
 
 它返回对象所属的类。
 

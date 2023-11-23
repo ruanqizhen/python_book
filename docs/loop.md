@@ -187,7 +187,7 @@ for student, score in zip(students, scores):
 # 小明 的成绩是: 95
 ```
 
-如果两个列表的长度不同，zip 会在到达任何一个列表的末尾时停止配对。 如果希望按照最常的列表进行配对，可以使用 itertools 模块中的 zip_longest 函数，它会按照最常的列表配对，并使用默认值补全缺失的数据。比如：
+如果两个列表的长度不同，zip 会在到达任何一个列表的末尾时停止配对。 如果希望按照最常的列表进行配对，可以使用 itertools 模块中的 [zip_longest() 函数](iterator#打包拆包)，它会按照最常的列表配对，并使用默认值补全缺失的数据。比如：
 
 ```python
 from itertools import zip_longest
