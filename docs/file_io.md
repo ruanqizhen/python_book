@@ -69,7 +69,19 @@ print(content)
 
 ### 逐行读取文件
 
-对于多数的文本文件，我们都希望一行一行的读取文件中的内容。最常用的方式是使用 for 循环，当迭代一个文件对象时，Python 会默认地逐行读取文件：
+如果就只想从文本文件中读取一行，可以使用 readline 方法，比如：
+
+```python
+# 打开文件
+with open('example.txt', 'r') as file:
+    # 读取第一行
+    first_line = file.readline()
+
+# 输出读取的内容
+print(first_line)
+```
+
+对于多数的文本文件，我们一般会希望一行一行的读取文件中所有的内容。最常用的方式是使用 for 循环，当迭代一个文件对象时，Python 会默认地逐行读取文件：
 
 ```python
 with open('filename.txt', 'r') as file:
@@ -443,5 +455,71 @@ print(f"Data has been written to: {temp_file_path}")
 在这个例子中：
 
 使用 tempfile.NamedTemporaryFile 创建了一个临时文件。默认情况下，当临时文件关闭时，它就会被自动删除。如果想保留这个文件，可以设置参数 delete=False。函数返回了临时文件的路径，以后可以使用这个路径来访问或处理该文件。
+
+### 查找特定类型的文件
+
+我们有时候会希望得到一个文件夹下，所有符合某个特征的所有文件，比如找出所有的 `*.txt` 文件。我们可以使用 os 模块提供的函数遍历一个文件夹，比如：
+
+```python
+import os
+
+# 遍历文件夹
+for root, dirs, files in os.walk('/path/to/folder'):
+    for file in files:
+        # 检查文件扩展名
+        if file.endswith('.txt'):
+            print(os.path.join(root, file))
+```
+
+
+上面的程序使用 os.walk() 函数遍历指定的文件夹。对于每个遍历到的文件，然后，使用字符串方法 endswith() 检查文件名是否以 .txt 结尾，如果是，就打印出该文件的完整路径。
+
+此外，我们也可以使用 glob 模块中的 glob() 函数来查找文件。glob 最早是 UNIX 系统的一个程序，用来匹配文件路径，Python 在其 glob 模块中实现了类似功能。glob() 函数可以使用正则表达式来查找文件，这样我们就不必在手动检查每个文件了。比如，使用 glob 实现上面示例完全相同的功能：
+
+```python
+import glob
+
+# 假设我们要查找扩展名为 .txt 的文件
+for filepath in glob.glob('/path/to/folder/*.txt'):
+    print(filepath)
+```
+
+glob() 函数返回的是一个列表，使用同一模块中的 iglob() 函数，可以为搜索结果生成一个迭代器，其它功能完全相同：
+
+```python
+import glob
+
+# 假设我们要查找扩展名为 .txt 的文件
+for filepath in glob.iglob('/path/to/folder/*.txt'):
+    print(filepath)
+```
+
+glob() 函数一个极其强大的功能是它不仅可以搜索单层文件夹，还可以递归搜索所有的子文件夹。在搜索子文件夹的时候，必须使用 `**` 作为路径通配符，并且把参数 recursive 设为 True。比如下面的程序可以找到 "folder" 文件夹极其所有子文件夹中任何以 "f" 字母开头的文件。
+
+```python
+import glob
+
+# 使用 '**' 进行递归搜索
+# 参数 'recursive=True' 是必须的，以启用 '**' 的递归功能
+for filepath in glob.glob('/path/to/folder/**/f*', recursive=True):
+    print(filepath)
+```
+
+
+### 删除文件
+
+除了创建，读写文件，我们也会需要在适当时候删除一个文件，可以使用 `os.remove()` 函数删除文件：
+
+```python
+import os
+
+# Specify the file path
+file_path = '/path/to/your/file.txt'
+
+# Check if file exists
+if os.path.exists(file_path):
+    # Delete the file
+    os.remove(file_path)
+```
 
 
