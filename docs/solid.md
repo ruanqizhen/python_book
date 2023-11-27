@@ -1,7 +1,6 @@
 # SOLID 原则
 
-
-面向对象设计中的 SOLID 原则是五个基本的设计原则，它们一起为创建可维护、可扩展和可重用的系统提供了一个框架。这些原则是：
+计算机科学家 Robert C·Martin 在 2000 年提出了几条面向对象设计的几条原则，后来经过更多专家的改进提炼，这些原则被总结成了五条面向对象设计时应该遵守的准则和最佳实践，被称为 SOLID 原则。这些原则是：
 
 * S - 单一功能原则 (Single Responsibility Principle, SRP)： 每个类只应该有一个引发变化的原因。这意味着一个类只应该有一个任务或功能。当一个类有多个功能或责任时，它们可能会互相影响，从而增加出错的风险和复杂度。
 * O - 开放封闭原则 (Open/Closed Principle, OCP)： 软件实体（如类、模块和函数）应该对扩展开放，但对修改封闭。这意味着应该能够添加新功能而不更改现有代码。
@@ -9,135 +8,146 @@
 * I - 接口隔离原则 (Interface Segregation Principle, ISP)： 一个类不应该被迫实现它不使用的接口，也就是说一个类不应该被迫依赖它不需要的方法。这强调了为客户端创建专用接口的重要性，而不是定义一个庞大、通用的接口。
 * D - 依赖倒置原则 (Dependency Inversion Principle, DIP)： 高级模块不应该依赖于低级模块，它们都应该依赖于抽象。抽象不应该依赖于具体实现，具体实现应该依赖于抽象。这导致的效果是解耦和更高级别的模块化。
 
-遵循 SOLID 原则可以帮助开发者创建更清晰、可维护和可扩展的代码，减少错误，并提高代码的整体质量。
+遵循 SOLID 原则可以帮助我们创建可多人协作的、易于理解的、易读的以及可测试的代码。
 
 
 ## 单一功能原则
 
+单一功能原则，简单的说就是一个类只做一件事。
 
-单一功能原则指出一个类应该仅有一个导致它变化的原因。这意味着一个类应该只有一个任务或责任。以下是一个简单的例子来演示如何遵循单一功能原则。假设我们有一个系统，其中有 User 类用于管理用户信息，另一个类 Report 用于生成用户的报告。
-
-不遵循单一功能原则的设计：
+多大的事才算是“一件事”呢？更具体点说，一个类只负责一件事，表示当用户或老板对软件的需求有所改变时，只有其中一条需求改变了，我们才需要改变类的设计。比如，编写一个程序，管理学生的信息，这个程序需要从数据库读取学生的信息，也需要把信息按一定格式打印出来。我们有一些不同的方法来设计程序中的类，比如 设计一个 Student 类，它有两个方法：一个负责动数据库读取信息，并把数据保存成相应的属性；另一个方法负责读取保存的属性，然后打印成报告：
 
 ```python
-class User:
+class Student:
     def __init__(self, name: str):
         self.name = name
 
-    def get_user_data(self):
-        # ... fetch user data from database
+    def get_student_data(self):
+        # 从数据库中读取数据，转换成相应的属性
         pass
 
     def generate_report(self):
-        # ... generate a report for the user
+        # 打印报告
         pass
 ```
 
-上面的 User 类同时管理用户数据和报告生成，违反了单一功能原则。
-
-遵循单一功能原则的设计：
+上面这个设计方法就违反了单一功能原则，因为 Student 类同时做了两件事：管理学生数据和报告生成。将来，无论是对于学生数据的管理方式发生变化，还是报告格式有了新要求，都需要改动这个类。遵循单一功能原则的设计应该把这两个功能分别放置到不同的类中去：
 
 ```python
-class User:
+class Student:
     def __init__(self, name: str):
         self.name = name
 
-    def get_user_data(self):
-        # ... fetch user data from database
+    def get_data(self):
+        # 从数据库中读取数据，转换成相应的属性
         pass
 
 
-class UserReport:
-    def __init__(self, user: User):
-        self.user = user
+class StudentReport:
+    def __init__(self, student: Student):
+        self.student = student
 
     def generate_report(self):
-        # ... generate a report for the user
+        # 打印报告
         pass
 ```
 
-在遵循单一功能原则的设计中，我们将报告生成的责任移到了一个单独的 UserReport 类中。这样，如果用户的数据管理方式发生变化，User 类可以独立于报告生成进行更改，反之亦然。
+在遵循单一功能原则的设计中，我们将报告生成的责任移到了一个单独的 StudentReport 类中。这样，如果数据管理方式发生变化，Student 类可以独立于报告生成进行更改，反之亦然。
 
-这种分离的好处是，每个类更容易理解、更容易测试，并且在未来扩展和维护时更加灵活。
+为什么要遵循单一功能原则呢？
+
+首先，大型项目会有多人，甚至多个团队参与。不同的功能可能会由不同的人来负责开发维护。如果不同功能的变动影响到了同一个类，那么就有可能在做修改时出现冲突。其次，单一功能原则可能让程序代码的版本管理更清晰，一个功能对应一个类、一个文件，这样，某个文件一发生更新，我们就知道是哪个功能出现了变化。反之亦然，当需要改变一个功能时，我们可以直接找到对应的文件。
+
 
 ## 开放封闭原则
 
-开放封闭原则指出软件实体（类、模块、函数等等）应该对扩展开放，对修改封闭。这意味着应该可以在不修改现有代码的情况下添加新功能。我们继续使用 UserReport 来演示如何遵循开放封闭原则。
+开放封闭原则是指：类应该对扩展开放，对修改封闭。
 
-不遵循开放封闭原则的设计：
+说的具体一点就是，我们应该在不修改现有代码的前提下添加新的功能。任何对代码的改动，都可能会引进新的 bug。因此，已经在运行的没问题的代码，应该能不动就不动。
+
+我们继续使用 StudentReport 来讲解，这是已经写好的代码：
 
 ```python
+class Student:
+    def __init__(self, name: str):
+        self.name = name
+        
+class StudentReport:
+    def __init__(self, student: Student):
+        self.student = student
 
-class Report:
-    def generate(self, user):
-        return f"UserReport for user: {user.name}"
+    def generate_report(self):
+        return f"这是“{self.student.name}”的报告。"
 ```
 
-如果我们需要支持新的报告格式，例如 JSON，我们可能会这样修改：
+接下来，我们收到了新的需求：打印报告需要使用结构化的数据，以字典格式返回。我们可能会这样修改程序：
 
 ```python
-class UserReport:
-    def generate(self, user, format_type="text"):
+class StudentReport:
+    def __init__(self, student: Student):
+        self.student = student
+
+    def generate_report(self, format_type="text"):
         if format_type == "text":
-            return f"UserReport for user: {user.name}"
+            return f"这是“{self.student.name}”的报告。"
         elif format_type == "json":
-            return {"user": user.name}
+            return {"学生": self.student.name}
 ```
 
-这种修改方法违反了开放封闭原则，因为我们不断地修改 UserReport 类来支持新的格式。
+这种修改方法就违反了开放封闭原则，因为我们不断地修改 StudentReport 类来支持新的报告格式。那么怎么才能不改变已有的类，又添加新功能呢？
 
-遵循开放封闭原则的设计：
-
-我们可以引入一个报告生成器接口，并为每种格式提供一个实现：
+这需要使用到[抽象类](oop_design#抽象)：我们可以引入一个抽象的“报告生成器”类，然后把每一种格式的报告设计成一个具体类：
 
 ```python
 from abc import ABC, abstractmethod
 
 class ReportGenerator(ABC):
     @abstractmethod
-    def generate(self, user):
+    def generate(self, student: Student):
         pass
 
 class TextReportGenerator(ReportGenerator):
-    def generate(self, user):
-        return f"Report for user: {user.name}"
+    def generate(self, student: Student):
+        return f"这是“{student.name}”的报告。"
 
-class JSONReportGenerator(ReportGenerator):
-    def generate(self, user):
-        return {"user": user.name}
+class DictReportGenerator(ReportGenerator):
+    def generate(self, student: Student):
+        return {"学生": student.name}
 ```
 
-现在，当需要添加新的报告格式时，只需添加新的报告生成器实现，而无需修改现有的 UserReport 类或其他生成器。这使得系统更加灵活和可维护。
+现在，当需要添加新的报告格式时，只需添加以中新的具体的报告生成器类就可以了，而无需修改现有的任何类。修改后，使用 ReportGenerator 的的示例代码：
 
 ```python
-class User:
+class Student:
     def __init__(self, name: str):
         self.name = name
         
-class UserReport:
+class StudentReport:
     def __init__(self, generator: ReportGenerator):
         self.generator = generator
 
-    def generate(self, user):
-        return self.generator.generate(user)
+    def generate(self, student):
+        return self.generator.generate(student)
 ```
 
 如此，当我们需要生成不同格式的报告时，只需改变 UserReport 实例的生成器即可。例如：
 
 ```python
-user = User("ruanqizhen")
-text_report = UserReport(TextReportGenerator())
-json_report = UserReport(JSONReportGenerator())
+student = Student("ruanqizhen")
+text_report = StudentReport(TextReportGenerator())
+dict_report = StudentReport(DictReportGenerator())
 
-print(text_report.generate(user))
-print(json_report.generate(user))
+print(text_report.generate(student))  # 输出： 这是“ruanqizhen”的报告
+print(dict_report.generate(student))  # 输出： {'学生': 'ruanqizhen'}
 ```
 
 这种设计完全遵循了开放封闭原则，因为现有的代码不需要为了添加新功能而进行修改。
 
+
+
 ## 里氏替换原则
 
-里氏替换原则指出子类型必须能够替换它们的基类型而不会导致任何错误。换句话说，如果有一个父类的实例，我们应该能够将它替换为它的任何一个子类的实例，并且应用程序仍然应该正常工作。我们用一个长方形类和一个矩形类来说明如何遵循里氏替换原则。
+里氏替换原则是指，子类型必须能够替换它们的基类型而不会导致任何错误。换句话说，如果有一个父类的实例，我们应该能够将它替换为它的任何一个子类的实例，并且应用程序仍然应该正常工作。我们用一个长方形类和一个矩形类来说明如何遵循里氏替换原则。
 
 不遵循里氏替换原则的设计：
 
@@ -216,7 +226,11 @@ class Square(Shape):
 
 如此，正方形和矩形都是形状，但是它们没有子类和超类的关系。现在，我们不再期望一个正方形是一个矩形，因此不再违反里氏替换原则。
 
-总的来说，为了遵循里氏替换原则，我们应确保每个子类都能替换其父类而不引入错误或意外行为。
+面向对象编程中的类，根本上是为软件开发服务的，设计类，类与类之间的关系时，最主要的还是要考虑程序的逻辑关系，而不是它们再现实世界中的关系。 
+
+
+违反了里氏替换原则，我们就不能放心的把子类放在任何调用父类的地方，降低了代码的可重用性，如果在程序中使用了这样的子类，也很容易引起运行错误。即便保证运行无误，也要为此增加测试和维护成本。
+
 
 
 ### 接口隔离原则

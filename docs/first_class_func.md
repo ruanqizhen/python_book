@@ -22,15 +22,15 @@ def multiply(x, y):
 def operate(func, x, y):
     return func(x, y)
 
-# 使用operate函数和add函数计算3 + 5
+# 使用 operate 函数和 add 函数计算 3 + 5
 result1 = operate(add, 3, 5)
 print(result1)  # 输出：8
 
-# 使用operate函数和subtract函数计算9 - 4
+# 使用 operate 函数和 subtract 函数计算 9 - 4
 result2 = operate(subtract, 9, 4)
 print(result2)  # 输出：5
 
-# 使用operate函数和multiply函数计算3 * 7
+# 使用 operate 函数和 multiply 函数计算 3 * 7
 result3 = operate(multiply, 3, 7)
 print(result3)  # 输出：21
 ```
@@ -56,7 +56,7 @@ square = get_function(2)
 cube = get_function(3)
 
 print(square(4))  # 输出：16
-print(cube(4))   # 输出：64
+print(cube(4))    # 输出：64
 ```
 
 在上述示例中，get_function 接受一个参数 power（指数） 并返回了一个[内部函数](function#嵌套函数) raise_to_power。返回的函数在其内部保留了 power 的值，使我们能够创建并使用不同指数的函数，如平方 square 和立方 cube。
@@ -77,10 +77,10 @@ def math_operation(operator):
         return subtract
 
 operation = math_operation('+')  # 返回加法函数
-print(operation(5, 3))  # 输出：8
+print(operation(5, 3))           # 输出：8
 
 operation = math_operation('-')  # 返回减法函数
-print(operation(5, 3))  # 输出：2
+print(operation(5, 3))           # 输出：2
 ```
 
 ## 闭包

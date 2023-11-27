@@ -60,7 +60,7 @@ const sidebars = {
         'objects',
         'iterator',
         'magic_methods',
-        'design_method',
+        'oop_design',
         'solid',
       ],
     },
