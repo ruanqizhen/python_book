@@ -97,15 +97,13 @@ closure_instance = outer_function(10)
 print(closure_instance(5))  # 输出：15
 ```
 
-在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，调用放生在 outer_function 之外。也就是说，在定义 inner_function 的域之外调用了 inner_function，但 inner_function 仍然可以访问在定义它的域之内的局部变量 x，其值为10。
+在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，调用放生在 outer_function 之外。也就是说，在定义 inner_function 的域之外调用了 inner_function，但 inner_function 仍然可以访问在定义它的域之内的局部变量 x，其值为 10。
 
 闭包涉及至少两个函数，外部函数和一个或多个内部函数。内部函数引用了外部函数的局部变量。内部函数保留了对外部函数局部变量的引用，这样当内部函数被调用时，即使外部函数已经完成执行，这些变量仍然是可用的。
 
 闭包也可能会导致一些意外的行为，尤其是在循环中创建闭包时。因为闭包在其定义环境中捕获变量，所以必须确保捕获的变量的值是预期的那样，例如：
 
 ```python
-
-
 def outer_function():
     functions = []
     for i in range(3):
@@ -170,7 +168,7 @@ print(add_five(10))       # 输出: 15
 
 偏函数 (Partial Functions) 是柯里化的一个特例。使用偏函数，可以固定一个或多个参数的值，并返回一个新函数。这个新函数可以使用剩余的参数调用原始函数。偏函数的主要用途是简化一些特别常用的函数的参数数量。
 
-还有一种应用场合是，需要调用一个库函数 foo，需要给这个函数传入一个只有一个参数的函数作为其参数 bar，但是我们已有的可用的函数都有多个参数，那么，可以使用偏函数把手头的多参数函数的其它参数都固定下来，包装成只有一个参数的函数，这样就符合 参数 bar 的约定了。
+还有一种应用场合是，需要调用一个库函数 foo，需要给这个函数传入一个只有一个参数的函数作为其参数 bar，但是我们已有的可用的函数都有多个参数，那么，可以使用偏函数把手头的多参数函数的其它参数都固定下来，包装成只有一个参数的函数，这样就符合参数 bar 的约定了。
 
 Python 的 functools.partial 可以用来创建偏函数。例如：
 
