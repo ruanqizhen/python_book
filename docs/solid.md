@@ -227,11 +227,11 @@ class Square(Shape):
 如果违反了里氏替换原则，我们就不能放心的把子类放在任何调用父类的地方，这样降低了代码的可重用性。如果不小心在程序中使用了这样的子类，会很容易引起运行错误。如果要确保这种违反了里氏替换原则的子类在程序中也可以运行无误，那就要付出增加测试和维护成本的代价。
 
 
-### 接口隔离原则
+## 接口隔离原则
 
 接口隔离原则，简单的说就是，我们应该确保一个类不会被迫实现它不需要的接口。这里所说的接口，可以理解为 Python 中的抽象类。如果一个抽象类被定义的过于复杂，包含了各种不同的功能，那么继承了这个抽象类的具体类，就必须实现每一个在抽象类中定义了的功能。即便这个具体类只需要做一件事，它也不得不实现抽象类中定义的其它的不相关的功能。因此，设计抽象类的时候，应当尽量把每个特定的功能都设计成一个抽象类，这样好过一个大的通用的抽象类。如此，每个具体类才可以只关注与它直接相关的功能。
 
-我们还是以 StudentReport 类为例，但是，在这个示例中 StudentReport 是一个抽象类，因为我们要实现一些更复杂的报告功能，包括：生成报告、发送报告和打印报告等功能。我们编写了一个具体类 PDFStudenReport 负责处理 PDF 格式报告的相关功能，它继承了抽象类 StudentReport。PDFStudenReport 是下了生成、电子邮寄、打印 PDF 报告的功能：
+我们还是以 StudentReport 类为例，但是，在这个示例中 StudentReport 是一个抽象类，因为我们要实现一些更复杂的报告功能，包括：生成报告、发送报告和打印报告等功能。我们编写了一个具体类 PDFStudenReport 负责处理 PDF 格式报告的相关功能，它继承了抽象类 StudentReport。PDFStudenReport 实现了生成、电子邮寄、打印 PDF 报告的功能：
 
 ```python
 from abc import ABC, abstractmethod
@@ -341,7 +341,7 @@ class ReportService:
         return self.report.generate()
 ```
 
-上面这个设计的问题在于： ReportService 直接依赖于 PDFStudenReport。当需求发生变动的时候，比如要求生成一个 Web 格式的报告，我们就必须要修改 ReportService 类。为了遵循依赖倒置原则，我们可以定义一个抽象的 Report 接口，然后让 PDFStudenReport 和其他报告类型（如 WebStudentReport）实现这个接口。ReportService 应该依赖于这个抽象接口，而不是具体的实现。
+上面这个设计的问题在于： ReportService 直接依赖于 PDFStudenReport。当需求发生变动的时候，比如要求生成一个 Web 格式的报告，我们就必须要修改 ReportService 类。为了遵循依赖倒置原则，我们可以定义一个抽象的 Report 抽象类，然后让 PDFStudenReport 和其他报告类型（如 WebStudentReport）实现这个抽象类。ReportService 应该依赖于这个抽象类，而不是具体的实现。
 
 ```python
 from abc import ABC, abstractmethod

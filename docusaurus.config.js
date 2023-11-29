@@ -23,19 +23,19 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-		  sidebarCollapsed: false,
+          sidebarCollapsed: false,
           // Please change this to your repo.
           editUrl: 'https://github.com/ruanqizhen/python_book/edit/main/',
-		  routeBasePath: '/',
-		  path: './docs',
-		  remarkPlugins: [math],
-		  rehypePlugins: [katex],
+          routeBasePath: '/',
+          path: './docs',
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
         },
-		blog: false,
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-		sitemap: {
+        sitemap: {
           changefreq: 'weekly',
           priority: 0.5,
         },
@@ -49,7 +49,7 @@ const config = {
   themeConfig: (
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
-	  docs: {
+      docs: {
         sidebar: {
           hideable: true,
         },
@@ -60,24 +60,24 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-		hideOnScroll: true,
+        hideOnScroll: true,
         title: 'Python 教程',
         logo: {
           alt: 'Python',
           src: 'img/logo.png',
-		  href: '/'
+          href: '/'
         },
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
-	  zoomSelector: '.markdown img',
-	  metadata: [
-		{name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试'},
-		{name: 'description', content: 'Python 学习 面试'},
-		{name: 'author', content: 'Qizhen Ruan 阮奇桢'},
-	  ],
+      zoomSelector: '.markdown img',
+      metadata: [
+        {name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试'},
+        {name: 'description', content: 'Python 学习 面试'},
+        {name: 'author', content: 'Qizhen Ruan 阮奇桢'},
+      ],
     }
   ),
   plugins: [
@@ -85,20 +85,28 @@ const config = {
       return {
         name: 'baidu-plugin',
         injectHtmlTags({content}) {
-		  return {
-			postBodyTags: ['<script type="text/javascript" src="https://hm.baidu.com/hm.js?b3f6e7ec9302021671173e3fad14f4cd"></script>'
-			],
-		  };
-		},
+          return {
+            postBodyTags: [`
+               <script type="text/javascript" src="https://hm.baidu.com/hm.js?b3f6e7ec9302021671173e3fad14f4cd"></script>
+               <script type="text/javascript">
+                 (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                 })(window, document, "clarity", "script", "jxmn1qjx88");
+               </script>
+            `],
+          };
+        },
       };
     },
-	[
+    [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         hashed: true,
         language: ["en", "zh"],
-		docsRouteBasePath: "/",
-		highlightSearchTermsOnTargetPage: true,
+        docsRouteBasePath: "/",
+        highlightSearchTermsOnTargetPage: true,
       },
     ],
     "./src/plugin/plugin-image-zoom",
