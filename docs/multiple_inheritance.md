@@ -37,10 +37,12 @@ class Furniture:
 
 # 子类
 class Chair(Furniture):
-    def __init__(self, material, furniture_id, cost, number_of_legs):
+    def __init__(self, material, furniture_id, cost):
         super().__init__(material, furniture_id, cost)
-        self.number_of_legs = number_of_legs
 
+    def set_number_of_legs(self, number_of_legs):
+        self.number_of_legs = number_of_legs
+        
     def description(self):
         return super().description() + f"共有 {self.number_of_legs} 条腿。"
 
@@ -49,35 +51,45 @@ class Chair(Furniture):
 
 # 另一个子类
 class Table(Furniture):
-    def __init__(self, material, furniture_id, cost, shape):
+    def __init__(self, material, furniture_id, cost):
         super().__init__(material, furniture_id, cost)
-        self.shape = shape
 
+    def set_shape(self, shape):
+        self.shape = shape
+        
     def description(self):
         return super().description() + f"桌子形状： {self.shape}。"
 
     def lay_tablecloth(self):
         print(f"已经为桌子 {self.id} 铺设了桌布。")
 
-# 多重继承
+# 多重继承，同时继承了 Chair 和 Table
 class ChairWithTableAttached(Chair, Table):
-    def __init__(self, material, furniture_id, cost, number_of_legs, shape):
-        Furniture.__init__(self, material, furniture_id, cost) # Directly initialize Furniture
-        self.number_of_legs = number_of_legs
-        self.shape = shape
+    def __init__(self, material, furniture_id, cost):
+        super().__init__(material, furniture_id, cost) 
 
+    # 重写 description 函数
     def description(self):
-        chair_desc = Chair.description(self)
-        table_desc = Table.description(self)
-        return f"椅子部分：{chair_desc} 桌子部分：{table_desc}"
+        # 下面直接使用类名调用了父类中的方法，这里没办法使用 super()函数，
+        # 因为这里要使用多个父类，而 super()函数只能返回其中一个父类
+        chair_desc = Chair.description(self)  
+        table_desc = Table.description(self)  
+        return f"椅子部分：{chair_desc}  桌子部分：{table_desc}"
 
 # 示例
-item = ChairWithTableAttached("实木", 101, 150.00, 4, "圆形")
+item = ChairWithTableAttached("实木", 101, 150.00)
+item.set_number_of_legs(4)
+item.set_shape("圆形")
+
 print(item.description())
 item.assemble()
 item.add_pillow()
 item.lay_tablecloth()
 ```
+
+这里请读者考虑个问题：在上面示例中，ChairWithTableAttached 的构造函数中的 super() 函数返回的是哪一个类？Chair 还是 Table？这个可能不好回答。
+
+那么 Chair 的构造函数中的 super() 函数返回的是哪一个类？这个应该很确定吧，“Chair 就只有一个父类 Furniture，所以 super() 返回的一定是 Furniture”。 还真不一定，在这一节的最后，我们会再来讨论这个问题。
 
 ## 多继承的问题
 
@@ -203,7 +215,7 @@ combo.place_pillow()
 
 因此，在 Python 中，设计类的继承关系的时候，应该重点考虑的不是类的隶属关系，比如桌子是不是一种特殊的家具，合体桌椅是不是一种特殊的桌子等。真正重要的是如何利用继承来获取一个类所需的功能。基于这一点，Python 中更广为使用的是 Mixin 设计方法。
 
-简单来说，MixIn 是一种小型的、可重复使用的类，它为其他类提供了一套附加的方法，每个 MixIn 执行一个特定的任务。但 MixIn 本身不是一个完整的类，MixIn 通常不能独立工作，它们是被设计出来与其他类一起使用的。
+简单来说，MixIn 是一种小型的、可重复使用的类，它为其他类提供了一套附加的方法，每个 MixIn 执行一个特定的任务。但 MixIn 本身不是一个完整的类，MixIn 通常不能独立工作，它们是被设计出来与其他类一起使用的。MixIn 通常不会有自己的对象，所以也不需要构造函数。
 
 我们可以采用 MinIn 重新设计一下家具店程序。首先，我们可以抽象出一些特性或功能，将它们做成 MixIns。例如：
 
@@ -274,10 +286,49 @@ combo.place_pillow()
 combo.place_tablecloth()
 ```
 
-Python 如果某个同名的属性或方法在父类和子类中都有实现，那么在调用的时候，总是会先找子类，再找父类。如果有多个父类，就按照继承时的书写顺序来找，具体到上面的示例就是按照 ChairWithTableAttached -> Furniture -> PillowPlacementMixin -> MaterialMixin -> AssemblyMixin -> PillowPlacementMixin 的顺序来查找。实在不放心，可以使用对象的一个特殊属性 `__mro__` 来查看：
+### 查找顺序
+
+Python 如果某个同名的属性或方法在父类和子类中都有实现，那么在调用的时候，总是会先找子类，再找父类。如果有多个父类，就按照继承时的书写顺序来找，具体到上面的示例就是按照 ChairWithTableAttached -> Furniture -> MaterialMixin -> AssemblyMixin -> PillowPlacementMixin -> TableclothMixin -> object 的顺序来查找。
+
+这一顺序被称为 MRO（Method Resolution Order），简单来说，就是：按照深度优先搜索顺序，从左到右，先子类后父类。如果想不清楚，可以使用类的 mro() 方法来查看它的查找顺序：
 
 ```python
-print(ChairWithTableAttached.__mro__)
+print(ChairWithTableAttached.mro())
 ```
 
+上文曾经问了一个问题，ChairWithTableAttached，Chair 等类的构造函数中的 super() 函数返回的是哪一个类。我们把几个类简化一下，运行下面的程序，就可以看出来每个构造函数 super() 返回的类了：
 
+```python
+class Base:
+    def method(self, child):
+        print(f"{child} 的 super 是 Base")
+
+class ChildA(Base):
+    def method(self, child):
+        super().method("ChildA")
+        print(f"{child} 的 super 是 ChildA")
+
+class ChildB(Base):
+    def method(self, child):
+        super().method("ChildB")
+        print(f"{child} 的 super 是 ChildB")
+
+class GrandChild(ChildA, ChildB):
+    def method(self, child):
+        super().method("GrandChild")
+        print(f"GrandChild 被调用")
+
+gc = GrandChild()
+gc.method(None)  # 按照 MRO 调用方法
+```
+
+运行上面程序，得到的结果是：
+
+```
+ChildB 的 super 是 Base
+ChildA 的 super 是 ChildB
+GrandChild 的 super 是 ChildA
+GrandChild 被调用
+```
+
+可以看到“ChildA 的 super 是 ChildB”，super() 函数并不是返回父类，它返回的是当前类在 MRO 顺序中的下一个类。
