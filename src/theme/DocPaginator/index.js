@@ -3,6 +3,8 @@ import DocPaginator from '@theme-original/DocPaginator';
 import Giscus from '@giscus/react';
 
 export default function DocPaginatorWrapper(props) {
+  let theme = document.documentElement.getAttribute('data-theme');
+  if (theme == '') theme = 'light';
   return (
     <>
       <DocPaginator {...props} />
@@ -17,7 +19,7 @@ export default function DocPaginatorWrapper(props) {
 		reactionsEnabled='1'
 		emitMetadata='1'
 		inputPosition='top'
-		theme='preferred_color_scheme'
+		theme={theme}
 		lang='zh-CN'
         loading="lazy"
 	  />

@@ -23,25 +23,25 @@ class Animal(ABC):
         pass
 
     @abstractmethod
-    def make_sound(self):
+    def speak(self):
         pass
 ```
 
-在这个 Animal 类中，我们定义了共同的属性 name，以及两个方法 eat 和 make_sound。但是，我们并没有为这些方法提供具体的实现，只是留下了一个占位符。
+在这个 Animal 类中，我们定义了共同的属性 name，以及两个方法 eat 和 speak。但是，我们并没有为这些方法提供具体的实现，只是留下了一个占位符。
 
 在这一步抽象完成之后，我们可以基于这个抽象的 Animal 类，再去定义具体的动物类：
 
 ```python
 class Dog(Animal):
-    def make_sound(self):
+    def speak(self):
         return "汪汪！"
 
 class Cat(Animal):
-    def make_sound(self):
+    def speak(self):
         return "喵喵！"
 ```
 
-每个具体的动物类都继承了 Animal 类，并为 make_sound 方法提供了具体的实现。通过这样的设计，我们可以轻松地向系统中添加更多的动物种类，而不必每次都从头开始定义共同的属性和行为。这就是抽象的威力所在。
+每个具体的动物类都继承了 Animal 类，并为 speak 方法提供了具体的实现。通过这样的设计，我们可以轻松地向系统中添加更多的动物种类，而不必每次都从头开始定义共同的属性和行为。这就是抽象的威力所在。
 
 
 ## 组合
