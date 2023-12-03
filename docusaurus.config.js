@@ -61,7 +61,7 @@ const config = {
       },
       navbar: {
         hideOnScroll: true,
-        title: 'Python 教程',
+        title: 'Python 秘籍',
         logo: {
           alt: 'Python',
           src: 'img/logo.png',
