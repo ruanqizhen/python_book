@@ -1,9 +1,8 @@
 # 多进程
 
-
 ## 创建进程
 
-与创建线程类似，在 Python 中，可以使用 multiprocessing 模块来编写多进程程序。这个模块提供了一个丰富的 API，使得创建多进程应用变得相对简单。
+与创建线程类似，在 Python 中，可以使用 multiprocessing 模块来编写多进程程序。这个模块提供了丰富的 API，使得创建多进程应用变得相对简单。
 
 创建一个新进程示例如下：
 
@@ -11,7 +10,7 @@
 from multiprocessing import Process
 
 def worker_function(number):
-    print(f"Worker {number} is working!")
+    print(f"线程 {number} 正在工作。")
 
 if __name__ == "__main__":
     p = Process(target=worker_function, args=(1,))
@@ -20,12 +19,12 @@ if __name__ == "__main__":
     
 ```
 
-在上面的示例中，我们定义了一个名为worker_function的函数，该函数接受一个参数number并打印一个关于工作的消息。这个函数将在子进程中运行。 `p = Process(target=worker_function, args=(1,))` 这一行创建了一个新的进程对象。通过 target 参数，我们告诉它要运行的函数是 worker_function，并为这个函数提供了参数(1,)。 `p.start()` 告诉进程开始执行。此时，一个新的子进程将被创建并开始运行。join()方法会阻塞主进程，直到子进程执行完毕。这确保主进程不会在子进程完成之前结束。
+在上面的示例中，我们定义了一个名为 worker_function 的函数，该函数接受一个参数 number 并打印一个关于工作的消息。这个函数将在子进程中运行。 `p = Process(target=worker_function, args=(1,))` 这一行创建了一个新的进程对象。通过 target 参数，我们告诉它要运行的函数是 worker_function，并为这个函数提供了参数(1,)。 `p.start()` 告诉进程开始执行。此时，一个新的子进程将被创建并开始运行。join()方法会阻塞主进程，直到子进程执行完毕。这确保主进程不会在子进程完成之前结束。
 
 
 ## 进程池
 
-进程池（Process Pool）是一个并行执行多个任务的计算机处理资源的集合。它用于控制并行执行的进程总数量，而不是为每一个任务都开启一个单独的进程。开启终止进程也是有额外开销的，通过控制进程的数量，提供任务到进程的快速映射，使多核或多处理器的系统更加高效地利用计算资源。
+创建进程，在进程间切换也是有额外开销的，而且这个额外开销比线程的开销要大。一般来说，电脑的 CPU 核心数量有限，创建 CPU 数量若多余 CPU 核心数量，必然无法做到每个进程都有自己独占的 CPU 核心。这样一来，再多的多的进程也不会对充分利用 CPU 再有任何帮助了，反而徒增进程切换的负担。所以，我们应该控制进程的总数量，以提高并行运算的效率。我们可以利用进程池（Process Pool）来控制控制并行执行的进程总数量，而不是为每一个任务都开启一个单独的进程。
 
 ### 创建
 
@@ -38,22 +37,23 @@ pool = Pool(processes=4)  # 创建一个包含4个进程的进程池
 
 ### 分发任务
 
-分发任务使用的是进程池的 map 和 map_async 方法。这两个方法类似于 Python 的内置 map 函数，但它们支持并行执行函数调用。这是分发批量任务到进程池的常见方式。
+为进程池分发任务，最常用的方法是使用进程池的 map 和 map_async 方法。这两个方法类似于 Python 的内置 [map 函数](high_order#map)，但它们支持并行执行函数调用。
 
 ```python
-
 def square(x):
     return x * x
 
 results = pool.map(square, [1, 2, 3, 4])  # 输出 [1, 4, 9, 16]
 ```
 
+上面程序中的 pool.map() 方法会在多个进程中并行执行 square() 函数。
+
 对于单个任务，可以使用 apply 和 apply_async 方法。apply 方法是阻塞的，而 apply_async 是非阻塞的并返回一个 AsyncResult 对象。
 
 ```python
 result = pool.apply(func, args=(arg1, arg2))  # 阻塞调用
 async_result = pool.apply_async(func, args=(arg1, arg2))  # 非阻塞调用
-result = async_result.get()  # 从AsyncResult对象中获取结果
+result = async_result.get()  # 从 AsyncResult 对象中获取结果
 ```
 
 ### 关闭
@@ -82,13 +82,13 @@ pool.join()  # 等待所有进程完成
 from multiprocessing import Process, Pipe
 
 def worker(conn):
-    conn.send("Hello from worker process!")
+    conn.send("工作进程发送的数据")
     conn.close()
 
 parent_conn, child_conn = Pipe()
 p = Process(target=worker, args=(child_conn,))
 p.start()
-print(parent_conn.recv())  # 输出: Hello from worker process!
+print(parent_conn.recv())  # 输出: "工作进程发送的数据"
 p.join()
 ```
 
@@ -104,12 +104,12 @@ Pipe()函数返回一个包含两个连接对象的元组：parent_conn 和 chil
 from multiprocessing import Process, Queue
 
 def worker(q):
-    q.put("Data from worker process")
+    q.put("工作进程发送的数据")
 
 q = Queue()
 p = Process(target=worker, args=(q,))
 p.start()
-print(q.get())  # 输出: Data from worker process
+print(q.get())  # 输出: "工作进程发送的数据"
 p.join()
 ```
 
@@ -117,7 +117,7 @@ p.join()
 
 ### Value 和 Array
 
-当需要在进程之间共享一个单一的值或数组时，可以使用Value或Array。这些对象使用共享内存来存储数据，因此可以由多个进程访问。
+当需要在进程之间共享一个单一的值或数组时，可以使用 Value 或 Array。这些对象使用共享内存来存储数据，因此可以由多个进程访问。
 
 ```python
 from multiprocessing import Process, Value, Array
@@ -127,18 +127,18 @@ def worker(val, arr):
     for i in range(len(arr)):
         arr[i] = -arr[i]
 
-val = Value('i', 0)  # 'i' indicates integer data type
-arr = Array('d', [1.0, 2.0, 3.0])  # 'd' indicates double data type
+val = Value('i', 0)                # 'i' 表示整数
+arr = Array('d', [1.0, 2.0, 3.0])  # 'd' 表示双精度浮点数
 p = Process(target=worker, args=(val, arr))
 p.start()
 p.join()
-print(val.value)  # 输出: 100
-print(arr[:])  # 输出: [-1.0, -2.0, -3.0]
+print(val.value)   # 输出: 100
+print(arr[:])      # 输出: [-1.0, -2.0, -3.0]
 ```
 
 ### 管理器
 
-管理器（Manager）提供了一种在进程之间共享更复杂的Python对象的方法，如列表、字典等。管理器启动了一个新的进程，其他进程通过代理与它通信。
+管理器（Manager）提供了一种在进程之间共享更复杂的 Python 对象的方法，如列表、字典等。管理器启动了一个新的进程，其他进程通过代理与它通信。
 
 ```python
 from multiprocessing import Process, Manager
@@ -159,16 +159,16 @@ with Manager() as manager:
     print(d)  # 输出: {'a': 'Initial', 'b': 'Updated'}
 ```
 
-尽管使用共享对象（如Value或Array）进行进程间通信可能更直接，但它也可能带来竞态条件和数据不一致性的问题。为确保数据的一致性，可能需要使用同步原语，如锁。
+尽管使用共享对象（如Value或Array）进行进程间通信可能更直接，但它也可能带来竞态条件和数据不一致性的问题。为确保数据的一致性，可能需要使用同步机制，如互斥锁。
 
 
-## 同步
+## 同步机制
 
-我们可以使用与线程间同步非常类似的工具进行进程间的同步
+我们可以使用与[线程间同步机制](multithread#同步机制)非常类似的工具进行进程间的同步。因为两者极其相似，我们在这里就只做最简单的演示，详细解释可以参考在线程一节中的介绍。
 
-### 锁
+### 互斥锁
 
-锁是最基本的同步原语，类似于线程中的互斥锁。它可以确保同一时刻只有一个进程可以访问共享的资源或代码段。
+互斥锁是最基本的同步机制，可以确保同一时刻只有一个进程可以访问共享的资源或代码段。
 
 ```python
 from multiprocessing import Process, Lock
@@ -197,21 +197,6 @@ def worker(sem):
 sem = Semaphore(2)  # Only 2 processes allowed at a time
 ```
 
-### 事件
-
-进程可以等待事件变为true，或者设置或清除事件标志。
-
-```python
-from multiprocessing import Process, Event
-
-def wait_for_event(e):
-    e.wait()
-    # code to execute after event is set
-
-event = Event()
-```
-
-
 ### 条件变量
 
 条件变量结合了锁和事件的功能。它允许一个或多个进程等待直到被另一个进程明确地通知继续执行。
@@ -228,6 +213,19 @@ def worker(cond):
 cond = Condition()
 ```
 
+### 事件
+
+进程可以等待事件变为true，或者设置或清除事件标志。
+
+```python
+from multiprocessing import Process, Event
+
+def wait_for_event(e):
+    e.wait()
+    # code to execute after event is set
+
+event = Event()
+```
 
 ## 演示
 
