@@ -130,7 +130,7 @@ class StudentReport:
         return self.generator.generate(student)
 ```
 
-如此，当我们需要生成不同格式的报告时，只需改变 UserReport 实例的生成器即可。例如：
+如此，当我们需要生成不同格式的报告时，只需改变 StudentReport 实例的生成器即可。例如：
 
 ```python
 student = Student("ruanqizhen")
@@ -249,7 +249,7 @@ class StudentReport(ABC):
     def print_out(self):
         pass
 
-class PDFStudenReport(UserReport):
+class PDFStudenReport(StudentReport):
     def generate(self):
         print("生成 PDF 报告")
 
@@ -263,7 +263,7 @@ class PDFStudenReport(UserReport):
 现在又有了新的需求：一个新的报告格式，以网页格式生成和 Email 报告，但是不需要打印报告的功能。我们可以再实现一个新的具体类，WebStudentReport， 它能够生成和电子邮寄网页格式的报告：
 
 ```python
-class WebStudentReport(UserReport):
+class WebStudentReport(StudentReport):
     def generate(self):
         print("生成 Web 报告")
 
@@ -335,7 +335,7 @@ class PDFStudenReport:
 
 class ReportService:
     def __init__(self):
-        self.report = PDFUserReport()
+        self.report = PDFStudenReport()
 
     def create_report(self):
         return self.report.generate()
