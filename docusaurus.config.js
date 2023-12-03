@@ -8,7 +8,7 @@ const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Python 教程',
+  title: 'Python 秘籍',
   tagline: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试',
   url: 'https://py.qizhen.xyz',
   baseUrl: '/',
