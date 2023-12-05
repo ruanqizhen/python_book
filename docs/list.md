@@ -221,6 +221,23 @@ print(3 in my_list)  # 输出： True
 print(6 in my_list)  # 输出： False
 print(7 not in my_list)  # 输出: True
 ```
+
+in 关键字也可以被用在[链式比较](calculation#链式比较)中，比如：
+
+```python
+x = 3
+my_list = [1, 2, 3, 4, 5]
+
+print(2 < x in my_list)  # 输出： True
+```
+
+但有时候，这样的代码很容易产生迷惑，尽量不要这样做，比如：
+
+```python
+print(False == False in [False])  # 输出： True
+```
+
+上面的程序是一个链式比较操作，因此结果为 True，但不熟悉的读者可能会考虑，无论是 `==` 优先级高，还是 `in` 优先级高，结果都应该是 False 嘛。
     
 ### 长度
 

@@ -50,8 +50,8 @@ print(b)
 """
 
 # 查看数组的形状和数据类型
-print(b.shape)  # 输出：(2, 3)
-print(a.dtype)  # 输出：int64 (这可能会因平台和Python版本而异)
+print(b.shape)  # 输出： (2, 3)
+print(a.dtype)  # 输出： int64 (这可能会因平台和 Python 版本而异)
 ```
 
 ## 常用的数组操作
@@ -87,21 +87,21 @@ def find_max_value(arr):
 
 ```python
 def binary_search(sorted_arr, target):
-    """Returns the index of the target in sorted_arr, or -1 if the target is not present."""
+    """返回目标数据在 sorted_arr 中的索引，如果没有找到，则返回 -1"""
     
     left, right = 0, len(sorted_arr) - 1
     
     while left <= right:
-        mid = (left + right) // 2  # Compute the middle index
+        mid = (left + right) // 2  # 中间位置的索引
         
         if sorted_arr[mid] == target:
-            return mid  # Target found
+            return mid             # 找到目标
         elif sorted_arr[mid] < target:
-            left = mid + 1  # Search the right half
+            left = mid + 1         # 搜索右半部分
         else:
-            right = mid - 1  # Search the left half
+            right = mid - 1        # 搜索左半部分
             
-    return -1  # Target not found in the array
+    return -1                      # 目标没有找到
 
 # 示例
 sorted_arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -109,9 +109,9 @@ target = 7
 
 index = binary_search(sorted_arr, target)
 if index != -1:
-    print(f"Target {target} found at index {index}.")
+    print(f"目标数据 {target} 的索引是 {index}")
 else:
-    print(f"Target {target} not found in the array.")
+    print(f"目标数据 {target} 没有找到")
 ```
 
 
@@ -121,10 +121,12 @@ else:
 
 #### 朴素方法
 
+最直接的方法就是每一轮都把所有元素向右移动一个位置，重复 k 轮即可。
+
 ```python
 def rotate_naive(nums, k):
     n = len(nums)
-    k = k % n  # in case k is larger than the length of nums
+    k = k % n  # 防止 k 比数组长度还大
     for _ in range(k):
         previous = nums[-1]
         for i in range(n):
@@ -135,7 +137,7 @@ rotate_naive(nums, 3)
 print(nums)  # Output: [5,6,7,1,2,3,4]
 ```
 
-最直接的方法就是每一轮都把所有元素向右移动一个位置，重复 k 轮即可。时间复杂度：每次旋转操作需要 $O(n)$ 时间，我们旋转 k 次，因此总的时间复杂度为 $O(nk)$。但在最坏的情况下，k=n，时间复杂度为 $O(n^2)$。 空间复杂度：我们只用了一个额外的变量 previous，因此空间复杂度为 $O(1)$。
+时间复杂度：每次旋转操作需要 $O(n)$ 时间，我们旋转 k 次，因此总的时间复杂度为 $O(nk)$。但在最坏的情况下，k=n，时间复杂度为 $O(n^2)$。 空间复杂度：我们只用了一个额外的变量 previous，因此空间复杂度为 $O(1)$。
 
 #### 使用额外的数组
 
