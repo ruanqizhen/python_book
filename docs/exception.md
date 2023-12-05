@@ -153,6 +153,24 @@ except FileNotFoundError:
 file.close()    
 ```
 
+### 不要在 try 语句中使用 return
+
+在 try 语句中的 return 可能会存在一些你意想之外的行为，比如运行下面的程序：
+
+```python
+def final_func():
+    try:
+        x = 1 + 2
+        return x
+    finally:
+        return 0
+        
+print(final_func())
+```
+
+初看之下，1+2 肯定不会引起异常，所以程序应该打印 3，而实际上的结果却是 0。这是因为 try 代码段内的 return, break, continue 语句会触发调用 finally 代码段，而 finally 代码段 中的 return 又会清除之前的信息，所以才有了意料之外的结果。为了防止类似谜之结果，return 最好放在 try 语句之外。
+
+
 ## 主动触发异常
 
 在 Python 代码自己没有产生任何异常的情况下，我们也可以使用 raise 语句来主动引发（或者叫抛出）一个异常：

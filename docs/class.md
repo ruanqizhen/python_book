@@ -281,6 +281,61 @@ cat.speak()     # 输出: 我是一只猫
 类继承为我们提供了一个有效的方法来组织和重用代码，同时还能够利用多态性提高代码的灵活性。
 
 
+### 检查继承关系
+
+issubclass 函数用于检查一个类是否是另一个类的子孙类。issubclass 接受两个参数。如果第一个参数的类是第二个参数的类（或类元组中任意一个）的子孙类，issubclass 返回 True。否则，返回 False。比如：
+
+```python
+# 定义父类
+class Animal:
+    def __init__(self):
+        pass
+
+# 定义子类
+class Dog(Animal): 
+    def __init__(self):
+        pass
+        
+# 一个不相关的类
+class Plant:
+    def __init__(self):
+        pass
+      
+print(issubclass(Dog, Animal))     # 输出: True
+print(issubclass(Animal, object))  # 输出: True
+print(issubclass(Plant, object))   # 输出: True
+print(issubclass(Plant, Animal))   # 输出: False
+```
+
+### 检查是否是某个类的对象
+
+isinstance 函数用于检查一个对象是否是一个类的实例，或者是一个类继承体系中的某个类的实例。isinstance 接受两个参数。如果第一个参数的对象是第二个参数的类（或类元组中任意一个）的实例，isinstance 返回 True。否则，返回 False。
+
+```python
+# 定义父类
+class Animal:
+    def __init__(self):
+        pass
+
+# 定义子类
+class Dog(Animal): 
+    def __init__(self):
+        pass
+        
+# 一个不相关的类
+class Plant:
+    def __init__(self):
+        pass
+      
+dog = Dog()
+plant = Plant()
+
+print(isinstance(dog, Animal))    # 输出: True
+print(isinstance(dog, object))    # 输出: True
+print(isinstance(plant, object))  # 输出: True
+print(isinstance(plant, Animal))  # 输出: False
+```
+
 ## 多态
 
 有 Java、C++ 经验的读者应该已经比较了解多态的概念了。但是 Python 中对于多态的实现与 Java 等经典的面向对象的编程语言有所不同。Java 中的多态是基于类或接口的继承来实现的，父类中的方法，可以在不同子类中有不同的实现。但 Python 的多态是基于“鸭子类型”实现的。

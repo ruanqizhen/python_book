@@ -204,7 +204,16 @@ for _ in range(10):
     print(next(gen))
 ```
 
+如果，我们不需要太高的计算效率，不记录被滤除的数值，而是针对每个数都重新检查一下它是否可以被其它数整除，那么，我们倒是可以使用更为简化的代码，一个生成器表达式即可：  
 
+```print
+from itertools import count
+
+gen = (i for i in count(2) if all(i % j != 0 for j in range(2, int(i**.5) + 1)))
+
+for _ in range(10):  # 获取前 10 个素数
+    print(next(gen))
+```
 
 ## reduce
 
