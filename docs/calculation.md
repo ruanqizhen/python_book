@@ -245,7 +245,15 @@ print(x is z)       # 输出 True   表示 x 和 z 指向了同一个数据
 print(x is not y)   # 输出 True   表示 x 和 y 指向了不同的数据
 ```
 
-由此可知，如果有 `x is y` 则一定会有 `x == y`，反之则不一定。
+一般来说，如果有 `x is y` 则一定会有 `x == y`，反之则不一定。只有一个特例，`nan`，因为 `nan == nan` 返回 False 是被硬性规定的，实际上数据可能是同一个数据：
+
+```python
+not_a_number = float("nan")
+
+print(not_a_number == not_a_number)       # 输出 False
+print(not_a_number is not_a_number)       # 输出 True
+print([not_a_number] == [not_a_number])   # 输出 True
+```
 
 在 Python 中，有些数据是确定只有全局一份的，比如 None 这个数据，它是 NoneType 类型的唯一数据，通常用于初始化变量、表示默认状态、进行空值检查等场景。这个数据在全局就只有一份，任何值为 None 的变量，都一定是指向了这个数据。所以，在 Python 判断一个数据是否为 None，通常不会使用 `==` 操作符，而是会使用 is 操作符。
 

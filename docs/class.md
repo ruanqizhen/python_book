@@ -75,6 +75,10 @@ print(chick.name)     # 输出： 花冠
 
 上面程序中，Animal 类的 `__init__` 初始化函数，除了 self 之外，还有两个参数 name 和 species，分别表示动物的名字和品种。有了初始化函数，我们就可以在创建对象时，为类传递必要的参数了，比如 `Animal("旺财", "狗")` 会创建一个名为旺财，品种为狗的动物类实例。在构造函数中，它通过为 `self.name` 和 `self.species` 赋值，创建了两个对象属性的值。
 
+Python 中，每个类只能有一个构造函数，不像其它很多编程语言，可以为一个类创建具有不同参数的多个构造函数。如果需要使用多种不同的参数创建一个类的实例，可以使用使用[工厂方法](class#工厂方法)。
+
+### 同名的类属性和对象属性
+
 在一个类中，是可以存在同名的类属性和对象属性的。但是，如果有重名存在，就不能再通过对象来访问类属性了：
 
 ```python
@@ -91,8 +95,46 @@ print(Animal.name)     # 输出： 动物 - 使用类名访问类属性
 print(dog.name)        # 输出： 旺财 - 通过对象访问对象属性
 ```
 
-Python 中，每个类只能有一个构造函数，不像其它很多编程语言，可以为一个类创建具有不同参数的多个构造函数。如果需要使用多种不同的参数创建一个类的实例，可以使用使用[工厂方法](class#工厂方法)。
+调用类属性的时候，最好是通过类名来调用，而不是通过对象来调用，以免出现误解。尤其是有些时候，通过对象来调用，是不那么容易分清楚到底调用的是哪个属性。比如下面的示例：
 
+```python
+class MyCounter:
+    internal_a = []
+    internal_b = []
+    internal_c = []
+    def __init__(self):
+        self.internal_a = self.internal_a + [1]  # 比较明确是对象属性
+        self.internal_b += [1]                   # 比较迷惑
+        self.internal_c.append(1)                # 比较明确是类属性
+        
+counter_1 = MyCounter()
+counter_2 = MyCounter()
+
+print(counter_1.internal_a)    # 输出：[1]     对象属性
+print(counter_1.internal_b)    # 输出：[1, 1]  类属性
+print(counter_1.internal_c)    # 输出：[1, 1]  类属性
+
+print(counter_2.internal_a)    # 输出：[1]     对象属性
+print(counter_2.internal_b)    # 输出：[1, 1]  类属性
+print(counter_2.internal_c)    # 输出：[1, 1]  类属性
+
+print(MyCounter.internal_a)    # 输出：[]
+print(MyCounter.internal_b)    # 输出：[1, 1]
+print(MyCounter.internal_c)    # 输出：[1, 1]
+```
+
+上面这个程序的构造函数中，使用 self 设置了几个属性，可是它们是创建了个新的对象属性呢，还是在通过对象修改类属性呢？通过示例程序，我们可以看到，internal_a 是新建的对象属性，而 internal_b 和 internal_c 都是在修改类属性。不熟悉的人很容易就会搞错。为了避免这种迷惑操作，在[类方法](#类方法)中，可以通过 cls 调用类属性，其它情况，应该通过类名来调用类属性，比如如下写法就会非常清楚：
+
+```python
+class MyCounter:
+    internal_a = []
+    internal_b = []
+    internal_c = []
+    def __init__(self):
+        MyCounter.internal_a = MyCounter.internal_a + [1]  
+        MyCounter.internal_b += [1]                   
+        MyCounter.internal_c.append(1)             
+```
 
 ### 对象方法
 
