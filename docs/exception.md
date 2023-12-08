@@ -55,6 +55,15 @@ except ZeroDivisionError:
 
 `except ZeroDivisionError:` 下面的代码块是用来处理异常的。except 后面接的是异常的种类。在这个示例中，只针对 ZeroDivisionError 异常进行了处理。当 try 块中的代码引发了 ZeroDivisionError 异常时，Python 会跳过 try 块中剩余的代码，并立即执行这个 except 块中的代码。所以运行这段代码，我们只会看到输出： "除数不能为 0 !"
 
+如果需要获得系统的异常信息，可以把异常通过 as 操作符赋值给一个变量：
+
+```python
+try:
+    x = 1 / 0
+except ZeroDivisionError as e:  # 变量 e 中保存了出错信息
+    print(e)                    # 输出： division by zero
+```
+
 ### 捕捉多种异常
 
 在一个 try 块后面可以跟多个 except 块，捕捉多种异常，比如：
@@ -83,8 +92,9 @@ except IndexError:
 ```python
 try:
     x = int("a")
-except (ZeroDivisionError, ValueError):
+except (ZeroDivisionError, ValueError) as e:
     print("出现了异常!")
+    print(e)
 ```    
     
 ### else 子句

@@ -77,7 +77,7 @@ print(chick.name)     # 输出： 花冠
 
 Python 中，每个类只能有一个构造函数，不像其它很多编程语言，可以为一个类创建具有不同参数的多个构造函数。如果需要使用多种不同的参数创建一个类的实例，可以使用使用[工厂方法](class#工厂方法)。
 
-### 同名的类属性和对象属性
+### 同名变量（属性）
 
 在一个类中，是可以存在同名的类属性和对象属性的。但是，如果有重名存在，就不能再通过对象来访问类属性了：
 
@@ -134,6 +134,19 @@ class MyCounter:
         MyCounter.internal_a = MyCounter.internal_a + [1]  
         MyCounter.internal_b += [1]                   
         MyCounter.internal_c.append(1)             
+```
+
+下面这个示例也是因为，属性没有添加类名前缀，非常容易混淆到底使用的是哪个变量：
+
+```python
+a = 1
+class MyCounter:
+    a = 8
+    b = [a]                      # 这里使用的是类属性 a 
+    c = [a for i in range(2)]    # 这里使用的却是全局变量 a
+    
+print(MyCounter.b)   # 输出： [8]
+print(MyCounter.c)   # 输出： [1, 1]      
 ```
 
 ### 对象方法

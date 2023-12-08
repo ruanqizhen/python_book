@@ -546,7 +546,7 @@ print(last)    # 输出: 5
 ```python
 s = "abc"
 m, n, o = s
-print(f"Unpacked characters: {m}, {n}, {o}") # 字符串拆包后，成为单独的字符
+print(f"拆包后的字符是： {m}, {n}, {o}") # 字符串拆包后，成为单独的字符
 ```
 
 Python 中还有一个与元组类似的数据类型：[命名元组](iterator#命名元组)，它可以给元组中每个元素都起一个命名，我们将在后文详细介绍。

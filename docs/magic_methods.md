@@ -16,24 +16,25 @@ class Point:
     def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
+        print(f"创建点 ({self.x}, {self.y})")
 
     # 析构方法，当对象被销毁时调用
     def __del__(self):
-        print(f"Point ({self.x}, {self.y}) is being deleted!")
+        print(f"点 ({self.x}, {self.y}) 被销毁")
 
     # 返回一个“正式”的表示，通常可以用它来重新创建这个对象
     def __repr__(self):
-        return f"Point({self.x}, {self.y})"
+        return f"点 ({self.x}, {self.y})"
 
     # 返回一个“非正式”的表示，用于打印或日志
     def __str__(self):
         return f"({self.x}, {self.y})"
         
 # 测试一下：
-p = Point(1, 2)
+p = Point(1, 2)      # 输出: 创建点 (1, 2)
 print(p)             # 输出: (1, 2)
-print(repr(p))       # 输出: Point(1, 2)
-del p                # 输出: Point (1, 2) is being deleted!
+print(repr(p))       # 输出: 点 (1, 2)
+del p                # 输出: 点 (1, 2) 被销毁
 ```
         
 在上面的程序中：
@@ -41,6 +42,33 @@ del p                # 输出: Point (1, 2) is being deleted!
 * 当对象被销毁（例如，当它不再被引用时）时，`__del__` 方法会被调用。我们的例子中只是打印了一个简单的消息，但在实际的应用中，它可能会被用于释放资源，如关闭文件、断开网络连接等。
 * repr（） 函数会调用 `__repr__` 方法。它返回一个字符串，表示Python表达式，重新创建这个对象时可以用这个表达式。在我们的例子中，repr(point) 将返回像 Point(1, 2) 这样的字符串。
 * 当我们打印一个对象或将其转化为字符串时，`__str__` 方法会被调用。在我们的例子中，str(point)将返回(1, 2)。
+
+
+如果有多个变量同时指向一个对象，那么要等到所有指向这个对象的变量都被删除后，才会真正调用 `__del__` 销毁对象，比如：
+
+```python
+class Point:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+        print(f"创建点 ({self.x}, {self.y})")
+
+    def __del__(self):
+        print(f"点 ({self.x}, {self.y}) 被销毁")
+
+p = Point(1, 2)      # 构造函数被调用
+print("=====分割线======")
+q = p                # 新变量指向原有对象，构造函数不会被调用
+del p                # 还有其它变量指向这个对象，析构函数不会被调用
+print("=====分割线======")
+del q                # 所有变量均被删除，调用析构函数销毁对象
+
+# 输出：
+# 创建点 (1, 2)
+# =====分割线======
+# =====分割线======
+# 点 (1, 2) 被销毁
+```
 
 ## 运算符
 
