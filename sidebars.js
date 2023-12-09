@@ -89,7 +89,8 @@ const sidebars = {
         type: 'doc',
         id: 'all_powerful',
       },
-      items: [ 
+      items: [
+        'numpy',
         'gui',
         'animation',
         'placeholder',
