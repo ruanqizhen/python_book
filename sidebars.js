@@ -62,6 +62,7 @@ const sidebars = {
         'magic_methods',
         'oop_design',
         'solid',
+        'coding_style',
       ],
     },
     {
