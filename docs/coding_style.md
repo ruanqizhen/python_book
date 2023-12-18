@@ -77,6 +77,7 @@ Namespaces are one honking great idea -- let's do more of those!
 
 这段文字是《Python 禅意》，由 Tim Peters 所著。《Python 禅意》包含了许多对 Python 编程风格和哲学的深刻见解，强调了简洁、可读性和明确性的重要性。其中文翻译大致如下：
 
+```
 优美胜于丑陋，明确胜于隐晦，
 简单胜于复杂，复杂胜于混乱，
 扁平胜于嵌套，疏散胜于密集，
@@ -97,7 +98,7 @@ Namespaces are one honking great idea -- let's do more of those!
 如果实现难以解释，那它可能是个坏主意。
 如果实现易于解释，那它可能是个好主意。
 命名空间是个绝妙的主意——让我们多加利用！
-
+```
 
 下面是 Pythora 星球居民对这首诗的理解：
 
