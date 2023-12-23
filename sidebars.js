@@ -92,6 +92,7 @@ const sidebars = {
       },
       items: [
         'numpy',
+        'pandas',
         'gui',
         'animation',
         'placeholder',
