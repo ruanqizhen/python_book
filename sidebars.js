@@ -93,8 +93,8 @@ const sidebars = {
       items: [
         'numpy',
         'pandas',
-        'gui',
-        'animation',
+        'tkinter',
+        'pygame',
         'placeholder',
       ],
     },
