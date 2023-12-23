@@ -296,8 +296,8 @@ if __name__ == "__main__":
    * Flask: 一个轻量级的Web应用框架，易于学习，适合小到中型项目。
    * Django: 一个高级的Web框架，提供了完整的功能，适用于大型项目。
 * 数据科学与分析
-   * NumPy: 提供强大的多维数组对象和大量的科学计算功能。
-   * Pandas: 提供数据结构和数据分析工具，特别适合处理表格数据。
+   * [NumPy](numpy): 提供强大的多维数组对象和大量的科学计算功能。
+   * [Pandas](pandas): 提供数据结构和数据分析工具，特别适合处理表格数据。
    * Matplotlib: 用于数据可视化的绘图库，可以创建高质量的图表和图形。
 * 机器学习与人工智能
    * Scikit-learn: 一个简单有效的机器学习库，提供了很多常用的机器学习算法。
@@ -316,7 +316,7 @@ if __name__ == "__main__":
    * Beautiful Soup: 解析 HTML 和 XML 文件的库，适合网页数据抓取。
    * PyYAML: 用于读写 YAML 文件的库。
 * GUI 开发
-   * Tkinter: Python 自带的 GUI 工具包，可以快速创建简单的 GUI 应用。
+   * [Tkinter](tkinter): Python 自带的 GUI 工具包，可以快速创建简单的 GUI 应用。
    * PyQt/PySide: 基于 Qt 的跨平台 GUI 工具包。
 
 ### 安装
