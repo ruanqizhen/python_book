@@ -18,7 +18,6 @@ import pandas as pd
 
 下面示例代码，有些省略了导入过程了，测试时需要自行添加。
 
-
 ## 数据结构
 
 在 Pandas 库中，主要有两种数据结构：Series 和 DataFrame。这两种结构为数据处理和分析提供了强大且灵活的工具。
@@ -641,18 +640,407 @@ K3  NaN  NaN   C3   D3
 
 ## 数据分组
 
-我们曾经在[统计测数](counter#pandas-库)一节，简要介绍了 DataFrame 的分组功能。 
+我们曾经在[统计测数](counter#pandas-库)一节，简要介绍了 DataFrame 的分组功能。这里再详细解释一下相关功能。 
+
+数据的分组通常是通过 groupby 方法来实现的。它可以按照某个或某些列的值对数据进行分组，然后对每个分组应用聚合函数、转换函数或过滤操作。groupby 方法 `DataFrame.groupby(by=None, axis=0, ...)` 有两个主要参数： by，用作分组依据的列名或列名列表，也可以是映射或函数； axis 表示分组的轴，默认为 0，按行分组，1 表示按列分组。
+
+假设我们有以下 DataFrame：
+
+```python
+import pandas as pd
+
+data = {'Name': ['典韦', '许褚', '典韦', '许褚', '甘宁'],
+        'Kingdom': ['魏', '魏', '魏', '魏', '吴'],
+        'Score': [9, 8, 5.5, 8.5, 7]}
+df = pd.DataFrame(data)
+```
+
+接下来，我们可以按照 Name 列对数据进行分组：
+
+```python
+grouped = df.groupby('Name')
+```
+
+grouped 是分组结果，接下来我们可以对这个分组结果进行各种统计，比如求和（sum() 函数）、平均值（mean()）、最大值（max()）、方差（std()）等：
+
+```python
+# 计算每个名字的平均分数
+mean_scores = grouped.mean()
+print(mean_scores)
+
+# 输出：
+#       Score
+# Name       
+# 典韦     7.25
+# 甘宁     7.00
+# 许褚     8.25
+```
+
+我们可以按多个列的组合进行分组，比如可以按照 Name 和 Kingdom 分组：
+
+```python
+
+grouped = df.groupby(['Name', 'Kingdom'])
+
+# 计算每个名字的平均分数
+mean_scores = grouped.mean()
+print(mean_scores)
+
+# 输出：
+#               Score
+# Name Kingdom       
+# 典韦   魏         7.25
+# 甘宁   吴         7.00
+# 许褚   魏         8.25
+```
+
+使用 agg 方法，我们可以同时对分组后的数据应用多种聚合函数：
+
+```python
+grouped = df.groupby('Name')
+grouped_agg = grouped.agg({'Score': ['mean', 'min', 'max']})
+print(grouped_agg)
+
+# 输出：
+#      Score          
+#       mean  min  max
+# Name                
+# 典韦    7.25  5.5  9.0
+# 甘宁    7.00  7.0  7.0
+# 许褚    8.25  8.0  8.5
+```
+
+除了聚合，还可以对分组数据进行转换（transform）和过滤（filter）：
+
+```python
+# 标准化每个分组的分数
+score_standardized = grouped['Score'].transform(lambda x: (x - x.mean()) / x.std())
+
+# 仅保留平均分超过某个阈值的分组
+grouped_filter = grouped.filter(lambda x: x['Score'].mean() > 6)
+```
+
 
 ## 数据的重塑
 
-Pivot, Melt
+数据重塑（reshaping）指的是重新排列现有数据的结构，以便获得更适合特定分析或操作的数据格式。常用的数据重塑方法包括透视、堆叠和融合。
+
+### 透视
+
+pivot 方法可以重排 DataFrame，生成一个“透视表”，类似于 Excel 中的透视表。`DataFrame.pivot(index=None, columns=None, values=None)` 方法优三个主要参数： index 表示新 DataFrame 的索引名； columns 表示新 DataFrame 的列名； values 表示填充到新 DataFrame 的值。
+
+假设有以下DataFrame：
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({
+    'date': ['2020-01-01', '2020-01-01', '2020-01-02', '2020-01-02'],
+    'variable': ['A', 'B', 'A', 'B'],
+    'value': [1, 2, 3, 4]
+})
+print(df)
+
+# 使用pivot生成透视表：
+df_pivot = df.pivot(index='date', columns='variable', values='value')
+print(df_pivot)
+```
+
+运行上面示例，df 中的数据是：
+
+```
+         date variable  value
+0  2020-01-01        A      1
+1  2020-01-01        B      2
+2  2020-01-02        A      3
+3  2020-01-02        B      4
+```
+
+df_pivot 中的数据是：
+
+```
+variable    A  B
+date            
+2020-01-01  1  2
+2020-01-02  3  4
+```
+
+### 堆叠和取消堆叠
+
+stack 和 unstack 方法用于将 DataFrame 的列转换为行（堆叠），或将行转换为列（取消堆叠）。将列转换为行，会产生一个 MultiIndex 的 Series。
+
+```python
+# 将列转换为行
+stacked = df.stack()
+print(stacked)
+
+# 将行转换为列
+unstacked = stacked.unstack()
+```
+
+运行上面程序，stacked 中的数据是：
+
+```
+0  date        2020-01-01
+   variable             A
+   value                1
+1  date        2020-01-01
+   variable             B
+   value                2
+2  date        2020-01-02
+   variable             A
+   value                3
+3  date        2020-01-02
+   variable             B
+   value                4
+dtype: object
+```
+
+### 融合
+
+融合（Melt）是一种数据重塑技术，用于将数据从宽格式（wide format）转换为长格式（long format）。这个操作通常用于准备数据，以便于分析、绘图或其他特定类型的处理。
+
+- 宽格式（Wide Format）：在这种格式中，每个主题（例如时间点、实体等）的观测值分布在多个列中。
+- 长格式（Long Format）：在这种格式中，每行是一个观测值，包含一个或多个标识符（ID）列和一个变量值列。每个主题的多个观测值会分布在多行中。
+
+`pd.melt(frame, id_vars=None, value_vars=None, var_name=None, value_name='value')` 函数的参数包括：
+- frame：要融合的DataFrame。
+- id_vars：在融合过程中保持不变的列名（标识符列）。
+- value_vars：要被融化成行的列名。
+- var_name：融化后，包含原列名的新列的名称。
+- value_name：融化后，包含值的新列的名称。
+
+```python
+
+import pandas as pd
+
+df = pd.DataFrame({
+    'Date': ['2021-01-01', '2021-01-02'],
+    'Temperature': [32, 35],
+    'Humidity': [80, 85]
+})
+
+# 使用melt转换为长格式
+df_melted = pd.melt(df, id_vars=['Date'], var_name='Variable', value_name='Value')
+print(df_melted)
+```
+
+运行上面程序中，df_melted 中的数据为：
+
+```
+         Date      Variable  Value
+0  2021-01-01  Temperature     32
+1  2021-01-02  Temperature     35
+2  2021-01-01     Humidity     80
+3  2021-01-02     Humidity     85
+```
 
 
+## 数据整理
 
-## 数据清洁：
+数据整理是将原始数据转换为易于分析的格式的过程。它包括处理缺失值、重复数据、数据类型转换、数据规范化等多个方面。
 
-处理缺失数据（例如：NaN）。
-支持数据过滤、清洗、转换。
+### 处理缺失值
+
+处理缺失值是数据清洁的一个重要方面。缺失值可能以 NaN（Not a Number）、None 或其他形式存在于数据中。正确处理缺失值对于进行有效的数据分析至关重要。
+
+在处理缺失值之前，首先要识别数据中的缺失值。可以使用 isna() 或 isnull() 方法检查是否有缺失值。
+
+```python
+import pandas as pd
+
+data = {
+    'A': [1, 2, 3, 4, 4],
+    'B': [5, 6, None, 8, 8],
+    'C': [10, 11, 12, 13, 13]
+}
+df = pd.DataFrame(data)
+print(df.isna().sum())
+```
+运行上面的程序，输出：
+
+```
+A    0
+B    1
+C    0
+dtype: int64
+
+```
+
+对于缺失值最简单的方法是删除，比如下面的程序：
+
+```python
+# 删除含有缺失值的行
+df.dropna(axis=0, inplace=True)
+
+# 删除含有缺失值的列
+df.dropna(axis=1, inplace=True)
+```
+
+数据量少的时候，我们可能不希望删除任何数据。这时候可以考虑填充缺失值。最简单的是用常数进行填充： `df.fillna(value, inplace=True)`。不过实际项目中更常用的是用平均值或中位数进行填充：
+
+```python
+df.fillna(df.mean(), inplace=True)    # 用平均值填充
+df.fillna(df.median(), inplace=True)  # 用中位数填充
+```
+
+### 删除重复数据
+
+重复数据可能影响分析结果，可以使用上文介绍过的 drop_duplicates()方法删除重复的行。
+
+### 数据类型转换
+
+astype() 是进行数据类型转换的主要方法。它可以将 DataFrame 的某一列或整个 DataFrame 的数据类型转换为指定的类型。比如：
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+
+# 将列 'A' 从字符串转换为整数
+df['A'] = df['A'].astype(int)
+
+# 将多个列转换为不同的数据类型
+df = df.astype({'A': int, 'B': float})
+```
+
+### 数据规范化
+
+数据规范化是指将数据转换为标准格式，以便于分析和处理。数据规范化通常包括以下几个方面：
+
+#### 字符串规范化
+字符串数据可能包含多种格式，需要统一规范化。常见的字符串规范化包括大小写转换、去除空格等：
+
+```python
+df['column'] = df['column'].str.lower()  # 转换为小写
+df['column'] = df['column'].str.upper()  # 转换为大写
+
+df['column'] = df['column'].str.strip()  # 去除两端空格
+
+# 替换文本
+df['column'] = df['column'].str.replace('old_text', 'new_text')
+```
+
+####  数值规范化
+
+对于数值型数据，规范化通常包括缩放和转换操作，使数据符合特定的范围或格式。常见的数值规范化方法包括：
+
+```python
+
+# 将数据缩放到 0 和 1 之间
+df['normalized'] = (df['column'] - df['column'].min()) / (df['column'].max() - df['column'].min())
+
+# 数据按均值为 0，标准差为 1 的分布进行缩放
+df['standardized'] = (df['column'] - df['column'].mean()) / df['column'].std()
+```
+
+#### 日期时间规范化
+
+日期和时间数据可能以多种格式存在，需要转换为统一的格式。
+
+```python
+
+# 转换日期格式
+df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+
+# 提取日期组件，如年、月、日、小时等
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+```
+
+#### 类别数据规范化
+
+对于类别数据，确保所有类别都是统一的，无误差和重复。
+
+```python
+# 统一类别名称，使用映射或替换方法
+category_map = {'cat1': 'Category 1', 'cat2': 'Category 2'}
+df['category'] = df['category'].map(category_map)
+
+# 转换为类别类型
+df['category'] = df['category'].astype('category')
+```
+
+### 创建派生变量
+
+创建派生变量（也称为特征工程）指的是从现有数据中生成新列，这些新列通常是现有列的某种数学运算、逻辑运算的结果，或者是更复杂的函数变换。派生变量对于数据分析、可视化甚至机器学习模型的构建都非常重要。
+
+#### 基于数学运算
+
+可以对 DataFrame 中的列执行各种数学运算，以创建新的派生列。
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({
+    'A': [1, 2, 3, 4],
+    'B': [5, 6, 7, 8]
+})
+
+# 创建一个新列，为A和B的和
+df['C'] = df['A'] + df['B']
+
+# 创建一个新列，为A的平方
+df['A_squared'] = df['A'] ** 2
+```
+
+#### 基于条件的派生变量
+
+```python
+# 创建一个新列，基于A列的值
+df['A_greater_than_2'] = df['A'] > 2
+```
+
+### 重命名列
+为了提高可读性，有时需要重命名 DataFrame 的列。rename 方法是重命名列的主要方式。你可以通过传递一个映射字典来指定旧列名到新列名的映射。
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({
+    'A': [1, 2, 3],
+    'B': [4, 5, 6]
+})
+
+# 重命名单个列
+df.rename(columns={'A': 'a'}, inplace=True)
+
+# 重命名多个列
+df.rename(columns={'B': 'b', 'a': 'alpha'}, inplace=True)
+```
+
+另一种重命名列的方法是直接修改 DataFrame 的 columns 属性。
+
+```python
+df.columns = ['new_name1', 'new_name2']
+```
+
+这种方法在你知道所有列名并且想全部替换时很方便。
+
+set_axis方法也可以用来重命名列，它允许你同时设置行索引和列名。
+
+```python
+df = df.set_axis(['new_name1', 'new_name2'], axis=1, inplace=False)
+```
+
+### 数据排序
+
+数据排序是一种基本的数据操作，用于根据一个或多个列的值对数据进行排列。排序可以是升序或降序。以下是DataFrame数据排序的主要方法和应用：
+
+sort_values 是 Pandas 中最常用的排序方法。它可以根据一个或多个列的值对 DataFrame 进行排序。
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({
+    'A': [3, 1, 2],
+    'B': [6, 5, 4]
+})
+
+# 单列排序，根据列'A'升序排序
+df_sorted = df.sort_values(by='A')
 
 
-
+# 多列排序，根据列'A'升序和列'B'降序排序
+df_sorted = df.sort_values(by=['A', 'B'], ascending=[True, False])
+```
