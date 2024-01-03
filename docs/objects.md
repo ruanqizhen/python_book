@@ -40,7 +40,7 @@ print(type(MyClass))  # 输出: <class 'type'>
 print(type(type))     # 输出: <class 'type'>
 ```
 
-从上面的示例中可以看出，数据、函数、对象或类本身都是对象，它们分别是一些不同类型的对象。比如： 7 是 int 类的对象；print 函数是 builtin_function_or_method 类的对象；自定义函数式 function 类的对象；而自定义的类则是 type 类的对象。最终全都指向了 type 这个终极类。
+从上面的示例中可以看出，数据、函数、对象或类本身都是对象，它们分别是一些不同类型的对象。比如： 7 是 int 类的对象；print 函数是 builtin_function_or_method 类的对象；自定义函数是 function 类的对象；而自定义的类则是 type 类的对象。最终全都指向了 type 这个终极类。
 
 ## 函数对象
 
