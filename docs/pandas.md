@@ -71,6 +71,20 @@ Name
 李拜天    19
 ```
 
+当然，我们也可以调用 `empty_df = pd.DataFrame()` 创建一个空的 Dataframe，然后再向其添加数据。下面的代码创建了一个带格式的空 Datafrme：
+
+```python
+import pandas as pd
+
+# 定义列名和数据类型
+data_types = {
+    'Name': 'object'  # object通常用于字符串
+    'age': 'int64',
+}
+
+# 创建一个空的DataFrame
+empty_df = pd.DataFrame(columns=data_types.keys()).astype(data_types)
+```
 
 ### 其它数据结构
 
@@ -208,7 +222,7 @@ import pandas as pd
 df = pd.read_sql("SELECT * FROM my_table", con=engine)
 
 # 或者直接从表格读取
-# df = pd.read_sql_table("my_table", con=engine)
+df = pd.read_sql_table("my_table", con=engine)
 ```
 
 使用 to_sql 方法，可以将 DataFrame 的内容写入数据库表中：
@@ -440,18 +454,10 @@ print(df)
 
 ### 添加行
 
-通常需要使用 append 方法或 concat 函数向 DataFrame 添加新行。新行的数据应该以字典形式提供，其键与 DataFrame 的列名对应：
+早期的 Pandas 通常使用 append 方法添加数据，但这个方法已经被淘汰了。现在推荐的方法是使用 concat 函数向 DataFrame 添加新行。新行的数据应该以字典形式提供，其键与 DataFrame 的列名对应：
 
 
 ```python
-# 创建一个新行的字典
-new_row = {'A': 4, 'B': 7, 'C': 10}
-
-# 使用 append 添加单个行
-df = df.append(new_row, ignore_index=True)
-
-print(df)
-
 # 创建一个包含多个新行的 DataFrame
 new_rows = pd.DataFrame({'A': [5, 6], 'B': [8, 9], 'C': [11, 12]})
 
