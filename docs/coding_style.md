@@ -109,7 +109,7 @@ Python 代码的美观性不仅提高了代码的可读性，也反映了一种�
 代码可读性是编程中的一个重要方面，尤其在团队合作和长期维护的项目中尤为重要。可读性好的代码类似于良好的故事叙述，它清晰地表达了程序的意图和逻辑。下面这段代码的可读性就不是太好：
 
 ```python
-def calc(x,y):return x*2+y
+def calc(x,y):return x/2*y
 result=calc(5,7)
 print(result)
 ```
@@ -118,7 +118,7 @@ print(result)
 
 ```python
 def calculate_area(length, width):
-    return length * 2 + width
+    return length * width / 2
 
 result = calculate_area(5, 7)
 print(result)
