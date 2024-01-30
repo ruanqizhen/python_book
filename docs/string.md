@@ -237,6 +237,43 @@ print(str((1, 2, 3)))   # 输出: '(1, 2, 3)'
 print(str(True))        # 输出: 'True'
 ```
 
+#### 小数的格式代码
+如果要格式化小数，可以在大括号中添加格式说明符来控制小数的显示方式。格式说明符通常遵循 `{变量名:格式代码}` 的形式。
+
+例如，如果想要格式化一个浮点数，并且希望它显示为小数点后两位，你可以这样做：
+
+```python
+number = 123.456
+formatted_number = f"{number:.2f}"
+print(formatted_number)  # 输出: 123.46
+```
+
+在这个例子中，`.2f` 是一个格式说明符，它表示将数字格式化为浮点数，并保留两位小数。`.2` 指定了小数点后的位数，而 `f` 表示浮点数格式。
+
+除了控制小数点后的位数，f-string 还允许进行各种其他类型的格式化，例如填充、对齐、百分比格式等。例如：
+
+- 使用百分比格式：
+  ```python
+  percentage = 0.1234
+  formatted_percentage = f"{percentage:.2%}"
+  print(formatted_percentage)          # 输出: 12.34%
+  ```
+
+- 指定宽度和对齐方式，小数表示：
+  ```python
+  number = 123.456
+  formatted_number = f"{number:10.2f}"
+  print(formatted_number)              # 输出:     123.46
+  ```
+  这里 `10.2f` 表示总宽度为 10 个字符，其中小数点后有两位，右对齐。
+
+- 指定宽度和对齐方式，科学记数法表示：
+  ```python
+  number = 123.456
+  formatted_number = f"{number:10.2}"  # 没有 f
+  print(formatted_number)              # 输出:   1.2e+02
+  ```
+  这里 `10.2` 表示总宽度为 10 个字符，其中小数点后有一位，右对齐。
 
 ## 字节序列
 
