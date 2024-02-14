@@ -18,15 +18,13 @@ import pandas as pd
 
 下面示例代码，有些省略了导入过程了，测试时需要自行添加。
 
-## 数据结构
+## DataFrame 数据结构
 
-在 Pandas 库中，主要有两种数据结构：Series 和 DataFrame。这两种结构为数据处理和分析提供了强大且灵活的工具。
+在 Pandas 库中，最主要使用的数据结构是 DataFrame，它为数据处理和分析提供了强大且灵活的工具。DataFrame 是一个二维的、表格型的数据结构，非常类似于 SQL 数据库表或 Excel 电子表格。DataFrame 可以存储不同类型的列，如整数、浮点数、字符串等。这是使用 pandas 库，最为常用的数据类型，我们经常使用它来读取数据库中的数据，或者是读取 csv, tsv 等文件格式中的数据。
 
-### DataFrame
+### 创建简单的 DataFrame
 
-DataFrame 是一个二维的、表格型的数据结构，非常类似于 SQL 数据库表或 Excel 电子表格。DataFrame 可以存储不同类型的列，如整数、浮点数、字符串等。这是使用 pandas 库，最为常用的数据类型，我们经常使用它来读取数据库中的数据，或者是读取 csv, tsv 等文件格式中的数据。
-
-比如：
+比如下面的程序：
 
 ```python
 import pandas as pd
@@ -52,7 +50,11 @@ print(df)
 
 DataFrame 的列代表数据的特征或变量。每列在 DataFrame 中有一个列名（比如示例中的 Name 和 Age），这些列名组成了 DataFrame 的列索引（Column Index）。不同列的数据可以有不同的数据类型，但每一列中的数据应该具有相同的数据类型，比如：整数、浮点数、字符串等。列可以通过列名来访问和操作。程序中可以动态地插入、删除修改列。
 
-DataFrame 的行表示数据记录，每一行包含了一组相关的数据。每行在 DataFrame 中通过索引（Index）标识。行可以通过行号（位置）或索引（标签）来访问和操作。行号是自动生成的，从 0 开始，类似于 Python 列表或数组的索引。行也同样可动态地插入、删除修改列。索引是一个不可变序列，用于标识 DataFrame 的行。很多数据操作，比如数据对齐、合并、连接和分组等都会使用到索引。默认情况下，DataFrame 采用行号作为索引，但索引也可以是日期、字符串或其他数据。比如，上面的程序，在创建 DataFrame 对象时，如果传入一个 index 参数： `index=['a', 'b', 'c']`，产生的对象就会使用 index 的数据作为索引。新的 DataFrame 数据就会是如下：
+DataFrame 的行表示数据记录，每一行包含了一组相关的数据。每行在 DataFrame 中通过索引（Index）标识。行可以通过行号（位置）或索引（标签）来访问和操作。行号是自动生成的，从 0 开始，类似于 Python 列表或数组的索引。行也同样可动态地插入、删除修改列。索引是一个不可变序列，用于标识 DataFrame 的行。很多数据操作，比如数据对齐、合并、连接和分组等都会使用到索引。
+
+### 索引
+
+默认情况下，DataFrame 采用行号作为索引，但索引也可以是日期、字符串或其他数据。比如，上面的程序，在创建 DataFrame 对象时，如果传入一个 index 参数： `index=['a', 'b', 'c']`，产生的对象就会使用 index 的数据作为索引。新的 DataFrame 数据就会是如下：
 
 ```
    Name  Age
@@ -71,7 +73,9 @@ Name
 李拜天    19
 ```
 
-当然，我们也可以调用 `empty_df = pd.DataFrame()` 创建一个空的 Dataframe，然后再向其添加数据。下面的代码创建了一个带格式的空 Datafrme：
+### 创建空 DataFrame
+
+我们可以调用 `empty_df = pd.DataFrame()` 创建一个空的 Dataframe，然后再向其添加数据。下面的代码创建了一个带格式的空 Datafrme：
 
 ```python
 import pandas as pd
@@ -86,9 +90,38 @@ data_types = {
 empty_df = pd.DataFrame(columns=data_types.keys()).astype(data_types)
 ```
 
+### 查看 DataFrame 的信息
+
+下面是一些常用的查看 DataFrame 的信息的方法，采用哪种方法取决于想要获取的信息类型。
+
+1. **查看DataFrame的形状**：使用`.shape`属性可以快速查看DataFrame的行数和列数。
+   ```python
+   df.shape
+   ```
+
+2. **查看列数据类型**：使用`.dtypes`属性可以查看DataFrame中每列的数据类型。
+   ```python
+   df.dtypes
+   ```
+
+3. **查看前几行**：使用`.head(n)`方法可以查看DataFrame的前n行数据，默认是前5行。
+   ```python
+   df.head()
+   ```
+
+4. **查看概览信息**：使用`.info()`方法可以查看DataFrame的概览信息，包括每列的数据类型、非空值数量等。
+   ```python
+   df.info()
+   ```
+
+5. **描述性统计**：使用`.describe()`方法可以生成每列的描述性统计摘要，包括均值、标准差、最小值、最大值等。
+   ```python
+   df.describe()
+   ```
+
 ### 其它数据结构
 
-Pandas 也支持其它一些数据结构，但是使用 Pandas 基本都是使用 DataFrame。所以其它数据类型就不多介绍了。只用 Series 作为示例，提一下：
+Pandas 也支持其它一些数据结构，但是使用频率远低于 DataFrame。所以其它数据类型就不多详述了，只用 Series 作为示例，简单说明一下：
 
 Series 是一维的标签化数组，可以容纳任何数据类型（整数、字符串、浮点数、Python 对象等）。每个 Series 对象都有一个索引，可以通过索引来访问数组中的单个数据项。Series 中的所有数据项必须属于同一数据类型。一旦创建，Series 的长度是固定的，不能改变。但是，可以改变里面的数据。Series 可以有一个轴标签，可以使用标签来访问数据。
 
