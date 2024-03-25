@@ -95,7 +95,7 @@ const sidebars = {
         'pandas',
         'tkinter',
         'pygame',
-        'PySpark',
+        'pyspark',
         'miscellaneous',
         'placeholder',
       ],
