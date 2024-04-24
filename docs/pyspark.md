@@ -10,10 +10,10 @@ PySpark 主要包含以下这些组件：
 - **GraphX**：用于图形处理的库（在 PySpark 中通过第三方库如 GraphFrames 访问）。
 - **Spark Streaming**：用于实时数据流处理的库。
 
-其中 Spark SQL 最为常用，所以我们这一章主要介绍 Spark SQL。
+其中数据库查询是最为常用的功能，所以我们这一章主要介绍数据库查询。
 
 
-## 开始使用 PySpark
+## 安装 PySpark
 
 要使用 PySpark，首先需要安装 Spark，并确保其在环境变量中正确配置。可以通过 pip 安装 PySpark：
 
@@ -45,11 +45,15 @@ df.show()
 
 ## 连接到数据库
 
-使用 PySpark 打开并操作一个已有的数据库表涉及到几个关键步骤。这通常是通过 JDBC（Java Database Connectivity）完成的，JDBC 是一种用于执行 SQL 操作的 Java API，可以让你从 Spark 程序中访问几乎所有的关系型数据库。以下是一个详细的步骤指南：
+使用 PySpark 肯定是为了操作数据库的，所以，安装之后的最重要步奏，就是连接数据库。PySpark 与数据库连接通常是通过 JDBC（Java Database Connectivity）完成的，JDBC 是一种用于执行 SQL 操作的 Java API，可以让你从 Spark 程序中访问几乎所有的关系型数据库。
+
+Spark 本身是使用 Java 语言编写的，PySpark 只是为 Spark 包装了一层 Python 接口函数。所以在使用 PySpark 的时候，还是会调用到底层的 Java 库。
+
+与数据库连接包括以下步骤：
 
 ### 1. 环境准备
 
-确保你已经安装了 PySpark 并且配置了 Spark 环境。此外，你需要有目标数据库的 JDBC 驱动程序。例如，如果你想连接到 MySQL 数据库，你需要下载 MySQL 的 JDBC 驱动并将其放在你的类路径中。
+确保已经安装了 PySpark 并且配置了 Spark 环境。此外，还需要有目标数据库的 JDBC 驱动程序。例如，如果想连接到 MySQL 数据库，那么需要下载 MySQL 的 JDBC 驱动并将其放在类路径中。
 
 ### 2. SparkSession 创建
 
@@ -66,7 +70,7 @@ spark = SparkSession.builder \
 
 ### 3. 数据库连接
 
-要从 Spark 访问数据库，你需要指定 JDBC 连接的 URL，用户名和密码（如果需要的话），以及要访问的表名。这可以通过 `jdbc` 方法完成，该方法是 `DataFrameReader` 的一部分。
+要从 Spark 访问数据库，需要指定 JDBC 连接的 URL，用户名和密码（如果需要的话），以及要访问的表名。这可以通过 `jdbc` 方法完成，该方法是 `DataFrameReader` 的一部分。
 
 ```python
 # 数据库连接参数
@@ -83,7 +87,7 @@ df = spark.read.jdbc(url=jdbc_url, table="your_table_name", properties=connectio
 
 ### 4. 使用 DataFrame 操作数据
 
-一旦你有了表示数据库表的 DataFrame，你就可以使用 PySpark 提供的所有 DataFrame 操作来处理数据。例如，你可以进行筛选、聚合、连接等操作。
+一旦有了表示数据库表的 DataFrame，就可以使用 PySpark 提供的所有 DataFrame 操作来处理数据。例如，你可以进行筛选、聚合、连接等操作。
 
 ```python
 # 显示 DataFrame 的前几行
@@ -101,14 +105,12 @@ filtered_df = df.filter(df["some_column"] > 100)
 spark.stop()
 ```
 
-### 注意事项
+## 调用 PySpark 的两种方法
 
-- JDBC 驱动：确保你有正确的 JDBC 驱动程序，并将其放在 Spark 的 classpath 中。对于不同的数据库，需要下载不同的 JDBC 驱动。
-- 安全性：在处理包含敏感信息的数据库时（例如用户名和密码），确保你的连接方式符合你组织的安全政策。
-- 性能考虑：在从数据库读取大量数据时，考虑使用分区查询来提高读取效率，这可以通过指定 `partitionColumn`、`lowerBound`、`upperBound` 和 `numPartitions` 参数在 JDBC 读取中实现。
+通过 PySpark API
+通过 Spark SQL 语句
 
-通过遵循上述步骤，你可以在 PySpark 应用程序中轻松地打开和操作已有的数据库表。
-
+各自优缺点
 
 ## select
 使用 PySpark 选择（查询）表格中的数据是数据处理的基础步骤之一。PySpark 提供了灵活的 API 来查询和转换数据。以下是如何使用 PySpark 从 DataFrame 中选择数据的详细步骤，我们将以读取数据库表为例，然后展示如何对这些数据进行选择操作。
