@@ -97,7 +97,7 @@ closure_instance = outer_function(10)
 print(closure_instance(5))  # 输出：15
 ```
 
-在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，调用放生在 outer_function 之外。也就是说，在定义 inner_function 的域之外调用了 inner_function，但 inner_function 仍然可以访问在定义它的域之内的局部变量 x，其值为 10。
+在上述代码中，outer_function 返回了 inner_function 的引用。当我们调用 closure_instance(5) 时，调用发生在 outer_function 之外。也就是说，在定义 inner_function 的域之外调用了 inner_function，但 inner_function 仍然可以访问在定义它的域之内的局部变量 x，其值为 10。
 
 闭包涉及至少两个函数，外部函数和一个或多个内部函数。内部函数引用了外部函数的局部变量。内部函数保留了对外部函数局部变量的引用，这样当内部函数被调用时，即使外部函数已经完成执行，这些变量仍然是可用的。
 

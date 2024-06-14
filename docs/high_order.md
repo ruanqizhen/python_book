@@ -231,7 +231,7 @@ functools.reduce(function, iterable[, initializer])
 * iterable: 是输入序列或可迭代对象
 * initializer: 是可选的，它是一个初始值，它会被放在累积结果的前面。如果提供了它，则迭代会从iterable中的第一个元素开始。
 
-reduce() 函数首先把输入的 funtion 作用于列表中的前两个元素；然后再把 funciton 作用于刚才的结果和第三个元素；再把 funciton 作用于刚才的结果和第四个元素，以此类推，直到列表中的所有元素都被处理。也就是最终展开的结果是类似如下的表达式：
+reduce() 函数首先把输入的 function 作用于列表中的前两个元素；然后再把 funciton 作用于刚才的结果和第三个元素；再把 funciton 作用于刚才的结果和第四个元素，以此类推，直到列表中的所有元素都被处理。也就是最终展开的结果是类似如下的表达式：
 
 result = ... function( function( function(initializer, iterable[0]), iterable[1] ), iterable[2]), ...
 
