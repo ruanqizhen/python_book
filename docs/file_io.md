@@ -157,7 +157,7 @@ with open('sample.txt', 'w') as file:
     print(f"Wrote {chars_written} characters to the file.")
 ```
 
-同样可以使用循环写入多行，文件，但是需要确保，每一行一定是以 `\n` 结尾：
+同样可以使用循环写入多行文件，但是需要确保每一行一定是以 `\n` 结尾：
 
 ```python
 lines = ["Line 1", "Line 2", "Line 3"]
@@ -474,7 +474,7 @@ for root, dirs, files in os.walk('/path/to/folder'):
 
 上面的程序使用 os.walk() 函数遍历指定的文件夹。对于每个遍历到的文件，然后，使用字符串方法 endswith() 检查文件名是否以 .txt 结尾，如果是，就打印出该文件的完整路径。
 
-此外，我们也可以使用 glob 模块中的 glob() 函数来查找文件。glob 最早是 UNIX 系统的一个程序，用来匹配文件路径，Python 在其 glob 模块中实现了类似功能。glob() 函数可以使用正则表达式来查找文件，这样我们就不必在手动检查每个文件了。比如，使用 glob 实现上面示例完全相同的功能：
+此外，我们也可以使用 glob 模块中的 glob() 函数来查找文件。glob 最早是 UNIX 系统的一个程序，用来匹配文件路径，Python 在其 glob 模块中实现了类似功能。glob() 函数可以使用正则表达式来查找文件，这样我们就不必再手动检查每个文件了。比如，使用 glob 实现上面示例完全相同的功能：
 
 ```python
 import glob
