@@ -290,7 +290,7 @@ print(obj.greet())  # 输出: 方法不可使用
 
 ### type
 
-《动物庄园》中有一句著名的话：“All animals are equal, but some animals are more equal than others.”。换成 Python 庄园，这句话就应该是：在 Python 中，所有对象一律平等，但有些对象比其它对象更平等。
+《动物庄园》中有一句著名的话：“All animals are equal, but some animals are more equal than others.”；Pythora 星球也流传着一句类似的话：在 Python 中，所有对象一律平等，但有些对象比其它对象更平等。
 
 对象是从类生成的，既然类也是对象，那么它又是从某个类生成的，一层一层向上追溯，总要有个尽头。宇宙的尽头是---铁岭--- type 类。
 
