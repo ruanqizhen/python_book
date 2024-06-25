@@ -13,49 +13,19 @@ PySpark 主要包含以下这些组件：
 其中数据库查询是最为常用的功能，所以我们这一章主要介绍数据库查询。
 
 
-## 安装 PySpark
+## 配置 PySpark 的运行环境
 
-要使用 PySpark，首先需要安装 Spark，并确保其在环境变量中正确配置。可以通过 pip 安装 PySpark：
+### 安装 PySpark
+
+要使用 PySpark，首先需要安装 Spark。可以通过 pip 安装 PySpark：
 
 ```sh
 pip install pyspark
 ```
 
-安装后，我们可以用一个简单的 PySpark 示例程序测试一下：
+PySpark 与数据库连接通常是通过 JDBC（Java Database Connectivity）完成的，JDBC 是一种用于执行 SQL 操作的 Java API，可以让你从 Spark 程序中访问几乎所有的关系型数据库。Spark 本身是使用 Java 语言编写的，PySpark 只是为 Spark 包装了一层 Python 接口函数。所以在使用 PySpark 的时候，还是会调用到底层的 Java 库。所以，除了安装 PySpark 本身之外，还需要有目标数据库的 JDBC 驱动程序。例如，如果想连接到 MySQL 数据库，那么需要下载 MySQL 的 JDBC 驱动并将其放在类路径中。
 
-```python
-# 导入 SparkSession，它是使用 Spark SQL 和 DataFrame 的入口点。
-from pyspark.sql import SparkSession
-
-# 初始化一个名为 “example” 的 Spark 会话。如果已经存在一个 Spark 会话，
-# getOrCreate() 方法将返回现有的会话，否则，它将创建一个新的会话
-spark = SparkSession.builder.appName("example").getOrCreate()
-
-# 创建一个 DataFrame，其中包含两列（“ID” 和 “Value”）和三行数据。
-# DataFrame 是分布式的数据集合，类似于关系数据库中的表。
-df = spark.createDataFrame([
-    (1, "foo"), 
-    (2, "bar"), 
-    (3, "baz")
-], ["ID", "Value"])
-
-# 将 DataFrame 的内容显示出来。默认情况下，show() 方法将显示 DataFrame 的前 20 行。
-df.show()
-```
-
-## 连接到数据库
-
-使用 PySpark 肯定是为了操作数据库的，所以，安装之后的最重要步奏，就是连接数据库。PySpark 与数据库连接通常是通过 JDBC（Java Database Connectivity）完成的，JDBC 是一种用于执行 SQL 操作的 Java API，可以让你从 Spark 程序中访问几乎所有的关系型数据库。
-
-Spark 本身是使用 Java 语言编写的，PySpark 只是为 Spark 包装了一层 Python 接口函数。所以在使用 PySpark 的时候，还是会调用到底层的 Java 库。
-
-与数据库连接包括以下步骤：
-
-### 1. 环境准备
-
-确保已经安装了 PySpark 并且配置了 Spark 环境。此外，还需要有目标数据库的 JDBC 驱动程序。例如，如果想连接到 MySQL 数据库，那么需要下载 MySQL 的 JDBC 驱动并将其放在类路径中。
-
-### 2. SparkSession 创建
+### SparkSession 创建和关闭
 
 SparkSession 是 Spark 2.0 以后引入的概念，它是程序执行的入口，用于配置 Spark 的各种设置（如 master URL）和初始化 Spark 应用。
 
@@ -68,41 +38,54 @@ spark = SparkSession.builder \
     .getOrCreate()
 ```
 
-### 3. 数据库连接
-
-要从 Spark 访问数据库，需要指定 JDBC 连接的 URL，用户名和密码（如果需要的话），以及要访问的表名。这可以通过 `jdbc` 方法完成，该方法是 `DataFrameReader` 的一部分。
-
-```python
-# 数据库连接参数
-jdbc_url = "jdbc:mysql://your_database_host:port/database_name"
-connection_properties = {
-    "user": "your_database_username",
-    "password": "your_database_password",
-    "driver": "com.mysql.jdbc.Driver"
-}
-
-# 读取数据库表
-df = spark.read.jdbc(url=jdbc_url, table="your_table_name", properties=connection_properties)
-```
-
-### 4. 使用 DataFrame 操作数据
-
-一旦有了表示数据库表的 DataFrame，就可以使用 PySpark 提供的所有 DataFrame 操作来处理数据。例如，你可以进行筛选、聚合、连接等操作。
-
-```python
-# 显示 DataFrame 的前几行
-df.show()
-
-# 进行简单的数据转换
-filtered_df = df.filter(df["some_column"] > 100)
-```
-
-### 5. 关闭 SparkSession
+拿到 `spark` 这个对象之后，我们就可以通过它来调用 Spark 的各种功能了。具体有哪些功能后文会详细介绍。
 
 在程序的最后，不要忘记关闭 SparkSession。
 
 ```python
 spark.stop()
+```
+
+### 在 AWS 中使用 PySpark
+
+AWS 在很多服务中都已经集成了 PySpark，可以直接使用，非常方便。最为常用的两个服务一个是 AWS Glue；另一个是 AWS Athena。Glue 功能比较繁杂，可完成各类数据集成服务；Athena 则专注于数据查询和处理。这两个服务都提供了类似 [Jupyter Notbook](ide#基于网页的编程环境) 的编程环境，并且它们内置了对 SparkSession 的管理，用户不在需要自己配置。在它们提供的编程环境中， `spark` 已经是一个直接可用的全局对象，直接调用即可。下文中的示例程序都是在 AWS Athena Notebook 中调试的。
+
+
+### 连接和打开数据库
+
+在 AWS 的服务中，如果已经创建好了“数据库”(Database)和“表格”(Table)，那么就可以直接使用了。比如我们已经有了一个名为“my_db”的数据库，和一张名为“my_table”的表格，那么运行下面的代码就可以打印出表格中的内容了：
+
+```python
+spark.sql("use my_db")  # 打开名为 my_db 的数据库
+spark.sql(              # 调用 SQL 语句，查询 my_table 表格中的内容
+    """
+    SELECT *
+    FROM my_table 
+    """
+).show()               # 调用 show 方法打印表格中的数据
+```
+
+关于 sql 方法的是有，下文还会详细阐述。show 方法用于显示查询得到的数据，默认情况下，它显示数据的前 20 行。如果需要多显示一些行，只要把需要行数传入即可比如 `show(30)`。
+
+在 AWS 服务中，数据库中的数据都是以文件形式，保存在 S3 服务中的，所以很多时候，我们不需要配置数据库和表格，直接从文件读取数据即可。比如，某一表格，以 qarquet 的格式（AWS 上最常用的一种数据库存储格式）保存在路径为“s3://my_bucket/my_db/my_table/”的 S3 文件夹中，那么就可以使用下面的语句，读取数据：
+
+```python
+df = spark.read.parquet("s3://my_bucket/my_db/my_table/")
+```
+
+如果不是在 AWS 服务上，而是自己的电脑中运行 PySpark，链接数据库要稍微复杂一下。可以通过 `DataFrameReader` 类的 `jdbc` 方法连接数据库，我们需要指定 JDBC 连接的 URL，用户名和密码，以及要访问的表名：
+
+```python
+# 数据库连接参数
+jdbc_url = "jdbc:mysql://my_database_host:port/database_name"
+connection_properties = {
+    "user": "my_database_username",
+    "password": "my_database_password",
+    "driver": "com.mysql.jdbc.Driver"
+}
+
+# 读取数据库表
+df = spark.read.jdbc(url=jdbc_url, table="my_table_name", properties=connection_properties)
 ```
 
 ## 调用 PySpark 的两种方法
@@ -112,20 +95,11 @@ spark.stop()
 
 各自优缺点
 
+.....................................
+
+
 ## select
 使用 PySpark 选择（查询）表格中的数据是数据处理的基础步骤之一。PySpark 提供了灵活的 API 来查询和转换数据。以下是如何使用 PySpark 从 DataFrame 中选择数据的详细步骤，我们将以读取数据库表为例，然后展示如何对这些数据进行选择操作。
-
-### 步骤 1: 初始化 SparkSession
-
-首先，你需要创建一个 SparkSession 对象，它是使用 PySpark 的入口。
-
-```python
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder \
-    .appName("SelectDataExample") \
-    .getOrCreate()
-```
 
 ### 步骤 2: 读取数据
 
