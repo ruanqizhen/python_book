@@ -1,4 +1,6 @@
-# PySpark
+# 分布式数据处理和 PySpark
+
+在阅读这一章节之前，建议读者首先学习 SQL 查询语句，这样会更容易理解文中的示例程序。
 
 PySpark 是 Apache Spark 的 Python API。Apache Spark 是一个强大的分布式数据处理框架，专用于大规模数据处理和数据分析。通过 PySpark，Python 开发者，即便不去深入了解分布式计算的复杂性，也可以方便地进行大规模数据分析和数据挖掘工作。
 
@@ -88,7 +90,9 @@ connection_properties = {
 df = spark.read.jdbc(url=jdbc_url, table="my_table_name", properties=connection_properties)
 ```
 
-## 调用 PySpark 的两种方法
+## PySpark 程序的两种编写方法
+
+我们可以采用两种风格迥然不同的方式来编写 PySpark 代码，一种是直接使用 SQL 语句，另一种方式是直接调用 PySpark 提供的 API。
 
 通过 PySpark API
 通过 Spark SQL 语句
