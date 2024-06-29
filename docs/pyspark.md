@@ -92,48 +92,57 @@ df = spark.read.jdbc(url=jdbc_url, table="my_table_name", properties=connection_
 
 ## PySpark 程序的两种编写方法
 
-我们可以采用两种风格迥然不同的方式来编写 PySpark 代码，一种是直接使用 SQL 语句，另一种方式是直接调用 PySpark 提供的 API。
+我们可以采用两种风格迥然不同的方式来编写 PySpark 代码，一种是直接使用 SQL 语句，另一种方式是直接调用 PySpark 提供的 API。我们一个最简的程序为例，来看看这两种写法有什么不同。假设我们已经有了两张表格，一张是 student_info 表，里面记录了学生的学号、姓名、家庭地址等信息；另一张表是 quize_score，里面记录了学生的学号，以及某次考试成绩。合并两张表的数据就可以得到一个新的表，包括学生姓名和成绩。
 
-通过 PySpark API
-通过 Spark SQL 语句
+通过 Spark SQL 语句编写的程序如下：
 
-各自优缺点
+```python
+spark.sql("""
+    SELECT student_info_view.name, quize_score.score
+    FROM student_info
+    JOIN quize_score
+    ON student_info.student_id = quize_score.student_id
+""").show()
+```
 
-.....................................
+使用 PySpark API 实现同样功能的代码如下：
 
+```python
+student_info.join(
+    quize_score, student_info.student_id == quize_score.student_id
+).select(
+    "student_info.name", "quize_score.score"
+).show()
+```
 
-## select
-使用 PySpark 选择（查询）表格中的数据是数据处理的基础步骤之一。PySpark 提供了灵活的 API 来查询和转换数据。以下是如何使用 PySpark 从 DataFrame 中选择数据的详细步骤，我们将以读取数据库表为例，然后展示如何对这些数据进行选择操作。
+直接调用 SQL 语句最大的好处是，可以直接把 SQL 语句拿到不同的环境中去执行。比如说在使用 AWS Athena 服务的时候，同样的 SQL 即可以在 Athena Notebook 程序中使用，也可以直接在 Athena Query 的交互环境中运行，可移植性非常好。不过 Spark 在执行程序的时候，是要先把 SQL 语句翻译成自身的 API 调用在执行的。用户无法控制这一翻译的过程，也许 Spark 的翻译对于某些问题并不是最优化的方式。如果直接使用 Spark API 编写程序，可以更加灵活，可以根据需求设计出最优化的程序。
 
-### 步骤 2: 读取数据
+## 常用的 Spark API
 
-这里假设你已经按照前面的指南将数据从数据库加载到 DataFrame 中。如果你是从其他数据源（如 CSV、JSON 文件或其他数据库）读取数据，方法类似，只是读取函数会有所不同（例如 `spark.read.csv`, `spark.read.json` 等）。
+如果已经熟悉了 SQL 查询语言，切换成 Spark API 是非常容易的，基本上每个 SQL 语句都有与之相对应的 Spark API。下面介绍一些最为常用的方法
 
-### 步骤 3: 选择数据
+### 选取列
 
-#### 3.1 选择特定的列
-
-使用 `select` 方法选择表中的特定列。以下示例展示如何选择名为 "name" 和 "age" 的列：
+选取表格中的某些列是数据处理的基础步骤之一。PySpark 使用 select() 方法进行列选取，相当于 SQL 语言中的 SELECT 语句。比如从一个名为 df 的表选择名为 "name" 和 "age" 的列，可以使用如下程序：
 
 ```python
 selected_data = df.select("name", "age")
 selected_data.show()
 ```
 
-#### 3.2 使用表达式过滤数据
+### 过滤数据
 
-你可以使用 `filter` 或 `where` 方法来基于条件过滤数据。这两个方法在功能上是相同的，可以互换使用。
+PySpark 中的 `filter()` 和 `where()` 方法功能完全相同，都是用来基于条件过滤数据，相当于 SQL 语言中的 WHERE 语句。比如，选取所有 "age" 列数据大于 30 的条目可以使用下面的代码：
 
 ```python
 filtered_data = df.filter(df["age"] > 30)
-# 或者
-filtered_data = df.where(df["age"] > 30)
+# 或者 filtered_data = df.where(df["age"] > 30)
 filtered_data.show()
 ```
 
-#### 3.3 选择并转换数据
+### 数据运算
 
-你还可以在选择数据时对其进行转换。例如，增加一列，该列是现有列的转换结果。
+我们还可以在选择数据的时候，对其进行运算处理。例如，我们可以把数据增加一列，列中的数据是  "age" 列数据加 10 的结果：
 
 ```python
 from pyspark.sql import functions as F
@@ -142,151 +151,25 @@ transformed_data = df.select("name", "age", (F.col("age") + 10).alias("age_plus_
 transformed_data.show()
 ```
 
-### 步骤 4: 使用 SQL 查询数据
+### 连接表
 
-另一种选择数据的方式是使用 SQL 语句。首先，你需要将 DataFrame 注册为临时视图。
+连接（join）是指把不同表格中的数据根据指定的条件合并起来。PySpark 支持多种类型的连接操作，包括:
+- 内连接（JOIN）：只返回两个表格中连接键匹配的行
+- 左外连接（LEFT OUTER JOIN）：返回左表的所有行，即使在右表中没有匹配的行。如果右表中没有匹配，右表的列将返回 null
+- 右外连接（RIGHT OUTER JOIN）：返回右表的所有行，即使在左表中没有匹配的行
+- 外连接（FULL OUTER JOIN）：返回两个表格中所有行。如果某一侧没有匹配，则该侧的列将返回null
+- 交叉连接（CROSS JOIN）：返回两个表格的笛卡尔积，每个左表行与右表的每行组合
 
-```python
-df.createOrReplaceTempView("people")
-```
-
-然后，你可以使用 SQL 语句来查询数据。
-
-```python
-sql_result = spark.sql("SELECT name, age FROM people WHERE age > 30")
-sql_result.show()
-```
-
-### 步骤 5: 关闭 SparkSession
-
-在你的应用程序结束时，不要忘记关闭 SparkSession。
-
-```python
-spark.stop()
-```
-
-### 总结
-
-使用 PySpark 选择数据非常灵活和强大，提供了多种方法来进行数据查询和转换。你可以根据需要使用 DataFrame API 或 SQL 语句来操作数据。通过这种方式，PySpark 使得处理大规模数据变得容易和高效。
-
-
-## JOIN
-在 PySpark 中，将多个表格（DataFrame）进行连接（join）是一项常用且强大的数据操作，它允许你将不同表格中的数据根据指定的条件合并起来。PySpark 支持多种类型的连接操作，包括内连接（inner join）、外连接（outer join，包括左外连接left outer join、右外连接right outer join）、交叉连接（cross join）等。
-
-### 步骤 1: 初始化 SparkSession
-
-创建一个 SparkSession 对象，这是使用 PySpark 的第一步。
-
-```python
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder \
-    .appName("JoinTablesExample") \
-    .getOrCreate()
-```
-
-### 步骤 2: 创建或读取 DataFrame
-
-假设你已经有两个或多个要连接的 DataFrame。这些 DataFrame 可以是通过读取数据库、文件或其他数据源获得的，或者是直接在代码中创建的。
-
-```python
-# 假设 df1 和 df2 是你要连接的两个 DataFrame
-df1 = spark.createDataFrame([(1, "Alice"), (2, "Bob")], ["id", "name"])
-df2 = spark.createDataFrame([(1, "New York"), (2, "Los Angeles")], ["id", "city"])
-```
-
-### 步骤 3: 进行连接操作
-
-#### 3.1 内连接
-
-内连接返回两个表格中连接键匹配的行。
+比如下面的程序，将会返回所有两个表中都包含的 id 所在的行：
 
 ```python
 inner_join_df = df1.join(df2, df1.id == df2.id)
 inner_join_df.show()
 ```
 
-#### 3.2 左外连接
+### 展开
 
-左外连接返回左表的所有行，即使在右表中没有匹配的行。如果右表中没有匹配，右表的列将返回null。
-
-```python
-left_outer_join_df = df1.join(df2, df1.id == df2.id, "left_outer")
-left_outer_join_df.show()
-```
-
-#### 3.3 右外连接
-
-右外连接返回右表的所有行，即使在左表中没有匹配的行。
-
-```python
-right_outer_join_df = df1.join(df2, df1.id == df2.id, "right_outer")
-right_outer_join_df.show()
-```
-
-#### 3.4 全外连接
-
-全外连接返回两个表格中所有行。如果某一侧没有匹配，则该侧的列将返回null。
-
-```python
-full_outer_join_df = df1.join(df2, df1.id == df2.id, "full_outer")
-full_outer_join_df.show()
-```
-
-#### 3.5 交叉连接
-
-交叉连接返回两个表格的笛卡尔积，每个左表行与右表的每行组合。
-
-```python
-cross_join_df = df1.crossJoin(df2)
-cross_join_df.show()
-```
-
-### 步骤 4: 使用条件过滤
-
-连接操作还可以结合条件过滤使用，这通过在 `.join()` 方法中添加额外的筛选条件实现。
-
-```python
-condition_join_df = df1.join(df2, (df1.id == df2.id) & (df1.name == "Alice"))
-condition_join_df.show()
-```
-
-### 步骤 5: 关闭 SparkSession
-
-在应用程序结束时，关闭 SparkSession。
-
-```python
-spark.stop()
-```
-
-### 注意事项
-
-- 在进行连接操作时，注意处理可能的重复列名问题。一种常见的解决方案是使用别名（alias）为每个 DataFrame 的列提供唯一名称。
-- 当处理大数据集时，连接操作可能非常资源密集和时间消耗，尤其是交叉连接。务必优化你的查询和资源配置，以确保性能。
-- 使用适当的连接类型以避免不必要的数据丢失或冗余。明确你的数据关系和业务需求，选择最合适的连接类型。
-
-通过上述步骤，你可以在 PySpark 中灵活地使用各种连接操作，有效地合并和分析跨多个表格的数据。
-
-
-## explode
-
-在 PySpark 中，`explode` 函数用于将数组类型的列展开成多行，这在处理嵌套数组或需要将单个复杂数据类型的列分解为多行数据时非常有用。以下是使用 PySpark `explode` 函数的详细介绍：
-
-### 步骤 1: 初始化 SparkSession
-
-首先，创建一个 SparkSession 实例，它是使用 PySpark 进行任何操作的入口。
-
-```python
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder \
-    .appName("ExplodeExample") \
-    .getOrCreate()
-```
-
-### 步骤 2: 创建或读取 DataFrame
-
-在这个例子中，假设我们有一个包含数组类型列的 DataFrame。如果你是从JSON文件、数据库或其他数据源读取数据，方法相似，只是读取函数会有所不同。
+`explode()` 函数用于将数组类型的列展开成多行，这在处理嵌套数组或需要将单个复杂数据类型的列分解为多行数据时非常有用。比如我们有一张表，其中的 items 列中的数据是数组类型：
 
 ```python
 from pyspark.sql import Row
@@ -299,30 +182,25 @@ df = spark.createDataFrame(data)
 df.show()
 ```
 
-输出类似于：
+运行上面程序，会看到 df 中的数据：
 
 ```
-+-----+-------------------+
-| name|              items|
-+-----+-------------------+
++-----+------------------------+
+| name|              items     |
++-----+------------------------+
 |Alice| [apple, banana, orange]|
-| Bob|   [watermelon, peach]|
-+-----+-------------------+
+| Bob |   [watermelon, peach]  |
++-----+------------------------+
 ```
 
-### 步骤 3: 使用 `explode` 函数
-
-`explode` 函数将每个数组元素转换为独立的行，复制数组外的其他列值。
+调用 `explode()` 函数将每个数组元素转换为独立的行，复制数组外的其他列值：
 
 ```python
-from pyspark.sql.functions import explode
-
-# 使用 explode 函数展开 items 列
 exploded_df = df.select(df.name, explode(df.items).alias("item"))
 exploded_df.show()
 ```
 
-输出类似于：
+展开的结果如下：
 
 ```
 +-----+----------+
@@ -331,31 +209,10 @@ exploded_df.show()
 |Alice|     apple|
 |Alice|    banana|
 |Alice|    orange|
-| Bob|watermelon|
-| Bob|     peach|
+| Bob |watermelon|
+| Bob |     peach|
 +-----+----------+
 ```
-
-### 步骤 4: 处理复杂的嵌套结构
-
-如果你的 DataFrame 包含更复杂的嵌套结构（例如，数组中嵌套的数组或结构体），你可以使用 `explode` 结合其他函数（如 `col` 或者 `struct`）来处理这些复杂的数据类型。
-
-### 步骤 5: 关闭 SparkSession
-
-完成数据处理后，不要忘记关闭 SparkSession。
-
-```python
-spark.stop()
-```
-
-### 注意事项
-
-- 使用 `explode` 函数会显著增加 DataFrame 的行数，特别是当你展开的列包含大量元素时。这可能会影响性能，特别是在处理大数据集时。
-- 对于包含空数组或 null 值的行，`explode` 函数会将这些行从结果中删除。如果你希望保留这些行，可以考虑使用 `explode_outer` 函数，它会为空数组或 null 值生成一行，其中展开的列值为 null。
-- `explode` 可以与其他 DataFrame 操作结合使用，例如分组（`groupBy`）、聚合（`agg`）等，以实现更复杂的数据转换和分析任务。
-
-通过上述步骤，你可以在 PySpark 中有效地使用 `explode` 函数来处理和分析嵌套数组类型的数据。
-
 
 
 ## UDF
