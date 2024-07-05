@@ -111,7 +111,22 @@ print(my_slow_function())
 
 使用装饰器的时候，把 `@timer` 放在 `def my_slow_function():` 的上面，系统就会自动的在所有调用 my_slow_function() 的地方，把它们用装饰器的 wrapper 函数替代。 
 
-运行上面的程序，虽然看是去还是运行被装饰的函数 `print(my_slow_function())`，但实际上，计时的程序也被运行了。程序运行结果大致如下，第一行表示程序运行时间，第二行是原函数自身的运行结果：
+```python
+@timer
+def my_slow_function():
+    ...
+```
+
+就等效于：
+
+```python
+def my_slow_function():
+    ...
+
+my_slow_function = timer(my_slow_function)
+```
+
+运行上面的示例程序，虽然看是去还是运行被装饰的函数 `print(my_slow_function())`，但实际上，计时的程序也被运行了。程序运行结果大致如下，第一行表示程序运行时间，第二行是原函数自身的运行结果：
 
 ```
 my_slow_function ran in: 0.001227 seconds
