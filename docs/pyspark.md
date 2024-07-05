@@ -217,8 +217,47 @@ exploded_df.show()
 
 ## 用户自定义函数
 
-PySpark 以及 SQL 语言内置的功能都是非常有限的，在大多数实际应用中，我们都需要编写一些用户自定义函数（User Defined Functions 缩写 UDF）来扩展功能。举个例子，比如我们在查询一个数据库的时候，希望将“name”字符串中的每个单词的首字母转换为大写，而 PySpark 内置功能中没有这个函数，那么，我们可以创建一个 UDF，然后在查询是调用这个功能。
-。
+PySpark 以及 SQL 语言内置的功能都是非常有限的，在大多数实际应用中，我们都需要编写一些用户自定义函数（User Defined Functions 缩写 UDF）来扩展功能。
 
+比如我们在查询一个数据库的时候，希望将“name”字符串中的姓和名顺序颠倒，并按照“姓·名”的格式显示。虽然 PySpark 内置函数中没有这个功能，但是，我们可以创建一个 UDF 实现这一功能。之后就可以在每一次查询中都调用这个功能了。创建 PySpark UDF 的方法非常简单，给一个普通的 Python 函数添加上 `@udf` [装饰器](decorator) 就可以把它定义为一个 UDF。
 
+下面是实现这一功能的演示代码
+
+```python
+from pyspark.sql.functions import udf
+from pyspark.sql.types import StringType
+from pyspark.sql.functions import initcap
+
+columns = ["id", "name"]
+data = [("1", "john jones"), ("2", "tracey smith"), ("3", "AMY sanders")]
+df = spark.createDataFrame(data=data, schema=columns)
+
+@udf(returnType=StringType())               # 使用 @udf 装饰器需要指定函数返回值的数据类型
+def format_name(name):                      # 首先定义 udf 的函数名，然后实现具体功能
+    first_name, last_name = name.split()
+    return f"{last_name}·{first_name}"
+
+# 程序对 name 数据调用了两个函数，initcap 实现的单词首字母大写，udf format_name 调整了显示格式
+df = df.withColumn("name", format_name(initcap(df["name"])))
+
+df.show(truncate=False)
+```
+
+运行上面示例，得到的结果为：
+
+```
++---+------------+
+|id |name        |
++---+------------+
+|1  |Jones·John  |
+|2  |Smith·Tracey|
+|3  |Sanders·Amy |
++---+------------+
+```
+
+还可以通过注册，在 Spark SQL 中使用 udf，比如：
+
+```python
+spark.udf.register("format_name", format_name, StringType())
+```
 ............
