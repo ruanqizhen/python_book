@@ -261,3 +261,59 @@ print(parse_and_eval(expr))  # 输出 16，因为 (3+5) 是先计算的
 
 递归最大的优点是直观、简洁。有些问题天然地适合递归解决，比如数据的排列组合、树和图的遍历、分治算法等等，这类问题最好是使用递归解决。
 
+## 示例程序
+
+### 解决数独问题
+
+```python
+problem = [
+    [0, 0, 0, 0, 0, 0, 2, 0, 8],
+    [9, 2, 0, 0, 0, 4, 0, 0, 0],
+    [0, 0, 0, 2, 0, 8, 0, 7, 1],
+    [0, 3, 6, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 7, 0, 9, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 6, 4, 0],
+    [8, 6, 0, 4, 0, 1, 0, 0, 0],
+    [0, 0, 0, 9, 0, 0, 0, 2, 7],
+    [2, 0, 9, 0, 0, 0, 0, 0, 0],
+]
+
+positions = [(i, j) for i in range(9) for j in range(9)]
+current_result = [row[:] for row in problem]
+
+def numbers_in_block(position, current_result):
+    x, y = position[0] // 3, position[1] // 3
+    return [current_result[i + 3 * x][j + 3 * y] for i in range(3) for j in range(3)]
+
+def get_possible_numbers(position, current_result):
+    if problem[position[0]][position[1]] > 0:
+        return [problem[position[0]][position[1]]]
+    
+    row_numbers = set(current_result[position[0]])
+    col_numbers = set(row[position[1]] for row in current_result)
+    block_numbers = set(numbers_in_block(position, current_result))
+    
+    all_numbers = set(range(1, 10))
+    used_numbers = row_numbers | col_numbers | block_numbers
+    return list(all_numbers - used_numbers)
+
+def find_solution_for_position(pos_index, current_result):
+    if pos_index == 81:
+        print("\nsolution\n")
+        for row in current_result:
+            print(row)
+        return True
+    
+    position = positions[pos_index]
+    possible_numbers = get_possible_numbers(position, current_result)
+    
+    for number in possible_numbers:
+        current_result[position[0]][position[1]] = number
+        if find_solution_for_position(pos_index + 1, current_result):
+            return True
+    
+    current_result[position[0]][position[1]] = problem[position[0]][position[1]]
+    return False
+
+find_solution_for_position(0, current_result)
+```
