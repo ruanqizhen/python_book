@@ -220,5 +220,114 @@ solve_sudoku(0, solution)
 
 ## 解决 24 点问题
 
-24 点是一种简单的使用扑克牌作为道具的数学计算游戏，玩法是：随机抽取 4 张牌，用牌面的数字和加减乘除运算组合起来，计算出 24 这个数字。比如抽到的 4 张牌上的数字分别为 1, 2, 3, 4 那么 就可以通过 1 * 2 * 3 * 4 来的到目标 24。对于任意的 4 个数字，可能会有很多种方法计算得到 24，比如 (1 + 2 + 3) * 4 也可以得到 24。多数情况下，还是比较容易找到一种解法的；也有的数字组合不容易找到解，甚至根本不存在解。
+24 点是一种简单的数学计算游戏，使用扑克牌作为道具。玩法是随机抽取 4 张牌，通过加减乘除运算组合牌面的数字，计算出 24。例如，抽到的 4 张牌上的数字分别为 1、2、3、4，可以通过 1 * 2 * 3 * 4 得到 24。对于任意的 4 个数字，可能有多种方法计算出 24，例如 (1 + 2 + 3) * 4 也可以得到 24。多数情况下，比较容易找到一种解法；但有时某些数字组合可能难以找到解，甚至根本不存在解。
 
+我们可以用两种方法来解决 24 点问题。第一种方法是简化的解法，逻辑简单易懂，能够处理大部分题目。这个算法首先考虑两个数字，通过加减乘除得到最多 6 个结果，然后递归地增加一个数字，得到所有三个数字的结果，再递归增加一个数字，得到所有 4 个数字的可能结果。如果其中有结果是 24，那么问题就解决了。然而，这种递归方法遗漏了一种情况，即 4 个数字必须先两两计算，然后再得到最终结果，例如 (1+2)*(1+7)。其程序代码如下：
+
+```python
+from typing import List, Callable, Dict
+
+# 定义运算符和所对应的运算的 Lambda 函数
+Operators: Dict[str, Callable[[float, float], float]] = {
+    "+": lambda a, t: t - a,
+    "-": lambda a, t: a - t,
+    "*": lambda a, t: t / a if a != 0 else None,
+    "/": lambda a, t: a / t if t != 0 else None,
+}
+
+def calculate(numbers: List[int], target: float, message: str = ''):
+    if len(numbers) == 1:
+        if numbers[0] == target:
+            print(f"{message[:-1]}{numbers[0]}))")
+        return
+    
+    for num in set(numbers):
+        remaining = numbers.copy()
+        remaining.remove(num)
+        for operator, solve in Operators.items():
+            result = solve(num, target)
+            if result is not None:
+                calculate(remaining, result, f"{message}{num}{operator}(")
+
+# 运行测试：
+calculate([3, 3, 8, 8], 24)
+```
+
+如果要全面找到每中可能的答案，就还要考虑计算的优先级。我们可以把数字先分成两组，组内优先计算出一个结果，两组之间的结果再进行计算，这样就覆盖了所有可能的计算了。其实现代码如下：
+
+```python
+from copy import deepcopy
+from typing import List
+from math import nan
+
+# Define basic operators
+Operators = {
+    "+": lambda a, b: a + b,
+    "*": lambda a, b: a * b,
+}
+
+# Define operators that require order consideration
+Order_Operators = {
+    "-": lambda a, b: a - b,
+    "/": lambda a, b: nan if b == 0 else a / b,
+}
+
+Target = 24
+
+# Function to print results if they match the target
+def print_result(a_value: float, a_string: str, b_value: float, b_string: str):
+    for operator, solve in {**Operators, **Order_Operators}.items():
+        if abs(solve(a_value, b_value) - Target) < 0.001:
+            print(f"{a_string} {operator} {b_string}")
+        if operator in Order_Operators and abs(solve(b_value, a_value) - Target) < 0.001:
+            print(f"{b_string} {operator} {a_string}")
+
+# Function to generate all 1-3 groups of numbers
+def all_1_3_groups(numbers: List[int]):
+    return {numbers[i]: numbers[:i] + numbers[i+1:] for i in range(len(numbers))}
+
+# Function to generate all 2-2 groups of numbers
+def all_2_2_groups(numbers: List[int]):
+    return [
+        [(numbers[0], numbers[1]), (numbers[2], numbers[3])],
+        [(numbers[0], numbers[2]), (numbers[1], numbers[3])],
+        [(numbers[0], numbers[3]), (numbers[1], numbers[2])]
+    ]
+
+# Function to process two operands and return results
+def process_2_operands(a_value: float, a_string: str, b_value: float, b_string: str):
+    results = []
+    for operator, solve in {**Operators, **Order_Operators}.items():
+        results.append((solve(a_value, b_value), f"({a_string} {operator} {b_string})"))
+        if operator in Order_Operators:
+            results.append((solve(b_value, a_value), f"({b_string} {operator} {a_string})"))
+    return results
+
+# Function to process three operands and return results
+def process_3_operands(numbers_3: List[int]):
+    results = []
+    for num in set(numbers_3):
+        numbers = deepcopy(numbers_3)
+        numbers.remove(num)
+        results_2_operands = process_2_operands(numbers[0], str(numbers[0]), numbers[1], str(numbers[1]))
+        for result_2 in results_2_operands:
+            results += process_2_operands(num, str(num), result_2[0], result_2[1])
+    return results
+
+# Function to process four operands and print results
+def process_4_operands(numbers: List[int]):
+    for num, others in all_1_3_groups(numbers).items():
+        results_3_operands = process_3_operands(others)
+        for result_3 in results_3_operands:
+            print_result(num, str(num), result_3[0], result_3[1])
+    for group in all_2_2_groups(numbers):
+        results_a = process_2_operands(group[0][0], str(group[0][0]), group[0][1], str(group[0][1]))
+        results_b = process_2_operands(group[1][0], str(group[1][0]), group[1][1], str(group[1][1]))
+        for a in results_a:
+            for b in results_b:
+                print_result(a[0], a[1], b[0], b[1])
+    print("Done.")
+
+# Example usage
+process_4_operands([1, 2, 1, 7])
+```
