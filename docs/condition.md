@@ -358,15 +358,26 @@ print(f'应缴纳税金总数：{tax}')
 使用基础的条件语句编写一个函数，它的输入是三个实数，函数按照从小到大顺序打印出三个输入数据。
 
 ```python
-def sort_three_numbers(a, b, c):
-    if a > b:
-        a, b = b, a
-    if a > c:
-        a, c = c, a
-    if b > c:
-        b, c = c, b
-    print("从小到大的顺序是：", a, b, c)
+a, b, c = 3.5, 1.2, 4.8
 
-# 示例使用
-sort_three_numbers(3.5, 1.2, 4.8)
+if a > b:
+    a, b = b, a
+if a > c:
+    a, c = c, a
+if b > c:
+    b, c = c, b
+print("从小到大的顺序是：", a, b, c)
+```
+
+### 判断三角形的三条边
+
+输入三个数，判断这三个数是否能组成三角形的三条边
+
+```python
+a, b, c = 3.5, 1.2, 4.8
+
+if a + b > c and a + c > b and b + c > a:
+    print("这三个数可以组成三角形的三条边")
+else:
+    print("这三个数不能组成三角形的三条边")
 ```
