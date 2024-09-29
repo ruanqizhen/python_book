@@ -387,3 +387,31 @@ for i in range(1, 10):
         print(f"{j} * {i} = {j * i}", end="\t")
     print()
 ```
+
+### 水仙花数
+
+水仙花数，也叫“超完全数字不变数”，是指一个 n 位正整数，其各个位上数字的 n 次方之和等于它本身。例如，三位数的水仙花数就是一个三位数，其各个位上的数字的立方和等于这个数本身。
+
+举例说明：
+- 153 是一个三位数，它的各个位数字分别是 1、5、3，满足 $1^3 + 5^3 + 3^3 = 153$，所以 153 是水仙花数。
+- 370 也是一个三位水仙花数，因为 $3^3 + 7^3 + 0^3 = 370$。
+
+下面的程序可以计算给定范围内的水仙花数：
+
+```python
+# 示例：计算 100 到 999 范围内的水仙花数
+start = 100
+end = 999
+
+for num in range(start, end + 1):
+    # 将数字转换为字符串，以便逐位处理
+    digits = list(map(int, str(num)))
+    # 获取数字的位数
+    num_digits = len(digits)
+    # 计算每位数字的 n 次方之和
+    sum_of_powers = sum([digit ** num_digits for digit in digits])
+    # 判断该和是否等于原数
+    if sum_of_powers == num:
+        print(num)
+```
+
