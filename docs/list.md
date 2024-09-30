@@ -567,20 +567,4 @@ Python 中还有一个与元组类似的数据类型：[命名元组](iterator#�
 
 ## 练习
 
-### 查找最长的单词
 
-编写一个程序，找出输入字符串中最长的单词。比如输入 "Pythora is an amazing planet to live on"，输出 "Pythora"：
-
-```python
-input_string = "Pythora is an amazing planet to live on"
-
-# 将字符串按空格分割成单词列表
-words = input_string.split()
-
-# 使用max函数找到最长的单词
-longest_word = max(words, key=len)
-
-print(longest_word)
-```
-
-程序中 max 可以作为[高阶函数](high_order)，接受另一个函数作为参数。我们将在后续章节对这一用法做详细介绍。
