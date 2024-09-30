@@ -365,3 +365,24 @@ print(sorted(employees, key=lambda e: e['工资'], reverse=True))
 # 按薪水降序排序，薪水相同则按年龄升序排序
 print(sorted(employees, key=lambda x: (-x['工资'], x['年龄'])))
 ```
+
+
+## 练习
+
+### 查找最长的单词
+
+编写一个程序，找出输入字符串中最长的单词。比如输入 "Pythora is an amazing planet to live on"，输出 "Pythora"：
+
+我们可以利用 max() 这个高阶函数简化程序逻辑：
+
+```python
+input_string = "Pythora is an amazing planet to live on"
+
+# 将字符串按空格分割成单词列表
+words = input_string.split()
+
+# 使用max函数找到最长的单词
+longest_word = max(words, key=len)
+
+print(longest_word)
+```
