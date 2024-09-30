@@ -432,3 +432,35 @@ for day in range(days - 1, 0, -1):
 
 print(peaches)
 ```
+
+### 打印因数
+
+两个正整数相乘，那么这两个数都叫做积的因数，或称为约数。找到一个整数的因数的最简单方法就是从 1 开始，一个一个数试过去，如果这个数能够把给定的数整除，则它是给定的数的因数。程序如下：
+
+```python
+n = 1200
+for i in range(1, n+1):
+    if n % i == 0:
+        print(i, end=", ")
+```
+
+因数总是成对出现的，所以我们一可以成对查找它们：
+
+```python
+n = 1200
+for i in range(1, int(n**0.5) + 1):
+    if n % i == 0:
+        print(i, n // i)
+```
+
+### 质因数分解
+
+打印出一个合数所有的质因数：
+
+```python
+n = 1202
+for i in range(2, n // 2 + 1):
+    while n % i == 0:
+        print(i, end=", ")
+        n = n // i
+```
