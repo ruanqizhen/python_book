@@ -563,3 +563,22 @@ print(a)       # 输出： ([1, 2], [3, 4, 5])
 Python 中还有一个与元组类似的数据类型：[命名元组](iterator#命名元组)，它可以给元组中每个元素都起一个命名，我们将在后文详细介绍。
 
 对于列表和元组的更复杂的操作，比如改变列表中的每个元素，需要借助[循环结构](loop)和其它的一些方法，我们也会在后续章节详细介绍。
+
+
+## 练习
+
+### 查找最长的单词
+
+编写一个程序，找出输入字符串中最长的单词。比如输入 "Pythora is an amazing planet to live on"，输出 "Pythora"：
+
+```python
+input_string = "Pythora is an amazing planet to live on"
+
+# 将字符串按空格分割成单词列表
+words = input_string.split()
+
+# 使用max函数找到最长的单词
+longest_word = max(words, key=len)
+
+print(longest_word)
+```
