@@ -544,3 +544,29 @@ custom_function()  # 输出： print(message) 这是一个我们自己定义的 
 上面的程序重新定义了一个 print 函数，与 Python 内置的 print() 函数重名，但功能却不同。程序逻辑本身没有问题，在调用 print() 函数是，它会根据 LEGB 规则，优先调用我们自己定义的 print 函数。
 
 但是，如果一个不太熟悉我们代码的人来读程序，看到 print() 函数的行为与他之前见到的都不一样，就会非常迷惑。这不是一个好的为函数或变量命名的方法。在实际项目中，要尽量避免重新定义或覆盖外层域中的变量或函数名称，否则可能会导致意想不到的结果和混乱。
+
+## 练习
+
+### 元音字母个数
+
+编写一个函数，输入一个字符串，函数返回字符串中元音字母（a, e, i, o, u）的个数。
+
+```python
+def count_vowels(input_string):
+    # 定义元音字母
+    vowels = "aeiouAEIOU"
+    
+    # 初始化计数器
+    count = 0
+    
+    # 遍历字符串中的每个字符
+    for char in input_string:
+        if char in vowels:
+            count += 1
+    
+    return count
+
+# 示例使用
+input_string = "Hello, World!"
+print("元音字母的数量是:", count_vowels(input_string))
+```
