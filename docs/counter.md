@@ -212,3 +212,17 @@ count = np.bincount(x)
 
 print(count)  输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 次...
 ```
+
+
+## 练习
+
+### 字符计数
+
+编写一个程序统计字符串中每个字符出现的次数。
+
+```python
+input_string = "pneumonoultramicroscopicsilicovolcanoconiosis"
+character_count = Counter(input_string)
+for char, count in character_count.items():
+    print(f"字符 '{char}' 出现了 {count} 次")
+```
