@@ -388,4 +388,17 @@ cleaned_string = input_string.replace(" ", "").lower()
 print(cleaned_string == cleaned_string[::-1])
 ```
 
+### 首字母大写
+
+编写一个程序，将字符串中的每个单词的首字母大写。
+
+可以直接调用字符串的方法实现这一功能：
+
+```python
+input_string = "hello world!"
+print(input_string.title())
+```
+
+
+
 字符串的很多操作方法需要结合条件、循环等语句才能完成，我们需要在学习了后续章节后，再做更多的练习。
