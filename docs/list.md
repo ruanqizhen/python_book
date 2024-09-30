@@ -582,3 +582,5 @@ longest_word = max(words, key=len)
 
 print(longest_word)
 ```
+
+程序中 max 可以作为[高阶函数](high_order)，接受另一个函数作为参数。我们将在后续章节对这一用法做详细介绍。
