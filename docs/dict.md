@@ -477,3 +477,22 @@ common = friends_set.intersection(colleagues_set)
 print("既是朋友又是同事的人：", common)
 ```
 
+## 练习
+
+### 移除列表中的重复项
+
+编写一个程序，移除列表中重复的元素，并返回一个只包含唯一元素的列表。
+
+```python
+my_list = [1, 2, 3, 4, 3, 2, 1]
+
+seen = set()
+unique_list = []
+for item in my_list:
+    if item not in seen:
+        unique_list.append(item)
+        seen.add(item)
+
+print(unique_list)
+```
+
