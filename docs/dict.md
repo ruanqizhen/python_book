@@ -496,3 +496,23 @@ for item in my_list:
 print(unique_list)
 ```
 
+### 查找字典中的最大值
+
+使用循环结构查找一个字典值最大的那一项，并返回其对应的键
+
+```python
+test_data = {'a': 10, 'b': 25, 'c': 5}
+
+if not test_data:  # 检查字典是否为空
+    print("字典为空")
+
+max_key = None  # 用于存储值最大的键
+max_value = float('-inf')  # 初始为负无穷，保证字典中的值大于它
+
+for key, value in d.items():  # 遍历字典的键值对
+    if value > max_value:  # 如果当前值大于 max_value，则更新
+        max_value = value
+        max_key = key
+
+print(max_key)  # 输出 'b'
+```
