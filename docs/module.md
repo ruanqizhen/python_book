@@ -379,3 +379,30 @@ img.show()
 运行结果如下：
 
 ![](images/014.png "本书网址")
+
+## 练习
+
+### 计算圆面积
+
+```python
+import math
+
+def circle_area(radius):
+    return math.pi * radius ** 2
+
+print(circle_area(5))
+```
+
+### 将角度转换为弧度
+
+```python
+import math
+print(math.radians(180))
+```
+
+### 计算两个数的最大公约数
+
+```python
+import math
+print(math.gcd(48, 18)))
+```
