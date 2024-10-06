@@ -620,4 +620,31 @@ lengths = string_lengths(words)
 print(f"字符串列表的长度是: {lengths}")
 ```
 
+### 订制披萨
 
+编写一个函数，模拟披萨制作过程。要求把每一种配料作为一个函数参数传递给函数，函数打印出所有的配料。使用可变参数实现函数：
+
+```python
+def make_pizza(*toppings):
+    print("这个披萨试用了下列配料：")
+    for topping in toppings:
+        print(f"  - {topping}")
+
+make_pizza('香肠')
+make_pizza('蘑菇', '青椒', '奶酪')
+```
+
+我们还可以为函数增加一些额外信息：
+```ptyhon
+def order_pizza(size, *toppings, **extra_info):
+    print(f"订单详情：")
+    print(f"尺寸：{size}")
+    print("配料：")
+    for topping in toppings:
+        print(f"  - {topping}")
+    print("其它信息：")
+    for key, value in extra_info.items():
+        print(f"{key}: {value}")
+
+order_pizza('10 吋', '香肠', '蘑菇', 送达时间='18:00', 付款方式='信用卡')
+```
