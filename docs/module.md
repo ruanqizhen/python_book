@@ -416,8 +416,10 @@ print(gcd， lcm)
 
 我们可以使用 sympy 库来求解方程组。比如求解系列方程组：
 
-$ax^2 + by^2 + cxy + dx + ey + f = 0$
-$gx^2 + hy^2 + ixy + jx + ky + l = 0$
+$$
+ax^2 + by^2 + cxy + dx + ey + f = 0
+gx^2 + hy^2 + ixy + jx + ky + l = 0
+$$
 
 ```python
 from sympy import symbols, Eq, solve
