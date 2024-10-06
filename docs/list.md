@@ -579,7 +579,7 @@ print(my_list)  # 输出: [5, 4, 3, 2, 1]
 ```
 这个方法会直接在原列表上进行反转操作。
 
-1. 使用切片操作：
+2. 使用切片操作：
 ```Python
 my_list = [1, 2, 3, 4, 5]
 reversed_list = my_list[::-1]
@@ -587,7 +587,7 @@ print(reversed_list)  # 输出: [5, 4, 3, 2, 1]
 ```
 这种方法不会修改原列表，而是返回一个新的反转后的列表。
 
-1. 使用 reversed() 函数：
+3. 使用 reversed() 函数：
 ```Python
 my_list = [1, 2, 3, 4, 5]
 reversed_list = list(reversed(my_list))
