@@ -570,3 +570,54 @@ def count_vowels(input_string):
 input_string = "Hello, World!"
 print("元音字母的数量是:", count_vowels(input_string))
 ```
+
+### 列表中第二大的元素
+
+编写一个函数，查找给定列表中的第二大元素。
+
+编程思路还是比较直接的，遍历列表中每个数据，同时用两个变量分别保存当前遇到过的最大的两个数：
+
+```python
+def find_second_largest(numbers):
+    if len(numbers) < 2:
+        return None  # 如果列表长度小于2，没有第二大元素
+    
+    first_largest = second_largest = float('-inf')  # 初始化两个变量为负无穷
+    
+    for num in numbers:
+        if num > first_largest:
+            second_largest = first_largest  # 更新第二大
+            first_largest = num  # 更新第一大
+        elif first_largest > num > second_largest:
+            second_largest = num  # 更新第二大
+    
+    return second_largest if second_largest != float('-inf') else None
+
+# 测试
+numbers = [10, 20, 4, 45, 99]
+result = find_second_largest(numbers)
+
+if result is not None:
+    print(f"列表中的第二大元素是: {result}")
+else:
+    print("列表中没有足够的元素来找到第二大值")
+```
+
+### 字符串长度列表
+
+编写一个函数，将给定的字符串列表转换为每个字符串长度的列表。
+
+```python
+def string_lengths(strings):
+    lengths = []  # 初始化一个空列表来存储长度
+    for string in strings:
+        lengths.append(len(string))  # 计算每个字符串的长度并添加到列表中
+    return lengths
+
+# 测试
+words = ["apple", "banana", "cherry", "date"]
+lengths = string_lengths(words)
+print(f"字符串列表的长度是: {lengths}")
+```
+
+
