@@ -516,3 +516,12 @@ for key, value in d.items():  # 遍历字典的键值对
 
 print(max_key)  # 输出 'b'
 ```
+
+
+### 计算字典中所有值的总和
+
+```python
+sample_dict = {'a': 100, 'b': 200, 'c': 300}
+total_sum = sum(sample_dict.values())
+print("字典中值的总和为:", total_sum)
+```
