@@ -382,68 +382,21 @@ img.show()
 
 ## 练习
 
-### 计算圆面积
+1. **计算圆面积**：使用 math 库中的函数和常量定义，计算圆面积。
 
-```python
-import math
+2. **将角度转换为弧度**：使用 math 库中的函数和常量定义，计算输入角度的弧度值。
 
-def circle_area(radius):
-    return math.pi * radius ** 2
+3. **最大公约数和最小公倍数**：使用 math 库中的函数和常量定义，计算两个输入正整数的最大公约数和最小公倍数。
 
-print(circle_area(5))
-```
-
-### 将角度转换为弧度
-
-```python
-import math
-print(math.radians(180))
-```
-
-### 最大公约数和最小公倍数
-
-```python
-import math
-a, b = 48, 18
-
-gcd = math.gcd(a, b)     # 最大公约数
-lcm = abs(a * b) // gcd  # 最小公倍数
-
-print(gcd， lcm)
-```
-
-### 求解二元二次方程组
-
-我们可以使用 sympy 库来求解方程组。比如求解系列方程组：
+4. **求解二元二次方程组**：求解下面这个方程组：
 
 $$
 \begin{equation}
 \left\{
 \begin{array}{c}
-   ax^2 + by^2 + cxy + dx + ey + f = 0 \\
-   gx^2 + hy^2 + ixy + jx + ky + l = 0 \\
+    x^2 + 2y^2 + 3xy + 4x + 5y + 6 = 0 \\
+   4x^2 + 5y^2 + 6xy + 7x + 8y + 9 = 0 \\
 \end{array}
 \right.
 \end{equation}  
 $$
-
-```python
-from sympy import symbols, Eq, solve
-
-# 定义变量
-x, y = symbols('x y')
-
-# 输入系数
-a, b, c, d, e, f = 1, 1, 1, 1, 1, 1  # 示例系数
-g, h, i, j, k, l = 1, 1, 1, 1, 1, 1  # 示例系数
-
-# 定义方程
-equation1 = Eq(a * x**2 + b * y**2 + c * x * y + d * x + e * y + f, 0)
-equation2 = Eq(g * x**2 + h * y**2 + i * x * y + j * x + k * y + l, 0)
-
-# 求解方程组
-solutions = solve((equation1, equation2), (x, y))
-
-# 输出结果
-print(f"解为: {solutions}")
-```
