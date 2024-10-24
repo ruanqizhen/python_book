@@ -479,49 +479,8 @@ print("既是朋友又是同事的人：", common)
 
 ## 练习
 
-### 移除列表中的重复项
+1. **移除列表中的重复项**：编写一个程序，移除列表中重复的元素，并返回一个只包含唯一元素的列表。
 
-编写一个程序，移除列表中重复的元素，并返回一个只包含唯一元素的列表。
+2. **查找字典中的最大值**：使用循环结构查找一个字典值最大的那一项，并返回其对应的键
 
-```python
-my_list = [1, 2, 3, 4, 3, 2, 1]
-
-seen = set()
-unique_list = []
-for item in my_list:
-    if item not in seen:
-        unique_list.append(item)
-        seen.add(item)
-
-print(unique_list)
-```
-
-### 查找字典中的最大值
-
-使用循环结构查找一个字典值最大的那一项，并返回其对应的键
-
-```python
-test_data = {'a': 10, 'b': 25, 'c': 5}
-
-if not test_data:  # 检查字典是否为空
-    print("字典为空")
-
-max_key = None  # 用于存储值最大的键
-max_value = float('-inf')  # 初始为负无穷，保证字典中的值大于它
-
-for key, value in d.items():  # 遍历字典的键值对
-    if value > max_value:  # 如果当前值大于 max_value，则更新
-        max_value = value
-        max_key = key
-
-print(max_key)  # 输出 'b'
-```
-
-
-### 计算字典中所有值的总和
-
-```python
-sample_dict = {'a': 100, 'b': 200, 'c': 300}
-total_sum = sum(sample_dict.values())
-print("字典中值的总和为:", total_sum)
-```
+3. **计算字典中所有值的总和**
