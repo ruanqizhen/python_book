@@ -93,6 +93,21 @@ else:
     print(f"目标数据 {target} 没有找到")
 ```
 
+我们也经常会看到用递归方法实现的二分查找：
+
+```python
+def binary_search(sorted_arr, target, left, right):
+   if left > right:
+	   return -1
+   mid = (left + right) // 2
+   if sorted_arr[mid] == target:
+	   return mid
+   elif sorted_arr[mid] > target:
+	   return binary_search(sorted_arr, target, left, mid - 1)
+   else:
+	   return binary_search(sorted_arr, target, mid + 1, right)
+```
+
 
 ### 旋转平移
 
