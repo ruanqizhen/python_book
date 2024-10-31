@@ -17,6 +17,7 @@ const sidebars = {
       },
       items: [ 
         'hello_world',
+        'fundamentals',
         'variable',
         'calculation',
         'string',
@@ -96,6 +97,7 @@ const sidebars = {
         'tkinter',
         'pygame',
         'pyspark',
+        'folium',
         'miscellaneous',
         'placeholder',
       ],
