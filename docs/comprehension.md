@@ -173,6 +173,18 @@ print(([c.extend([b | {a} for b in c]) or c for c in [[set()]] for a in s] or [[
 # 输出： [set(), {1}, {2}, {1, 2}, {3}, {1, 3}, {2, 3}, {1, 2, 3}]
 ```
 
+上面的示例程序可读性不是太好，如果稍微多些两行，可以让代码思路清晰很多：
+
+```
+s = {1,2,3}
+
+result = [set()]
+[result.extend([j | {i} for j in result]) for i in s]
+
+print(result)  # 输出： [set(), {1}, {2}, {1, 2}, {3}, {1, 3}, {2, 3}, {1, 2, 3}]
+```
+
+
 ## 字典推导式
 
 ### 基本用法
