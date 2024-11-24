@@ -369,20 +369,7 @@ print(sorted(employees, key=lambda x: (-x['工资'], x['年龄'])))
 
 ## 练习
 
-### 查找最长的单词
+- 查找最长的单词：编写一个程序，找出输入字符串中最长的单词。比如输入 "Pythora is an amazing planet to live on"，输出 "Pythora"。
+- 按字典键值排序：给定一个字典列表，比如 `data = [{"name": "Alice", "age": 25}, {"name": "Bob", "age": 22}, {"name": "Charlie", "age": 30}]`，按 age 的大小对字典中的数据排序。
+- 找最大值：使用匿名函数和 reduce()，找出输入列表（比如 `[10, 3, 45, 2, 19]`）中的最大值。
 
-编写一个程序，找出输入字符串中最长的单词。比如输入 "Pythora is an amazing planet to live on"，输出 "Pythora"：
-
-我们可以利用 max() 这个高阶函数简化程序逻辑：
-
-```python
-input_string = "Pythora is an amazing planet to live on"
-
-# 将字符串按空格分割成单词列表
-words = input_string.split()
-
-# 使用max函数找到最长的单词
-longest_word = max(words, key=len)
-
-print(longest_word)
-```
