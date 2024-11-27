@@ -40,7 +40,7 @@ my_dict = dict(姓名="蔡泰贤", 年龄=25, 城市="上海")
 
 ```python
 # 使用 (key, value) 的元组列表
-pairs = [("姓名", "蔡泰贤"), ("年龄", 25), ("城市", "上海")]
+pairs = [("姓名", "马筒概"), ("年龄", 25), ("城市", "上海")]
 my_dict = dict(pairs)
 ```
 
@@ -48,7 +48,7 @@ my_dict = dict(pairs)
 
 ```python
 keys = ["姓名", "年龄", "城市"]
-values = ["蔡泰贤", 25, "上海"]
+values = ["梅凉新", 25, "上海"]
 my_dict = dict(zip(keys, values))
 ```
 
@@ -247,7 +247,7 @@ print(keys)             # 输出：  dict_keys(['姓名', '城市'])
 
 ```python
 person = {
-    "姓名": "杨逸群",
+    "姓名": "包申弓",
     "年龄": 30,
     "城市": "上海"
 }
@@ -255,14 +255,14 @@ person = {
 for value in person.values():
     print(value)
     
-# 输出： 杨逸群  30  上海
+# 输出： 包申弓  30  上海
 ```
 
 更常见的情况是要同时遍历字典中所有的键和值，需要使用 items 视图：
 
 ```python
 person = {
-    "姓名": "杨逸群",
+    "姓名": "郑至泛",
     "年龄": 30,
     "城市": "上海"
 }
@@ -271,7 +271,7 @@ for key, value in person.items():
     print(key, value)
 
 # 输出：
-# 姓名 杨逸群
+# 姓名 郑至泛
 # 年龄 30
 # 城市 上海
 ```
