@@ -280,6 +280,19 @@ print(math_operation('+')(5, 3))  # 输出：8
 print(math_operation('-')(5, 3))  # 输出：2
 ```
 
+## 练习
 
+编写**匿名函数**实现下列功能：
 
+1. 平方计算：计算给定数字的平方。例如，输入 4，输出 16。
+1. 偶数判断：判断一个数字是否为偶数。输入一个数字，返回 True 或 False。
+1. 多参数运算：接受两个参数 x 和 y，返回 (x + y)^2 的结果。
+1. 加权平均: 给定一个数值列表 `values = [4, 5, 6]` 和权重列表 `weights = [0.2, 0.3, 0.5]`，计算加权平均值。
+1. 链式函数：使用匿名函数实现一个链式函数 (x -> x^2 -> x+1 -> x/2)，输入 x=4，输出结果为 13.5。
 
+1. 假设有一个匿名函数列表，比如 `[lambda x: x+1, lambda x: x^2, lambda x: x*2]`，对输入值逐一调用这些函数，比如，输入 5 输出 `[6, 25, 10]`。
+1. 编写一个函数 `apply_func(func, x, y)`，接受一个函数 func 和两个数 x、y，返回 `func(x, y)` 的结果。例如，`apply_func(lambda a, b: a + b, 3, 5)` 应返回 8。
+1. 编写一个函数 `filter_func(func, lst)`，接受一个函数 func 和一个列表 lst，返回列表中满足 func 条件的元素。例如，输入 `filter_func(lambda x: x > 2, [1, 2, 3, 4])`，输出 `[3, 4]`。
+1. 编写一个函数 `make_multiplier(n)`，返回一个新的函数，该函数将输入乘以 n。
+1. 编写一个高阶函数 `apply_n_times(func, x, n)`，接受一个函数 func、一个值 x 和一个正整数 n，返回将 func 对 x 应用 n 次的结果。例如：`apply_n_times(lambda x: x * 2, 2, 3)  # 输出: 8`
+1. 编写一个函数 `choose_func(op)`，根据字符串参数 op 返回不同的函数。例如：`adder = choose_func("add")`
