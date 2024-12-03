@@ -108,7 +108,13 @@ print(list(result))  # 输出: [5, 7, 9]
 
 ### 基本用法
 
-filter() 用于从一个可迭代对象中过滤出满足某个条件的元素。它接受一个函数和一个可迭代对象。它返回一个新的迭代对象，其中只包含使输入函数返回 True 的原始元素。
+filter() 用于从一个可迭代对象中过滤出满足某个条件的元素。基本用法如下：
+
+```python
+filter(function, iterable)
+```
+
+它接受一个函数和一个可迭代对象。它返回一个新的迭代对象，其中只包含使输入函数返回 True 的原始元素。
 
 我们在介绍生成器表达式时使用的另一个示例正好可以演示 filter() 函数的用法：假设我们需要从一个列表中选出长度大于 5 的单词，如果使用生成器表达式，代码如下：
 
@@ -213,6 +219,30 @@ gen = (i for i in count(2) if all(i % j != 0 for j in range(2, int(i**.5) + 1)))
 
 for _ in range(10):  # 获取前 10 个素数
     print(next(gen))
+```
+
+### 滤除假值
+
+filter() 函数有一个特殊用法，如果它的 function 参数被设为 None，filter 函数会默认使用元素的“布尔值”作为过滤条件。换句话说，`filter(None, iterable)` 等价于 `filter(lambda x: bool(x), iterable)`。
+
+在 Python 中，下列值被认为是“假”值（空值）：None、False、数值 0（包括 0, 0.0, 0j 等）、空序列（'', [], () 等）、空集合（set(), dict() 等）。
+
+这一用法可以用来快速清理列表中的“空”值：
+
+```python
+data = [None, 0, "Python", "", [], False, 42]
+clean_data = list(filter(None, data))
+print(clean_data)
+# 输出: ['Python', 42]
+```
+
+也可以在处理文件数据时过滤空行：
+
+```python
+lines = ["line1\n", "\n", "line2\n", "", "line3"]
+non_empty_lines = list(filter(None, lines))
+print(non_empty_lines)
+# 输出: ['line1\n', 'line2\n', 'line3']
 ```
 
 ## reduce
