@@ -81,6 +81,7 @@ const sidebars = {
         'linked_list',
         'deque',
         'tree',
+        'hashtable',
       ],
     },
     {
