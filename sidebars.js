@@ -92,6 +92,7 @@ const sidebars = {
         id: 'all_powerful',
       },
       items: [
+        'time',
         'numpy',
         'pandas',
         'matplotlib',
