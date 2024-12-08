@@ -94,8 +94,8 @@ const sidebars = {
       items: [
         'numpy',
         'pandas',
-        'tkinter',
         'matplotlib',
+        'tkinter',
         'pygame',
         'pyspark',
         'folium',
