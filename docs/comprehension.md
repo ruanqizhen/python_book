@@ -235,7 +235,7 @@ dictionary = {k: v for k, v in zip(keys, values)}
 print(dictionary)  # 输出：{'a': 1, 'b': 2, 'c': 3}
 ```
 
-### 多重循环：
+### 多重循环
 
 可以在字典推导式中使用多个循环,比如生成一个以字典格式存储的乘法表：
 
