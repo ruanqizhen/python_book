@@ -10,8 +10,8 @@
 
 如果读者还没有自己常用的在线 IDE，可以打开 Google 搜索“online IDE”，能够找到非常多的免费的在线编程网站，可以任意选择一个使用。在写作此书的时候，出现在搜索结果上的前两个 IDE 分别是：
 
-* <https://www.online-ide.com/online_python_ide>
-* <https://ideone.com/>
+* [https://www.online-ide.com/online_python_ide](https://www.online-ide.com/online_python_ide)
+* [https://ideone.com/](https://ideone.com/)
 
 一个典型的在线编程环境的页面如下：
 
@@ -21,14 +21,14 @@
 
 更高级的在线开发环境会有登录选项，如果用户创建一个账户，则可以把自己的程序长期存放在网站上，甚至也可以直接把程序连接分享给别人。未登录用户需要注意，关闭网页后，自己写的程序可能会丢失，如果需要留档，需要自己把程序下载到本地计算机上。当前，最著名的 Python 在线 IDE 是 [Google Colab](https://colab.research.google.com/ )，有很多开源项目就是在它上面进行开发和分享的。
 
-上面介绍的几个网站，写好 Python 程序都是在它们的服务器上运行的，它们会把运行结果显示在网页上。还有一类更简化的开发环境，它们会直接在用户的浏览器里运行 Python 程序。比如这是一个调用 pyscript 搭建的页面 <https://qizhen.xyz/python>，和调用 brython 搭建的页面 <https://qizhen.xyz/brython>。这两个页面都是用来在浏览器运行 Python 程序的，可以用于学习时随手测试。这类网页工作的原理是先把 Python 程序翻译成 JavaScript 代码，而浏览器可以直接运行 JavaScript 程序，这样就间接的运行了用户输入的 Python 程序。
+上面介绍的几个网站，写好 Python 程序都是在它们的服务器上运行的，它们会把运行结果显示在网页上。还有一类更简化的开发环境，它们会直接在用户的浏览器里运行 Python 程序。比如这是一个调用 pyscript 搭建的页面 [https://qizhen.xyz/python](https://qizhen.xyz/python)，和调用 brython 搭建的页面 [https://qizhen.xyz/brython](https://qizhen.xyz/brython)。这两个页面都是用来在浏览器运行 Python 程序的，可以用于学习时随手测试。这类网页工作的原理是先把 Python 程序翻译成 JavaScript 代码，而浏览器可以直接运行 JavaScript 程序，这样就间接的运行了用户输入的 Python 程序。
 
 基于 JavaScript 的 Python 解释器可以更容易的嵌入任何网页，使用方便。但是，它们一般只能支持最最基础的 Python 功能，很多高级功能是用不了的。而且其程序运行行为也可能与最常用的用 C 语言编写的 Python 解释器有差别，所以还是建议读者还是首选那些在把程序运行在服务器上的在线开发环境用于学习。
 
 
 ## 安装 Python 解释器
 
-如果在线开发环境不能满足需求了，可以考虑把 Python 安装到自己的电脑上。安装 Python 解释器的过程非常简单，就不详细说明了。到 [Python 官网](https://www.python.org/downloads/ )，选择适当操作系统的最新版本的安装包，下载安装即可。
+如果在线开发环境不能满足需求了，可以考虑把 Python 安装到自己的电脑上。安装 Python 解释器的过程非常简单，就不详细说明了。到 [Python 官网](https://www.python.org/downloads/)，选择适当操作系统的最新版本的安装包，下载安装即可。
 
 对于初学，这个基本的安装包就足够了。但是如果将来会在多个项目中使用到 Python，可能还要考虑不同版本的不同版本的 Python 和扩展库等发生不兼容的问题。比如，某个项目可能必须运行在 Python 3.9 而另一个项目必须运行在 Python 3.12；或者某个项目必须使用 PyTorch 1.x （这是一个 Python 的用于机器学习的扩展库），而另一个项目必须使用 PyTorch 2.x 等等。自己管理多个版本的 Python 和各种库的组合是非常麻烦的。所以，Pythora 星球的居民一般会使用专业的工具来管理所需的库和环境。
 
@@ -136,7 +136,7 @@ pip install notebook
 jupyter notebook
 ```
 
-它会在你的默认浏览器中打开一个 Jupyter Notebook 实例，并显示文件和文件夹列表。如果网页没有自动打开，活不小心被关闭了，读者也可以自己打开浏览器，输入网址： http://localhost:8888/ 重新打开编程页面。
+它会在你的默认浏览器中打开一个 Jupyter Notebook 实例，并显示文件和文件夹列表。如果网页没有自动打开，活不小心被关闭了，读者也可以自己打开浏览器，输入网址： `http://localhost:8888/` 重新打开编程页面。
 
 在打开的主页面上，点击“New”按钮，选择你的目标编程语言，如 Python 3，就可以创建一个新的程序。我们称每个程序为一个“Notebook”。在新的 Notebook 中，你可以输入 Python 代码并点击“Run”按钮（或按 Shift + Enter）执行。点击页面上方的“+”按钮可以添加新的单元格。你可以在单元格中选择“Markdown”模式，然后输入 Markdown 文本或 LaTeX 方程。点击页面上方的保存按钮（或按 Ctrl + S）可以保存当前的程序。如果需要退出编程环境，可以关闭浏览器标签后，回到命令行并按 Ctrl + C 终止 Jupyter Notebook 服务。
 
