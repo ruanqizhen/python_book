@@ -15,6 +15,10 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   projectName: 'python_book', // Usually your repo name.
+  i18n: {
+    defaultLocale: 'zh-cn',
+    locales: ['zh-cn'],
+  },
   presets: [
     [
       'classic',
