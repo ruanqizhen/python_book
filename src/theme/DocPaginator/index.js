@@ -1,14 +1,11 @@
 import React from 'react';
 import DocPaginator from '@theme-original/DocPaginator';
 import Giscus from '@giscus/react';
-import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+import {useColorMode} from '@docusaurus/theme-common';
 
 export default function DocPaginatorWrapper(props) {
-  let theme = 'light';
-  if (ExecutionEnvironment.canUseDOM) {
-    theme = document.documentElement.getAttribute('data-theme');
-    if (theme !== "dark") theme = 'light';
-  }
+  const {colorMode} = useColorMode();
+  const theme = colorMode === 'dark' ? 'dark' : 'light';
 
   return (
     <>
