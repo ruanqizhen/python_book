@@ -5,7 +5,6 @@ import {useColorMode} from '@docusaurus/theme-common';
 
 export default function DocPaginatorWrapper(props) {
   const {colorMode} = useColorMode();
-  const theme = colorMode === 'dark' ? 'dark' : 'light';
 
   return (
     <>
@@ -21,7 +20,7 @@ export default function DocPaginatorWrapper(props) {
 		reactionsEnabled='1'
 		emitMetadata='1'
 		inputPosition='top'
-		theme={theme}
+		theme={colorMode}
 		lang='zh-CN'
         loading="lazy"
 	  />
