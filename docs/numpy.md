@@ -463,7 +463,7 @@ import numpy as np
 arr = np.arange(120).reshape(2, 3, 4, 5)
 
 # 使用 Ellipsis 选择全部元素，相当于 arr[:, :, :, :]
-print(arr[...])   # 会把整个四位数组打印出来，数据从 0 到 119
+print(arr[...])   # 会把整个四维数组打印出来，数据从 0 到 119
 
 # 使用 Ellipsis 选择最后一个维度上索引为 0 的所有元素，相当于 arr[:, :, :, 0]
 print(arr[..., 0])
