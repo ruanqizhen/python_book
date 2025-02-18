@@ -117,7 +117,7 @@ student_info.join(
 
 直接调用 SQL 语句最大的好处是，可以直接把 SQL 语句拿到不同的环境中去执行。比如说在使用 AWS Athena 服务的时候，同样的 SQL 即可以在 Athena Notebook 程序中使用，也可以直接在 Athena Query 的交互环境中运行，可移植性非常好。不过 Spark 在执行程序的时候，是要先把 SQL 语句翻译成自身的 API 调用在执行的。用户无法控制这一翻译的过程，也许 Spark 的翻译对于某些问题并不是最优化的方式。如果直接使用 Spark API 编写程序，可以更加灵活，可以根据需求设计出最优化的程序。
 
-## 常用的 Spark API
+## 基本操作
 
 如果已经熟悉了 SQL 查询语言，切换成 Spark API 是非常容易的，基本上每个 SQL 语句都有与之相对应的 Spark API。下面介绍一些最为常用的方法
 
@@ -167,6 +167,70 @@ inner_join_df = df1.join(df2, df1.id == df2.id)
 inner_join_df.show()
 ```
 
+### 基本聚合操作
+
+`groupBy()` 方法与聚合函数配合使用，可以实现类似 SQL 中 `GROUP BY` 的功能。常见的聚合函数包括 `count()`、`sum()`、`avg()`、`max()`、`min()` 等：
+
+```python
+from pyspark.sql import functions as F
+
+# 按部门分组计算平均薪资
+department_avg = df.groupBy("department").agg(F.avg("salary").alias("avg_salary"))
+department_avg.show()
+
+# 多列聚合：计算每个部门的总人数和最高薪资
+department_stats = df.groupBy("department") \
+                    .agg(F.count("*").alias("total_employees"),
+                         F.max("salary").alias("max_salary"))
+department_stats.show()
+```
+
+对应的 SQL 实现方式更加简洁：
+
+```python
+spark.sql("""
+    SELECT department, 
+           AVG(salary) AS avg_salary,
+           COUNT(*) AS total_employees,
+           MAX(salary) AS max_salary
+    FROM employees
+    GROUP BY department
+""").show()
+```
+
+### 窗口函数
+
+窗口函数（Window Functions）允许在数据集的特定子集（窗口）上进行计算，同时保留原始数据的行数。常见的应用场景包括排名、累计求和、移动平均等：
+
+```python
+from pyspark.sql.window import Window
+
+# 定义窗口：按部门分区并按薪资降序排列
+window_spec = Window.partitionBy("department").orderBy(F.desc("salary"))
+
+# 计算部门内薪资排名
+ranked_df = df.withColumn("rank", F.rank().over(window_spec))
+ranked_df.show()
+
+# 计算累计薪资（需调整窗口范围为从第一行到当前行）
+cumulative_window = window_spec.rowsBetween(Window.unboundedPreceding, Window.currentRow)
+cumulative_df = df.withColumn("cumulative_salary", F.sum("salary").over(cumulative_window))
+cumulative_df.show()
+```
+
+对应的 SQL 语法更贴近传统数据库使用习惯：
+
+```python
+spark.sql("""
+    SELECT department, 
+           salary,
+           RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank,
+           SUM(salary) OVER (PARTITION BY department ORDER BY salary DESC 
+                             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_salary
+    FROM employees
+""").show()
+```
+
 ### 展开
 
 `explode()` 函数用于将数组类型的列展开成多行，这在处理嵌套数组或需要将单个复杂数据类型的列分解为多行数据时非常有用。比如我们有一张表，其中的 items 列中的数据是数组类型：
@@ -212,6 +276,21 @@ exploded_df.show()
 | Bob |watermelon|
 | Bob |     peach|
 +-----+----------+
+```
+
+### 数据排序与去重
+
+排序和去重是数据清洗的关键步骤：
+
+```python
+# 按多列排序：先按部门升序，再按薪资降序
+sorted_df = df.orderBy(F.asc("department"), F.desc("salary"))
+
+# 去除重复记录（所有列完全相同）
+distinct_df = df.distinct()
+
+# 按特定列去重
+deduplicated_df = df.dropDuplicates(["employee_id"])
 ```
 
 
@@ -260,4 +339,125 @@ df.show(truncate=False)
 ```python
 spark.udf.register("format_name", format_name, StringType())
 ```
-............
+
+## 数据写入与持久化
+
+数据处理完成后，通常需要将结果持久化存储。PySpark 支持多种输出格式和存储系统。
+
+### 写入到数据库
+
+通过 `DataFrameWriter` 的 `jdbc` 方法可将数据写入关系型数据库：
+
+```python
+# 覆盖模式写入数据库
+df.write.mode("overwrite") \
+       .jdbc(url=jdbc_url, table="processed_data", properties=connection_properties)
+
+# 追加模式写入分区表
+df.write.mode("append") \
+       .option("truncate", "true") \
+       .jdbc(url=jdbc_url, table="partitioned_data", properties=connection_properties)
+```
+
+### 保存到文件系统
+
+PySpark 支持 Parquet、CSV、JSON 等格式的文件输出。在 AWS 环境中，数据通常直接写入 S3：
+
+```python
+# Parquet 格式写入（自动分区）
+df.write.partitionBy("year", "month") \
+       .parquet("s3://my_bucket/analytics/output/")
+
+# CSV 格式写入（指定压缩方式）
+df.write.option("compression", "gzip") \
+       .csv("s3://my_bucket/csv_output/")
+```
+
+### 注册临时视图
+
+在跨多个数据处理步骤时，可以将 DataFrame 注册为临时视图以便 SQL 查询复用：
+
+```python
+df.createOrReplaceTempView("processed_view")
+
+spark.sql("""
+    SELECT department, MAX(salary) 
+    FROM processed_view 
+    GROUP BY department
+""").show()
+```
+
+## 性能优化技巧
+
+### 缓存机制
+
+对于需要多次访问的 DataFrame，可通过缓存减少重复计算：
+
+```python
+# 缓存到内存（默认存储级别）
+df.cache()
+
+# 带序列化的内存缓存（减少内存占用）
+from pyspark import StorageLevel
+df.persist(StorageLevel.MEMORY_AND_DISK)
+
+# 释放缓存
+df.unpersist()
+```
+
+### 分区优化
+
+合理设置分区数可显著提升并行处理效率：
+
+```python
+# 调整 shuffle 分区数（默认200）
+spark.conf.set("spark.sql.shuffle.partitions", "100")
+
+# 对已有 DataFrame 重新分区
+repartitioned_df = df.repartition(100, "department")
+
+# 按列分区写入（提升后续查询性能）
+df.write.partitionBy("country") \
+       .parquet("s3://my_bucket/partitioned_by_country/")
+```
+
+### 广播变量
+
+当需要在小数据集与大表进行连接操作时，使用广播变量可避免数据倾斜：
+
+```python
+small_df = spark.read.parquet("s3://my_bucket/small_dataset/")
+broadcast_df = F.broadcast(small_df)
+
+# 广播连接（自动处理小于10MB的表，可通过参数调整阈值）
+joined_df = large_df.join(broadcast_df, "key_column")
+```
+
+## 调试与错误处理
+
+### 执行计划分析
+
+通过 `explain()` 方法查看查询执行计划，优化复杂操作：
+
+```python
+df.groupBy("department").count().explain(extended=True)
+```
+
+输出结果将展示逻辑计划、物理计划等详细信息，帮助识别性能瓶颈。
+
+### 异常处理
+
+在分布式环境中，建议使用 `try-except` 块捕获异常并记录日志：
+
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+
+try:
+    df.write.parquet("s3://my_bucket/output/")
+except Exception as e:
+    logging.error(f"写入失败: {str(e)}")
+    # 执行回滚或重试逻辑
+```
+
+
