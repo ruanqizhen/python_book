@@ -24,7 +24,7 @@ for num in squared:
 numbers = range(10)
 squares = map(lambda x: x*x, numbers)
 
-for num in squared:
+for num in squares:
     print(num)
 ```
 
@@ -91,7 +91,7 @@ result = my_map(lambda x: x*x, lst1)
 print(list(result))  # 输出: [1, 4, 9]
 ```
 
-上面的程序复杂在要处理可变多个可迭代对象，但如果配合使用 zip() 函数，上面的代码可以被一句简单的生成器表达式替代：
+上面的程序复杂之处在于要处理多个可变的可迭代对象，但如果配合使用 zip() 函数，上面的代码可以被一句简单的生成器表达式替代：
 
 ```python
 def my_map(func, *iterables):
@@ -127,7 +127,7 @@ result = (word for word in words if len(word) > 5)
 ```python
 words = ["apple", "banana", "cherry", "date", "fig", "kiwi"]
 long_words = filter(lambda x: len(x) > 5, words)
-print(list(long_words))  # 输出: [banana', 'cherry']
+print(list(long_words))  # 输出: ['banana', 'cherry']
 ```
 
 filter() 函数只能接收一个可迭代对象，因此，它的实现比 map() 简单得多，只需要使用上面的生成器表达式就可以了：
@@ -372,7 +372,7 @@ print(sorted(words))           # 输出: ['Washington', 'banana', 'book', 'pie']
 print(sorted(words, key=len))  # 输出: ['pie', 'book', 'banana', 'Washington']
 ```
 
-sorted() 函数可以进行更加复杂的排序工作，尤其是对于复杂的输入数据，比如对于字典的列表这样的数据进行排序。key 函数的返回数值可以是一个元组，这样就可以实现多层排序，先按照一个关键字，也就是元组的第一个数据进行排序，在按照第二个关键字，次要的关键字进行排序，以此类推。
+sorted() 函数可以处理更复杂的排序任务，尤其是对于复杂的输入数据，比如对于字典的列表这样的数据进行排序。key 函数的返回数值可以是一个元组，这样就可以实现多层排序，先按照一个关键字，也就是元组的第一个数据进行排序，在按照第二个关键字，次要的关键字进行排序，以此类推。
 
 假设我们有一个员工列表，每个员工包括姓名年龄工资等数据。我们可以通过设置不同的 key，对他们进行各种排序
 
