@@ -63,7 +63,7 @@ class Cat(Animal):
 
 里氏替换原则是指，子类型必须能够替换它们的父类型而不会导致任何错误。换句话说，如果有一个父类的实例，我们应该能够将它替换为它的任何一个子类的实例，并且应用程序仍然应该正常工作。
 
-我们用一个长方形类和一个矩形类来说明如何遵循里氏替换原则。长方形（Rectangle）和矩形（Square）这个例子我在很多文章中都看到过，但是它实在是太经典了，我实在想不出比它更好的演示里氏替换原则，只能继续用这个经典示例。
+我们用一个矩形类和一个正方形类来说明如何遵循里氏替换原则。矩形（Rectangle）和正方形（Square）这个例子我在很多文章中都看到过，但是它实在是太经典了，我实在想不出比它更好的演示里氏替换原则，只能继续用这个经典示例。
 
 在数学上，正方形是一种特殊的矩形，所以很自然的考虑：应该从矩形类作为基类，派生出正方形子类：
 
@@ -172,22 +172,22 @@ printer.print_document(doc)     # 输出： "测试文档"
 
 虽然这个原则被 SOLID 排在了最后，但它却是其它原则和设计方法的基础。依赖倒置原则的核心是通过依赖抽象，让各个具体类之间不直接相互作用，这样可以降低它们之间的耦合度。低耦合度意味着一个类的改动不影响到其它类，从而降低了维护和扩展的难度。
 
-为了更好地解释这个原则，我们考虑下面的报告生成的示例。假设我们有一个 ReportService 类，它直接依赖于具体的 PDFStudenReport 类来生成 PDF 报告：
+为了更好地解释这个原则，我们考虑下面的报告生成的示例。假设我们有一个 ReportService 类，它直接依赖于具体的 PDFStudentReport 类来生成 PDF 报告：
 
 ```python
-class PDFStudenReport:
+class PDFStudentReport:
     def generate(self):
         print("生成 PDF 报告")
 
 class ReportService:
     def __init__(self):
-        self.report = PDFStudenReport()
+        self.report = PDFStudentReport()
 
     def create_report(self):
         return self.report.generate()
 ```
 
-上面这个设计的问题在于： ReportService 直接依赖于 PDFStudenReport。当需求发生变动的时候，比如要求生成一个 Web 格式的报告，我们就必须要修改 ReportService 类。为了遵循依赖倒置原则，我们可以定义一个抽象的 Report 抽象类，然后让 PDFStudenReport 和其他报告类型（如 WebStudentReport）实现这个抽象类。ReportService 应该依赖于这个抽象类，而不是具体的实现。
+上面这个设计的问题在于： ReportService 直接依赖于 PDFStudentReport。当需求发生变动的时候，比如要求生成一个 Web 格式的报告，我们就必须要修改 ReportService 类。为了遵循依赖倒置原则，我们可以定义一个抽象的 Report 抽象类，然后让 PDFStudentReport 和其他报告类型（如 WebStudentReport）实现这个抽象类。ReportService 应该依赖于这个抽象类，而不是具体的实现。
 
 ```python
 from abc import ABC, abstractmethod
@@ -197,7 +197,7 @@ class Report(ABC):
     def generate(self):
         pass
 
-class PDFStudenReport(Report):
+class PDFStudentReport(Report):
     def generate(self):
         print("生成 PDF 报告")
 
@@ -264,9 +264,9 @@ class StudentReport:
 
 ## 接口隔离原则
 
-接口隔离原则，简单的说就是，我们应该确保一个类不会被迫实现它不需要的接口。这里所说的接口，可以理解为 Python 中的抽象类。如果一个抽象类被定义的过于复杂，包含了各种不同的功能，那么继承了这个抽象类的具体类，就必须实现每一个在抽象类中定义了的功能。即便这个具体类只需要做一件事，它也不得不实现抽象类中定义的其它的不相关的功能。因此，设计抽象类的时候，应当尽量把每个特定的功能都设计成一个抽象类，这样好过一个大的通用的抽象类。如此，每个具体类才可以只关注与它直接相关的功能。
+接口隔离原则，简单的说就是，我们应该确保一个类不会被迫实现它不需要的接口。这里所说的接口，可以理解为 Python 中的抽象类。如果一个抽象类被定义的过于复杂，包含了各种不同的功能，那么继承了这个抽象类的具体类，就必须实现每一个在抽象类中定义了的功能。即便这个具体类只需要做一件事，它也不得不实现抽象类中定义的其它的不相关的功能。因此，设计抽象类的时候，应当尽量把每个特定的功能都设计成一个抽象类，这样优于一个大而全的抽象类。如此，每个具体类才可以只关注与它直接相关的功能。
 
-我们还是以学生报告程序为例，假设，我们在程序中定义了一个 StudentReport 抽象类，它定义了报告所需的功能：生成报告、发送报告和打印报告三个功能。我们编写了一个具体类 PDFStudenReport 负责处理 PDF 格式报告的相关功能，它继承了抽象类 StudentReport。PDFStudenReport 实现了生成、电子邮寄、打印 PDF 报告的功能：
+我们还是以学生报告程序为例，假设，我们在程序中定义了一个 StudentReport 抽象类，它定义了报告所需的功能：生成报告、发送报告和打印报告三个功能。我们编写了一个具体类 PDFStudentReport 负责处理 PDF 格式报告的相关功能，它继承了抽象类 StudentReport。PDFStudentReport 实现了生成、电子邮寄、打印 PDF 报告的功能：
 
 ```python
 from abc import ABC, abstractmethod
@@ -284,7 +284,7 @@ class StudentReport(ABC):
     def print_out(self):
         pass
 
-class PDFStudenReport(StudentReport):
+class PDFStudentReport(StudentReport):
     def generate(self):
         print("生成 PDF 报告")
 
@@ -332,7 +332,7 @@ class ReportPrintable(ABC):
     def print_out(self):
         pass
 
-class PDFStudenReport(ReportGeneratable, ReportEmailable, ReportPrintable):
+class PDFStudentReport(ReportGeneratable, ReportEmailable, ReportPrintable):
     def generate(self):
         print("生成 PDF 报告")
 
@@ -584,7 +584,7 @@ text_report = StudentReport(TextReportGenerator())
 dict_report = StudentReport(DictReportGenerator())
 
 print(text_report.generate(student))  # 输出： 这是“ruanqizhen”的报告
-print(dict_report.generate(student))  # 输出： {'学生': 'ruanqizhen'}
+print(dict_report.generate(student))  # 输出： {"学生": "ruanqizhen"}
 ```
 
 这种设计完全遵循了开放封闭原则，因为现有的代码不需要为了添加新功能而进行修改。
