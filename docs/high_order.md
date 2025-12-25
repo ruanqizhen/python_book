@@ -240,6 +240,15 @@ print(clean_data)
 
 ```python
 lines = ["line1\n", "\n", "line2\n", "", "line3"]
+non_empty_lines = list(filter(None, lines))
+print(non_empty_lines)
+# 输出: ['line1\n', '\n', 'line2\n', 'line3']
+```
+
+`"\n"` 虽然是一个空行，但作为字符串，它不是一个空值。如果需要更严格的滤除所有空行，可以上位改动一下过滤条件：
+
+```python
+lines = ["line1\n", "\n", "line2\n", "", "line3"]
 non_empty_lines = list(filter(lambda x: x.strip(), lines))
 print(non_empty_lines)
 # 输出: ['line1\n', 'line2\n', 'line3']
@@ -305,6 +314,8 @@ from functools import reduce
 list_of_dicts = [{"a": 1, "b": 2}, {"c": 3}, {"d": 4}]
 combined_dict = reduce(lambda x, y: {**x, **y}, list_of_dicts)
 print(combined_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+
+# 注意：这种写法每次都会创建新字典，数据量大时性能较低。
 ```
 
 ### 实现
