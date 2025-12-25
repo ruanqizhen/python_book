@@ -240,7 +240,7 @@ print(clean_data)
 
 ```python
 lines = ["line1\n", "\n", "line2\n", "", "line3"]
-non_empty_lines = list(filter(None, lines))
+non_empty_lines = list(filter(lambda x: x.strip(), lines))
 print(non_empty_lines)
 # 输出: ['line1\n', 'line2\n', 'line3']
 ```
