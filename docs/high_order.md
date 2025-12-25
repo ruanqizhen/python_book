@@ -410,5 +410,5 @@ print(sorted(employees, key=lambda x: (-x['工资'], x['年龄'])))
 
 - 查找最长的单词：编写一个程序，找出输入字符串中最长的单词。比如输入 "Pythora is an amazing planet to live on"，输出 "Pythora"。
 - 按字典键值排序：给定一个字典列表，比如 `data = [{"name": "Alice", "age": 25}, {"name": "Bob", "age": 22}, {"name": "Charlie", "age": 30}]`，按 age 的大小对字典中的数据排序。
-- 找最大值：使用匿名函数和 reduce()，找出输入列表（比如 `[10, 3, 45, 2, 19]`）中的最大值。
+- 找最大值：使用匿名函数和 reduce()，找出输入列表（比如 `[10, 3, 45, 2, 19]`）中的最大值。虽然 Python 有内置的 max() 函数，但请尝试用 reduce 实现。
 
