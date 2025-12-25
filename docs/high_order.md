@@ -254,6 +254,111 @@ print(non_empty_lines)
 # 输出: ['line1\n', 'line2\n', 'line3']
 ```
 
+## 归并
+
+在函数式编程中，Fold（折叠/归并）是将一个数据结构（通常是列表）缩减为单个值的操作。
+
+根据处理数据的方向和结合方式（加括号的方式），分为 Left Fold（左归并，或者叫做左折叠）和 Right Fold（右归并，右折叠）。虽然对于加法 (`+`) 这种满足结合律的运算，两者的结果相同，但对于减法 (`-`)、除法 (`/`) 或字符串拼接等运算，两者的结果和执行过程完全不同。
+
+### 核心区别：括号的位置
+
+假设我们有一个列表 `[1, 2, 3]` 和一个二元运算函数 `f(x, y)`（或者操作符 $\oplus$ ）。
+
+#### Left Fold (左归并)
+
+- 方向：从左向右。
+- 逻辑：先把前两个元素结合，结果再与第三个元素结合，以此类推。
+- 数学表达式： $$((1 \oplus 2) \oplus 3)$$
+- 或者函数形式： $$f(f(1, 2), 3)$$
+- 形象理解：累积值 (Accumulator) 像个雪球，从左边滚到右边，把沿途的元素卷进去。
+
+#### Right Fold (右归并)
+
+- 方向：从右向左（逻辑上的结合顺序）。
+- 逻辑：先把最后两个元素结合，结果作为参数，与倒数第三个元素结合，以此类推。
+- 数学表达式： $$(1 \oplus (2 \oplus 3))$$
+- 或者函数形式： $$f(1, f(2, 3))$$
+- 形象理解：通过递归，先深入到列表最右端拿到结果，然后一层层回溯处理。
+
+### 实例演示：减法
+
+减法是不满足结合律的（即  $(a-b)-c \neq a-(b-c)$），用它来区分最明显。
+
+假设列表为 `[1, 2, 3]`，初始值为 0（如果是 reduce 通常没有初始值，这里为了简单直接用列表元素）。
+
+#### 左归并 (Left Fold)
+
+计算顺序：`((1 - 2) - 3)`
+
+- 第一步：`1 - 2 = -1`
+- 第二步：`-1 - 3 = -4`
+- 结果：-4
+
+#### 右归并 (Right Fold)
+
+计算顺序：`(1 - (2 - 3))`
+
+- 第一步（最里面）：`2 - 3 = -1`
+- 第二步（回溯）：`1 - (-1) = 2`
+- 结果：2
+
+### 代码实现与 Python 特性
+
+在 Python 中，标准库 `functools.reduce` 实现了左归并。Python 原生并没有内置右归并函数，因为 Python 对深度递归的支持有限。
+
+#### 左归并
+
+左归并非常适合用循环 (Loop) 实现，效率高，无递归深度限制。
+
+```python
+def fold_left(func, sequence, initial=None):
+    it = iter(sequence)
+    if initial is None:
+        value = next(it)
+    else:
+        value = initial
+    
+    for element in it:
+        # 核心：累积值在左，新元素在右
+        value = func(value, element) 
+    return value
+
+# 测试
+print(fold_left(lambda x, y: x - y, [1, 2, 3])) 
+# 输出: -4  -> ((1-2)-3)
+
+```
+
+#### 右归并
+
+右归并本质上是递归（Recursion）的结构。它必须先处理完列表的“剩余部分”（Tail），得到结果后，再和“当前头元素”（Head）进行计算。
+
+```python
+def fold_right(func, sequence, initial=None):
+    if not sequence:
+        if initial is None:
+            raise ValueError("Empty sequence with no initial value")
+        return initial
+        
+    if len(sequence) == 1 and initial is None:
+        return sequence[0]
+        
+    # 如果没有初始值，拿出第一个，处理剩余的
+    head = sequence[0]
+    tail = sequence[1:]
+    
+    if initial is None:
+        # 递归调用：先算出 tail 的归并结果
+        return func(head, fold_right(func, tail))
+    else:
+        return func(head, fold_right(func, tail, initial))
+
+# 测试
+print(fold_right(lambda x, y: x - y, [1, 2, 3]))
+# 输出: 2   -> (1-(2-3))
+
+```
+
 ## reduce
 
 ### 基本用法
@@ -320,7 +425,7 @@ print(combined_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 
 ### 实现
 
-reduce() 函数的结果通常是一个值，而不是迭代器。所以，也不需要利用生成器来实现它的功能。我们当然可以用循环来实现它的功能，不过下面给出一个使用递归实现的示例，帮助大家熟悉递归：
+reduce() 函数的结果通常是一个值，而不是迭代器。所以，也不需要利用生成器来实现它的功能。上文我们已经使用循环实现了归并功能，下面给出一个使用递归实现的示例：
 
 ```python
 def my_reduce(func, sequence, initial=None):
@@ -346,123 +451,9 @@ product = my_reduce(lambda x, y: x * y, numbers)
 print(product)  # 输出：120
 ```
 
-reduce() 函数采用的左归并。如果需要右归并，把上面程序稍微改一下即可。
-
-
-## 归并
-
-在函数式编程中，Fold（折叠/归并）是将一个数据结构（通常是列表）缩减为单个值的操作。
-
-根据处理数据的方向和结合方式（加括号的方式），分为 Left Fold（左归并，或者叫做左折叠）和 Right Fold（右归并，右折叠）。虽然对于加法 (`+`) 这种满足结合律的运算，两者的结果相同，但对于减法 (`-`)、除法 (`/`) 或字符串拼接等运算，两者的结果和执行过程完全不同。
-
-
-
-### 核心区别：括号的位置
-
-假设我们有一个列表 `[1, 2, 3]` 和一个二元运算函数 `f(x, y)`（或者操作符 $\oplus$ ）。
-
-#### Left Fold (左归并)
-
-- 方向：从左向右。
-- 逻辑：先把前两个元素结合，结果再与第三个元素结合，以此类推。
-- 数学表达式： $$((1 \oplus 2) \oplus 3)$$
-- 或者函数形式： $$f(f(1, 2), 3)$$
-- 形象理解：累积值 (Accumulator) 像个雪球，从左边滚到右边，把沿途的元素卷进去。
-
-#### Right Fold (右归并)
-
-- 方向：从右向左（逻辑上的结合顺序）。
-- 逻辑：先把最后两个元素结合，结果作为参数，与倒数第三个元素结合，以此类推。
-- 数学表达式： $$(1 \oplus (2 \oplus 3))$$
-- 或者函数形式： $$f(1, f(2, 3))$$
-- 形象理解：通过递归，先深入到列表最右端拿到结果，然后一层层回溯处理。
-
-
-
-### 实例演示：减法
-
-减法是不满足结合律的（即  $(a-b)-c \neq a-(b-c)$），用它来区分最明显。
-
-假设列表为 `[1, 2, 3]`，初始值为 0（如果是 reduce 通常没有初始值，这里为了简单直接用列表元素）。
-
-#### 左归并 (Left Fold)
-
-计算顺序：`((1 - 2) - 3)`
-
-- 第一步：`1 - 2 = -1`
-- 第二步：`-1 - 3 = -4`
-- 结果：-4
-
-#### 右归并 (Right Fold)
-
-计算顺序：`(1 - (2 - 3))`
-
-- 第一步（最里面）：`2 - 3 = -1`
-- 第二步（回溯）：`1 - (-1) = 2`
-- 结果：2
-
-
-
-### 代码实现与 Python 特性
-
-在 Python 中，标准库 `functools.reduce` 实现的是左归并。Python 原生并没有内置右归并函数，因为 Python 对深度递归的支持有限。
-
-#### 左归并
-
-上文已经演示过了递归的实现方法。但实际上，左归并更适合用循环 (Loop)实现，效率高，无递归深度限制。
-
-```python
-def fold_left(func, sequence, initial=None):
-    it = iter(sequence)
-    if initial is None:
-        value = next(it)
-    else:
-        value = initial
-    
-    for element in it:
-        # 核心：累积值在左，新元素在右
-        value = func(value, element) 
-    return value
-
-# 测试
-print(fold_left(lambda x, y: x - y, [1, 2, 3])) 
-# 输出: -4  -> ((1-2)-3)
-
-```
-
-#### 右归并
-
-右归并本质上是递归（Recursion）的结构。它必须先处理完列表的“剩余部分”（Tail），得到结果后，再和“当前头元素”（Head）进行计算。
-
-```python
-def fold_right(func, sequence, initial=None):
-    if not sequence:
-        if initial is None:
-            raise ValueError("Empty sequence with no initial value")
-        return initial
-        
-    if len(sequence) == 1 and initial is None:
-        return sequence[0]
-        
-    # 如果没有初始值，拿出第一个，处理剩余的
-    head = sequence[0]
-    tail = sequence[1:]
-    
-    if initial is None:
-        # 递归调用：先算出 tail 的归并结果
-        return func(head, fold_right(func, tail))
-    else:
-        return func(head, fold_right(func, tail, initial))
-
-# 测试
-print(fold_right(lambda x, y: x - y, [1, 2, 3]))
-# 输出: 2   -> (1-(2-3))
-
-```
-
 #### 在 Python 中用 reduce 实现右归并
 
-如果你非要在 Python 中做右归并，通常不需要写递归，而是翻转列表，然后使用 `reduce`（注意参数位置可能也需要调整，取决于函数是否交换律）。
+reduce() 函数采用的左归并。如果你非要在 Python 中做右归并，通常也不需要写递归函数。只要把输入的类表翻转，再使用 `reduce`函数即可。需要注意，参数位置可能也需要调整，这取决于函数是否符合交换律。比如，实现减法的右归并：
 
 ```python
 from functools import reduce
