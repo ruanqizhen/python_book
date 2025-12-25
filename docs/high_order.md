@@ -348,6 +348,166 @@ print(product)  # 输出：120
 
 reduce() 函数采用的左归并。如果需要右归并，把上面程序稍微改一下即可。
 
+
+## 归并
+
+在函数式编程中，**Fold（折叠/归并）** 是将一个数据结构（通常是列表）缩减为单个值的操作。
+
+根据处理数据的方向和结合方式（加括号的方式），分为 **Left Fold（左归并，或者叫做左折叠）** 和 **Right Fold（右归并，右折叠）**。虽然对于加法 (`+`) 这种满足结合律的运算，两者的结果相同，但对于减法 (`-`)、除法 (`/`) 或字符串拼接等运算，两者的结果和执行过程完全不同。
+
+
+
+### 1. 核心区别：括号的位置
+
+假设我们有一个列表 `[1, 2, 3]` 和一个二元运算函数 `f(x, y)`（或者操作符 $\oplus$ ）。
+
+#### **Left Fold (左归并)**
+
+* **方向**：从左向右。
+* **逻辑**：先把前两个元素结合，结果再与第三个元素结合，以此类推。
+* **数学表达式**：
+
+$$((1 \oplus 2) \oplus 3)$$
+
+或者函数形式：
+
+$$f(f(1, 2), 3)$$
+
+* **形象理解**：**累积值 (Accumulator)** 像个雪球，从左边滚到右边，把沿途的元素卷进去。
+
+#### **Right Fold (右归并)**
+
+* **方向**：从右向左（逻辑上的结合顺序）。
+* **逻辑**：先把最后两个元素结合，结果作为参数，与倒数第三个元素结合，以此类推。
+* **数学表达式**：
+
+$$(1 \oplus (2 \oplus 3))$$
+
+或者函数形式：
+
+$$f(1, f(2, 3))$$
+
+* **形象理解**：通过递归，先深入到列表最右端拿到结果，然后一层层**回溯**处理。
+
+
+
+### 2. 实例演示：减法
+
+减法是不满足结合律的（即  $(a-b)-c \neq a-(b-c)$），用它来区分最明显。
+
+假设列表为 `[1, 2, 3]`，初始值为 0（如果是 reduce 通常没有初始值，这里为了简单直接用列表元素）。
+
+#### **左归并 (Left Fold)**
+
+计算顺序：`((1 - 2) - 3)`
+
+1. 第一步：`1 - 2 = -1`
+2. 第二步：`-1 - 3 = -4`
+
+* **结果**：**-4**
+
+#### **右归并 (Right Fold)**
+
+计算顺序：`(1 - (2 - 3))`
+
+1. 第一步（最里面）：`2 - 3 = -1`
+2. 第二步（回溯）：`1 - (-1) = 2`
+
+* **结果**：**2**
+
+
+
+### 3. 代码实现与 Python 特性
+
+在 Python 中，标准库 `functools.reduce` 实现的是 **左归并**。Python 原生并没有内置右归并函数，因为 Python 对深度递归的支持有限。
+
+#### **A. 左归并 (Python `reduce` 的逻辑)**
+
+上文已经演示过了递归的实现方法。但实际上，左归并更适合用 **循环 (Loop)** 实现，效率高，无递归深度限制。
+
+```python
+def fold_left(func, sequence, initial=None):
+    it = iter(sequence)
+    if initial is None:
+        value = next(it)
+    else:
+        value = initial
+    
+    for element in it:
+        # 核心：累积值在左，新元素在右
+        value = func(value, element) 
+    return value
+
+# 测试
+print(fold_left(lambda x, y: x - y, [1, 2, 3])) 
+# 输出: -4  -> ((1-2)-3)
+
+```
+
+#### **B. 右归并 **
+
+右归并本质上是 **递归 (Recursion)** 的结构。它必须先处理完列表的“剩余部分”（Tail），得到结果后，再和“当前头元素”（Head）进行计算。
+
+```python
+def fold_right(func, sequence, initial=None):
+    if not sequence:
+        if initial is None:
+            raise ValueError("Empty sequence with no initial value")
+        return initial
+        
+    if len(sequence) == 1 and initial is None:
+        return sequence[0]
+        
+    # 如果没有初始值，拿出第一个，处理剩余的
+    head = sequence[0]
+    tail = sequence[1:]
+    
+    if initial is None:
+        # 递归调用：先算出 tail 的归并结果
+        return func(head, fold_right(func, tail))
+    else:
+        return func(head, fold_right(func, tail, initial))
+
+# 测试
+print(fold_right(lambda x, y: x - y, [1, 2, 3]))
+# 输出: 2   -> (1-(2-3))
+
+```
+
+#### 在 Python 中用 reduce 实现右归并
+
+如果你非要在 Python 中做右归并，通常不需要写递归，而是**翻转列表**，然后使用 `reduce`（注意参数位置可能也需要调整，取决于函数是否交换律）。
+
+```python
+from functools import reduce
+
+data = [1, 2, 3]
+
+# 翻转列表：[3, 2, 1]
+# 然后做左归并：(3 - 2) - 1 = 0? 不对，这改变了逻辑。
+# 右归并的逻辑是 (1 - (2 - 3))。
+# 如果单纯翻转列表用 reduce，我们需要小心函数的参数顺序。
+
+# 真正的右归并模拟：
+# FoldRight(f, [a, b, c], z) = f(a, f(b, f(c, z)))
+# 对应 reduce(lambda acc, x: f(x, acc), reversed(list), z)
+
+# 例子：(1 - (2 - 3))
+# 列表翻转：[3, 2, 1]，reduce 时 x 是 accumulator，y 是当前元素
+# 我们需要把操作变成： new_acc = y - current_acc
+res = reduce(lambda acc, x: x - acc, reversed([1, 2, 3]))
+# 步骤：
+# 1. 初始: [3, 2, 1], 取 3
+# 2. 遇到 2: 2 - 3 = -1
+# 3. 遇到 1: 1 - (-1) = 2
+print(res) # 输出 2
+
+```
+
+
+
+
+
 ## sorted
 
 Python 的 sorted() 函数可以对所有可迭代的对象进行排序。它与前文介绍的[列表的 sort 方法](list#排序)非常类似，它们有相似的算法和参数。最主要区别在于，列表的 sort 方法专用于列表排序，它会对列表就地排序，即直接修改原始列表。而 sorted() 函数可以对任何可迭代的对象进行排序，它返回一个新的排好序的列表，而不修改原始数据。
