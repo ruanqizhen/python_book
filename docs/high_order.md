@@ -314,19 +314,17 @@ reduce() 函数的结果通常是一个值，而不是迭代器。所以，也�
 ```python
 def my_reduce(func, sequence, initial=None):
     # 如果初始值被设置，先考虑它
-    if initial is not None:
-        if not sequence:
-            return initial
-        else:
-            return my_reduce(func, sequence[1:], func(initial, sequence[0]))
+    if not sequence:
+        if initial is None:
+            raise TypeError("my_reduce() of empty sequence with no initial value")
+        return initial
     
-    # 如果序列只有一个元素，返回这个元素
-    if len(sequence) == 1:
-        return sequence[0]
+    # 如果没有 initial，用第一个元素作为初始值
+    if initial is None:
+        return my_reduce(func, sequence[1:], sequence[0])
     
-    # 对序列的剩余部分调用 my_reduce
-    # 将当前的元素和剩余部分的归约结果应用于 func
-    return func(sequence[0], my_reduce(func, sequence[1:]))
+    # 左归并：先算 func(acc, x)，再递归
+    return my_reduce(func, sequence[1:], func(initial, sequence[0]))
 
 # 测试
 numbers = [1, 2, 3, 4, 5]
