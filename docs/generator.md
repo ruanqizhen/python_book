@@ -126,28 +126,28 @@ for value in combined_generator():
 # 输出打印从 0 到 9 的数字。  
 ```
 
-yield from 在处理嵌套生成器时非常有用。例如，假设我们有一个列表的列表，需要编写一个生成器来平铺它，即逐个生成嵌套列表中的元素。不使用 yield from 可以这样写：
+yield from 在处理嵌套生成器时非常有用。例如，假设我们有一个列表的列表（二维列表），需要编写一个生成器来平铺它，即逐个生成嵌套列表中的元素。不使用 yield from 可以这样写：
 
 ```python
-def flatten(nested_list):
+def flatten_2d(nested_list):
     for sublist in nested_list:
         for item in sublist:
             yield item
 
 nested_list = [[1, 2, 3], [4, 5], [6]]
-for num in flatten(nested_list):
+for num in flatten_2d(nested_list):
     print(num)
 ```    
     
 使用 yield from 可以使用更简洁的代码，完成同样的功能：
 
 ```python
-def flatten(nested_list):
+def flatten_2d(nested_list):
     for sublist in nested_list:
         yield from sublist
 
 nested_list = [[1, 2, 3], [4, 5], [6]]
-for num in flatten(nested_list):
+for num in flatten_2d(nested_list):
     print(num)
 ```    
     
@@ -303,6 +303,8 @@ for word in result:
 
 
 ## 生成器和列表的区别
+
+列表就像去饭店点菜，必须等所有菜（数据）都做好了，一次性端上来（占用巨大桌子面积），你才能开始吃。而生成器就像回转寿司，厨师（生成器）做好一个，传送带送来一个，你吃一个。桌子（内存）永远不会被占满，且第一盘寿司做好你就可以吃了（无需等待所有）。
 
 ### 惰性生成
 
