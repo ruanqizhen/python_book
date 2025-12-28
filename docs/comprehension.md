@@ -45,7 +45,7 @@ for row in multiplication_table:
 上面的乘法表打印出来只有结果，我们可以使用[字符串格式化](string#字符串格式化)表达式，把生成结果整理一下，把整个乘法表达式都打印出来：
 
 ```python
-print('\n'.join([' '.join(['%s*%s=%-2s' % (j, i, i * j) for j in range(1, i + 1)]) for i in range(1, 10)]))
+print('\n'.join([' '.join([f'{j}*{i}={i*j:<2}' for j in range(1, i + 1)]) for i in range(1, 10)]))
 ```
 
 程序运行结果如下：
@@ -338,4 +338,4 @@ print(y)
 使用推导式编写下面程序：
 1. 提取单词：给定一个字符串列表，比如：`["apple", "banana", "cherry", "avocado"]`，挑选出其中以字母 a 开头的单词。
 1. 假设有一个匿名函数列表，比如 `[lambda x: x+1, lambda x: x**2, lambda x: x*2]`，对输入值逐一调用这些函数，比如，输入 5 输出 `[6, 25, 10]`。
-1. 编写一个函数 `filter_func(func, lst)`，接受一个函数 func 和一个列表 lst，返回列表中满足 func 条件的元素。例如，输入 `filter_func(lambda x: x > 2, [1, 2, 3, 4])`，输出 `[3, 4]`。
+1. 不使用 filter 函数，而是使用列表推导式编写一个函数 `filter_func(func, lst)`，接受一个函数 func 和一个列表 lst，返回列表中满足 func 条件的元素。例如，输入 `filter_func(lambda x: x > 2, [1, 2, 3, 4])`，输出 `[3, 4]`。
