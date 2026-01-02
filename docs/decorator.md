@@ -296,6 +296,8 @@ def fibonacci(n):
 print(fibonacci(30))  # 有了缓存可以轻松计算很大的斐波那契数
 ```
 
+注意：上述简单的缓存实现要求函数的参数必须是可哈希的（Hashable），即参数不能包含列表或字典等可变对象。如果需要处理复杂参数，建议使用 Python 标准库提供的 functools.lru_cache。
+
 ### 参数验证
 
 在编写一个新的函数的时候，一种稳妥的做法是，首先检查每个输入参数的数据都是否有效。如果输入参数无效，则应该停止函数运行，启动错误处理机制。不过，给每个参数都编写一段检查代码，还是比较繁琐的。好在，我们可以使用装饰器，编写一些常用的检查逻辑，这样就可以大大简化函数中检查参数有效性的代码。比如，我们下面编写一个装饰器，它会检查函数的每个输入参数，如果有参数小于等于零，则抛出异常。
@@ -306,8 +308,12 @@ from functools import wraps
 def validate_positive(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if any([arg <= 0 for arg in args]):
-            raise ValueError("所有参数都必须为正数！")
+        # 检查位置参数
+        if any(arg <= 0 for arg in args):
+            raise ValueError("位置参数必须为正数！")
+        # 检查关键字参数
+        if any(val <= 0 for val in kwargs.values()):
+            raise ValueError("关键字参数必须为正数！")
         return func(*args, **kwargs)
     return wrapper
 ```
@@ -344,10 +350,19 @@ from functools import wraps
 def requires_permission(permission):
     def decorator(func):
         @wraps(func)
-        def wrapper(user, *args, **kwargs):
-            if user.permissions.get(permission):
-                return func(user, *args, **kwargs)
-            raise PermissionError(f"用户 {user.name} 没有 {permission} 的权限")
+        def wrapper(*args, **kwargs):
+            # 尝试获取 user 对象
+            user = None
+            if args:
+                user = args[0] # 假设第一个位置参数是 user
+            elif 'user' in kwargs:
+                user = kwargs['user'] # 或者通过关键字获取
+            
+            # 进行检查 (需要确保 user 存在且有 permissions 属性)
+            if user and hasattr(user, 'permissions') and user.permissions.get(permission):
+                return func(*args, **kwargs)
+            
+            raise PermissionError(f"权限不足或无法识别用户")
         return wrapper
     return decorator
 ```
@@ -405,10 +420,10 @@ def retry(attempts=3, delay=1):
                     return func(*args, **kwargs)
                 except Exception as e:
                     if attempt < attempts - 1:
-                        time.sleep(delay)  # 延时
+                        time.sleep(delay)
                         continue
                     else:
-                        raise e
+                        raise  # 直接 raise，保留完整的原始异常调用栈
         return wrapper
     return decorator
 ```
