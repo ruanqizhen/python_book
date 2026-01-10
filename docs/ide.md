@@ -13,6 +13,8 @@
 * [https://www.online-ide.com/online_python_ide](https://www.online-ide.com/online_python_ide)
 * [https://ideone.com/](https://ideone.com/)
 
+* 常用的在线 IDE 还有 Replit、Programiz 等。
+
 一个典型的在线编程环境的页面如下：
 
 ![](images/001.png "一个典型的在线编程环境")
@@ -28,44 +30,49 @@
 
 ## 安装 Python 解释器
 
-如果在线开发环境不能满足需求了，可以考虑把 Python 安装到自己的电脑上。安装 Python 解释器的过程非常简单，就不详细说明了。到 [Python 官网](https://www.python.org/downloads/)，选择适当操作系统的最新版本的安装包，下载安装即可。
+如果在线开发环境不能满足需求了，你就需要把 Python 安装到自己的电脑上。
 
-对于初学，这个基础安装包已足够。但是如果将来会在多个项目中使用到 Python，可能还要考虑不同版本的 Python 和扩展库等发生不兼容的问题。比如，某个项目可能必须运行在 Python 3.9 而另一个项目必须运行在 Python 3.12；或者某个项目必须使用 PyTorch 1.x （这是一个 Python 的用于机器学习的扩展库），而另一个项目必须使用 PyTorch 2.x 等等。自己管理多个版本的 Python 和各种库的组合是非常麻烦的。所以，Pythora 星球的居民一般会使用专业的工具来管理所需的库和环境。
+这里有一个重要的选择：是安装官方原版还是Conda 发行版？
 
-Python 最常用的环境管理工具是 Conda。在开源社区中最流行的包含 Conda 和 Python 的安装包是 [Miniconda](https://docs.conda.io/en/latest/miniconda.html )，和 [Anaconda](https://www.anaconda.com/ )。Miniconda 比较精简，安装包只包含了最核心的库，其它库可等到需要时再安装。它适合入门级的 Python 用户。Anaconda 的安装包比 Miniconda 大了大约十倍，包含了几乎所有常用的库，适合有大硬盘空间的用户使用。
+- 官方原版：到 [Python 官网](https://www.python.org/downloads/)下载。它非常轻量，适合学习基础语法。
+- Conda 发行版（推荐）：如果你打算将来进行数据分析、机器学习开发，或者需要在电脑上同时跑多个不同版本的 Python，Conda 是更好的选择。它自带了 Python 解释器，所以安装了 Conda 后，通常就不需要再单独安装官方原版 Python 了。
 
-在 Linux 上安装 Conda 后，每次打开终端时，Conda 会自动启动。这时，用户会发现终端命名提示符的格式与之前不同了。如果不希望自动启动 Conda，可以使用如下命令将其关闭： 
+Pythora 星球的居民通常面临复杂的项目需求。比如，某个老项目必须运行在 Python 3.9，而新项目必须使用 Python 3.12；或者一个项目依赖 PyTorch 1.x，另一个需要 PyTorch 2.x。如果只安装一个 Python，解决这些冲突会非常令人头秃。因此，Pythora 居民一般使用 Conda 来为每个项目创建独立的“平行宇宙”（虚拟环境）。
 
-```sh
-conda config --set auto_activate_base false
-```
+### 使用 Conda 管理环境
 
-在 Windows 上，需要通过 Conda 安装包创建的开始菜单启动带有 Conda 的 PowerShell 或命令行窗口。比如，在开始菜单里找到“Anaconda Prompt”，然后点击它启动 Conda。
+在开源社区中，最流行的 Conda 发行版是 [Miniconda](https://docs.conda.io/en/latest/miniconda.html )（精简版，只包含核心）和 [Anaconda](https://www.anaconda.com/ )（全家桶版，包含几乎所有科学计算库，体积较大）。初学者推荐安装 Anaconda，省去后续安装各种库的麻烦。
 
-比如，我们打算编写一个游戏，需要为它调用的 Python 程序创建一个独立新的环境，以避免它与其它 Python 程序有冲突。创建新环境使用 conda create 命名，同时为新的环境起名为 game，并设置新环境中 Python 的版本为 3.9：
+在安装 Conda 后，打开终端（Windows 上是 Anaconda Prompt），你会发现提示符前多了一个 `(base)`，这表示你当前处在默认的基础环境中。
+
+假设我们要编写一个游戏，为了避免它与其它程序冲突，我们为其创建一个独立的新环境，起名为 `game`，并指定 Python 版本为 3.9：
 
 ```sh
 (base) qizhen@deep:~$ conda create --name game python=3.9
+
 ```
 
-使用 conda env list 命令可以列出所有已创建的环境。并且显示出每个环境所在的文件夹路径。我们需要记住这个路径，在配置 LabVIEW 调用 Python 代码时，会用到这一路径。
+使用 `conda env list` 命令可以列出所有已创建的环境，以及它们所在的文件夹路径。我们需要记住这个路径，在 VS Code 或 PyCharm 中配置解释器时，经常会用到它。
 
 ```sh
 (base) qizhen@deep:~$ conda env list
 # conda environments:
 #
-base                  *  /home/qizhen/anaconda3
+base                  * /home/qizhen/anaconda3
 game                     /home/qizhen/anaconda3/envs/game
+
 ```
 
-上面列出的两个环境中，game 是新建的，base 是默认的环境。对新创建的环境进行配置或测试，需要首先切换到新环境。运行 conda activate 命令进行切换：
+要进入这个新环境，运行 `activate` 命令：
 
 ```sh
 (base) qizhen@deep:~$ conda activate game
 (game) qizhen@deep:~$ 
+
 ```
 
-可以看到，命令提示中的环境名 (base) 已经被切换为 (game) 了。接下来我们就可以配置当前的环境，比如使用 pip 命令安装 Python 的库，或者运行某段 Python 代码。
+可以看到，命令提示符从 `(base)` 变成了 `(game)`。现在，你在这个环境里安装的任何库，都不会影响到外面的 `base` 环境，反之亦然。
+
 
 ## 专业的本地 IDE
 
@@ -105,7 +112,7 @@ PyCharm 的用法与 VS Code 非常类似，只是界面略有不同。在 PyCha
 
 ## 基于网页的编程环境
 
-传统的 IDE 往往是一个独立的用程序，但近些年，这类没有独立用户界面，依赖网页浏览器提供界面的编程环境开始流行。Jupyter Notebook 是这其中的典型代表。上文介绍的 Google Colab 也是 Jupyter Notebook 一个衍生版。
+传统的 IDE 往往是一个独立的应用程序，但近些年，这类没有独立用户界面，依赖网页浏览器提供界面的编程环境开始流行。Jupyter Notebook 及其升级版 JupyterLab 是这其中的典型代表。上文介绍的 Google Colab 也是 Jupyter Notebook 一个衍生版。
 
 Jupyter Notebook 是一个开源的交互式编程环境。它本身不是一个应用程序，而是一个网页服务，启动这个服务，就可以在网页浏览器中，打开相关的网页，编辑运行程序了。与传统的 IDE 相比，它有几个非常显著的优点： 
 
@@ -122,21 +129,19 @@ Jupyter Notebook 尤其受到数据科学家、研究人员和学者的欢迎。
 
 ### 安装与使用：
 
-安装 Jupyter Notebook 之前，先要安装 Python 解释器。之后，就可以使用 Python 自带的安装包管理工具 pip 来安装 Jupyter Notebook 了。打开计算机的命令行终端，输入下面的命令：
+如果你安装了 Anaconda，Jupyter 已经内置其中，无需安装。如果你使用的是官方 Python，需要通过命令行安装：
 
 ```sh
-pip install notebook
+pip install jupyterlab
 ```
-
-如果读者使用了上文提到的 Anaconda 安装 Python，Jupyter Notebook 和其他一些常用的科学计算工具就都已经自动包含在内安装好了。
 
 在命令行或终端中，输入以下命令，将会启动一个编程所需的网页服务：
 
 ```sh
-jupyter notebook
+jupyter lab
 ```
 
-它会在你的默认浏览器中打开一个 Jupyter Notebook 实例，并显示文件和文件夹列表。如果网页没有自动打开，活不小心被关闭了，读者也可以自己打开浏览器，输入网址： `http://localhost:8888/` 重新打开编程页面。
+它会自动在浏览器中打开编程界面。如果网页没有自动打开，或不小心被关闭了，读者也可以自己打开浏览器，输入网址： `http://localhost:8888/` 重新打开编程页面。
 
 在打开的主页面上，点击“New”按钮，选择你的目标编程语言，如 Python 3，就可以创建一个新的 Notebook 文件。我们称每个程序为一个“Notebook”。在新的 Notebook 中，你可以输入 Python 代码并点击“Run”按钮（或按 Shift + Enter）执行。点击页面上方的“+”按钮可以添加新的单元格。你可以在单元格中选择“Markdown”模式，然后输入 Markdown 文本或 LaTeX 方程。点击页面上方的保存按钮（或按 Ctrl + S）可以保存当前的程序。如果需要退出编程环境，可以关闭浏览器标签后，回到命令行并按 Ctrl + C 终止 Jupyter Notebook 服务。
 
