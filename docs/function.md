@@ -64,7 +64,7 @@ describe_person(age=28, last_name="Doe", first_name="John")  # 输出：John Doe
 
 ### 返回值
 
-如果函数有多个返回值，实际上返回的是一个元组，可以在调用函数的时候直接以元组拆包的方式直接得到多个返回数据，比如，下面的函数接受一组数据，然后计算这组数据的长度，和，和平均值：
+如果函数有多个返回值，实际上返回的是一个元组。在 Python 中，逗号决定了元组的生成，括号只是为了清晰。因此 `return a, b, c` 本质上就是返回了 `(a, b, c)`。比如，下面的函数接受一组数据，然后计算这组数据的长度，和，和平均值：
 
 ```python
 # 定义函数
@@ -280,11 +280,11 @@ def greet(name: str) -> str:
 下面是一个更复杂的示例：
 
 ```python
-from typing import List
-
-def filter_even_numbers(numbers: List[int]) -> List[int]:
+def filter_even_numbers(numbers: list[int]) -> list[int]:
     return [num for num in numbers if num % 2 == 0]
 ```
+
+注意：从 Python 3.9 开始，你可以直接使用内置类型 list、dict 等作为泛型提示，例如 `list[int]`。在旧版本中，需要使用 `from typing import List` 导入大写的 List 作为数据类型。
 
 这里我们使用了typing模块中的List，它允许我们提供更具体的类型提示，表示 numbers 是一个整数列表。
 
@@ -504,6 +504,8 @@ show_global()
 show_local()
 ```
 
+运行上面的程序，会出错（抛出 `UnboundLocalError`）。 这是因为 Python 在解析函数时，只要发现函数内部有对变量 a 的赋值操作（`a = 2`），就会将 a 认定为局部变量。 当程序运行到 print(a) 时，它试图读取局部的 a，但此时赋值语句还没执行，局部 a 还没有绑定任何值，因此报错。
+
 封闭作用域也存在有类似的问题。在实际项目中，尽量不用定义与其它域中重名的变量或函数，以避免程序产生类似的迷惑行为。
 
 
@@ -529,16 +531,17 @@ show_local()
 def custom_function():
     # 在函数内部重新定义 print 函数
     def print(message):
-        """
-        这是一个我们自己定义的 print 函数，与 Python 内置的 print 重名，但功能不同 
-        """
-        help(print)    # 打印 print 函数的帮助文档
+        # 注意：不要在这里调用系统内置的 print 函数。这样做会非常危险。
+        # 因为如果在函数内使用 print，会变成递归调用自己导致栈溢出。
+        # 所以为了演示，我们使用 sys.stdout.write 或者假设这里是伪代码。
+        import sys
+        sys.stdout.write(f"【自定义打印】: {message}\n")
 
     # 使用自定义版本的 print
     print("Hello, World!")
 
 # 调用 custom_function
-custom_function()  # 输出： print(message) 这是一个我们自己定义的 print 函数，与 Python 内置的 print 重名，但功能不同 
+custom_function()  # 输出：【自定义打印】 
 ```
 
 上面的程序重新定义了一个 print 函数，与 Python 内置的 print() 函数重名，但功能却不同。程序逻辑本身没有问题，在调用 print() 函数是，它会根据 LEGB 规则，优先调用我们自己定义的 print 函数。
@@ -549,4 +552,4 @@ custom_function()  # 输出： print(message) 这是一个我们自己定义的 
 
 - **元音字母个数**：编写一个函数，输入一个字符串，函数返回字符串中元音字母（a, e, i, o, u）的个数。
 - **字符串长度列表**：编写一个函数，将给定的字符串列表转换为每个字符串长度的列表。
-- **订制披萨**：编写一个函数，模拟披萨制作过程。要求把每一种配料作为一个函数参数传递给函数，函数打印出所有的配料。
+- **订制披萨**：编写一个函数，模拟披萨制作过程。要求能够接受任意数量的配料作为参数（使用 `*args`），函数打印出所有的配料。
