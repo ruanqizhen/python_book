@@ -172,10 +172,21 @@ import modules.mymodule
 
 ```python
 # demo.py
-import ..modules.mymodule
+import sys
+import os
+# 将项目根目录加入搜索路径，以便能找到 modules 包
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+```
+或者使用相对路径：
+
+```python
+# demo.py
+from ..modules import mymodule
 ```
 
 开头的 `..` 表示上一级目录，如果需要从更上层的目录导入，可以继续添加点 `.`，每增加一层就增加一个点。例如，要从上两级目录导入，可以使用 `from ... import some_module`。
+
+注意：包含相对导入的脚本不能直接使用 python demo/demo.py 运行，必须在项目根目录下使用 python -m demo.demo 的方式运行。
 
 ### Python 的搜索路径
 
@@ -242,7 +253,7 @@ import my_module
 my_module.some_function()
 ```
 
-从 ZIP 文件中导入模块可能会影响启动时间，因为 Python 需要额外处理 ZIP 归档。不过，对于已经加载到内存中的模块，性能影响可以忽略不计。从 ZIP 文件中导入的模块无法执行写操作，因为 ZIP 归档是只读的。
+从 ZIP 文件中导入模块可能会影响启动时间，因为 Python 需要额外处理 ZIP 归档。不过，对于已经加载到内存中的模块，性能影响可以忽略不计。ZIP 归档文件本身通常被视为只读的。这意味着你的程序无法在运行时修改 ZIP 包内的源代码，也无法在 ZIP 包内部创建新的文件（但模块代码完全可以向计算机磁盘的其他位置写入文件）。
 
 需要注意的是只有 .py 文件可以使用 ZIP 方式导入。有些模块是使用其它语言开发的，它们的模块中包含了使用其它语言编译出来的动态链接库文件，这样的模块是无法使用 ZIP 打包导入的。
 
@@ -336,8 +347,9 @@ if __name__ == "__main__":
    * Beautiful Soup: 解析 HTML 和 XML 文件的库，适合网页数据抓取。
    * PyYAML: 用于读写 YAML 文件的库。
 * GUI 开发
-   * [Tkinter](tkinter): Python 自带的 GUI 工具包，可以快速创建简单的 GUI 应用。
-   * PyQt/PySide: 基于 Qt 的跨平台 GUI 工具包。
+   * PyQt/PySide: 基于 Qt 的跨平台 GUI 工具包，功能强大，界面美观。
+   * Kivy: 适合创建多点触控应用的开源 Python 库，支持跨平台运行。
+   * Python 自带了一个名为 [Tkinter](tkinter) 的 GUI 库，它是标准库的一部分，无需安装即可使用，适合简单的 GUI 开发。
 
 ### 安装
 
@@ -388,7 +400,7 @@ img.show()
 
 3. **最大公约数和最小公倍数**：使用 math 库中的函数和常量定义，计算两个输入正整数的最大公约数和最小公倍数。
 
-4. **求解二元二次方程组**：求解下面这个方程组：
+4. **求解二元二次方程组**：使用 scipy 库中的函数和常量定义, 求解下面这个方程组：
 
 $$
 \begin{equation}
