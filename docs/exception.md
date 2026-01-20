@@ -7,7 +7,7 @@
 如果在程序中不进行异常捕捉，并且在程序中发生了异常，那么 Python 会用以下方式处理异常：
 
 1. 程序终止： 当 Python 遇到未处理的异常时，程序会立即终止，并且不会执行异常后面的代码。
-2. 错误信息输出： Python 会显示一个错误消息和“追踪回溯”（traceback，也叫堆栈跟踪）。错误消息会告诉我们出了什么问题，比如，ValueError、IndexError。堆栈跟踪会显示导致错误的代码行的顺序。最底部一行显示的是错误的直接原因，而上面的行则显示了函数的调用关系。根据这两样信息，通常就能明确得知出错的原因和位置。
+2. 错误信息输出： Python 会显示一个错误消息和“追踪回溯”（traceback，也叫堆栈跟踪）。错误消息会告诉我们出了什么问题，比如，ValueError、IndexError。堆栈跟踪（Traceback）就像是案发现场的记录。最后一行通常是最关键的，它告诉你具体发生了什么错误（如 ZeroDivisionError）。而上面的每一行，都是在告诉你“是谁调用了谁”，帮助你回溯代码执行的路径。
 
 例如，下面这个代码中有一个除零操作，我们知道，任何数字都是不能被 0 除的，因此它无法正常运行：
 
@@ -87,6 +87,8 @@ except IndexError:
 
 这个示例中，用户首先被要求输入一个数字。如果用户输入 0，则会触发除法操作的除零异常 ZeroDivisionError；如果用户输入的不是有效整数（例如输入字符串），在尝试转换为整数时会引发 ValueError 异常；如果用户输入的数字过小或过大，超出了 some_list 的索引范围，则会触发索引越界异常 IndexError。
 
+异常捕获是有顺序的（从上到下）。如果先捕获了 Exception（所有异常的基类），后面的 ValueError 永远不会被捕获。这是初学者常犯的错误。
+
 如果多个异常的处理方式相同，也可以把它们写在同一个 except 语句中，比如：
 
 ```python
@@ -95,7 +97,7 @@ try:
 except (ZeroDivisionError, ValueError) as e:
     print("出现了异常!")
     print(e)
-```    
+```
     
 ### else 子句
 
@@ -121,24 +123,30 @@ except ZeroDivisionError:
 ```
 
 使用 `else` 主要是为了提高了代码的可读性。因为它可以清晰地区分可能引发异常的代码（位于 `try` 块中）和仅在无异常时执行的代码（位于 `else` 块中）。
+
+else 还有一个重要的功能是 “收窄 try 块的范围”。
+
+如果把所有代码都放在 try 里，可能会意外捕获到你不希望捕获的异常（例如后续逻辑里的 IndexError 被意外捕获了）。
+
+把确信不会出错、或者出错时不希望被当前 except 捕获的代码放在 else 里，可以避免“意外掩盖错误”。这是 else 更深层次的技术价值。
+
     
 ### finally 子句
 
 在 `try except` 语句中，还可以使用一个 `finally` 子句。无论 `try` 块中的操作是否触发了异常，`finally` 子句中的代码都会被执行。`finally` 子句中不宜添加任何业务逻辑，其唯一用途是清理和结束任务，例如关闭打开的文件、释放资源、重置某些状态等。比如下面示例
 
 ```python
+file = None  # 先定义 file
 try:
     file = open("sample.txt", "r")
     x = 1 / 0
-    # 由于异常出现，下面的关闭文件操作不会被执行
-    file.close()
-except ZeroDivisionError:
-    print("除数不能为 0 !")
 except FileNotFoundError:
     print("没找到文件!")
+except ZeroDivisionError:
+    print("除数不能为 0 !")
 finally:
-    file.close()
-    print("文件被关闭!")
+    if file:  # 只有文件成功打开了才关闭
+        file.close()
 ```
 
 上面的示例程序中，在 try 代码块中，使用 open 函数以只读模式打开了 "sample.txt" 文件，并将返回的文件对象赋值给变量 file。任何打开的文件都必须被关闭，调用 file.close() 可以关闭文件。但是，把 file.close() 写在 try 块中是不安全的，因为一旦 file.close() 语句之前的任何代码出现了异常，程序就会跳过这一句，导致文件没有被关闭。
@@ -178,7 +186,21 @@ def final_func():
 print(final_func())
 ```
 
-初看之下，`1+2` 肯定不会引起异常，所以程序应该打印 3，而实际上的结果却是 0。这是因为 try 代码段内的 return, break, continue 语句会触发调用 finally 代码段，而 finally 代码段中的 return 又会清除之前的信息，所以才有了意料之外的结果。为了防止类似谜之结果，return 最好放在 try 语句之外。
+初看之下，`1+2` 肯定不会引起异常，所以程序应该打印 3，而实际上的结果却是 0。这是因为 try 代码段内的 return, break, continue 语句会触发调用 finally 代码段，而 finally 代码段中的 return 又会清除之前的信息，所以才有了意料之外的结果。
+
+警惕：不要在 finally 语句中使用 return
+
+在 try 块中使用 return 是完全正常的。但如果在 finally 块中也使用了 return，它会覆盖掉 try 或 except 块中的返回值，甚至会吞掉原本应该抛出的异常。
+
+```python
+def dangerous_func():
+    try:
+        return 1  # 本想返回 1
+    finally:
+        return 0  # finally 的 return 会强行覆盖结果
+```
+
+因此，最佳实践是：可以在 try 中 return，但千万不要在 finally 中写 return 语句。
 
 
 ## 主动触发异常
@@ -221,7 +243,7 @@ class EmployeeNotFound(EmployeeError):
         return f"没有找到员工号为： {self.employee_id} 的员工。"
 
 class InvalidSalary(EmployeeError):
-    """表示工资适合无效数据，比如是负数等。"""
+    """表示工资包含无效数据，比如是负数等。"""
     def __init__(self, salary_value):
         self.salary_value = salary_value
 
@@ -261,6 +283,8 @@ def set_salary(employee_id, salary):
 ### 运行效率
 
 异常处理机制有很明显的优点，它有清晰的处理逻辑，可以携带详细的错误信息，可以支持复杂的处理流程。但它也有缺点，最主要的缺点是有额外的性能开销，毕竟它要携带更多的数据，和控制更复杂的跳转逻辑。从代码的可读性考虑，异常处理机制更清晰明了；但是追求极致性能的程序可能更适合使用返回值作为错误处理机制。
+
+需要注意的是，Python 的异常处理机制经过了优化，在不发生异常的情况下，try 块的运行效率非常高（几乎没有额外开销）。因此，Python 社区非常推崇 EAFP（Easier to Ask for Forgiveness than Permission，请求原谅比请求许可更容易）的编程风格：先尝试执行操作，出了错再处理，而不是到处写 if 检查。这种风格通常比处处检查返回值更高效、更整洁。
 
 ### 错误信息
 
