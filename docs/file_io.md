@@ -147,6 +147,12 @@ with open('sample.txt', 'rb') as file:
     file.read(1)
 ```
 
+注意： seek() 方法主要用于二进制模式（'rb', 'wb' 等）。 在文本模式（'r', 'w'）下，由于字符编码长度不固定的原因，seek() 操作受到严格限制。通常只允许：
+- seek(0)：回到文件开头。
+- seek(offset)：跳转到由 tell() 方法返回的某个特定位置。
+
+试图在文本模式下使用相对偏移（如 `file.seek(5, 1)`）通常会引发异常。因此，如果需要自由移动文件指针，请务必使用二进制模式打开文件。
+
 ## 写入文件
 
 写入文件与读取文件的方式非常类似，通常使用文件对象的 write() 方法写入数据：
@@ -280,6 +286,24 @@ list_from_bytes = pickle.loads(byte_seq)
 print(list_from_bytes)  # 输出: [1, 2, 3, 'Hello', True]
 ```
 
+安全警告： pickle 模块并不安全。千万不要对来自不可信来源（如网络下载、用户上传）的数据进行 pickle.loads() 操作。攻击者可以构造恶意的 pickle 数据，在反序列化时执行任意系统命令。对于需要跨语言或跨网络传输的数据，推荐使用 JSON 格式，它是安全且通用的。
+
+例如：
+
+```python
+import json
+
+data = {"name": "小明", "age": 25, "is_student": True}
+
+# 序列化：将字典转换为 JSON 字符串并写入文件
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False)
+
+# 反序列化：从文件中读取 JSON
+with open('data.json', 'r', encoding='utf-8') as f:
+    read_data = json.load(f)
+```
+
 ## 处理文件异常
 
 文件读写过程中是非常容易出现各种错误的，比如文件可能不存在、文件没有访问权限、磁盘空间不足、文件格式错误等等。这些错误可能会直接影响到程序的运行效果，甚至会导致程序的崩溃。因此，在文件读写的过程中，异常处理机制是非常重要的。
@@ -364,40 +388,9 @@ output.close()
 
 ## 路径处理
 
-读写文件，必然需要先找到文件，那就离不开处理文件的路径。在 Python 中，处理文件和目录路径的最常用的库是 os.path 和 pathlib。其中，pathlib 是一个比较新的库，提供了面向对象的方式来处理路径。
+读写文件，必然需要先找到文件，那就离不开处理文件的路径。在 Python 中，处理文件和目录路径的最常用的库是 os.path 和 pathlib。在现代 Python 代码中（Python 3.4+），强烈推荐使用 pathlib，因为它提供了更直观、面向对象的方式来处理路径，且代码可读性更高。os.path 属于较老式的写法，目前主要用于维护旧项目。
 
 以下是常用的路径处理函数和相应的示例：
-
-### 使用 os.path:
-
-```python
-import os
-
-# 获取两个或多个路径名组件的连接
-joined_path = os.path.join('folder', 'subfolder', 'file.txt')
-
-# 获取路径的绝对路径
-abs_path = os.path.abspath('./folder/file.txt')
-
-# 获取路径的基名（文件名或最后的目录名）
-base_name = os.path.basename('/folder/subfolder/file.txt')  # 返回 'file.txt'
-
-# 获取路径的目录名
-dir_name = os.path.dirname('/folder/subfolder/file.txt')  # 返回 '/folder/subfolder'
-
-# 检查路径是否存在
-exists = os.path.exists('/folder/subfolder/file.txt')
-
-# 检查路径是否是目录
-is_dir = os.path.isdir('/folder/subfolder')
-
-# 检查路径是否是文件
-is_file = os.path.isfile('/folder/subfolder/file.txt')
-
-# 分割路径的目录名和文件名
-dir_part, file_part = os.path.split('/folder/subfolder/file.txt')  # 返回 ('/folder/subfolder', 'file.txt')
-```
-
 
 ### 使用 pathlib:
 
@@ -432,7 +425,14 @@ is_file = p.is_file()
 dir_part, file_part = p.parent, p.name  # 返回 (Path('folder/subfolder'), 'file.txt')
 ```
 
-在新的 Python 代码中，建议使用 pathlib，因为它提供了更直观和面向对象的接口，同时具有丰富的功能。但在处理旧的代码或与其他人合作时，可能仍然会遇到 os.path。
+使用 pathlib 的优势对比：
+```python
+from pathlib import Path
+# os.path 写法 (旧)
+path = os.path.join(folder, subfolder, 'file.txt')
+# pathlib 写法 (新) - 支持使用 / 运算符拼接
+path = Path(folder) / subfolder / 'file.txt'
+```
 
 ### 临时文件
 
