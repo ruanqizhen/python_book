@@ -217,7 +217,7 @@ combo.place_pillow()
 
 简单来说，MixIn 是一种小型的、可重复使用的类，它为其他类提供了一套附加的方法，每个 MixIn 执行一个特定的任务。但 MixIn 本身不是一个完整的类，MixIn 通常不能独立工作，它们是被设计出来与其他类一起使用的。MixIn 通常不会有自己的对象，所以也不需要构造函数。
 
-我们可以采用 MinIn 重新设计一下家具店程序。首先，我们可以抽象出一些特性或功能，将它们做成 MixIns。例如：
+我们可以采用 MixIn 重新设计一下家具店程序。首先，我们可以抽象出一些特性或功能，将它们做成 MixIns。例如：
 
 * MaterialMixin: 用于设置家具的材料。
 * AssemblyMixin: 为家具定义组装方法。
@@ -254,18 +254,21 @@ class TableclothMixin:
 
 # 使用 MixIns 重构原来的类
 class Furniture(MaterialMixin, AssemblyMixin):
-    def __init__(self, id, cost):
+    def __init__(self, id, cost, **kwargs):
+        # 传递 **kwargs 给下一个类，确保 MRO 链上的其他类（包括 object）能正常工作
+        super().__init__(**kwargs) 
         self.id = id
         self.cost = cost
 
 
-class Chair(Furniture, PillowPlacementMixin):
+class Chair(PillowPlacementMixin, Furniture):
     def __init__(self, id, cost, number_of_legs=4):
+        # 注意：这里需要配合协同继承（下文会提到）才能完美工作
         super().__init__(id, cost)
         self.number_of_legs = number_of_legs
 
 
-class Table(Furniture, TableclothMixin):
+class Table(TableclothMixin, Furniture):
     def __init__(self, id, cost, shape="圆形"):
         super().__init__(id, cost)
         self.shape = shape
@@ -286,11 +289,19 @@ combo.place_pillow()
 combo.place_tablecloth()
 ```
 
+在 Python 社区的最佳实践中，Mixin 类通常应该放在继承列表的最前面。 原因： Mixin 的作用通常是“增强”或“覆盖”基础类的行为。如果 Mixin 中定义了与基类同名的方法（例如 save() 或 update()），把它放在后面会导致 MRO 顺序中它排在 Furniture 之后，从而导致 Mixin 的方法永远不会被调用（被 Furniture 遮蔽了）。虽然本例中没有同名方法冲突，但作为教程应传授标准的 idiom。
+
 ### 查找顺序
 
 Python 如果某个同名的属性或方法在父类和子类中都有实现，那么在调用的时候，总是会先找子类，再找父类。如果有多个父类，就按照继承时的书写顺序来找，具体到上面的示例就是按照 ChairWithTableAttached -> Furniture -> MaterialMixin -> AssemblyMixin -> PillowPlacementMixin -> TableclothMixin -> object 的顺序来查找。
 
-这一顺序被称为 MRO（Method Resolution Order），即按照深度优先搜索的顺序，从左到右，优先查找子类，再查找父类。如果想不清楚，可以使用类的 mro() 方法来查看它的查找顺序：
+这一顺序被称为 MRO（Method Resolution Order）。如果某个同名的属性或方法在父类和子类中都有实现，Python 会按照 MRO（Method Resolution Order）列表进行查找。
+
+Python 3 使用的是 C3 线性化算法。它的核心规则不仅是“先子类后父类”，还保证了“保持父类的定义顺序”和“单调性”（即如果类 A 在类 B 前面，那么在所有子类的 MRO 中 A 都在 B 前面）。
+
+简单来说，你可以理解为它会尝试“从左到右，深度优先”，但如果遇到菱形继承（即多个子类继承自同一个父类），它会智能地把那个公共父类放到最后面去查，以避免逻辑错误。
+
+我们可以通过 print(ClassName.mro()) 来查看确切的顺序：
 
 ```python
 print(ChairWithTableAttached.mro())
@@ -331,4 +342,4 @@ GrandChild 的 super 是 ChildA
 GrandChild 被调用
 ```
 
-可以看到“ChildA 的 super 是 ChildB”，super() 函数并不是返回父类，它返回的是当前类在 MRO 顺序中的下一个类。
+可以看到“ChildA 的 super 是 ChildB”，super() 函数并不直接返回父类，它返回的是一个代理对象，这个对象会将方法调用委托给 MRO 顺序中当前类的下一个类。
