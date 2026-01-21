@@ -73,9 +73,9 @@ print(dog.name)       # 输出： 旺财
 print(chick.name)     # 输出： 花冠
 ```
 
-上面程序中，Animal 类的 `__init__` 初始化函数，除了 self 之外，还有两个参数 name 和 species，分别表示动物的名字和品种。有了初始化函数，我们就可以在创建对象时，为类传递必要的参数了，比如 `Animal("旺财", "狗")` 会创建一个名为旺财，品种为狗的动物类实例。在构造函数中，它通过为 `self.name` 和 `self.species` 赋值，创建了两个对象属性的值。
+上面程序中，Animal 类的 `__init__` 初始化函数，除了 self 之外，还有两个参数 name 和 species，分别表示动物的名字和品种。有了初始化函数，我们就可以在创建对象时，为类传递必要的参数了，比如 `Animal("旺财", "狗")` 会创建一个名为旺财，品种为狗的动物类实例。在初始化方法中，它通过为 `self.name` 和 `self.species` 赋值，创建了两个对象属性的值。
 
-在很多编程语言中，可以为一个类创建具有不同参数的多个构造函数。但 Python 中，每个类通常定义一个 `__init__` 方法来初始化实例，但可以通过参数设计实现多种初始化方式。也可以利用[工厂方法](class#工厂方法)，以不同参数创建类的实例。
+在很多编程语言中，可以为一个类创建具有不同参数的多个初始化方法。但 Python 中，每个类通常定义一个 `__init__` 方法来初始化实例，但可以通过参数设计实现多种初始化方式。也可以利用[工厂方法](class#工厂方法)，以不同参数创建类的实例。
 
 ### 同名变量（属性）
 
@@ -123,11 +123,12 @@ print(MyCounter.internal_b)    # 输出：[1, 1]
 print(MyCounter.internal_c)    # 输出：[1, 1]
 ```
 
-上面这个程序的构造函数中，使用 self 设置了几个属性，可是它们是创建了个新的对象属性呢，还是在通过对象修改类属性呢？
+上面这个程序的初始化方法中，使用 self 设置了几个属性，可是它们是创建了个新的对象属性呢，还是在通过对象修改类属性呢？
 
 上面的示例展示了一个经典的陷阱：
 - `internal_a`：使用了 `+` 号。这会创建一个新列表，并赋值给 `self.internal_a`。此时，实例拥有了一个新的实例属性，不再引用类属性。
-- `internal_b`：使用了 `+=` 号。对于列表（List）这种可变对象，`+=` 相当于调用了 `extend()` 方法，是在原处修改数据。因此，它修改的是那个被所有实例共享的类属性列表。
+- `internal_b`：使用了 `+=` 号。对于列表（List）这种可变对象，`+=` 操作符实际上调用的是 `extend` 方法（即就地修改），它不会创建新列表对象，因此所有实例共享的还是同一个类属性列表。而 `internal_a` 使用 `+` 号时，会创建一个全新的列表对象并赋值给实例属性，从而断开了与类属性的联系。
+- `internal_c`：`append` 是列表的方法，显而易见地是在修改原列表（类属性）。
 
 为了避免这种迷惑操作，在[类方法](#类方法)中，可以通过 cls 调用类属性，其它情况，应该通过类名来调用类属性，比如如下写法就会非常清楚：
 
@@ -154,6 +155,8 @@ class MyCounter:
 print(MyCounter.b)   # 输出： [8]
 print(MyCounter.c)   # 输出： [1, 1]      
 ```
+
+注意：在 Python 3 中，类体内的列表推导式拥有独立的作用域，它无法直接访问类体中定义的其他属性（如上面的 a=8）。因此，列表推导式中的 a 会跳过类作用域，直接查找全局变量。这是一个常见的高级陷阱。
 
 ### 对象方法
 
@@ -219,15 +222,16 @@ print(cat.get_total_animals())     # 输出： 2， 这等价于直接使用类�
 
 #### 工厂方法
 
-类方法一个比较典型的应用是用于工厂方法。工厂方法是一种用于创建对象的函数，它可以比构造函数更复杂，通常用于创建具有一定复杂度的对象，特别是当对象的创建需要依赖于某些动态条件或者涉及到复杂的初始化过程时。复杂的工厂函数可以创建多种不同类的对象，我们这里用一个简单示例做演示，它可以生成一个 Animal 对象，但是它具备一些和 Animal 构造函数不同的参数：
+类方法一个比较典型的应用是用于工厂方法。工厂方法是一种用于创建对象的函数，它可以比初始化方法更复杂，通常用于创建具有一定复杂度的对象，特别是当对象的创建需要依赖于某些动态条件或者涉及到复杂的初始化过程时。复杂的工厂函数可以创建多种不同类的对象，我们这里用一个简单示例做演示，它可以生成一个 Animal 对象，但是它具备一些和 Animal 初始化方法不同的参数：
 
 ```python
 class Animal:
     total_animals = 0  # 类变量，跟踪创建的动物数量
 
-    def __init__(self, species):
+    def __init__(self, species, age=None, gender=None): # 在 init 中定义所有可能属性
         self.species = species
-        Animal.total_animals += 1
+        self.age = age
+        self.gender = gender
 
     # 类方法，用于获取总动物数
     @classmethod
@@ -237,10 +241,8 @@ class Animal:
     # 工厂方法，用于创建复杂的动物对象
     @classmethod
     def create_complex_animal(cls, species, age, gender):
-        animal = cls(species)
-        animal.age = age
-        animal.gender = gender
-        return animal
+        # 工厂方法负责处理参数逻辑，然后调用 init
+        return cls(species, age, gender)
 
 # 使用工厂方法创建一个动物
 complex_animal = Animal.create_complex_animal("熊猫", 5, "雄性")
@@ -267,7 +269,7 @@ class Animal:
 
 # 使用静态方法
 sound = "barking"
-print(Animal.is_healthy(sound))   输出： True
+print(Animal.is_healthy(sound))  # 输出： True
 ```
 
 静态方法非常适合存放一些公共函数、常用的工具函数、辅助函数等。这样不需要创建对象，这些函数即可被其它代码调用。比如下面的示例中，一个作为工具函数的计算两点间距离的函数设置为了静态方法：
@@ -322,7 +324,7 @@ class Dog(Animal):  # 在括号内指定父类名字，表示继承
         
 在上面的程序中，Animal 是一个基类，有一个 species 属性和一个 speak 方法。Dog 类在其定义时通过在括号内指定 Animal 来表示它从 Animal 类继承。子类 Dog 直接就具备了父类 Animal 的所有属性和方法。如果在子类中不重写这些属性和方法的话，对于子类的对象，程序会自动使用它们父类中的属性和方法。如果子类重写了这些属性和方法，也就定义了重名的属性和方法，那么针对子类的对象，程序会采用子类中重新定义的属性与方法。
 
-在这个示例中，Dog 类重写了父类的 构造方法和 speak 方法。在子类重写的方法中，可以使用 super() 函数来调用父类中的方法，它经常被用于在子类的构造函数中，调用父类的构造函数。比如在 Dog 的构造方法中，我们使用 `super().__init__(species="狗")` 来调用 Animal 类的初始化方法。
+在这个示例中，Dog 类重写了父类的 构造方法和 speak 方法。在子类重写的方法中，可以使用 super() 函数来调用父类中的方法，它经常被用于在子类的初始化方法中，调用父类的初始化方法。比如在 Dog 的构造方法中，我们使用 `super().__init__(species="狗")` 来调用 Animal 类的初始化方法。
 
 当我们在子类中需要用到父类中定义的方法的时候，应该使用 super()，而不是直接通过父类的名字去调用某个父类方法。直接使用父类名来调用方法会将子类对父类的依赖硬编码到代码中，如果将来更改了继承关系，可能需要在多个地方进行修改。使用 super() 可以避免这种情况，使代码更易维护。另外在[多继承](multiple_inheritance)情况下，super() 可以正确地按顺序调用相应父类方法，我们自己调用，则可能会使用错误的父类。另外 super() 也可以让方法调用更加一致，并且更易于阅读。
 
@@ -435,16 +437,16 @@ Python 之所以可以采用鸭子类型，是因为它是动态类型语言，�
 class Dog:
     @classmethod
     def speak(cls):
-        print(f"{cls.__name__} 汪汪！")
+        return f"{cls.__name__} 汪汪！"
 
 class Cat:
     @classmethod
     def speak(cls):
-        print(f"{cls.__name__} 喵喵！")
+        return f"{cls.__name__} 喵喵！"
 
 def animal_voice(classes):
     for c in classes:
-        c.speak()
+        print(c.speak()) 
     
 # 测试多态
 animal_voice([Dog, Cat])
