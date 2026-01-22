@@ -10,7 +10,7 @@
 from multiprocessing import Process
 
 def worker_function(number):
-    print(f"线程 {number} 正在工作。")
+    print(f"进程 {number} 正在工作。")
 
 if __name__ == "__main__":
     p = Process(target=worker_function, args=(1,))
@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
 ## 进程池
 
-创建进程，在进程间切换也是有额外开销的，而且这个额外开销比线程的开销要大。一般来说，电脑的 CPU 核心数量有限，创建 CPU 数量若多余 CPU 核心数量，必然无法做到每个进程都有自己独占的 CPU 核心。这样一来，再多的多的进程也不会对充分利用 CPU 再有任何帮助了，反而徒增进程切换的负担。所以，我们应该控制进程的总数量，以提高并行运算的效率。我们可以利用进程池（Process Pool）来控制控制并行执行的进程总数量，而不是为每一个任务都开启一个单独的进程。
+创建进程，在进程间切换也是有额外开销的，而且这个额外开销比线程的开销要大。一般来说，电脑的 CPU 核心数量有限，创建 CPU 数量若多余 CPU 核心数量，必然无法做到每个进程都有自己独占的 CPU 核心。这样一来，再多的进程也不会对充分利用 CPU 再有任何帮助了，反而徒增进程切换的负担。所以，我们应该控制进程的总数量，以提高并行运算的效率。我们可以利用进程池（Process Pool）来控制并行执行的进程总数量，而不是为每一个任务都开启一个单独的进程。
 
 ### 创建
 
@@ -51,9 +51,13 @@ results = pool.map(square, [1, 2, 3, 4])  # 输出 [1, 4, 9, 16]
 对于单个任务，可以使用 apply 和 apply_async 方法。apply 方法是阻塞的，而 apply_async 是非阻塞的并返回一个 AsyncResult 对象。
 
 ```python
-result = pool.apply(func, args=(arg1, arg2))  # 阻塞调用
-async_result = pool.apply_async(func, args=(arg1, arg2))  # 非阻塞调用
-result = async_result.get()  # 从 AsyncResult 对象中获取结果
+# 提交任务后，主进程可以继续做其他事情，不会被阻塞
+async_result = pool.apply_async(func, args=(arg1, arg2))
+
+print("任务已提交，正在后台运行...")
+
+# 当需要结果时，再调用 get()，此时如果任务未完成则会阻塞
+result = async_result.get()
 ```
 
 ### 关闭
@@ -177,9 +181,13 @@ def printer(item, lock):
     with lock:
         print(item)
 
-lock = Lock()
-for item in range(10):
-    Process(target=printer, args=(item, lock)).start()
+if __name__ == "__main__":
+    lock = Lock()
+    for item in range(10):
+        p = Process(target=printer, args=(item, lock))
+        p.start()
+        # 注意：这里最好加上 join，否则主进程可能先于子进程结束
+        p.join()
 ```
 
 ### 信号量
