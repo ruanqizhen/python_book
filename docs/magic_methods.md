@@ -24,7 +24,8 @@ class Point:
 
     # 返回一个“正式”的表示，通常可以用它来重新创建这个对象
     def __repr__(self):
-        return f"点 ({self.x}, {self.y})"
+        # 返回类名和参数，例如 "Point(1, 2)"
+        return f"{self.__class__.__name__}({self.x}, {self.y})"
 
     # 返回一个“非正式”的表示，用于打印或日志
     def __str__(self):
@@ -69,6 +70,8 @@ del q                # 所有变量均被删除，调用析构函数销毁对象
 # =====分割线======
 # 点 (1, 2) 被销毁
 ```
+
+注意： 在 Python 中，尽量避免依赖 `__del__` 来自动释放资源（如关闭文件或网络连接）。因为 Python 的垃圾回收机制并不保证 `__del__` 会立刻执行。正确的做法是使用上下文管理器（with 语句）。
 
 ## 运算符
 
@@ -174,8 +177,14 @@ print(result1)           # 输出:  5/4
 print(result2)           # 输出:  7/2
 ```
 
-在上面的程序中，`__add__` 方法中检查了 other 参数的数据类型，如果它是另一个分数，那么使用分数的算法；如果它是一个整数，则采用整数的算法。因此，我们可以计算 `frac1 + 3`，分数与整数相加。但是如果试图计算 `3 + frac1` 就会出错，因为 int 对象的 `__add__` 方法并没有实现对 Fraction 对象的支持。
+在上面的程序中，`__add__` 方法中检查了 other 参数的数据类型，如果它是另一个分数，那么使用分数的算法；如果它是一个整数，则采用整数的算法。因此，我们可以计算 `frac1 + 3`，分数与整数相加。但是如果试图计算 `3 + frac1` 就会出错，因为 int 对象的 `__add__` 方法并没有实现对 Fraction 对象的支持。如果需要计算 `3 + frac1` 可以使用反向算术运算符 `__radd__`：
 
+```python
+    # 处理 3 + frac1 的情况
+    def __radd__(self, other):
+        # 加法满足交换律，直接调用 __add__ 即可
+        return self.__add__(other)
+```
 
 ### 比较运算符
 
@@ -346,23 +355,21 @@ print(lst)           # [0, 2, 5]
 ```python
 class HistoricalAttributes:
     def __init__(self):
-        # 使用字典来存储属性历史记录
-        self._history = {}
-        self._forbidden_attributes = ["forbidden", "history"]
+        # 使用 super().__setattr__ 绕过自定义的逻辑，防止初始化崩溃
+        super().__setattr__('_history', {})
+        super().__setattr__('_forbidden_attributes', ["forbidden", "history"])
 
     def __setattr__(self, name, value):
-        # 检查 _forbidden_attributes 是否已定义
+        # 此时 self._history 已经安全存在了
         if hasattr(self, '_forbidden_attributes'):
-            # 禁止设置某些属性
-            if name in self._forbidden_attributes:
+             if name in self._forbidden_attributes:
                 raise AttributeError(f"'{name}' 是一个只读属性。")
             
-            # 将属性值添加到历史记录中
-            if name not in self._history:
-                self._history[name] = []
-            self._history[name].append(value)
+        # 记录历史
+        if name not in self._history:
+            self._history[name] = []
+        self._history[name].append(value)
         
-        # 使用超类的__setattr__方法来实际设置属性
         super().__setattr__(name, value)
 
     def history_of(self, name):
@@ -406,7 +413,7 @@ class Timer:
 
 # 使用示例
 with Timer() as t:
-    print(t)
+    print(t.start)
     for _ in range(1000000):
         pass
 
