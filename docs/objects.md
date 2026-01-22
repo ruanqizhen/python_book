@@ -204,6 +204,28 @@ print(callable(dog.eat))      # 输出: True
 print(callable(dog.speak))    # 输出: True
 ```
 
+需要注意的是，通过 dog.eat = lambda... 这种方式添加的仅仅是一个可调用的函数属性，它不是真正的方法。真正的对象方法在调用时，Python 会自动将对象实例（self）作为第一个参数传进去。
+
+如果我们希望动态添加的方法能像正常方法一样自动获取 self，需要使用 types 模块
+
+```python
+import types
+
+class Animal:
+    def __init__(self, species):
+        self.species = species
+
+dog = Animal("狗")
+
+# 定义一个需要 self 的函数
+def dynamic_eat(self):
+    print(f"{self.species} 吃饱了")
+
+# 使用 MethodType 将其绑定到 dog 实例上
+dog.eat = types.MethodType(dynamic_eat, dog)
+
+dog.eat()   # 输出： 狗 吃饱了 （成功访问了 self.species）
+```
 
 ## 类装饰器
 
@@ -297,6 +319,7 @@ print(obj.greet())  # 输出: 方法不可使用
 在 Python 中，标准的、内置的元类是 type。上文使用了 type() 函数查看一个对象的类型。type() 函数还有另一种用法，它可以接收三个参数，然后返回一个动态创建的类：
 
 ```python
+# 注意：第二个参数 (object,) 是一个元组，必须加逗号，否则会被视为普通变量
 Animal = type('Animal', (object), {'species': '狗'})
 ```
 
@@ -360,11 +383,11 @@ print(t)  # 输出: (2, 4, 6)
 # 定义元类
 class MyMeta(type):
     def __new__(cls, name, bases, dct):
-        # 在类创建时自动添加新方法
-        dct["new_class_method"] = cls.class_method
+        # 注意：如果不加 staticmethod，它会变成普通的实例方法
+        # 这里我们将元类中定义的函数，作为静态方法添加到新类中
+        dct["new_class_method"] = staticmethod(cls.class_method) 
         return super().__new__(cls, name, bases, dct)
 
-    # 这是被自动添加的新方法
     @staticmethod
     def class_method():
         print("这是一个新的静态方法")
