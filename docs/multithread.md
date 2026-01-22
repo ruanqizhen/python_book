@@ -144,8 +144,13 @@ def daemon_thread():
         time.sleep(1)
 
 # 创建守护线程
-d_thread = threading.Thread(target=daemon_thread)
-d_thread.setDaemon(True)  # 将线程设置为守护线程
+# 推荐方式 1：在创建时指定
+d_thread = threading.Thread(target=daemon_thread, daemon=True)
+
+# 推荐方式 2：设置属性
+# d_thread = threading.Thread(target=daemon_thread)
+# d_thread.daemon = True
+
 d_thread.start()
 
 # 主程序执行一些任务
@@ -400,9 +405,11 @@ class Consumer(threading.Thread):
         global items
         while True:
             with condition:
-                if not items:
+                # 使用 while 循环检查条件，防止虚假唤醒或资源被抢占
+                while not items:  
                     print(f'{self.name} 等待商品...')
                     condition.wait()  # 等待商品
+                
                 item = items.pop(0)
                 print(f'{self.name} 消费了 {item}')
             time.sleep(random.uniform(0.1, 1.0))  # 模拟消费时间
@@ -594,7 +601,7 @@ def main():
         # 根据线程数分割数字范围
         start = numbers[i * step]
         if i == num_threads - 1:
-            end = numbers[-1]
+            end = numbers.stop
         else:
             end = numbers[(i + 1) * step]
         # 创建并启动线程
