@@ -46,26 +46,22 @@ print(counts)
 
 ## defaultdict 类
 
-除了通用的字典数据类型，我们还可以使用一些为特殊需求设计的类，来简化特定的问题。比如针对字典中缺失的键的默认值，我们可以使用 collections 模块中的一个名为 defaultdict 的子类，它继承自内置的 dict 类。defaultdict 的特点是它可以为字典中的键提供一个默认的函数，当用户尝试访问一个不存在的键时，defaultdict 会自动调用那个函数，生成生成一个默认值。比如，函数 int() 会返回一个整数 0，如果以此为默认值生成函数，那么缺失的键的默认值就都是 0。由于默认值是由一个函数的返回值确定的，而不是某个固定值，这意味着我们可以设计一个函数，让每个键拥有不同的默认值。
+除了通用的字典数据类型，我们还可以使用一些为特殊需求设计的类，来简化特定的问题。比如针对字典中缺失的键的默认值，我们可以使用 collections 模块中的一个名为 defaultdict 的子类，它继承自内置的 dict 类。defaultdict 的特点是它可以为字典中的键提供一个默认的函数，当用户尝试访问一个不存在的键时，defaultdict 会自动调用那个函数，生成一个默认值。比如，函数 int() 会返回一个整数 0，如果以此为默认值生成函数，那么缺失的键的默认值就都是 0。由于默认值是由一个函数的返回值确定的，而不是某个固定值，这意味着我们可以设计一个函数，让每个键拥有不同的默认值。
 
 ```python
 from collections import defaultdict
+from itertools import count
 
-# 创建一个默认值为 int 的 defaultdict，这里 int() 返回 0
-int_defaultdict = defaultdict(int)
-
-# 创建一个默认值为 list 的 defaultdict，这里 list() 返回空列表 []
-list_defaultdict = defaultdict(list)
-
-# 匿名函数的功能是每次调用返回的整数都增加一，也就是在这个 defaultdict 中，
-# 第一个缺失的键的默认值是 0，第二个的默认值是 1，以此类推
-inc_defaultdict = defaultdict(lambda x=[]: x.append(len(x)) or x[-1])
+# 使用 itertools.count 创建一个计数器迭代器
+counter = count()
+# 每次遇到新键时，调用 next(counter) 获取下一个整数
+inc_defaultdict = defaultdict(counter.__next__)
 
 # 测试：
-print(inc_defaultdict["a"])  # 默认值为 0
-print(inc_defaultdict["a"])  # 已使用过，读取已经设置的值
-print(inc_defaultdict["b"])  # 默认值为 1
-print(inc_defaultdict["c"])  # 默认值为 2
+print(inc_defaultdict["a"])  # 输出 0
+print(inc_defaultdict["a"])  # 输出 0 (已存在)
+print(inc_defaultdict["b"])  # 输出 1
+print(inc_defaultdict["c"])  # 输出 2
 ```
 
 defaultdict 特别适用于那些需要字典中的每个键都必须有一个默认值的场景，例如在进行分组或计数时，这样就无需事先检查键是否存在。
@@ -102,7 +98,7 @@ print(dict(names_by_first_letter))
 
 ## Counter 类
 
-Python 中还带有一个专门由于统计计数的字典的子类 Counter。使用它进行计数更简洁：
+Python 中还带有一个专门用于统计计数的字典的子类 Counter。使用它进行计数更简洁：
 
 ```python
 from collections import Counter
@@ -200,7 +196,7 @@ print(counts)
 
 ## 使用数组计数
 
-如果需要统计个数的数据本是是个正整数，或者可以映射为正整数，那么我们也可以不使用基于字典的计数方法，而是利用数组的索引来计数。比如，当需要统计的数据集包含了从 0 到 n-1 的整数时，我们可以开辟一个大小为 n 的整数数组，用于计数。然后遍历输入数据集，没看到一个数 i，就把用于计数的数组的第 i 个数值加 1。这样遍历一次，即可完成统计。数组的结构比字典简单的多，效率也更高。
+如果需要统计个数的数据本身是个正整数，或者可以映射为正整数，那么我们也可以不使用基于字典的计数方法，而是利用数组的索引来计数。比如，当需要统计的数据集包含了从 0 到 n-1 的整数时，我们可以开辟一个大小为 n 的整数数组，用于计数。然后遍历输入数据集，没看到一个数 i，就把用于计数的数组的第 i 个数值加 1。这样遍历一次，即可完成统计。数组的结构比字典简单的多，效率也更高。
 
 NumPy 库中已经有实现好的 bincount 方法了，我们可以直接拿来调用，比如：
 
@@ -221,6 +217,7 @@ print(count)  输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 
 编写一个程序统计字符串中每个字符出现的次数。
 
 ```python
+from collections import Counter
 input_string = "pneumonoultramicroscopicsilicovolcanoconiosis"
 character_count = Counter(input_string)
 for char, count in character_count.items():
