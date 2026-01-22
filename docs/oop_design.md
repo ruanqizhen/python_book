@@ -51,10 +51,16 @@ class Animal(ABC):
 class Dog(Animal):
     def speak(self):
         return "汪汪！"
+    
+    def eat(self):
+        print("狗在吃骨头")
 
 class Cat(Animal):
     def speak(self):
         return "喵喵！"
+    
+    def eat(self):
+        print("猫在吃鱼")
 ```
 
 每个具体的动物类都继承了 Animal 类，并为 speak 方法提供了具体的实现。通过这样的设计，我们可以轻松地向系统中添加更多的动物种类，而不必每次都从头开始定义共同的属性和行为。这就是抽象的威力所在。
@@ -107,9 +113,9 @@ class Square(Rectangle):
         self._height = value
 ```
 
-上述设计中，Rectangle 类中有长、宽两个属性（使用了属性[装饰器](class#属性装饰器)），通过长宽可以计算面积。Square 是一种特殊的，长宽相等的 Rectangle，长宽在正方形中都叫做边长。这种设计符合自然情况，但他却违反了里氏替换原则。假设一个程序使用了 Rectangle 类，比如： `shape = Rectangle(3, 5)`。把这个语句中的 Rectangle 直接替换成 Square，程序会出错，因为 Square 构造函数需要的是边长数据，而不是长和宽。也就是说，在这个设计中，我们不能在程序里直接用子类替换它的父类。
+上述设计中，Rectangle 类中有长、宽两个属性（使用了属性[装饰器](class#属性装饰器)），通过长宽可以计算面积。Square 是一种特殊的，长宽相等的 Rectangle，长宽在正方形中都叫做边长。这种设计符合自然情况，但他却违反了里氏替换原则。假设一个程序使用了 Rectangle 类，比如： `shape = Rectangle(3, 5)`。把这个语句中的 Rectangle 直接替换成 Square，程序会出错，因为 Square 构造函数需要的是边长数据，而不是长和宽。也就是说，在这个设计中，我们不能在程序里直接用子类替换它的父类。更重要的是，这种设计改变了父类的行为契约。对于一个 `Rectangle` 对象，我们通常认为修改“宽度”不会影响“高度”。但对于 `Square`，修改宽度会同时改变高度。如果程序中有代码依赖于“长宽独立”这一假设（例如计算面积的代码），替换成 `Square` 后就会得到错误的结果。
 
-为了遵循里氏替换原则，我们可以重新设计这两个类，使得 Square 不是 Rectangle 的子类，而是两者都是更通用的抽象类 Shape 的子类。
+为了遵循里氏替换原则，我们可以重新设计这两个类，使得 `Square` 不是 `Rectangle` 的子类，而是两者都是更通用的抽象类 `Shape` 的子类。
 
 ```python
 from abc import ABC
@@ -561,7 +567,7 @@ class DictReportGenerator(ReportGenerator):
         return {"学生": student.name}
 ```
 
-现在，当需要添加新的报告格式时，只需添加以中新的具体的报告生成器类就可以了，而无需修改现有的任何类。修改后，使用 ReportGenerator 的的示例代码：
+现在，当需要添加新的报告格式时，只需添加以中新的具体的报告生成器类就可以了，而无需修改现有的任何类。修改后，使用 ReportGenerator 的示例代码：
 
 ```python
 class Student:
@@ -569,11 +575,14 @@ class Student:
         self.name = name
         
 class StudentReport:
-    def __init__(self, generator: ReportGenerator):
+    # 初始化时同时传入学生和生成器
+    def __init__(self, student: Student, generator: ReportGenerator):
+        self.student = student
         self.generator = generator
 
-    def generate(self, student):
-        return self.generator.generate(student)
+    def generate(self):
+        # 调用生成器，传入自己的 student 数据
+        return self.generator.generate(self.student)
 ```
 
 如此，当我们需要生成不同格式的报告时，只需改变 StudentReport 实例的生成器即可。例如：
