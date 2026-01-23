@@ -66,7 +66,7 @@ class LinkedList:
         if not node_to_delete:
             return
 
-        # 如果被删除的是头结点
+        # 如果被删除的是头节点
         if self.head == node_to_delete:
             self.head = self.head.next
             return
@@ -100,7 +100,7 @@ llist.print_list()  # 1 -> 3 -> None
 
 LinkedList 类用于表示整个链表。它包含一个属性 head，指向链表的第一个节点。append() 方法将一个新节点添加到链表的末尾。insert_after_node() 方法可以在给定的 prev_node 后面插入一个新节点。 find_node_by_key() 方法可以根据数据找到一个节点。delete_node() 方法则可以删除一个节点。
 
-从上面的示例的实现就可以看出来，在队列中插入数据的时间复杂度是 $O(1)$，因为插入操作不需要挪动任何其它元素。但是查找一个节点时间复杂度是 $O(n)$，链表不能做索引，只能一个一个节点查看。
+从上面的示例实现可以看出，如果只是在链表头部插入节点（或已知前驱节点的情况下插入），时间复杂度是 $O(1)$。但对于上述代码中的 append 方法，由于需要遍历整个链表找到尾部，其时间复杂度实际上是 $O(n)$。
 
 上面的链表中，删除节点的时间复杂度是 $O(n)$，因为只有找到当前节点的上一个节点之后才能删除。如果有一个函数，是删除下一个节点，那就不需要遍历整个链表了，时间复杂度可以降低到 $O(1)$。或者，如果是在双向链表中，删除节点的时间复杂度也可以是 $O(1)$。
 
@@ -110,7 +110,7 @@ LinkedList 类用于表示整个链表。它包含一个属性 head，指向链�
 
 ![images/009.png](images/009.png "双向链表示意图")
 
-在双向链表（Doubly Linked List）中，每个节点都记录了上一个节点和下一个节点的位置。因此，在双向链表中，可以从一个节点直接跳转到它的上一个或下一个节点上去，也就是正向或反向遍历整个链表。如果链表的最后一个节点（尾节点）的下一个节点指向的是头结点；而头结点的前一个节点又指向了尾节点，那么这就构成了一个环状双向链表，如上图所示。
+在双向链表（Doubly Linked List）中，每个节点都记录了上一个节点和下一个节点的位置。因此，在双向链表中，可以从一个节点直接跳转到它的上一个或下一个节点上去，也就是正向或反向遍历整个链表。如果链表的最后一个节点（尾节点）的下一个节点指向的是头节点；而头节点的前一个节点又指向了尾节点，那么这就构成了一个环状双向链表，如上图所示。
 
 单向链表也可以有环。有环的链表不一定所有节点都在环内，也可以一些节点在环外，另一些节点构成环。在实际应用中，非环状的链表更为常见。
 
@@ -187,7 +187,7 @@ dllist.print_list()  # 1 <-> 3 <-> None
 
 ### 反转链表
 
-编写一个函数来反转单链表。翻转链表的算法是比较直观的，就是遍历每个节点，把结点指针的指向换个方向。需要注意的是，要考虑如何暂存节点，用于设置指针。可以用循环，也可以用递归。
+编写一个函数来反转单链表。翻转链表的算法是比较直观的，就是遍历每个节点，把节点指针的指向换个方向。需要注意的是，要考虑如何暂存节点，用于设置指针。可以用循环，也可以用递归。
 
 ```python
 class Node:
@@ -393,7 +393,33 @@ print("\nAfter removing the 2nd node from the end:")
 llist.print_list()
 ```
 
+这个问题还有个更加标准且健壮的“快慢指针”写法。通常先让 second 移动 n 步，如果 second 变为 None，说明要删除的是头节点。
 
+```python
+    def remove_nth_from_end(self, n):
+        fast = self.head
+        slow = self.head
+
+        # 让快指针先走 n 步
+        for _ in range(n):
+            if fast is None:
+                print("n 大于链表长度")
+                return
+            fast = fast.next
+        
+        # 如果快指针走到了 None，说明倒数第 n 个节点就是头节点
+        if fast is None:
+            self.head = self.head.next
+            return
+
+        # 快慢指针同步移动，直到快指针到达最后一个节点
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+        
+        # 此时 slow 指向倒数第 n+1 个节点，删除其下一个节点
+        slow.next = slow.next.next
+```
 
 ### 两个链表的交点
 
@@ -433,31 +459,25 @@ def get_intersection_node(headA, headB):
     return None  # No intersection
 
 # 测试：
-# 创建两个链表，让它们相交与值为 8 的节点
 intersect_val = 8
-listA = [4,1,8,4,5]
-listB = [5,0,1,8,4,5]
-intersect_node = ListNode(intersect_val)
-headA = curA = ListNode(0)
-headB = curB = ListNode(0)
+# 定义公共部分
+common_node = ListNode(8)
+common_node.next = ListNode(4)
+common_node.next.next = ListNode(5)
 
-# 链表 A
-for val in listA:
-    curA.next = ListNode(val)
-    curA = curA.next
-    if val == intersect_val:
-        break
+# 构建链表 A: 4 -> 1 -> (8 -> 4 -> 5)
+headA = ListNode(4)
+headA.next = ListNode(1)
+headA.next.next = common_node
 
-# 链表，加入交叉点
-for val in listB:
-    curB.next = ListNode(val)
-    curB = curB.next
-    if val == intersect_val:
-        curB.next = intersect_node
-        break
+# 构建链表 B: 5 -> 0 -> 1 -> (8 -> 4 -> 5)
+headB = ListNode(5)
+headB.next = ListNode(0)
+headB.next.next = ListNode(1)
+headB.next.next.next = common_node
 
 # 找到交点
-result = get_intersection_node(headA.next, headB.next)
+result = get_intersection_node(headA, headB)
 if result:
     print(f"The intersection point's value is: {result.val}")
 else:
