@@ -28,7 +28,7 @@
 
 双向队列是由一个双向链表实现的，但是其限制了插入和删除操作只能在链表头尾两端进行。因此，它的入队出队时间复杂度是与链表插入删除相同的，都是 $O(1)$。
 
-在 Python 中，自带有一个实现好的双向队列，它是在 collections 模块中的 deque 类。deque 的基本操作如下：
+在 Python 中，自带有一个实现好的双向队列，它是在 collections 模块中的 deque 类。它是由 C 语言实现的。为了兼顾性能和内存效率，它内部并非使用简单的双向链表，而是使用了一个由固定长度数组块组成的双向链表。这使得它在两端添加/删除元素时非常快（$O(1)$），但在中间访问元素时依然较慢。deque 的基本操作如下：
 * 右侧添加 append()： 添加元素到右端。
 * 左侧添加 appendleft()： 添加元素到左端。
 * 右端弹出 pop()： 弹出右端元素。
@@ -113,28 +113,20 @@ print(deque.popleft())  # 输出: 0
 这个算法比较直接：每读取一个左括号，就把它压入栈；每读取一个右括号，就从栈中弹出一个左括号，如果两个括号匹配，则通过；如果不匹配，或最后为没匹配上的剩余括号，则输入字符串是无效的。程序代码如下：
 
 ```python
-from collections import deque
-
 def isValid(s: str) -> bool:
-    # 初始化一个 deque 作为栈
-    stack = deque()
-    # 定义括号匹配规则
+    # 直接使用列表作为栈
+    stack = []
     bracket_map = {')': '(', '}': '{', ']': '['}
 
-    # 遍历输入字符串
     for char in s:
-        # 如果是闭合括号
         if char in bracket_map:
-            # 弹出栈顶元素，如果栈为空则用一个占位符代替
+            # 获取栈顶元素，如果栈为空则给一个 dummy 值
             top_element = stack.pop() if stack else '#'
-            # 如果此闭合括号与栈顶元素不匹配，则不是有效的括号
             if bracket_map[char] != top_element:
                 return False
         else:
-            # 如果是开放括号，压入栈中
             stack.append(char)
 
-    # 如果栈为空，则说明所有括号都有效地匹配了
     return not stack
 
 # 测试代码
@@ -152,39 +144,43 @@ print(isValid(test_string))  # 应该返回 True
 
 ### 实现一个最小栈
 
-设计一个支持 push，pop，top 操作的栈，并能它能在常数时间内检索到栈内最小元素。有读者可能想到使用一个普通栈，加一个变量来实现，变量用于记录入站的最小数据。但是一个变量是不够的，因为当最小数据出栈后，这是就不知道栈内剩下的数据中，最小的是哪个了。所以，想要始终在常数时间内得到最小值，就需要多费一些空间，每当有数据入栈，都要记录一下栈中的最小数据。也就是每个元素入栈时，存储该元素和当前最小值的配对。这样，每个元素都会带着当时的最小值入栈。每次元素出栈时，我们也将更新最小值（如果出栈的元素是最小值的话）。这样可以确保在常数时间内检索到最小元素。
+设计一个支持 push，pop，top 操作的栈，并能它能在常数时间内检索到栈内最小元素。有读者可能想到使用一个普通栈，加一个变量来实现，变量用于记录入栈的最小数据。但是一个变量是不够的，因为当最小数据出栈后，我们无法知道栈内剩下的数据中新的最小值是谁。
+
+我们可以采用辅助栈的方法。我们维护两个栈：
+1. 主栈（stack）： 用于正常存储所有数据。
+2. 最小栈（min_stack）： 用于同步存储当前的最小值序列。
+
+逻辑如下：
+- 入栈： 数据压入主栈。如果该数据 小于等于 最小栈的栈顶元素（或者最小栈为空），则同时将该数据压入最小栈。
+- 出栈： 主栈弹出数据。如果弹出的数据 等于 最小栈的栈顶元素，说明这个被移除的数据是当前的最小值，因此最小栈也要同步弹出。
+- 获取最小值： 直接读取最小栈的栈顶元素。
 
 实现代码如下：
 
 ```python
-from collections import deque
-
 class MinStack:
     def __init__(self):
-        # 初始化两个双端队列，一个用于存储所有值，一个用于存储最小值
-        self.stack = deque()
-        self.min_stack = deque()
+        self.stack = deque()      # 主栈
+        self.min_stack = deque()  # 辅助栈，栈顶永远是当前主栈中的最小值
 
     def push(self, x: int) -> None:
-        # 始终在 stack 上进行正常的 push 操作
         self.stack.append(x)
-        # 如果 min_stack 为空或新元素更小，则推入新的最小值到 min_stack
+        # 关键逻辑：只有当新元素 <= 当前最小值时，才压入辅助栈
+        # 这样辅助栈中存储的就是一个递减序列
         if not self.min_stack or x <= self.min_stack[-1]:
             self.min_stack.append(x)
 
     def pop(self) -> None:
-        # 弹出 stack 的顶部元素
         val = self.stack.pop()
-        # 如果弹出的值是当前的最小值，也从 min_stack 中弹出
+        # 关键逻辑：如果弹出的数据就是当前最小值，辅助栈也要同步弹出
+        # 这样辅助栈的栈顶就会变成之前的次小值
         if val == self.min_stack[-1]:
             self.min_stack.pop()
 
     def top(self) -> int:
-        # 返回 stack 的顶部元素
         return self.stack[-1]
 
     def getMin(self) -> int:
-        # 返回 min_stack 的顶部元素，即当前的最小值
         return self.min_stack[-1]
 
 # 测试代码
