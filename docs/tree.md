@@ -119,5 +119,153 @@ dfs_recursive(root)
 
 
 ## 深度优先搜索
-Depth-First Search, DFS 
-适合路径搜索，在需要找到所有可能路径的问题中，如迷宫解决方案、括号生成问题。
+深度优先搜索（Depth-First Search, DFS）与广度优先搜索不同，它会尽可能深地搜索树的分支。当节点 v 的所在边都己被探寻过，搜索将回溯到发现节点 v 的那条边的起始节点。这一过程一直进行到已发现从源节点可达的所有节点为止。
+
+如果说 BFS 像水面上的波纹一层层扩散，那么 DFS 就像是一个走迷宫的人，一条路走到黑，撞了南墙再回头换一条路走。
+
+我们在前文介绍的前序、中序和后序遍历，其实本质上都属于深度优先搜索。它们通常使用递归来实现。除了递归，我们也可以使用栈（Stack）来模拟递归过程，从而实现迭代版的 DFS。相比于 BFS 使用**队列**（先进先出），DFS 使用**栈**（后进先出）来管理待访问的节点。
+
+```python
+def dfs_stack(root):
+    if root is None:
+        return
+
+    stack = [root]
+    
+    while stack:
+        current = stack.pop() # 弹出栈顶元素
+        print(current.value)
+        
+        # 将子节点压入栈中
+        # 注意：先压右节点，再压左节点，这样出栈时才是先左后右
+        if current.right:
+            stack.append(current.right)
+        if current.left:
+            stack.append(current.left)
+
+# 使用之前定义的二叉树进行测试
+#       1
+#     /   \
+#    2     3
+#   / \
+#  4   5
+
+dfs_stack(bt.root)
+# 输出: 1 2 4 5 3 (这实际上就是前序遍历的顺序)
+
+```
+
+DFS 非常适合用于路径搜索，或者在需要访问到叶子节点才能做出判断的问题中。比如，判断一棵树的最大深度，或者寻找是否存在一条路径的和等于某个特定值。
+
+## 二叉搜索树
+
+二叉搜索树（Binary Search Tree，BST）是一棵特殊的二叉树，它具有以下性质：
+
+1. 若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；
+2. 若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；
+3. 任意节点的左、右子树也分别为二叉搜索树。
+
+简单来说，BST 的特点就是：**左子 < 根 < 右子**。这个特性使得二叉搜索树在查找数据时非常高效。类似于二分查找法，每次比较都能排除掉一半的数据。
+
+下面是一个简单的 BST 实现，包含了插入和搜索功能：
+
+```python
+class BSTNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, value):
+        if not self.root:
+            self.root = BSTNode(value)
+        else:
+            self._insert_recursive(self.root, value)
+
+    def _insert_recursive(self, current_node, value):
+        if value < current_node.value:
+            if current_node.left is None:
+                current_node.left = BSTNode(value)
+            else:
+                self._insert_recursive(current_node.left, value)
+        elif value > current_node.value:
+            if current_node.right is None:
+                current_node.right = BSTNode(value)
+            else:
+                self._insert_recursive(current_node.right, value)
+        else:
+            # 值已经存在，视具体需求决定是否覆盖或忽略
+            print("Value already exists")
+
+    def search(self, value):
+        return self._search_recursive(self.root, value)
+
+    def _search_recursive(self, current_node, value):
+        if current_node is None:
+            return False
+        if value == current_node.value:
+            return True
+        elif value < current_node.value:
+            return self._search_recursive(current_node.left, value)
+        else:
+            return self._search_recursive(current_node.right, value)
+
+# 使用示例
+bst = BinarySearchTree()
+for val in [5, 3, 7, 2, 4, 6, 8]:
+    bst.insert(val)
+
+print(bst.search(4))  # 输出: True
+print(bst.search(9))  # 输出: False
+
+```
+
+在理想情况下（树是平衡的），二叉搜索树的插入和查找的时间复杂度都是 。但是，如果插入的数据是有序的（例如 `[1, 2, 3, 4, 5]`），树会退化成一个链表，此时时间复杂度会变成 。为了解决这个问题，在高级应用中通常会使用**平衡二叉树**（如 AVL 树或红黑树），它们能自动调整结构以保持树的平衡。
+
+## 堆
+
+堆（Heap）是另一种非常重要的树形数据结构。堆通常是一棵完全二叉树，它满足以下性质：
+
+* **最大堆（Max Heap）**：父节点的值总是大于或等于其子节点的值。根节点是最大的元素。
+* **最小堆（Min Heap）**：父节点的值总是小于或等于其子节点的值。根节点是最小的元素。
+
+虽然堆在逻辑上是树，但在 Python 中，我们通常使用**数组（列表）**来实现堆。对于数组中索引为 `i` 的节点：
+
+* 其左子节点的索引为 `2*i + 1`
+* 其右子节点的索引为 `2*i + 2`
+* 其父节点的索引为 `(i - 1) // 2`
+
+Python 的标准库 `heapq` 提供了对堆的支持。需要注意的是，`heapq` 默认实现的是**最小堆**。
+
+```python
+import heapq
+
+# 创建一个空堆
+min_heap = []
+
+# 添加元素 (heappush)
+heapq.heappush(min_heap, 5)
+heapq.heappush(min_heap, 1)
+heapq.heappush(min_heap, 3)
+heapq.heappush(min_heap, 10)
+
+print(min_heap) 
+# 输出可能为: [1, 5, 3, 10]。注意：堆不保证列表完全有序，只保证 heap[0] 是最小的
+
+# 弹出最小元素 (heappop)
+smallest = heapq.heappop(min_heap)
+print(f"弹出的最小值: {smallest}") # 输出: 1
+print(f"剩余的堆: {min_heap}")      # 输出: [3, 5, 10]
+
+# 将一个已有的列表转化为堆
+data = [5, 7, 9, 1, 3]
+heapq.heapify(data)
+print(f"转换后的堆: {data}")        # 输出: [1, 3, 9, 7, 5]
+
+```
+
+堆最常见的应用场景是**优先队列**（Priority Queue）。在任务调度系统中，我们可能希望优先处理高优先级的任务，而不是简单地按照先进先出的顺序处理，这时堆就是最佳选择。此外，堆也常用于“寻找最大的 K 个元素”这类问题。
