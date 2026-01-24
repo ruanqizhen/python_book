@@ -459,7 +459,7 @@ print(my_func())  # 输出： Ellipsis
 ```python
 import numpy as np
 
-# 创建一个四维数组，形状为 2*3*4*5*6
+# 创建一个四维数组，形状为 2*3*4*5，总元素 120
 arr = np.arange(120).reshape(2, 3, 4, 5)
 
 # 使用 Ellipsis 选择全部元素，相当于 arr[:, :, :, :]
