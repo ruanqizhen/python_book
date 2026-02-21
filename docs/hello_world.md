@@ -12,7 +12,7 @@ print("Hello, World!")
 
 ### 使用在线编辑环境
 
-使用在线编辑环境非常简单，不需要任何额外工作。打开编辑环境的页面，输入上面那句代码，运行即可。比如： [https://qizhen.xyz/brython](https://qizhen.xyz/brython)
+使用在线编辑环境非常简单，不需要任何额外工作。打开编辑环境的页面，输入上面那句代码，运行即可。比如：[https://qizhen.xyz/pyodide](https://qizhen.xyz/pyodide) 或者 [https://qizhen.xyz/brython](https://qizhen.xyz/brython)
 
 ### 直接在 Python 解释器中运行
 
