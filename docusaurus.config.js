@@ -1,14 +1,14 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-import {themes as prismThemes} from 'prism-react-renderer';
-const math = require('remark-math');
-const katex = require('rehype-katex');
+import { themes as prismThemes } from 'prism-react-renderer';
+import math from 'remark-math';
+import katex from 'rehype-katex';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Python 秘籍',
-  tagline: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试',
+  tagline: '面向读者的 Python 编程实战指南：涵盖基础、进阶、数据分析与面试干货',
   url: 'https://py.qizhen.xyz',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -25,7 +25,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: './sidebars.js',
           sidebarCollapsed: false,
           // Please change this to your repo.
           editUrl: 'https://github.com/ruanqizhen/python_book/edit/main/',
@@ -36,7 +36,7 @@ const config = {
         },
         blog: false,
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: './src/css/custom.css',
         },
         sitemap: {
           changefreq: 'weekly',
@@ -52,6 +52,7 @@ const config = {
   themeConfig: (
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
+      image: 'img/logo.png',
       docs: {
         sidebar: {
           hideable: true,
@@ -77,26 +78,29 @@ const config = {
       },
       zoomSelector: '.markdown img',
       metadata: [
-        {name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试'},
-        {name: 'description', content: 'Python 学习 面试'},
-        {name: 'author', content: 'Qizhen Ruan 阮奇桢'},
+        { name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试, 数据分析, 机器学习' },
+        { name: 'description', content: '《Python 秘籍》是一本开源的 Python 学习指南，包含丰富的代码示例、进阶技巧和面试准备内容。' },
+        { name: 'author', content: 'Qizhen Ruan 阮奇桢' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'og:title', content: 'Python 秘籍 - 你的 Python 编程进阶宝典' },
+        { name: 'og:description', content: '开源、免费的 Python 电子书，涵盖从基础到实战的方方面面。' },
       ],
     }
   ),
   plugins: [
-    function baiduPlugin(context, options) {
+    function analyticsPlugin(context, options) {
       return {
-        name: 'baidu-plugin',
-        injectHtmlTags({content}) {
+        name: 'analytics-plugin',
+        injectHtmlTags({ content }) {
           return {
             postBodyTags: [`
-               <script type="text/javascript" src="https://hm.baidu.com/hm.js?b3f6e7ec9302021671173e3fad14f4cd"></script>
-               <script type="text/javascript">
+               <script async type="text/javascript" src="https://hm.baidu.com/hm.js?b3f6e7ec9302021671173e3fad14f4cd"></script>
+               <script async type="text/javascript">
                  (function(c,l,a,r,i,t,y){
                     c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                     t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                 })(window, document, "clarity", "script", "jxmn1qjx88");
+                  })(window, document, "clarity", "script", "jxmn1qjx88");
                </script>
             `],
           };
@@ -104,7 +108,7 @@ const config = {
       };
     },
     [
-      require.resolve("@easyops-cn/docusaurus-search-local"),
+      "@easyops-cn/docusaurus-search-local",
       {
         hashed: true,
         language: ["en", "zh"],
@@ -116,13 +120,14 @@ const config = {
   ],
   stylesheets: [
     {
-      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css',
       type: 'text/css',
       integrity:
-        'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+        'sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib',
       crossorigin: 'anonymous',
     },
   ],
 };
 
-module.exports = config;
+export default config;
+
