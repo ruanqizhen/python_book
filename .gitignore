@@ -1,15 +1,3 @@
-# Libraries
-*.lvlibp
-*.llb
-
-# Executables
-*.exe
-
-# Metadata
-*.aliases
-*.lvlps
-.cache/
-
 # Jupyter
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
