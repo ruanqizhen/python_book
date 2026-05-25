@@ -15,7 +15,7 @@ const sidebars = {
         type: 'doc',
         id: 'ide',
       },
-      items: [ 
+      items: [
         'hello_world',
         'fundamentals',
         'variable',
@@ -39,7 +39,7 @@ const sidebars = {
         type: 'doc',
         id: 'functional',
       },
-      items: [ 
+      items: [
         'recursive',
         'first_class_func',
         'comprehension',
@@ -55,7 +55,7 @@ const sidebars = {
         type: 'doc',
         id: 'oop',
       },
-      items: [ 
+      items: [
         'class',
         'multiple_inheritance',
         'objects',
@@ -67,15 +67,21 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: '并发与并行',
+      items: [
+        'asyncio',
+        'multithread',
+        'multiprocess',
+      ],
+    },
+    {
+      type: 'category',
       label: '数据结构与算法',
       link: {
         type: 'doc',
         id: 'algorithm',
       },
-      items: [ 
-        'asyncio',
-        'multithread',
-        'multiprocess',
+      items: [
         'counter',
         'array',
         'linked_list',
@@ -101,6 +107,7 @@ const sidebars = {
         'pyspark',
         'folium',
         'miscellaneous',
+        'fastapi',
         'placeholder',
       ],
     },

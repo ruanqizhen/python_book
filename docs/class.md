@@ -573,3 +573,82 @@ print(c.area)    # 输出: 28.26
 通过使用 @property，我们可以确保 Circle 类的状态始终保持一致，并简化了调用代码。Pythora 星球一般都会使用属性装饰器来实现类中的属性。
 
 
+## 数据类 (@dataclass)
+
+在面向对象编程中，我们经常会创建一些仅仅用来“保存数据”的简单类。例如，我们想要保存一个 Pythora 星球侠客（Knight）的信息，包含名字、内力和独门绝技：
+
+```python
+class Knight:
+    def __init__(self, name: str, power: int, skill: str):
+        self.name = name
+        self.power = power
+        self.skill = skill
+```
+
+这看起来很简单，但如果你希望这个类的实例能够方便地被打印出来，或者能够进行直接的比较（比如两个侠客的各项数据完全相同时，`==` 应该返回 `True`），你必须手动为它实现 `__repr__` 方法和 `__eq__` 方法：
+
+```python
+class Knight:
+    def __init__(self, name: str, power: int, skill: str):
+        self.name = name
+        self.power = power
+        self.skill = skill
+
+    def __repr__(self):
+        return f"Knight(name={self.name!r}, power={self.power!r}, skill={self.skill!r})"
+
+    def __eq__(self, other):
+        if not isinstance(other, Knight):
+            return NotImplemented
+        return (self.name, self.power, self.skill) == (other.name, other.power, other.skill)
+```
+
+对于一个只有三个字段的类，我们不得不编写大量重复的“样板代码”（Boilerplate Code）。当类的字段变多时，这会变得极其繁琐且容易出错。
+
+为了解决这个问题，Python 3.7 引入了 **数据类（Data Classes）**。通过使用 `dataclasses` 模块中的 `@dataclass` 装饰器，Python 可以自动为我们生成 `__init__`、`__repr__`、`__eq__` 等一系列常用的方法。
+
+### 优雅的现代写法
+
+我们使用 `@dataclass` 重写上面的侠客类：
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Knight:
+    name: str
+    power: int
+    skill: str
+    state: str = "生龙活虎"  # 支持设置默认值
+```
+
+就是这么简单！我们只需要使用**类型提示**来声明类体内的属性，`@dataclass` 就会在幕后默默为我们完成所有的累活。
+
+我们来测试一下它的功能：
+
+```python
+# 自动生成的 __init__ 方法，支持按位置或关键字传参
+k1 = Knight("西门吹雪", 100, "一剑西来")
+k2 = Knight("西门吹雪", 100, "一剑西来")
+k3 = Knight("叶孤城", 95, "天外飞仙")
+
+# 1. 自动生成的 __repr__ 打印方法，输出清晰漂亮
+print(k1)
+# 输出: Knight(name='西门吹雪', power=100, skill='一剑西来', state='生龙活虎')
+
+# 2. 自动生成的 __eq__ 比较方法，按字段值进行比较
+print(k1 == k2)  # 输出: True
+print(k1 == k3)  # 输出: False
+```
+
+### 为什么应该使用数据类？
+
+1. **零样板代码**：大幅减少无意义的属性赋值和特殊方法编写，让代码极度清晰。
+2. **支持默认值**：可以直接在声明属性时指定默认值，例如上面的 `state: str = "生龙活虎"`。需要注意的是，带有默认值的属性必须定义在没有默认值的属性后面。
+3. **支持不可变数据类**：只需在装饰器中传入参数 `@dataclass(frozen=True)`，就可以将该数据类声明为只读（不可变）的。此时，任何试图修改其属性的行为都会引发 `FrozenInstanceError` 异常，而且这种不可变的数据类是**可哈希的**，可以直接作为字典的键（Key）或集合（Set）的元素。
+4. **强健的类型提示集成**：数据类强制要求声明类型提示，完全契合现代 Python 规范（Modern Python 3.9+），与 IDE 自动补全及静态类型检查器（如 mypy）配合丝滑。
+
+在编写主要用于承载并管理数据的类时，`@dataclass` 是现代 Python 程序员的绝对首选。
+
+
+

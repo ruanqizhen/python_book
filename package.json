@@ -15,8 +15,8 @@
     "preview": "npm run build && wrangler dev"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.9.2",
-    "@docusaurus/preset-classic": "^3.9.2",
+    "@docusaurus/core": "^3.10.1",
+    "@docusaurus/preset-classic": "^3.10.1",
     "@easyops-cn/docusaurus-search-local": "^0.46.1",
     "@giscus/react": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
@@ -28,11 +28,11 @@
     "react-dom": "^18.0.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-	"wrangler": "^4.69.0"
+    "wrangler": "^4.69.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.9.2",
-    "@docusaurus/types": "^3.9.2"
+    "@docusaurus/module-type-aliases": "^3.10.1",
+    "@docusaurus/types": "^3.10.1"
   },
   "browserslist": {
     "production": [
