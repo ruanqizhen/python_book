@@ -99,6 +99,7 @@ const sidebars = {
       },
       items: [
         'time',
+        'regex',
         'numpy',
         'pandas',
         'matplotlib',
