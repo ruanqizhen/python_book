@@ -109,7 +109,7 @@ const sidebars = {
         'folium',
         'miscellaneous',
         'fastapi',
-        'placeholder',
+        'ai_api',
       ],
     },
     'epilogue',
