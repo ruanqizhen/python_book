@@ -4,7 +4,7 @@
 
 在现实世界中，Python 是与这些 AI 大模型沟通最天然、最便捷的语言。目前市面上最强大的 AI 大模型（如国外的 OpenAI ChatGPT，国内的 DeepSeek、通义千问等）都提供了 API（应用程序编程接口）。通过 API，我们可以让 Python 程序自动把问题发送给 AI，并接收 AI 的回答，从而将 AI 的大脑无缝接入到我们自己的应用程序中。
 
-本章我们将以行业的标杆 **OpenAI** 和近期备受瞩目的国产开源之光 **DeepSeek** 为例，讲解如何使用 Python 调用 AI API。
+本章我们将以行业的标杆 **OpenAI** 和近期备受瞩目的国产开源之光 **DeepSeek** 为例，简要讲解如何使用 Python 调用 AI API。如果想要更深入学习 AI 编程，可以参考这本书[《重构程序员》](https://cocode.qizhen.xyz/)。
 
 ## 准备工作：通行令牌（API Key）
 
