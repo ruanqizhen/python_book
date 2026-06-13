@@ -17,7 +17,14 @@ const config = {
   projectName: 'python_book', // Usually your repo name.
   i18n: {
     defaultLocale: 'zh-cn',
-    locales: ['zh-cn'],
+    locales: ['zh-cn', 'en'],
+    localeConfigs: {
+      en: {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en-US',
+      },
+    },
   },
   presets: [
     [
@@ -71,6 +78,12 @@ const config = {
           src: 'img/logo.png',
           href: '/'
         },
+        items: [
+          {
+            type: 'localeDropdown',
+            position: 'right',
+          },
+        ],
       },
       prism: {
         theme: prismThemes.github,

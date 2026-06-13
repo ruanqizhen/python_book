@@ -1,0 +1,10 @@
+{
+  "title": {
+    "message": "Python Secrets",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Python",
+    "description": "The alt text of the logo in the navbar"
+  }
+}

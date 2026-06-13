@@ -1,0 +1,46 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.doc.README": {
+    "message": "Foreword",
+    "description": "The label for the doc item README in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.编程基础": {
+    "message": "Programming Basics",
+    "description": "The label for category 编程基础 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.函数式编程": {
+    "message": "Functional Programming",
+    "description": "The label for category 函数式编程 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.面向对象编程": {
+    "message": "Object-Oriented Programming",
+    "description": "The label for category 面向对象编程 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.并发与并行": {
+    "message": "Concurrency & Parallelism",
+    "description": "The label for category 并发与并行 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.数据结构与算法": {
+    "message": "Data Structures & Algorithms",
+    "description": "The label for category 数据结构与算法 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.无所不能": {
+    "message": "All-Powerful",
+    "description": "The label for category 无所不能 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.doc.epilogue": {
+    "message": "Epilogue",
+    "description": "The label for the doc item epilogue in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.link.GitHub 项目": {
+    "message": "GitHub Project",
+    "description": "The label for link GitHub 项目 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.link.作者个人主页": {
+    "message": "Author's Homepage",
+    "description": "The label for link 作者个人主页 in sidebar tutorialSidebar"
+  }
+}
