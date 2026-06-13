@@ -7,7 +7,7 @@ import katex from 'rehype-katex';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Python 秘籍',
+  title: 'The Python Codex',
   tagline: '面向读者的 Python 编程实战指南：涵盖基础、进阶、数据分析与面试干货',
   url: 'https://py.qizhen.xyz',
   baseUrl: '/',
@@ -72,7 +72,7 @@ const config = {
       },
       navbar: {
         hideOnScroll: true,
-        title: 'Python 秘籍',
+        title: 'The Python Codex',
         logo: {
           alt: 'Python',
           src: 'img/logo.png',
@@ -92,10 +92,10 @@ const config = {
       zoomSelector: '.markdown img',
       metadata: [
         { name: 'keywords', content: 'Python, 编程, 经验, 教程, 开源, 免费, 电子书, 下载, PDF, 示例, 面试, 数据分析, 机器学习' },
-        { name: 'description', content: '《Python 秘籍》是一本开源的 Python 学习指南，包含丰富的代码示例、进阶技巧和面试准备内容。' },
+        { name: 'description', content: '《The Python Codex》是一本开源的 Python 学习指南，包含丰富的代码示例、进阶技巧和面试准备内容。' },
         { name: 'author', content: 'Qizhen Ruan 阮奇桢' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'og:title', content: 'Python 秘籍 - 你的 Python 编程进阶宝典' },
+        { name: 'og:title', content: 'The Python Codex - 你的 Python 编程进阶宝典' },
         { name: 'og:description', content: '开源、免费的 Python 电子书，涵盖从基础到实战的方方面面。' },
       ],
     }
