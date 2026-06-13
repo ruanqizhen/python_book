@@ -3,8 +3,8 @@
     "message": "Next",
     "description": "The label for version current"
   },
-  "sidebar.tutorialSidebar.doc.README": {
-    "message": "Foreword",
+  "sidebar.tutorialSidebar.doc.前言": {
+    "message": "Preface",
     "description": "The label for the doc item README in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.编程基础": {
