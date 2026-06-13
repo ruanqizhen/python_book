@@ -1,116 +1,116 @@
 # Computer Fundamentals
 
-This section aims to provide beginners with background knowledge about computer composition and the history of programming languages, so as to better understand various concepts and conventions in computer languages. If you are already familiar with computer architecture, feel free to skip this section.
+This section provides beginners with foundational knowledge about computer architecture and the history of programming languages. Understanding these concepts will help you grasp the design choices and conventions in modern coding. If you are already familiar with computer architecture, feel free to skip to the next chapter.
 
 ## Turing Machine
 
-Since ancient times, people have been exploring how to use machines to assist with mathematical calculations. The abacus, for instance, is a typical auxiliary computing tool that can improve the user's calculation speed. However, the abacus has relatively simple functionality, effective only for basic addition, subtraction, multiplication, and division. Over the past two centuries, more powerful computing machines have been designed. Among them, the most influential for future generations is undoubtedly the Turing Machine, proposed by mathematician Alan Turing in 1936. Although the Turing Machine is not a physical machine but a model, it theoretically proved the feasibility of machine computation, laying the theoretical foundation for the birth and development of modern computers.
+Since ancient times, humans have sought ways to automate mathematical calculations. The abacus, for example, is a classic tool that speeds up arithmetic. However, its functionality is limited to basic addition, subtraction, multiplication, and division. Over the past two centuries, far more sophisticated computing machines have been designed. Among them, the most influential is the Turing Machine, conceptualized by mathematician Alan Turing in 1936. Although the Turing Machine is a theoretical model rather than a physical machine, it mathematically proved the feasibility of general-purpose computation, laying the foundation for modern computers.
 
-The basic components of a Turing Machine are as follows:
-- An infinitely long tape: The tape has countless squares, each of which can hold a single symbol.
-- A read/write head: The read/write head can move to any square on the tape to read or modify symbols.
-- A set of operation rules: The Turing Machine can save its current state and, based on the current state and the symbol on the tape, decide the next operation, such as moving to a new position, reading, or writing.
+The basic components of a Turing Machine are:
+- An infinitely long tape: Divided into discrete squares, each capable of holding a single symbol.
+- A read/write head: A mechanism that moves along the tape to read, write, or modify symbols.
+- A transition table (rules): A set of instructions dictating what the machine should do next (e.g., write a symbol, move left or right, or transition to a different state) based on its current state and the symbol it reads.
 
-Although the structure of the Turing Machine is simple, given a problem (a string of symbols written on the tape according to rules), it can compute the result of the problem (the updated tape). Turing proved that any "computable problem" can be solved using a Turing Machine.
+Despite its simplicity, this model can solve any algorithmic problem (represented as a sequence of input symbols on the tape) by executing a step-by-step procedure to produce an output. Turing proved that any mathematically "computable" problem can be solved by a Turing Machine.
 
-The Turing Machine is a theoretical model, and modern computers can be seen as a practical implementation of this model. Modern computers read and write data through memory or hard drives, and the Central Processing Unit (CPU) controls the read/write process. Although modern computers appear much more complex than the Turing Machine, they are essentially the same.
+Modern computers are practical implementations of this theoretical model. Memory and storage function like the tape, while the Central Processing Unit (CPU) acts as the read/write head and control logic. Although modern computers look infinitely more complex, they are conceptually equivalent to Turing's machine.
 
 ## Von Neumann Architecture
 
-Following the Turing Machine model, there are still many ways to build an actual machine. For example, magnetic cores or semiconductor circuits can replace the tape as storage media; the organization of data in memory can also differ; electronic signals can replace mechanical devices for reading and writing data, etc.
+Implementing Turing's model in the real world allows for various engineering choices. For example, we can use magnetic cores or semiconductor circuits instead of paper tape, organize memory in different layouts, and use electrical signals instead of mechanical parts to read and write data.
 
-The basic framework of modern computers adopts the Von Neumann Architecture, proposed by mathematician John von Neumann in 1945. The core idea of the Von Neumann Architecture is: use binary logic, store both data and program instructions (operations on data) in the same memory unit, and have the CPU read and execute them sequentially. This relatively concise design laid the foundation for modern general-purpose computers.
+The basic architecture of modern computers was proposed by mathematician John von Neumann in 1945. The core of the Von Neumann Architecture is stored-program execution: it uses binary logic, stores both data and program instructions in the same shared memory space, and relies on the CPU to fetch and execute instructions sequentially. This elegant design remains the foundation of general-purpose computers today.
 
-The main components of the Von Neumann Architecture include:
-- Central Processing Unit (CPU): Responsible for interpreting and executing instructions, coordinating the work of various parts of the computer.
-- Memory: Used to store program instructions and data.
-- Input/Output Devices: Such as keyboards and monitors, used for interacting with the computer.
-- Data Bus: Used for transmitting data.
+The primary components of this architecture are:
+- **Central Processing Unit (CPU)**: Interprets and executes instructions, coordinating the other hardware components.
+- **Memory (RAM)**: Volatile storage that holds active program instructions and data.
+- **Input/Output (I/O) Devices**: Keyboards, mice, and displays that let users interact with the machine.
+- **System Bus**: The communication pathways that transfer data between the CPU, memory, and I/O devices.
 
-In addition to the hardware components mentioned above, a computer also requires supporting software. Every computer has an operating system installed to manage the computer's hardware and software resources. Additionally, various system software and application software must be installed to perform specific tasks, such as browsing the web, playing videos, etc.
+Alongside hardware, a computer requires software. An operating system (OS) manages the physical hardware resources and provides a platform for other programs. On top of the OS, users install system utilities and applications to perform specific tasks, such as web browsers, office suites, and media players.
 
-A major issue with the Von Neumann Architecture is that the data transfer speed between the CPU and memory limits system performance. Reading and writing data in memory is much slower than the CPU's processing speed. To address this problem, many programming techniques and hardware optimization solutions have been developed, and this will also be a challenge we frequently encounter in the process of learning programming.
+A key bottleneck in this architecture is the speed difference between the CPU and memory—often referred to as the "Von Neumann bottleneck." Because memory access is orders of magnitude slower than CPU calculations, the processor spends a lot of time waiting for data. Bridging this gap involves sophisticated hardware cache designs and efficient programming techniques, representing a challenge we will encounter often in software engineering.
 
 ## Programming Languages
 
-In daily life, we primarily use the decimal system to represent data. But computers are different — they use binary. This is because binary is the simplest way to represent data using circuits: a high voltage level represents 1, and a low voltage level represents 0. That is, inside a computer, all information exists in the form of binary digits 0 and 1. Since it is very difficult for humans to directly understand this binary data, we need a communication tool between humans and computers — this is the programming language.
+In daily life, we use the decimal (base-10) system. Computers, however, operate in binary (base-2) because electrical circuits are naturally suited for two states: on (high voltage, representing `1`) and off (low voltage, representing `0`). Thus, at the lowest level, all computer data consists of binary digits (bits) `0` and `1`. Because humans cannot easily read or write machine-level binary, we use programming languages as a bridge.
 
-In the early days of computers, people had no choice but to accommodate the computer by directly using binary data to control it. This approach was extremely unfriendly to humans. Thus, assembly language emerged, using meaningful character strings to replace the binary numbers in machine language. This greatly improved program readability, but the structure of assembly language programs was still closely tied to specific machines.
+Early programmers had to write machine code directly in binary—an incredibly tedious and error-prone process. To make programming human-friendly, assembly language was introduced, replacing binary codes with short, mnemonic commands (like `ADD` or `MOV`). While a massive improvement, assembly language is still low-level and tied directly to the architecture of a specific processor.
 
-With the spread of computers, developers began to demand various different features from programming languages. To further improve programming efficiency and address various application scenarios, many high-level programming languages emerged. High-level programming languages abstract away the implementation details of underlying hardware, making syntax closer to human language, thus allowing programmers to write code with more concise and readable syntax structures. High-level languages typically focus more on "what to do," while low-level languages focus more on "how to do it." The most popular programming languages today, such as Python and JavaScript, are typical examples of high-level languages.
+As computers proliferated, developers needed languages that were faster to write and easier to maintain. This led to the creation of high-high-level programming languages. These languages abstract away hardware-specific details like memory addresses and CPU registers, using syntax that resembles English. This allows developers to express complex logic cleanly and concisely. In short, high-level languages let you focus on *what to solve*, whereas low-level languages require you to manage *how the machine does it*. Modern languages like Python and JavaScript are prime examples of high-level languages.
 
-Looking at the development trajectory of programming languages, the clear trend is toward increasing abstraction and becoming closer to human natural language. In the future, humans are likely to communicate directly with machines using natural language, without the need for programming languages for human-computer interaction.
+The historical trajectory of computer languages is one of increasing abstraction, bringing programming closer to human natural language. In the future, voice interfaces and AI models may allow humans to command systems in plain English, potentially bypassing traditional coding languages entirely.
 
 ### Why Are There So Many Programming Languages?
 
-It is difficult to count exactly how many programming languages exist in the world. Sometimes, even in computer science courses, students are asked to design a new programming language. Even considering only those with formal specifications that are widely used, there are at least a thousand. Why do we need so many programming languages? Could we maintain just one or a few programming languages and accomplish everything?
+There are thousands of programming languages in existence. Even if we only count those actively used in the industry, there are hundreds. Why do we need so many? Why can't we just use a single universal language for everything?
 
-This is almost impossible. Ideally, we would want a programming language to have the following characteristics:
-- Easy to learn and use: Beginners can get started directly and complete tasks efficiently.
-- Powerful: Capable of doing any work, even very large-scale projects.
-- High execution efficiency: Minimal resource consumption, fastest program execution speed.
-- High development efficiency: Can quickly set up any project.
-- Safe and reliable: Can prevent program errors and guard against malicious exploitation.
-- Flexible and extensible: Can add new functionality to a program with minor modifications.
-- Cross-platform and portable: The same program can run on different hardware platforms, such as phones, watches, servers, etc.
+A universal language is impractical because we expect a programming language to possess several conflicting qualities:
+- **Ease of Use**: Simple syntax so beginners can learn it quickly.
+- **Expressiveness**: Powerful features suitable for complex, large-scale systems.
+- **Execution Speed**: Minimal resource footprint and maximum performance.
+- **Development Speed**: Ability to build and iterate projects rapidly.
+- **Safety**: Robust guards against memory leaks, runtime crashes, and security vulnerabilities.
+- **Flexibility**: Easy to modify and extend over time.
+- **Portability**: The ability to run on any device, from servers and desktops to smartphones and IoT gadgets.
 
-However, these requirements often conflict with each other. For example, the more features there are, the higher the learning cost. Therefore, no single programming language can perfectly satisfy all needs. This is precisely why people have developed various different programming languages, optimizing for specific aspects.
+Unfortunately, these goals are in constant tension. For instance, execution efficiency often requires low-level manual memory management, which increases development time and safety risks. Conversely, ease of use and safety features like automated garbage collection introduce runtime overhead. Because no single language can do it all, developers choose different tools based on their specific priorities.
 
-Moreover, whenever a new class of problems emerges, we need some new language features to address them. Yet, in most cases, improving an existing programming language is very costly, and creating a new programming language is often more economical than improving an existing one. If we modify an existing programming language to adapt to new requirements, it could very well break programs already written in that language. Such consequences are unacceptable, so the safe approach is to not alter existing languages but instead create a new language to meet new needs. Hence, new programming languages keep appearing. For example, although C was already popular, to support object-oriented programming, people developed C++, Java, and others.
+Additionally, when new computing paradigms emerge (such as cloud computing or web applications), they require new language features. Retrofitting an existing language can be incredibly expensive and risky, as changes might break millions of lines of legacy code. To maintain backward compatibility, it is often easier and safer to design a new language from scratch. For example, C's dominance was challenged by the rise of object-oriented programming, leading to the creation of C++, Java, and eventually languages like Rust and Go.
 
-This is not to say that once a programming language is designed, it must remain unchanged forever. In fact, living programming languages must continuously evolve. However, these improvements must not affect any existing functionality. For instance, after its release, C++ underwent several major improvements: support for templates, refinement of the STL, addition of lambda functions, and so on. The programming philosophy of C++ today is vastly different from its early days. When developing projects with early C++, most effort might have been spent on issues inherent to the language itself, such as finding memory leaks and wild pointers. Today, C++ can also manage memory automatically, allowing programmers to focus primarily on business logic rather than low-level resource management. Despite such significant changes, C++ has maintained extremely high backward compatibility: the vast majority of programs written in early years can still compile successfully on today's C++ compilers.
+This doesn't mean languages never change. Active programming languages must evolve. However, they must do so without breaking backward compatibility. C++, for example, has added templates, the Standard Template Library (STL), and lambda functions over the years. Modern C++ development is vastly different from early C++: modern features help prevent memory leaks and dangling pointers, allowing developers to write safer code. Yet, despite these major changes, C++ maintains excellent backward compatibility, allowing decades-old code to compile on modern compilers.
 
-Sometimes, programming language designers may discover unacceptable design flaws and may even have to break compatibility to make changes. For example, to thoroughly resolve some historical baggage from the language's early design (such as Unicode support, integer division, etc.), Python 3.0 made the decision to be backward incompatible. This meant that code that worked perfectly on Python 2 would likely fail on Python 3 without modification. This breaking change brought enormous migration costs, causing the Python community to spend more than a decade completing the transition from 2.0 to 3.0.
+Occasionally, language designers must make the difficult decision to break backward compatibility to fix fundamental flaws. A famous example is Python 3.0. To fix core issues with string encoding (Unicode) and clean up early design inconsistencies, Python 3 was released as a non-backward-compatible upgrade. This meant Python 2 code would not run on Python 3 without modifications. This breaking change split the ecosystem and took over a decade of migration effort for the community to transition fully.
 
-In its original design, Python prioritized ease of learning and use, thus sacrificing some complex features such as memory control; it prioritized flexibility, thus sacrificing some security, such as static type checking; it prioritized development efficiency, thus sacrificing execution efficiency. However, today's Python is also striving to overcome these shortcomings, such as compensating for missing features through third-party libraries and leveraging C-language precompiled modules to improve execution efficiency. It is for these reasons that Python has been able to be applied in an increasingly wide range of fields.
+Python's design choices prioritized developer experience. It favored readability over manual memory control, flexibility over strict static typing, and development speed over raw execution performance. Today, Python is addressing these historic trade-offs by adding optional type hinting, supporting optimized C extensions, and compiling to fast machine code via third-party libraries. This balance of simplicity and extensibility has fueled Python's explosive growth across diverse industries.
 
 ### Compiled Languages and Interpreted Languages
 
-Computer programming languages, though clearly different from the natural languages we use (Chinese, English, etc.), also share similarities. They are all composed of text (or graphical symbols) arranged according to specific syntax rules. However, computer processors cannot directly understand these texts or symbols — they only recognize binary instructions and data. Before running the programs we write, we first need to convert these text-based or graphical programs into binary instructions and data that the processor can recognize. Every programming language must go through this conversion process. Based on the translation process, programming languages are broadly divided into two categories: compiled and interpreted.
+Programming languages, like human languages, rely on text structured by syntax rules. However, CPUs cannot read this text directly—they only understand binary machine code. Every programming language must translate its human-readable source code into machine instructions. Based on how this translation happens, languages are generally classified as either compiled or interpreted.
 
-In compiled languages, the entire project's source code must be fully written, then translated entirely into binary machine language, before it can be executed. This translation process is called "compilation." Compiled languages like C and C++ have compilers that translate the programs we write into binary executable files.
+In a **compiled language**, the entire source code of the program is translated by a special program (the compiler) into machine code *before* execution, generating a standalone binary file (like an `.exe` file on Windows). C and C++ are classic compiled languages.
 
-Interpreted languages, on the other hand, do not require pre-compilation. They read the code while simultaneously translating it into binary machine language and executing the translated code on the fly. This process is called "interpretation": each line of code is read, interpreted, and executed. Python and JavaScript are typical interpreted languages. Code written in interpreted languages is sometimes also called scripts.
+An **interpreted language** does not generate a standalone machine-code binary. Instead, an interpreter reads and runs the source code line by line, translating and executing it on the fly. Python and JavaScript are typical interpreted languages, and their programs are often called scripts.
 
-These two types of programming languages each have their advantages and disadvantages. The advantage of compiled languages is their fast execution speed, because the program is pre-compiled and runs directly from the compiled binary machine language. Additionally, compiling the entire program as a whole allows for many optimizations that further improve efficiency. The downside is that any change to the code requires recompiling the entire program.
+Both approaches have pros and cons. Compiled languages run extremely fast because the translation is already complete, allowing the compiler to perform global performance optimizations. However, the development cycle is slower: any change to the source code requires recompiling the entire program before you can run it.
 
-Interpreted languages are relatively slower because the program must be interpreted before it can execute — the interpretation process is itself part of execution. However, they offer greater flexibility: modifications to part of the code do not affect the execution of other parts, which is very useful in certain situations. For example, while writing a program, you can execute it as you go to ensure correctness. If a particular statement is incorrect, you can modify and run just that statement without needing to re-execute the entire program, greatly improving development efficiency.
+Interpreted languages have a runtime performance penalty because translating the code on the fly takes time. However, they offer unmatched development flexibility. You can test code interactively line by line, modify parts of a running program, and see changes immediately without waiting for a compile step, which drastically speeds up development.
 
-Before 2020, compiled languages dominated program development. Interpreted languages were less popular because, at the time, they were indeed too slow. However, times have changed, and after many improvements, the speed disadvantage of interpreted languages is no longer as pronounced. Currently, the task that most consumes computing power and tests execution efficiency is arguably training artificial neural network models. Yet it is Python, an interpreted language, that excels most in this domain. The reason is that not all code in a Python program is executed interpretively. In fact, only the code in the main file is interpreted. The most time-consuming logic is usually implemented in [modules](module), for example, AI model training logic often runs in modules such as PyTorch. These modules themselves are pre-compiled and execute binary machine instructions directly at runtime. The code in the main program is typically responsible only for data passing and result display, operations that are inherently fast. Therefore, whether training an AI model in C or Python, there is almost no difference in speed.
+Historically, compiled languages dominated system development because interpreted environments were too slow. Today, however, that gap has shrunk. A great example is artificial intelligence: machine learning models require massive computational power, yet Python is the undisputed language of AI. Why? Because Python acts as a wrapper. The computationally intensive logic is stored in pre-compiled C/C++ libraries (such as PyTorch or TensorFlow). The Python script merely coordinates the data flow and settings, which requires very little CPU time. Thus, you get the execution speed of a compiled language with the development ease of Python.
 
-This is not only true for Python's built-in or third-party modules — our own modules are also pre-compiled by Python into bytecode and saved in \*.pyc files (usually located in the `__pycache__` directory). When the program runs again, the Python interpreter directly loads these bytecodes, skipping the step of parsing the source code. It is important to note that this mainly improves the program's startup speed but does not directly affect execution efficiency once the program is running.
+This optimization applies to your own modules too. When you import a custom file, Python compiles it into intermediate "bytecode" and saves it as a `.pyc` file in the `__pycache__` directory. On subsequent runs, Python loads the bytecode directly, skipping the parsing step. (Note that this speeds up program startup, but does not change execution speed once the code is running.)
 
 ## The Python Programming Language
 
 ### The Development of Python
 
-The Python programming language was conceived by Dutch computer scientist Guido van Rossum during the Christmas season of 1989. Its original intention was to design a language with clean syntax that is easy to learn and use. When naming the new language, Guido adopted "Python" from his favorite British comedy show, *Monty Python's Flying Circus*. The word "Python" means "snake," and thus the language became associated with snakes — its official logo features two serpents.
+Python was created by Dutch computer scientist Guido van Rossum during the Christmas holidays of 1989. His goal was to design an intuitive, highly readable language. He named it after the British comedy show *Monty Python's Flying Circus*. Because the word "python" refers to a snake, the language has a strong serpentine association, and its official logo features two interlocking snakes.
 
-A preview version of Python was released in 1991, and the first official version was released in 1994. In 2000, Python 2.0 was released, which refined Python's features. From this point on, Python gained widespread popularity and began to expand rapidly into various application domains. The 3.0 version released in 2008 was another major upgrade, addressing some historical issues in the language design, such as Unicode support.
+Guido released Python's first public prototype in 1991, followed by version 1.0 in 1994. Python 2.0, released in 2000, added list comprehensions and a garbage collector, launching Python into mainstream popularity. Python 3.0, released in 2008, was a major cleanup that modernized string handling and refined syntax, resolving early design inconsistencies.
 
-Today, thanks to its ease of use and powerful ecosystem, Python has become one of the most popular programming languages in the world. It consistently ranks at the top of programming language indexes such as the Stack Overflow survey and the TIOBE index. It is especially popular in fields such as data science, artificial intelligence, web development, and education.
+Today, Python consistently ranks at the top of programming language popularity indexes, including Stack Overflow developer surveys and the TIOBE index. It is the language of choice for data science, artificial intelligence, web backend development, automation, and education.
 
-Python's most appreciated advantages include:
+Its key strengths include:
 - Easy to learn and use: Clean syntax, suitable for rapid prototyping.
 - Efficient development: Extensive library support saves development time.
 - Versatility: Covers a wide range of needs from scientific computing to web development.
 - Strong community support: Rich resources available from beginners to experts.
 
-Its only notable disadvantage is insufficient support and a weak ecosystem for mobile development.
+Its main limitation is in mobile app development, where its ecosystem remains weak compared to Swift, Kotlin, or JavaScript.
 
 ### Python Interpreters
 
-There is more than one Python interpreter. The interpreter we talk about most often is called CPython, which is the official distribution of Python developed in C, hence the name CPython. Besides this interpreter, there are also environments that can run Python directly in a browser, such as PyScript (which uses WebAssembly technology to run a Python interpreter in the browser); tools that transpile Python code to JavaScript, such as Brython; the Jython interpreter that compiles to Java bytecode; IronPython that compiles to .NET bytecode; and PyPy, which uses Just-In-Time (JIT) compilation technology, among others. Since different interpreters may produce results slightly different from the official CPython, when describing program behavior, this book will use CPython as the reference.
+There are multiple implementations of the Python interpreter. The standard reference version is **CPython**, which is written in C and maintained by the Python Software Foundation. Other implementations include **PyScript** (running Python in browsers using WebAssembly), **Brython** (translating Python to JavaScript on the fly), **Jython** (compiling to Java bytecode), **IronPython** (integrating with the .NET framework), and **PyPy** (a high-performance interpreter using Just-In-Time compilation). Because their behaviors can differ slightly, this book uses standard CPython as its reference.
 
 ### Python Versions
 
-Python is constantly improving, with a major version update every few months. For learning purposes, it is recommended to use the latest version of Python whenever possible. To check your Python version, use the following command in your computer's command-line terminal:
+Python undergoes continuous development. We recommend using a modern version (such as Python 3.10 or later) for learning. You can check your installed version by running:
 
 ```bash
 python --version
 ```
 
-You will then see output similar to `Python 3.11.2`, indicating that the Python version is 3.11.2.
+This will print your active version, e.g., `Python 3.11.2`.
 
 If you are in a Python editing environment, you can run the following Python code to view the version:
 

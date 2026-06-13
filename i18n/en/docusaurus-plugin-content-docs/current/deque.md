@@ -1,34 +1,34 @@
 # Stack and Queue
 
-Stack and queue are two fundamental data structures that are often discussed together. They are typically implemented based on linked lists and can serve as a concrete application example of linked lists.
+Stacks and queues are two fundamental data structures that are often discussed together. Typically implemented using linked lists, they serve as excellent practical applications of list-based structures.
 
 ## Basic Concepts
 
 ### Stack
 
-A Stack is a Last-In-First-Out (LIFO) data structure, meaning the last element added is the first one to be removed. A stack is somewhat like a pistol magazine: data pushed into the stack is like bullets loaded into the magazine, and the bullet loaded first will always come out last.
+A **stack** is a Last-In-First-Out (LIFO) data structure, meaning the last element added is the first one to be removed. A stack is analogous to a pistol magazine: the first bullet loaded into the magazine resides at the bottom and is the last to be fired, while the last bullet loaded sits at the top and is fired first.
 
 A stack has three basic operations:
-* Push: Add an element to the top of the stack
-* Pop: Remove the top element of the stack
-* Top: View the top element of the stack without removing it
+* **Push**: Add an element to the top of the stack.
+* **Pop**: Remove the top element of the stack.
+* **Top**: View the top element of the stack without removing it.
 
 ### Queue
 
-A Queue is a First-In-First-Out (FIFO) data structure, meaning the first element added is the first one to be removed. A queue behaves like people queuing to buy tickets: data entering the queue is like customers joining the line, and the customer who queues up first will always be served first and leave the line first.
+A **queue** is a First-In-First-Out (FIFO) data structure, meaning the first element added is the first to be removed. A queue is analogous to a line of people waiting to buy tickets: the person who joins the line first is served first and leaves first.
 
 A queue also has three similar basic operations:
-* Enqueue: Add an element to the end of the queue
-* Dequeue: Remove the element at the front of the queue
-* Front: View the element at the front of the queue without removing it
+* **Enqueue**: Add an element to the end of the queue.
+* **Dequeue**: Remove the element at the front of the queue.
+* **Front**: View the element at the front of the queue without removing it.
 
 ### Deque
 
-A deque (short for double-ended queue) is a data structure that combines the properties of both a stack and a queue. Elements in a deque can be added and removed from both ends. Therefore, by restricting enqueue or dequeue operations to one end, it can be used as either a stack or a queue. In practice, a doubly linked list is commonly used to replace a stack or a queue.
+A **deque** (short for double-ended queue) combines the properties of both a stack and a queue. Elements can be added to or removed from both the front and the back of a deque. By restricting operations to one end, a deque can easily emulate a stack or a queue. In practice, deques or doubly linked lists are frequently used in place of basic stacks and queues.
 
-A deque is implemented using a doubly linked list, but it restricts insertions and deletions to only the head and tail ends of the list. Therefore, its enqueue and dequeue time complexity is the same as linked list insertion and deletion, both being $O(1)$.
+When implemented using a doubly linked list, a deque restricts insertions and deletions to the head and tail. Consequently, these operations achieve a time complexity of $O(1)$.
 
-In Python, there is a built-in deque implementation, the `deque` class in the `collections` module. It is implemented in C. To balance performance and memory efficiency, it does not use a simple doubly linked list internally; instead, it uses a doubly linked list composed of fixed-length array blocks. This makes adding/removing elements at both ends very fast ($O(1)$), but accessing elements in the middle is still slower. The basic operations of deque are as follows:
+Python provides a built-in double-ended queue implementation through the `deque` class in the `collections` module. Written in C, it balances performance and memory efficiency by utilizing a doubly linked list of fixed-length array blocks. This hybrid architecture ensures that adding or removing elements at either end is extremely fast ($O(1)$), though random access to elements in the middle remains slow ($O(n)$). The basic operations of `deque` are:
 * Right-side append `append()`: Add an element to the right end.
 * Left-side append `appendleft()`: Add an element to the left end.
 * Right-side pop `pop()`: Pop an element from the right end.
@@ -99,17 +99,22 @@ print(deque.pop())      # Output: 2
 print(deque.popleft())  # Output: 0
 ```
 
-In the program above, each `append` and `appendleft` creates a new `Node` instance. We implement `appendleft` and `append` by adjusting the references of the head and tail nodes. Similarly, `popleft` and `pop` operations remove a node from the corresponding end of the linked list and update the head or tail reference.
+In the code above, each `append` and `appendleft` operation instantiates a new `Node`. We manage insertions at either end by updating the pointers of the head and tail nodes. Similarly, `pop` and `popleft` operations remove a node from the appropriate boundary and update the corresponding reference.
 
 ## Applications
 
-Stacks and queues are well-suited for scenarios that require fast addition and removal of data, such as: being used as a cache; for inter-thread communication, especially in producer-consumer problems, where a queue can serve as a work queue between producers and consumers. When traversing a tree or a graph, stacks or queues are also often needed to store data.
+Stacks and queues are well-suited for scenarios requiring fast data insertion and removal. Examples include:
+* **Caches**: Storing temporary data for fast retrieval.
+* **Inter-thread communication**: Particularly in producer-consumer patterns, where a queue serves as a shared buffer.
+* **Graph and tree traversals**: Storing nodes during depth-first or breadth-first searches.
 
 ### Valid Parentheses
 
-Given a string containing only the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. A valid string requires that every opening bracket must be matched with a closing bracket of the same type, and the opening brackets must be closed in the correct order.
+Given a string containing only the characters `(`, `)`, `{`, `}`, `[` and `]`, determine if the string is valid. A string is valid if:
+1. Open brackets are closed by the same type of brackets.
+2. Open brackets are closed in the correct order.
 
-The algorithm is straightforward: each time an opening bracket is read, push it onto the stack; each time a closing bracket is read, pop an opening bracket from the stack. If the two brackets match, proceed; if they do not match, or if there are unmatched brackets remaining at the end, the input string is invalid. The code is as follows:
+The algorithm is straightforward: when we encounter an opening bracket, we push it onto the stack. When we see a closing bracket, we pop the top element from the stack and verify that it matches. If the brackets match, we continue; if they mismatch, or if the stack is not empty at the end of the scan, the string is invalid. The implementation is as follows:
 
 ```python
 def isValid(s: str) -> bool:
@@ -139,20 +144,22 @@ test_string = "{[]}"
 print(isValid(test_string))  # Should return True
 ```
 
-In the code above, we use a dictionary `bracket_map` to store the bracket pairing relationships, allowing us to quickly check whether a closing bracket matches the opening bracket on top of the stack.
+In the code above, we use the `bracket_map` dictionary to store pairs, allowing us to quickly check whether a closing bracket matches the opening bracket at the top of the stack.
 
 ### Implementing a Min Stack
 
-Design a stack that supports push, pop, and top operations, and can retrieve the minimum element in the stack in constant time. Some readers might think of using a regular stack with an extra variable to record the minimum data pushed. However, a single variable is not enough, because when the minimum data is popped, we have no way of knowing the new minimum among the remaining elements in the stack.
+Design a stack that supports `push`, `pop`, and `top` operations, and can retrieve the minimum element in $O(1)$ time. 
 
-We can use the auxiliary stack approach. We maintain two stacks:
-1. Main stack (stack): Used to store all data normally.
-2. Min stack (min_stack): Used to synchronously store the current sequence of minimum values.
+Using a single variable to store the minimum value is insufficient because once that minimum element is popped off the stack, we lose track of the next smallest value among the remaining elements.
 
-The logic is as follows:
-- Push: Push the data onto the main stack. If the data is less than or equal to the top element of the min stack (or the min stack is empty), also push the data onto the min stack.
-- Pop: Pop data from the main stack. If the popped data equals the top element of the min stack, it means the removed data is the current minimum, so the min stack must also be popped synchronously.
-- Get minimum: Directly read the top element of the min stack.
+To solve this, we can maintain an auxiliary stack alongside the main stack:
+1. Main stack (`stack`): Stores all data.
+2. Min stack (`min_stack`): Stores the running minimums.
+
+Our operations are structured as follows:
+* **Push**: Push the value onto the main stack. If the value is less than or equal to the current minimum (the top of the min stack) or if the min stack is empty, push it onto the min stack as well.
+* **Pop**: Pop the value from the main stack. If this value equals the top of the min stack, pop it from the min stack as well.
+* **Get Minimum**: Retrieve the top value of the min stack.
 
 The implementation code is as follows:
 

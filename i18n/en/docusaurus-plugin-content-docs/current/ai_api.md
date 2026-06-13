@@ -1,24 +1,24 @@
 # Calling AI Large Language Models
 
-On the planet of Pythora, although residents can command all things by writing Python code, sometimes they encounter problems that require extremely vast knowledge reserves or complex logical reasoning to solve. Whenever this happens, they seek help from the "Super Mind" residing in the cloud—the Large Language Model (LLM).
+On the planet Pythora, while residents can command machines by writing Python code, they occasionally encounter challenges requiring vast knowledge or complex reasoning. When this happens, they call upon the "Super Mind" in the cloud: the Large Language Model (LLM).
 
-In the real world, Python is the most natural and convenient language for communicating with these AI large models. Currently, the most powerful AI large models on the market (such as OpenAI ChatGPT overseas, and DeepSeek, Tongyi Qianwen in China) all provide APIs (Application Programming Interfaces). Through APIs, we can have our Python programs automatically send questions to the AI and receive the AI's answers, thereby seamlessly integrating the AI's brain into our own applications.
+In practice, Python is the primary language for interacting with these AI engines. Today, the most capable LLMs (such as OpenAI's GPT models and DeepSeek) provide Application Programming Interfaces (APIs). Through these APIs, our Python scripts can send prompts and receive responses programmatically, seamlessly integrating AI capabilities into our own software.
 
-In this chapter, we will take the industry benchmark **OpenAI** and the recently notable domestic open-source star **DeepSeek** as examples to briefly explain how to call AI APIs using Python. If you want to learn AI programming in more depth, you can refer to this book: [《重构程序员》](https://cocode.qizhen.xyz/).
+In this chapter, we will walk through using Python to interact with AI APIs, using the industry-standard **OpenAI** and the open-source star **DeepSeek** as examples. For a deeper dive into AI-driven software development, check out the book [《重构程序员》](https://cocode.qizhen.xyz/).
 
-## Preparation: Access Token (API Key)
+## Authentication: Obtaining an API Key
 
-To communicate with the AI in the cloud, you first need to prove your identity. Each AI provider generates a string of random letters and numbers for you—this is the **API Key**. It is like a pass token to enter the cloud treasury.
+To interact with cloud-based AI services, you must authenticate your requests. AI providers issue a unique credentials string known as an **API Key**, which acts as a secure passcode to access their servers.
 
-Obtaining the access token is simple:
+To obtain your key:
 
 1. Go to the official developer platform of OpenAI or DeepSeek and register an account.
 2. Find the "API Keys" menu and click "Create new API Key".
-3. Copy the string and keep it safe. **Note: Your API Key is equivalent to your bank card password. Never write it directly in your code and upload it to a public network (such as GitHub)!** Otherwise, others could steal your usage quota.
+3. Copy the key and store it securely. **WARNING: Your API Key is a sensitive credential, similar to a password. Never hardcode it directly into your source files or upload it to public repositories like GitHub!** If leaked, others can use your account, incurring unexpected charges.
 
-### Environment Variables and python-dotenv
+## Managing Secrets with Environment Variables
 
-To store the API Key securely, the mages of Pythora usually write it in a hidden `.env` file and read it through Python's environment variables.
+To keep API keys secure, developers on the planet Pythora avoid hardcoding them directly into scripts. Instead, they store them in a hidden `.env` file and load them as environment variables.
 
 First, install the `python-dotenv` library in your terminal:
 
@@ -27,7 +27,7 @@ pip install python-dotenv
 
 ```
 
-Then, in the same directory as your Python script, create a new text file named `.env` and write your keys in it:
+Create a `.env` text file in your project root directory and add your credentials:
 
 ```text
 # .env file contents
@@ -36,7 +36,7 @@ DEEPSEEK_API_KEY="sk-your-DeepSeek-key..."
 
 ```
 
-In your Python program, you can safely read them like this:
+In your Python script, you can load and retrieve these variables securely:
 
 ```python
 import os
@@ -51,18 +51,18 @@ print("Successfully read the key!")
 
 ```
 
-## Summoning OpenAI: Industry Standard Dialogue
+## Interacting with the OpenAI API
 
-OpenAI provides a very complete official Python library that greatly simplifies the tedious process of sending requests. First, install the official library:
+OpenAI provides an official Python SDK that abstracts away low-level HTTP requests. Install it using `pip`:
 
 ```bash
 pip install openai
 
 ```
 
-### Your First AI Dialogue Program
+### Creating Your First Chat Completion
 
-The following code shows how to send a message to OpenAI and print its reply:
+Here is a complete script to send a message to the model and retrieve its response:
 
 ```python
 import os
@@ -91,21 +91,21 @@ print(response.choices[0].message.content)
 
 ```
 
-**Code Breakdown:**
+**How It Works:**
 
-* **`model`**: Specifies which model to summon (e.g., `gpt-4o`, `gpt-3.5-turbo`).
-* **`messages`**: This is a list that records the context of the conversation. It contains different roles (`role`):
-  * `"system"`: This is where you set the AI's "persona" or global background instructions.
-  * `"user"`: Your questions or commands.
-  * `"assistant"`: The AI's previous replies (in multi-turn conversations, you need to include what the AI said before to help it remember the context).
+* **`model`**: Selects the target LLM version (e.g., `gpt-4o`).
+* **`messages`**: A list of messages representing the conversation history. Each message has a specific `role`:
+  * `"system"`: Sets the assistant's behavior, persona, or guidelines.
+  * `"user"`: Represents prompts submitted by the user.
+  * `"assistant"`: Represents the model's responses. In a multi-turn chat, feeding previous assistant messages back to the API helps the model retain context.
 
-* **`temperature`**: The temperature parameter. If you want it to write poetry or fiction, set it higher (e.g., 0.8); if you want it to write strict code or do math problems, set it lower (e.g., 0.0).
+* **`temperature`**: Controls response creativity. Higher values (e.g., 0.8) lead to more diverse, creative answers, while lower values (e.g., 0.0) make the output deterministic and precise.
 
-## Summoning DeepSeek: The Charm of Seamless Substitution
+## Interacting with the DeepSeek API
 
-DeepSeek is a domestic AI model that has recently attracted a lot of attention. Its code ability and logical reasoning have reached world-class levels, while its API call prices are very affordable.
+DeepSeek is a popular model known for its strong reasoning capabilities, code generation, and cost-effective API pricing.
 
-For Python developers, DeepSeek has an extremely delightful feature: **Its API format is fully compatible with OpenAI's standard!** This means you **do not need** to learn any new library. You only need to modify two parameters in the previous program: **Base URL** and **API Key**, and you can use the same spell for summoning OpenAI to summon DeepSeek directly!
+For Python developers, DeepSeek's API is designed to be **fully compatible with OpenAI's request and response schemas**. This means you do not need a separate SDK; you can use the official `openai` library and simply change the `base_url` and `api_key` parameters:
 
 ```python
 import os
@@ -134,13 +134,13 @@ print(response.choices[0].message.content)
 
 ```
 
-*Note: Currently, many excellent open-source models or API services (such as SiliconFlow, Groq, etc.) both domestically and internationally support the OpenAI interface format. As long as you master the usage of the OpenAI SDK, you can freely switch between various large models—this is the charm of unified standards.*
+*Note: Many API providers (such as Groq, Together AI, or local runners like Ollama) adopt this same OpenAI-compatible API standard. Learning the OpenAI SDK layout effectively gives you the tools to interact with dozens of different LLM providers by simply updating configurations.*
 
-## Advanced Technique: Streaming Output
+## Streaming Responses
 
-When using ChatGPT in practice, you will notice that text appears one word at a time. This is called **streaming output**. Because generating lengthy responses takes tens of seconds for large models, if you wait for the entire response to finish before displaying it, users would feel the program has frozen.
+When using web chatbots, you typically see text generated word by word. This typewriter effect is called **streaming**. Because generating a full response can take several seconds, streaming chunks as they are generated provides a much better user experience than waiting for the entire payload to compile.
 
-Implementing this "typewriter" effect in Python is very simple, just add `stream=True` when making the call:
+To stream responses in Python, pass `stream=True` in the request parameters:
 
 ```python
 import os
@@ -170,11 +170,11 @@ for chunk in stream:
 
 ```
 
-## Exception Handling: Dealing with Network and Cloud Storms
+## Error Handling and API Exceptions
 
-When sending requests to the cloud, network fluctuations, insufficient API balance, or even cloud server crashes are all possible. A robust Python program must be able to handle these exceptions gracefully, rather than crashing outright.
+When calling cloud services, your code must handle network dropouts, rate limiting, and API authentication errors gracefully to prevent application crashes.
 
-When using large model APIs, it is strongly recommended to combine the knowledge we learned in the [Exception Handling](https://www.google.com/search?q=exception) chapter:
+Wrap your API calls in `try-except` blocks, catching specific exception classes provided by the SDK (as discussed in the [Exception Handling](exception.md) chapter):
 
 ```python
 from openai import OpenAI, APIError, AuthenticationError, RateLimitError
@@ -199,13 +199,13 @@ except Exception as e:
 
 ```
 
-## Multi-turn Dialogue and History Concatenation
+## Managing Conversational State (Multi-Turn Chat)
 
-In the previous examples, each time we sent a request to the cloud, it was a one-off transaction. The large model in the cloud is inherently stateless; it has no memory. If you first ask "My name is Qizhen" and it replies "Got it", then you immediately send a second request asking "What is my name?", it will be completely confused.
+Large language models are stateless; they do not remember previous API calls. If you prompt a model with "My name is Qizhen" and follow up in a separate request with "What is my name?", the model will have no record of the previous message.
 
-To give the AI continuous memory for true "multi-turn dialogue", we must maintain a "memory river" in our local code. **The secret is: each time we send a request to the AI, we must not only send the latest question but also package and send all previous conversation history together.**
+To build a continuous conversation, you must maintain the conversational state locally in a list and pass the entire history to the API with each new prompt:
 
-Let's use a `while` loop to implement a real local AI chatbot:
+The following example implements a terminal-based chatbot using a loop and a message list:
 
 ```python
 import os
@@ -258,11 +258,11 @@ while True:
 
 ```
 
-### Memory Trimming and "Context Rot"
+## Context Management and Token Limits
 
-In this program, as you keep chatting, the `dialogue_history` list will grow longer and longer. This brings two real-world problems:
+As a conversation progresses, the message list grows indefinitely, leading to two major challenges:
 
-1. **Cost and Limits**: AI APIs charge based on the number of words (Tokens) processed. Sending a massive amount of history every time not only slows down API calls but also quickly consumes your quota. Moreover, every model has a hard limit on the maximum context length (e.g., 8K, 32K, or 128K Tokens). Once exceeded, the cloud will reject the request with an error.
-2. **Context Rot**: Even if the length limit is not exceeded, excessively long input text can lead to a phenomenon known as "context rot." The AI's attention mechanism gets diluted by a large amount of early, useless chit-chat, causing it to start forgetting the initially set system prompt, or producing logical confusion and irrelevant answers.
+1. **Token Cost and Context Limits**: APIs charge based on the volume of data (measured in tokens) processed. Sending the entire history with every request is costly and slow. Furthermore, all models have a maximum context window limit (e.g., 128,000 tokens), beyond which the API will reject requests.
+2. **Attention Dilution**: Extremely long conversation histories dilute the model's attention, causing it to overlook early system instructions or generate less coherent responses.
 
-Therefore, when developing truly large-scale AI applications on the planet Pythora, residents usually write some "memory trimming" logic. For example: keep only the last 10 turns of dialogue and discard earlier ones; or when the list exceeds a certain threshold, automatically call another AI program to summarize the earlier lengthy conversations into a short paragraph of one to two hundred words, then use that summary as a new "memory starting point."
+To manage this, production applications implement **context window sliding** or **summarization** strategies: either keeping only the most recent N messages, or using an LLM to periodically summarize early segments of the conversation and prepend the summary as context.

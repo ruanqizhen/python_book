@@ -2,44 +2,51 @@
 
 ## PEP 8 Guidelines
 
-Python coding style broadly follows a style guide known as PEP 8. PEP 8, which stands for [Python Enhancement Proposal 8](https://peps.python.org/pep-0008/), is an official document describing conventions for writing Python code, aimed at improving the readability and consistency of Python code.
+Python coding style broadly follows a style guide known as PEP 8. PEP 8, which stands for [Python Enhancement Proposal 8](https://peps.python.org/pep-0008/), is the official document describing conventions for writing Python code. It aims to improve the readability and consistency of Python codebases.
 
-This specification is very detailed with many rules. Here are some of the most important guidelines:
+While the specification is highly detailed, here are some of the most important guidelines:
 
-- Indentation: Use 4 spaces for indentation. Tabs are not recommended. Each indentation level should be 4 spaces.
-- Line Length: Each line of code should not exceed 79 characters, which makes it easier to view on small screens and to place multiple files side by side. For long expressions, appropriate line breaks should be used while maintaining logical coherence.
-- Blank Lines: Two blank lines between top-level definitions, such as class definitions. One blank line between method definitions. Necessary blank lines should also be added within functions to separate logical sections.
-- Imports: Import statements should be written on separate lines. Import order: standard library imports, related third-party imports, local application/library specific imports, each group separated by a blank line. It is recommended to import only one module per line. However, when importing specific objects from a module (e.g., `from subprocess import Popen, PIPE`), multiple names can be imported on one line.
-- Spaces: Spaces should generally be added on both sides of assignment (`=`), comparison (`==`, `!=`, etc.), and arithmetic operators (`+`, `-`, etc.). Exceptions: In function parameter lists, there should be no spaces around the `=` sign used for default values or keyword arguments (e.g., `def func(key=value):`). There should also be no spaces inside the parentheses of function parameter lists, indexing, or slicing.
-- Comments: Comments should be indented at the same level as the code they describe. Comments should be complete sentences. If a comment is a phrase or sentence, its first letter should be capitalized, unless it starts with an identifier within the code (i.e., variables within the code). The first line of a function, class, or module typically uses a triple-quoted (`"""..."""`) string as a docstring to explain its purpose. Explanatory comments for code logic use the `#` format.
-- Naming: Class names typically use CamelCase style with the first letter capitalized and no underscores. Function and variable names typically use snake_case style with lowercase letters and words separated by underscores. Constants typically use UPPER_CASE style with all capital letters.
-- Statements: Write only one statement per line; do not use semicolons.
+- **Indentation**: Use 4 spaces per indentation level. Tabs are discouraged.
+- **Line Length**: Limit all lines to a maximum of 79 characters. This makes code easier to read on small screens and allows side-by-side file comparison. For long expressions, use appropriate line wraps while maintaining logical coherence.
+- **Blank Lines**: Surround top-level function and class definitions with two blank lines. Method definitions inside a class should be separated by a single blank line. You can also use single blank lines sparingly inside functions to separate logical sections.
+- **Imports**: Put imports on separate lines. Group them in the following order: standard library modules, related third-party libraries, and local application/library-specific modules. Separate each group with a blank line. While you should import only one module per line, importing multiple specific components from a single module (e.g., `from subprocess import Popen, PIPE`) on a single line is acceptable.
+- **Whitespace**: Use spaces around operators, such as assignment (`=`), comparison (`==`, `!=`), and arithmetic operators (`+`, `-`). However, avoid spaces around the `=` sign when used to indicate a keyword argument or default parameter value (e.g., `def func(key=value):`). Do not add spaces inside parentheses, brackets, or braces.
+- **Comments**: Indent comments to the same level as the code they explain. Write comments as complete sentences. Capitalize the first letter of a comment unless it begins with a case-sensitive identifier. The first line of a function, class, or module should use a triple-quoted string (`"""..."""`) as a docstring to describe its purpose. Inline or block comments explaining code logic should use the `#` prefix.
+- **Naming Conventions**: Class names should use PascalCase (CapitalizedWords). Function and variable names should use snake_case (lowercase words separated by underscores). Constants should be written in UPPER_CASE (all capital letters with underscores).
+- **Statements**: Write only one statement per line. Do not use semicolons to combine multiple statements on a single line.
 
 ## Auto-formatting Code
 
-There are now many tools that can help us automatically format program code, keeping the code style consistent and improving code readability. These tools can automatically adjust code formatting, such as indentation, spaces, line breaks, etc., making the code cleaner and more standardized.
+Many tools are available to automatically format your code, ensuring consistent style and improving readability. These tools adjust indentation, spaces, line breaks, and other formatting choices automatically, resulting in cleaner and more standardized code.
 
 ### PyCharm's Built-in Code Formatting Tool
 
-PyCharm is a popular Python Integrated Development Environment (IDE) that provides many powerful features, including automatic code formatting. PyCharm comes with built-in code formatting functionality that can easily format code to comply with coding standards such as PEP 8.
+PyCharm is a popular Python Integrated Development Environment (IDE) that includes built-in code formatting. This feature makes it easy to format your code to comply with PEP 8 standards automatically.
 
-If you need to manually format a Python file, you can select Code -> Reformat Code in the open Python file, or use the shortcut key (Ctrl+Alt+L on Windows/Linux, Option+Command+L on macOS in most cases). The file will then be formatted according to the standards.
+To manually format a file in PyCharm, select **Code -> Reformat Code**, or use the shortcut key (**Ctrl+Alt+L** on Windows/Linux, **Option+Command+L** on macOS). The file will be formatted instantly according to the configured code style guidelines.
 
-We can also set the file to be automatically formatted upon saving, so manual adjustment is not needed. Go to File -> Settings (or PyCharm -> Preferences on macOS). In Tools -> Actions on Save, check the Reformat code option to let PyCharm automatically format code files.
+You can also configure PyCharm to format files automatically whenever you save. Go to **File -> Settings** (or **PyCharm -> Preferences** on macOS) -> **Tools -> Actions on Save**, and check the **Reformat code** option.
 
 ### Using Third-party Code Formatting Tools
 
-If you feel that the IDE's built-in tools are not good enough, we can also use other tools to format code. Additionally, in VSCode, Microsoft recommends using separate formatting extensions. Click the Extensions icon on the left sidebar, search for and install the "Black Formatter" extension (published by Microsoft). After installation, select Black Formatter as the Default Formatter in settings.
+If you prefer independent formatting tools, you can integrate third-party formatters. For instance, in Visual Studio Code (VS Code), Microsoft recommends using dedicated formatting extensions. You can install the official **Black Formatter** extension from the marketplace and set it as your default formatter in the settings.
 
-There are many commonly used code formatting tools, such as Black, Flake8, autopep8, and YAPF, among others. Taking Black as an example, we need to install it before using it:
+Popular Python formatting tools include Black, Flake8, autopep8, and YAPF. Taking **Black** as an example, you can install it using pip:
 
 ```sh
 pip install black
 ```
 
-In PyCharm, go to File -> Settings -> Tools -> External Tools. Click "+" to add a new tool. Enter the tool name (Black) in the "Name" field. Enter the tool's path in the "Program" field (you may need to run `which black` (macOS/Linux) or `where black` (Windows) in the terminal to find the path). Enter `$FilePath$` in the "Arguments" field. Enter `$ProjectFileDir$` in the "Working directory" field. Once done, you can run Black formatting through Tools -> External Tools -> Black.
+To set up Black as an external tool in PyCharm:
+1. Go to **File -> Settings -> Tools -> External Tools**.
+2. Click the **"+"** button to add a new tool.
+3. Name the tool `Black`.
+4. In the **Program** field, enter the path to the Black executable (you can find this by running `which black` on macOS/Linux or `where black` on Windows in your terminal).
+5. Set the **Arguments** field to `$FilePath$`.
+6. Set the **Working directory** field to `$ProjectFileDir$`.
+Now, you can format any open file by selecting **Tools -> External Tools -> Black**.
 
-The setup in VSCode is also similar. Click the Extensions icon on the left sidebar of VSCode. Search for "Python" and select the Python extension published by Microsoft, then click Install. Then choose a formatting tool such as Black. After that, it is ready to use.
+In VS Code, search for the official **Python** extension published by Microsoft, click **Install**, and select **Black Formatter** as your default formatting provider.
 
 ## The Zen of Python
 
@@ -75,7 +82,7 @@ If the implementation is easy to explain, it may be a good idea.
 Namespaces are one honking great idea -- let's do more of those!
 ```
 
-This text is "The Zen of Python", authored by Tim Peters. "The Zen of Python" contains many profound insights into Python programming style and philosophy, emphasizing the importance of simplicity, readability, and explicitness. A rough Chinese translation is as follows:
+This text is 'The Zen of Python', authored by Tim Peters. It contains profound insights into Python's design philosophy, emphasizing simplicity, readability, and explicitness. A Chinese translation is shown below for comparison:
 
 ```
 美胜丑陋明胜晦，简胜繁复逸胜乱。扁平优于层层叠，疏散胜于密密缠。
@@ -85,13 +92,13 @@ This text is "The Zen of Python", authored by Tim Peters. "The Zen of Python" co
 命名空间大智慧，善用自然效率高。大道至简行其本，清风朗月任逍遥。
 ```
 
-Here is how the residents of the planet Pythora understand this poem:
+Here is how the residents of planet Pythora interpret these principles:
 
 ### Beauty
 
-The beauty of Python code not only improves code readability but also reflects a programming artistry. Clear, clean, and consistent code is easier to understand and maintain.
+Writing beautiful Python code is not just about aesthetics; it is a form of programming artistry. Clear, clean, and consistent code is significantly easier to understand and maintain.
 
-Code readability is an important aspect of programming, especially in team collaboration and long-term maintenance projects. Readable code is like good storytelling — it clearly expresses the program's intent and logic. The readability of the following code is not very good:
+Readability is crucial for team collaboration and long-term project maintenance. Highly readable code tells a clear story, explicitly communicating its intent and logic. For example, the following code has poor readability:
 
 ```python
 def calc(x,y):return x/2*y
@@ -99,7 +106,7 @@ result=calc(5,7)
 print(result)
 ```
 
-The main problem with the above code is that it uses overly abbreviated function and variable names. If more meaningful and clearer names are used, it not only makes the program easier to understand but also looks more visually appealing:
+The main issue with this code is its obscure naming. By using descriptive variable and function names, we make the code self-documenting and more readable:
 
 ```python
 # 方案一：计算矩形面积（与 length/width 对应）
@@ -111,7 +118,7 @@ def calculate_triangle_area(base, height):
     return base * height / 2
 ```
 
-The improved program not only uses meaningful function and variable names but also improves the naming style. Using a consistent coding style helps team members better understand and maintain the code. Adhering to unified coding standards can improve code quality. Another improvement is the addition of some extra spaces and blank lines. Because overly dense code can reduce readability. Proper use of spaces and blank lines can make code clearer. Python allows writing multiple statements on one line, but this makes the code look too dense, for example:
+The improved versions use descriptive names and a consistent naming style. They also use whitespace (spaces and blank lines) to separate logical components. Overly dense code reduces readability, whereas structured layout makes it scannable. While Python allows writing multiple statements on a single line separated by semicolons, doing so is highly discouraged:
 
 ```python
 if condition:do_action1();do_action2()
@@ -125,7 +132,7 @@ if condition:
     do_action2()
 ```
 
-Code can also be a form of artistic expression. Writing elegant code not only demonstrates technical ability but also reflects personal style and creativity. There are some verbose and complex programming approaches in Python, but they might be much more aesthetically pleasing than the most basic programming methods. For example, list comprehensions are often more elegant than loop structures:
+Elegant code demonstrates technical maturity and design sense. In Python, utilizing expressive constructs like list comprehensions is often much more elegant and readable than writing out verbose loops:
 
 ```python
 # 使用列表推导式
@@ -137,13 +144,13 @@ for x in range(10):
     squares.append(x * x)
 ```
 
-Beautiful code is not just about visual tidiness; it is about improving code readability and maintainability. An excellent Python programmer should strive to write clear, consistent, and expressive code. Through continuous practice and learning, improve your coding skills and make your code a model of programming art.
+Strive to write clear, consistent, and expressive code. With practice, you can turn your source code into a model of clean programming art.
 
 ### Simplicity
 
-Simplicity is an important principle. We advocate using simple and intuitive methods to implement functionality, avoiding unnecessary complexity and excessive nesting as much as possible.
+Simplicity is a core Pythonic value. You should aim to implement functionality using the simplest, most direct methods available, avoiding unnecessary complexity and excessive nesting.
 
-An overly complex function, excessively deep nested loops, condition judgments, or function calls can all make code difficult to understand and maintain. We can reduce nesting by splitting functions, using generators, and other approaches.
+Deeply nested loops, complex conditional structures, and bloated functions are hard to test and maintain. You can reduce nesting depth by breaking down functions, using early returns, or leveraging generators.
 
 For example, here is a piece of code with excessively deep nesting:
         
@@ -164,7 +171,7 @@ def process_data(data):
         print("无数据提供")
 ```
 
-We can reduce the nesting level by using early returns, making the logic clearer and improving code readability:
+Using early returns (guard clauses) flattens the control flow, making the main logic easy to scan:
 
 ```python
 def process_data(data):
@@ -186,19 +193,18 @@ def process_data(data):
 
 ### Explicitness
 
-Code should clearly express its intent while avoiding reliance on implicit behavior or internal mechanisms. Explicit code not only makes communication between developers more effective but also makes the code more friendly to newcomers, lowering the barrier to learning and using Python. Following these principles can improve programming efficiency and reduce errors and misunderstandings.
+Your code should explicitly express its intent rather than relying on implicit behaviors or hidden assumptions. Explicit code is easier to debug, review, and maintain, making it much more accessible to other developers and newcomers alike.
 
-- **Explicit code** makes the behavior and purpose of a program easy to understand, reducing the possibility of ambiguity and misunderstanding.
-   - Clarity of variables and state: Use clear, descriptive variable names to clarify the role and state of variables. For example, use `total_price` instead of a simple `tp`.
-   - Clarity of functions and methods: Functions and methods should explicitly pass required parameters, and their names and behavior should clearly express their functionality.
-- **Transparent behavior**: Code should not hide its complexity or side effects. Any modification to global state or potential impact should be clear and transparent.
-   - Avoid implicit side effects: Functions or methods should avoid producing side effects in inconspicuous places, such as inadvertently modifying global variables.
-   - Clear error handling: Error handling should be explicit and should not rely on implicit error handling or ignore potential error conditions.
-- **Explicit code design**: When designing and implementing features, priority should be given to clear and direct paths.
-   - Explicitly handle errors and edge cases: When facing exceptions or edge cases, there should be clear handling logic, rather than relying on obscure or uncertain behavior.
-   - Explicitly express intent: Code should use clear naming and logic, avoiding complex expressions or constructs that might cause confusion.
+- **Explicit State and Context**:
+  - **Descriptive Names**: Choose clear, descriptive variable names. Use `total_price` instead of an ambiguous shortcut like `tp`.
+  - **Explicit Parameter Passing**: Avoid relying on hidden contexts; pass parameters explicitly to functions.
+- **Transparent Behavior**:
+  - **No Implicit Side Effects**: Avoid making unexpected modifications to global states or mutating mutable arguments implicitly.
+  - **Explicit Error Handling**: Do not ignore exceptions or pass them silently without reason.
+- **Intent-Revealing Design**:
+  - **Clear Control Flow**: Avoid writing overly clever or obscure code snippets that require mental parsing. Strive for directness.
 
-In the following example program, the user enters a piece of data. The program should have a clear error handling mechanism to ensure that when the input is not a valid number, clear feedback is given, rather than letting the program continue running in an uncertain state:
+For example, when converting user input, you should explicitly handle potential errors to prevent the application from failing or entering an undefined state:
 
 ```python
 user_input = input("请输入一个数据：")

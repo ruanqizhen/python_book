@@ -1,14 +1,14 @@
-# Magic
+# Magic Methods
 
-Only magic can defeat magic. Python is so powerful, it must have some magic to control it.
+Only magic can defeat magic. For a language as powerful as Python, it must have some magic to control it.
 
-When writing methods for your own classes, some attribute or method names cannot be used arbitrarily, because Python has predefined some names with special meanings, known as magic methods and magic attributes. In Python, magic methods and attributes are also called special methods/attributes or dunder (double underscore) methods/attributes. They are prefixed and suffixed with double underscores, for example, the previously introduced `__init__`, `__new__`, `__call__` methods, `__name__`, `__doc__` attributes, etc.
+When writing methods for your own classes, some attribute or method names cannot be used arbitrarily. This is because Python predefines certain names with special meanings, known as magic methods and magic attributes. In Python, these are also referred to as special methods/attributes or dunder (double underscore) methods/attributes. They are prefixed and suffixed with double underscores—for example, the previously introduced `__init__`, `__new__`, and `__call__` methods, and the `__name__` and `__doc__` attributes.
 
-Magic methods and attributes allow us to customize the internal behavior of objects, enabling advanced features such as operator overloading (e.g., redefining the behavior of addition, subtraction, multiplication, division) and attribute access.
+Magic methods and attributes allow us to customize the internal behavior of objects, enabling advanced features such as operator overloading (redefining the behavior of addition, subtraction, multiplication, division, etc.) and attribute access.
 
-## Construction, Destruction, Printing
+## Construction, Destruction, and Printing
 
-Let's use a simple example to understand these basic magic methods. Suppose we want to create a simple Point class representing a point on a two-dimensional plane:
+Let's use a simple example to understand these basic magic methods. Suppose we want to create a simple `Point` class that represents a point on a two-dimensional plane:
 
 ```python
 class Point:
@@ -38,14 +38,14 @@ print(repr(p))       # Output: Point(1, 2)
 del p                # Output: Point (1, 2) destroyed
 ```
         
-In the program above:
-* When a new object is created, the `__init__` method is immediately executed to initialize the object's state. Here, we initialized two attributes, x and y.
-* When the object is destroyed (e.g., when it is no longer referenced), the `__del__` method is called. In our example, it simply prints a simple message, but in real applications, it could be used to release resources such as closing files or disconnecting network connections.
-* The repr() function calls the `__repr__` method. It returns a string representing a Python expression that could be used to recreate the object. In our example, repr(point) will return a string like Point(1, 2). In the section [Program That Prints Itself](miscellaneous#repr-函数), there is an interesting application of this function.
-* When we print an object or convert it to a string, the `__str__` method is called. In our example, str(point) will return (1, 2).
+In the code above:
+* When a new object is created, the `__init__` method is executed immediately to initialize the object's state. Here, we initialize two attributes: `x` and `y`.
+* When the object is destroyed (e.g., when it is no longer referenced), the `__del__` method is called. In our example, it simply prints a message, but in real applications, it can be used to release resources, such as closing files or terminating network connections.
+* The `repr()` function calls the `__repr__` method. It returns a string representing a Python expression that can typically be used to recreate the object. In our example, `repr(point)` will return a string like `Point(1, 2)`. You can find an interesting application of this in [The repr() Function](miscellaneous#the-repr-function) section of the [Some Fun Programs](miscellaneous) chapter.
+* When we print an object or convert it to a string, the `__str__` method is called. In our example, `str(point)` will return `(1, 2)`.
 
 
-If multiple variables point to the same object, then `__del__` will only be called to destroy the object after all variables pointing to it have been deleted, for example:
+If multiple variables point to the same object, `__del__` is called only after all variables pointing to it have been deleted. For example:
 
 ```python
 class Point:
@@ -71,23 +71,23 @@ del q                # All variables have been deleted, destructor is called to 
 # Point (1, 2) destroyed
 ```
 
-Note: In Python, try to avoid relying on `__del__` to automatically release resources (such as closing files or network connections). This is because Python's garbage collection mechanism does not guarantee that `__del__` will be executed immediately. The correct approach is to use context managers (the with statement).
+**Note:** In Python, avoid relying on `__del__` to automatically release resources (such as closing files or network connections). This is because Python's garbage collection mechanism does not guarantee when `__del__` will be executed. The correct approach is to use context managers (the `with` statement).
 
 ## Operators
 
 ### Arithmetic Operators
 
-Arithmetic magic methods are used to redefine the arithmetic operator behavior of objects. The most commonly used methods include:
+Arithmetic magic methods allow you to redefine how arithmetic operators behave on custom objects. The most commonly used methods include:
 
-* `__add__(self, other)`: Defines addition behavior. When the `+` symbol is used for addition in a program, this method of the object is called.
-* `__sub__(self, other)`: Defines subtraction behavior.
-* `__mul__(self, other)`: Defines multiplication behavior.
-* `__truediv__(self, other)`: Defines true division behavior (`/` in Python 3).
-* `__floordiv__(self, other)`: Defines integer division behavior (`//` in Python 3).
-* `__mod__(self, other)`: Defines modulo (remainder) behavior.
-* `__pow__(self, power[, modulo])`: Defines exponentiation behavior.
+* `__add__(self, other)`: Defines addition behavior. When the `+` operator is used, this method of the left-hand operand is called.
+* `__sub__(self, other)`: Defines subtraction behavior for the `-` operator.
+* `__mul__(self, other)`: Defines multiplication behavior for the `*` operator.
+* `__truediv__(self, other)`: Defines true division behavior (`/`).
+* `__floordiv__(self, other)`: Defines floor (integer) division behavior (`//`).
+* `__mod__(self, other)`: Defines modulo (remainder) behavior for the `%` operator.
+* `__pow__(self, power[, modulo])`: Defines exponentiation behavior for the `**` operator or the built-in `pow()` function.
 
-Python has a built-in Fraction class for representing mathematical fractions. Below we write a simplified version of a Fraction class to demonstrate the implementation and usage of arithmetic magic methods. The Fraction class has two attributes representing the numerator and denominator. Its implementation is as follows:
+Python has a built-in `Fraction` class for representing mathematical fractions. Below, we write a simplified version of a `Fraction` class to demonstrate the implementation and usage of arithmetic magic methods. Our `Fraction` class has two attributes representing the numerator and denominator:
 
 ```python
 from math import gcd
@@ -113,7 +113,7 @@ class Fraction:
 
     def __mul__(self, other):
         new_numerator = self.numerator * other.numerator
-        new_denominator = self.denominator * other.denominator
+        new_denominator = self.denominator * other.numerator
         return Fraction(new_numerator, new_denominator)
 
     def __truediv__(self, other):
@@ -134,9 +134,9 @@ print(f"{f1} * {f2} = {f1 * f2}")       # Output: 3/4 * 5/6 = 5/8
 print(f"{f1} / {f2} = {f1 / f2}")       # Output: 3/4 / 5/6 = 9/10
 ```
 
-It is important to note that these commonly used operators are all binary operators, operating between two objects. During computation, the program calls the corresponding method of the first object. Taking addition as an example, when computing `f1 + f2`, it calls the `__add__(self, other)` method of object f1. In the parameters passed to this method, self is f1 and other is f2.
+Note that these common operators are all binary operators, operating on two operands. During evaluation, Python calls the corresponding method on the left-hand operand. Taking addition as an example, when evaluating `f1 + f2`, Python calls the `__add__(self, other)` method of `f1`. In this call, `self` points to `f1`, and `other` points to `f2`.
 
-The two operands of an operator do not need to be of the same data type, as long as the first object's `__add__` method supports it. For instance, we can modify the `__add__` method in this Fraction class to allow addition with an integer:
+The two operands do not need to be of the same type, as long as the left operand's `__add__` method handles the other type. For instance, we can modify the `__add__` method in the `Fraction` class to allow addition with an integer:
 
 ```python
 from math import gcd
@@ -176,7 +176,7 @@ print(result1)           # Output:  5/4
 print(result2)           # Output:  7/2
 ```
 
-In the program above, the `__add__` method checks the data type of the `other` parameter. If it is another fraction, it uses fraction arithmetic; if it is an integer, it uses integer arithmetic. Therefore, we can compute `frac1 + 3`, adding a fraction and an integer. However, if we try to compute `3 + frac1`, it will cause an error, because the `__add__` method of the int object does not support Fraction objects. If we need to compute `3 + frac1`, we can use the reflected arithmetic operator `__radd__`:
+In the code above, the `__add__` method checks the type of the `other` parameter. If it is another fraction, it performs fraction addition; if it is an integer, it converts it to a common denominator and adds. This allows us to compute `frac1 + 3` directly. However, if we try to compute `3 + frac1`, it will raise a `TypeError`. This is because the `__add__` method of the built-in `int` object does not know how to handle a `Fraction` object. To support operations where our custom object is on the right-hand side (e.g., `3 + frac1`), we can implement the reflected arithmetic method `__radd__`:
 
 ```python
     # Handle the case of 3 + frac1
@@ -187,16 +187,16 @@ In the program above, the `__add__` method checks the data type of the `other` p
 
 ### Comparison Operators
 
-As the name suggests, comparison magic methods are used to redefine comparison behavior between objects. Common comparison magic methods include:
+Comparison magic methods allow you to redefine comparison behaviors between objects. Common comparison magic methods include:
 
-* `__eq__(self, other)`: Defines equality behavior, using `==`.
-* `__ne__(self, other)`: Defines inequality behavior, using `!=`.
-* `__lt__(self, other)`: Defines less-than behavior, using `<`.
-* `__le__(self, other)`: Defines less-than-or-equal behavior, using `<=`.
-* `__gt__(self, other)`: Defines greater-than behavior, using `>`.
-* `__ge__(self, other)`: Defines greater-than-or-equal behavior, using `>=`.
+* `__eq__(self, other)`: Defines equality behavior for the `==` operator.
+* `__ne__(self, other)`: Defines inequality behavior for the `!=` operator.
+* `__lt__(self, other)`: Defines less-than behavior for the `<` operator.
+* `__le__(self, other)`: Defines less-than-or-equal behavior for the `<=` operator.
+* `__gt__(self, other)`: Defines greater-than behavior for the `>` operator.
+* `__ge__(self, other)`: Defines greater-than-or-equal behavior for the `>=` operator.
 
-We can continue using our simplified Fraction class with comparison magic methods to compare the magnitude of two fractions.
+We can extend our simplified `Fraction` class with these comparison magic methods to compare the relative values of two fractions:
 
 ```python
 from math import gcd
@@ -242,13 +242,13 @@ print(f1 >= f2)  # False
 
 ### Type Conversion
 
-Type conversion magic methods are used for data type conversion of objects. Python's built-in type conversion functions call these methods. Common methods include:
+Type conversion magic methods customize how objects are cast into built-in types. Python's built-in type conversion functions delegate to these methods. Common ones include:
 
-* `__int__(self)`: Called when using int(obj).
-* `__float__(self)`: Called when using float(obj).
-* `__bool__(self)`: Called when using bool(obj).
+* `__int__(self)`: Called when invoking `int(obj)`.
+* `__float__(self)`: Called when invoking `float(obj)`.
+* `__bool__(self)`: Called when invoking `bool(obj)` (e.g., in conditional checks).
 
-We will continue using the simplified Fraction class to demonstrate type conversion methods, such as converting to integers, floating-point numbers, and booleans.
+Let's add type conversion methods to our `Fraction` class to support converting a fraction to an integer, a floating-point number, or a boolean:
 
 ```python
 class Fraction:
@@ -286,16 +286,16 @@ print(bool(f_zero))  # False, because the numerator is 0
 
 ## Data Structures
 
-Container magic methods are used to define custom objects that behave like Python containers (e.g., lists, dictionaries). Here are some common container magic methods:
+Container magic methods allow custom objects to behave like Python's built-in collection types (such as lists, tuples, or dictionaries). Here are some common container magic methods:
 
-* `__len__(self)`: Returns the number of elements in the container. Corresponds to the built-in function len().
-* `__getitem__(self, key)`: Used to access elements in the container. Corresponds to obj[key] behavior.
-* `__setitem__(self, key, value)`: Assigns a value to an element in the container. Corresponds to obj[key] = value behavior.
-* `__delitem__(self, key)`: Deletes an element from the container. Corresponds to del obj[key] behavior.
-* `__contains__(self, item)`: Used to check whether the container contains an element. Corresponds to item in obj behavior.
-* `__iter__(self)`: Returns an iterator for the container. Corresponds to iter(obj) behavior.
+* `__len__(self)`: Returns the number of elements in the container, corresponding to the built-in `len()` function.
+* `__getitem__(self, key)`: Retrieves an element using key or index access, corresponding to `obj[key]`.
+* `__setitem__(self, key, value)`: Assigns a value using key or index access, corresponding to `obj[key] = value`.
+* `__delitem__(self, key)`: Deletes an element from the container, corresponding to `del obj[key]`.
+* `__contains__(self, item)`: Checks if an item exists in the container, corresponding to the `item in obj` expression.
+* `__iter__(self)`: Returns an iterator over the container's elements, corresponding to the `iter(obj)` function.
 
-Suppose we want to create a simple sorted sequence class that behaves similarly to the basic functionality of Python's built-in list, with the unique feature that its internal data is always sorted. For simplicity, we use a regular list internally to store the data, even though this is not efficient.
+Suppose we want to create a custom `SortedList` class that behaves like a standard Python list, with the restriction that its internal data remains sorted at all times. For simplicity, we will wrap a standard list internally, even though sorting on every modification is inefficient:
 
 ```python
 class SortedList:
@@ -342,14 +342,14 @@ print(lst)           # [0, 2, 5]
 
 ## Attribute Access
 
-Attribute access magic methods are used to customize the behavior of accessing, setting, and deleting attributes. Here are some commonly used attribute access magic methods:
+Attribute access magic methods allow you to customize how attributes are retrieved, modified, or deleted on an object. The key methods are:
 
-* `__getattr__(self, name)`: Called when trying to access a non-existent attribute.
-* `__setattr__(self, name, value)`: Called when setting an attribute's value.
-* `__delattr__(self, name)`: Called when trying to delete an attribute.
-* `__getattribute__(self, name)`: Called when trying to access any attribute.
+* `__getattr__(self, name)`: Invoked only when attempting to access an attribute that does not exist on the object.
+* `__setattr__(self, name, value)`: Invoked whenever an attribute is set on the object (e.g., `obj.name = value`).
+* `__delattr__(self, name)`: Invoked when attempting to delete an attribute (e.g., `del obj.name`).
+* `__getattribute__(self, name)`: Invoked for *any* attribute access on the object, regardless of whether the attribute exists.
 
-Suppose we want to create a class that stores a history record every time an attribute is set, and we want to ensure that certain attribute names cannot be set.
+Suppose we want to create a class that keeps a history of all modifications to its attributes, while also preventing certain forbidden attribute names from being set:
 
 ```python
 class HistoricalAttributes:
@@ -389,12 +389,12 @@ print(obj.history_of('y'))  # Output: [5]
 
 ## Context Management
 
-When using the with statement, a context manager ensures that resources such as files, network connections, or database connections are properly acquired and released, regardless of whether an exception occurs within the context. The two related methods are:
+Context managers, used with the `with` statement, guarantee that setup and cleanup operations (like opening/closing files, acquiring/releasing locks, or establishing/terminating database connections) are executed reliably, even if errors occur inside the block. The context manager protocol consists of two methods:
 
-* `__enter__(self)`: Called when the with statement is executed. The return value of this method is used by the with statement's target (or the variable in the as clause). It is commonly used to initialize and return the resource that needs to be managed.
-* `__exit__(self, exc_type, exc_value, traceback)`: Called when the code in the with block finishes execution (or when an exception is raised during execution). If no exception occurred in the with block, exc_type, exc_value, and traceback will be None. If this method returns True, it suppresses the exception raised in the with block; otherwise, the exception continues to propagate.
+* `__enter__(self)`: Executed when entering the `with` block. The value returned by this method is bound to the target variable in the `as` clause.
+* `__exit__(self, exc_type, exc_value, traceback)`: Executed when exiting the `with` block. If the block exited cleanly, all three exception arguments are `None`. If an exception occurred, these arguments carry the exception's type, value, and traceback. Returning `True` from this method suppresses the exception; returning `False` (or `None`) allows the exception to propagate normally.
 
-Suppose we need to write a timer class that starts timing when the code in the with block executes, stops timing after the code finishes, and then prints the execution time.
+Suppose we want to create a custom timer class that tracks the execution time of a code block:
 
 
 ```python
@@ -421,9 +421,7 @@ with Timer() as t:
 
 ## Common Attributes
 
-* `__dict__`
-
-This is a dictionary containing all attributes of the object. When an object is created, Python typically creates a dictionary to store all attributes, allowing new attributes to be dynamically added to the object at runtime.
+* `__dict__`: A dictionary containing all of the object's writable attributes. By default, Python uses this dictionary to store instance variables, allowing attributes to be added or modified dynamically at runtime.
 
 ```python
 class MyClass:
@@ -438,9 +436,7 @@ obj.value = 3        # Add a new attribute to the object
 print(obj.__dict__)  # Output: {'x': 1, 'y': 2, 'value': 3}
 ```
 
-* `__slots__`
-
-Using a dictionary to store object attributes is flexible, but dictionaries have additional memory overhead. If we already know that an object only needs a fixed set of attributes, using `__slots__` can avoid this dictionary overhead and use memory more efficiently. The way to define `__slots__` is to create an attribute named `__slots__` in the class and store the desired attribute names as strings in a tuple or list.
+* `__slots__`: A class-level variable (usually a tuple or list of strings) that specifies the only attributes instances of the class are allowed to have. By defining `__slots__`, Python avoids creating the `__dict__` dictionary for each instance, which significantly reduces memory usage.
 
 ```python
 class Fraction:
@@ -464,9 +460,7 @@ f = Fraction(1, 2)  # 1/2
 In the above example, we can only set the numerator and denominator attributes for Fraction instances. Attempting to set other attributes will raise an AttributeError.
         
 
-* `__doc__`
-
-This attribute returns the documentation of the class.
+* `__doc__`: Stores the docstring (documentation string) defined at the top of the class, function, or module.
 
 ```python
 class MyClass:
@@ -476,25 +470,19 @@ class MyClass:
 print(MyClass.__doc__)  # Output: This is a docstring for MyClass.
 ```
 
-* `__name__`
-
-For a class, this returns the class name. For a module, it returns the module name.
+* `__name__`: The name of the class, function, method, generator, or module.
 
 ```python
 print(MyClass.__name__)  # Output: MyClass
 ```
 
-* `__module__`
-
-This attribute stores the module name where the class or function was defined.
+* `__module__`: The name of the module in which the class or function was defined (e.g., `__main__` or a library name).
 
 ```python
 print(MyClass.__module__)  # Typically outputs: __main__
 ```
 
-* `__bases__`
-
-This attribute is a tuple containing all base classes.
+* `__bases__`: A tuple containing the direct base classes of a class (used for inheritance inspection).
 
 ```python
 class Parent:
@@ -506,9 +494,7 @@ class Child(Parent):
 print(Child.__bases__)  # Output: (<class '__main__.Parent'>,)
 ```
 
-* `__class__`
-
-It returns the class to which the object belongs.
+* `__class__`: A reference to the class object that the instance belongs to.
 
 ```python
 obj = MyClass()

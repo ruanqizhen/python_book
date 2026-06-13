@@ -1,20 +1,24 @@
 # Simple Algorithms and Data Structures
 
-The famous Turing Award winner and inventor of the Pascal programming language, Niklaus Wirth, proposed a formula: `Program = Algorithm + Data Structure`. Data structures study how to find the most suitable way to organize data for specific problems, while algorithms study how to find the optimal methods and steps to solve those problems. Together they form a program. Although this statement is not comprehensive, it essentially reveals the core nature of programs. When programmers go for job interviews, the most frequently asked questions are also about algorithms and data structures.
+Niklaus Wirth, the Turing Award winner and creator of the Pascal programming language, famously proposed the formula: `Program = Algorithm + Data Structure`. Data structures focus on the most effective ways to organize data for specific tasks, while algorithms define the step-by-step methods to solve those tasks. Together, they form the core of any software application. While modern software engineering is broader than this formula suggests, it captures the essential nature of programming. Consequently, algorithms and data structures remain the most common topics in technical job interviews.
 
-Algorithms and data structures, as the two pillars of programming, could each be the subject of a full semester course. Here, due to space limitations, we can only discuss some basic algorithms and data structures. The main purpose is still to provide some examples of Python programming.
+As the pillars of computer science, algorithms and data structures are vast fields that typically require dedicated, multi-semester study. In this chapter, we will introduce a few foundational concepts and structures, primarily to demonstrate how they are implemented using clean Python syntax.
 
 ## Time Complexity
 
-First, let's introduce a metric for measuring algorithm efficiency: algorithm complexity. Algorithm complexity is divided into time complexity and space complexity. Time complexity indicates the amount of work required to execute an algorithm, which directly determines how fast the algorithm runs. Space complexity indicates how much memory space is needed to execute the algorithm. From the current perspective, the cost of improving CPU performance is far higher than the cost of increasing memory capacity, so in most cases, people are more concerned about time complexity.
+To measure the efficiency of an algorithm, we look at its complexity, which is split into two categories:
+* **Time Complexity**: The number of operations required to execute an algorithm, which directly determines its execution speed.
+* **Space Complexity**: The amount of memory required during execution.
 
-Time complexity is a function. High time complexity means that when the input data increases slightly, the amount of algorithm work increases many times over; conversely, an algorithm with low time complexity does not require much more work even when the input increases significantly. Time complexity is related to the problem being solved: some problems can be solved very efficiently, while others simply have no low time complexity solution. Therefore, comparing time complexities only makes sense when comparing different algorithms for the same problem.
+In modern computing, memory is cheap and abundant, whereas CPU performance improvements are harder to achieve. Consequently, developers usually prioritize optimizing time complexity over space complexity.
 
-The time complexity function is denoted by the uppercase letter O, while a lowercase letter, such as n, represents the amount of data the algorithm needs to process.
+Time complexity is expressed as a mathematical function of the input size. An algorithm with high complexity experiences a dramatic increase in operations when the input grows even slightly. Conversely, a low-complexity algorithm scales efficiently as data increases. Time complexity is highly dependent on the problem itself: some tasks are inherently simple to solve, while others have no known low-complexity solutions. Therefore, comparing time complexity is only meaningful when evaluating different algorithms designed to solve the same problem.
 
-* If an algorithm always completes within a fixed amount of time regardless of how large the input data n is, it means the algorithm's running time is constant, denoted as $O(1)$
-* If the running time of an algorithm has a linear relationship with the amount of input data, for example, if the number of input data items is n and the running time is c*n where c is a constant, then the algorithm's time complexity is linear, denoted as $O(n)$
-* If the running time of an algorithm is proportional to the square of the amount of input data, then the time complexity is $O(n^2)$; similarly, if the running time is proportional to the cube of the input data, the time complexity is $O(n^3)$ ...
+We express time complexity using **Big O notation** (denoted by the capital letter $O$), where $n$ represents the input size (such as the number of elements in a list).
+
+* **$O(1)$ (Constant Time)**: The algorithm takes the same number of operations to complete regardless of the input size $n$.
+* **$O(n)$ (Linear Time)**: The number of operations grows proportionally to the input size $n$.
+* **$O(n^2)$ (Quadratic Time)**: The number of operations is proportional to the square of the input size (common in nested loops). Similarly, $O(n^3)$ represents cubic time complexity.
 
 ### Some Examples
 
@@ -29,7 +33,7 @@ arr = [1, 2, 3, 4, 5]
 linear_time(arr)
 ```
 
-In the code above, the `linear_time` function iterates through every element in the array, so its time complexity is linear, i.e., $O(n)$, where n represents the number of elements.
+In this code, the `linear_time` function iterates through every element in the list exactly once, yielding a time complexity of $O(n)$.
 
 #### Quadratic Time 
  
@@ -43,23 +47,39 @@ arr = [1, 2, 3, 4, 5]
 quadratic_time(arr)
 ```
 
-This function contains two nested loops, so its time complexity is $O(n^2)$.
+Because this function contains nested loops that both iterate over the same list, its time complexity is $O(n^2)$.
 
-The above are collectively referred to as polynomial-level time complexity. If an algorithm's time complexity is at the polynomial level, it can generally still be used to solve practical problems. If an algorithm's time complexity exceeds this level, such as the factorial level $O(n!)$. When calculating factorial, the input is a number, not an array, so n here does not represent the number of input data items, but the size of the input data.
+These are examples of **polynomial time complexities**. Algorithms in this category are generally considered practical and scalable. However, if an algorithm's complexity exceeds polynomial growth—such as factorial time $O(n!)$—it quickly becomes unusable for practical input sizes. (Note: when discussing math algorithms, $n$ often represents the numerical value of the input rather than the count of items in a collection).
 
-There is also the exponential level $O(2^n)$, and even higher time complexity algorithms. These algorithms are already difficult to use for solving practical problems. We previously introduced a [Fibonacci number algorithm](recursive#计算斐波纳契数列) with a time complexity of $O(2^n)$. At this level of complexity, an ordinary computer can at most handle problems with input values less than 30. Of course, even if they are all at the polynomial level, we still hope to find an algorithm with the lowest complexity for the problem we need to solve.
+Another highly inefficient class is **exponential time** $O(2^n)$. We previously saw a recursive [Fibonacci sequence algorithm](recursive#calculating-the-fibonacci-sequence) that exhibits $O(2^n)$ complexity. For such algorithms, a standard computer will struggle to compute results for input values greater than 30. Naturally, even when staying within polynomial bounds, we always strive to find the algorithm with the lowest possible complexity.
 
 ## Determining Prime Numbers
 
-Now let's study the time complexity of a prime factorization algorithm. If we have a number n that we know is the product of two prime numbers, but we don't know which two primes, what is the time complexity of factorizing n?
+Let's examine the complexity of prime factorization. If we have a number $n$ that is the product of two prime numbers, how long does it take to find those factors?
 
-It may be clearer to demonstrate with some concrete numbers: Suppose the two primes are 17 and 19. Multiplying them gives $17 * 19 = 323$. For a computer, multiplying two larger numbers takes almost the same time as multiplying two smaller numbers; this can be considered a constant, so the complexity of multiplication is constant at $O(1)$. However, factorizing 323 is not so easy. We have to try from the smallest prime one by one. For example, first try whether 323 is divisible by 2; if not, try 3, and keep going until we reach 17 to finally find the answer. In the worst case, if n is the product of two identical primes, we need to try $\sqrt{n}$ times. Assuming multiplication and division have the same computational cost (in reality, division is much slower), then the time complexity of factorizing n is $O(\sqrt{n})$.
+To illustrate, suppose the two primes are $17$ and $19$. Multiplying them is simple: $17 \times 19 = 323$. For a computer, multiplying two numbers is extremely fast and takes constant time, or $O(1)$. 
 
-This program can be further optimized, for example, by ignoring factors that are obviously not prime (such as even numbers, etc.). The optimized program can run faster, but its complexity is still at the $O(\sqrt{n})$ level, much higher than the complexity of multiplying two primes. Although $\sqrt{n}$ seems much smaller than n, for a large integer like $10^{100}$, its square root is still a huge number, and the computation is exponential. If both primes are greater than $10^{10}$, then factorizing their product with an ordinary computer would lose practical significance because it would take too long. The vast difference in time complexity between an operation and its inverse has practical uses in the computer field. For example, it can be used for information encryption and decryption. The widely used RSA encryption algorithm exploits the property that multiplying primes is far faster than factoring a composite number into prime factors. In simplified terms, the encryption and decryption process works like this: Users A and B communicate over the internet, and all data transmitted between them (including the encryption algorithm and the key) can be intercepted by an eavesdropper C. A needs B to send some private messages that C cannot understand. So A first finds two large prime numbers, then gives the product of the two primes as the RSA algorithm key to B. B uses this key to encrypt the message and then sends it to A. RSA encryption only requires this composite number as the key, but the decryption process must use the original two primes. Of course, A retains the original two primes, but C does not. If C wants to decrypt, they must perform prime factorization on the composite key, which is a relatively slow process. As long as the two primes A finds are large enough, C cannot compute the two primes within any effective timeframe. This achieves the encryption effect for the transmitted information.
+However, factoring $323$ back into its prime components is much harder. We must check divisibility starting from the smallest prime ($2$), then $3$, $5$, and so on, until we reach $17$. In the worst case—where $n$ is the square of a prime—we must test up to $\sqrt{n}$ numbers. Thus, the time complexity of factoring $n$ using trial division is $O(\sqrt{n})$.
 
-This encryption method is very clever. But there's still a problem: where does A find two such large prime numbers? A cannot select them from a known table of primes, because C might have access to the same table. If A randomly generates a very large number, how can A determine whether it is prime? Try to factorize it? If so, wouldn't A need about the same amount of time as C? Although A can prepare in advance and has relatively more time, it would still be inconvenient if the algorithm is too time-consuming. Fortunately, there are algorithms for determining whether a number is prime with extremely low time complexity. For example, we can use some properties of prime numbers to determine whether a number is prime: Suppose a is a relatively small prime (such as 2, 3, 5, etc.), and p is a relatively large number we need to test. If p is a prime, then $a^{p-1} - 1$ is divisible by p. We can write the following program based on this judgment formula to check whether a number is prime.
+While we can optimize this search by skipping even numbers, the complexity remains $O(\sqrt{n})$, which is significantly slower than $O(1)$ multiplication. For a huge number like $10^{100}$, the square root ($10^{50}$) is still astronomical. If $n$ is the product of two primes larger than $10^{10}$, factoring it on a standard computer becomes practically impossible.
 
-There are a few things to note about this algorithm: First, some non-prime numbers can occasionally satisfy the above formula, so we need to try several different values of a. Only if all of them satisfy the condition can we be sure the tested number is prime. For integers that are not particularly large, trying the smallest primes a equal to 2, 3, 5, 7, 11, 13 is sufficient. Second, we cannot directly use the exponentiation function to compute $a^{p-1}$ in the program, because the test data p is generally very large, and $a^{p-1}$ would be an extremely large number, possibly exceeding the range that a single CPU register can represent. Since we only care about the remainder of $a^{p-1}$ divided by p, we can break the exponentiation into multiple multiplication operations in the program, keeping only the lower-order bits that affect the final remainder after each multiplication. This keeps the data within a manageable range.
+This asymmetric relationship between multiplication and factoring forms the foundation of modern cryptography. The **RSA encryption algorithm** relies directly on the fact that multiplying two primes is trivial ($O(1)$), while factoring their product is computationally infeasible. 
+
+In simple terms:
+1. User A generates two massive primes and sends their product to User B as a public encryption key.
+2. User B encrypts a message using this public key and sends it to User A.
+3. Decrypting the message requires knowing the original two prime numbers. 
+An eavesdropper intercepting the encrypted message only knows the product key. To decrypt it, they must factor the composite number back into its prime components. By choosing sufficiently large primes, User A ensures that this factorization would take the eavesdropper thousands of years to compute, keeping the communication secure.
+
+This approach raises a new problem: how does User A find two massive prime numbers? A cannot select them from a precompiled table, as an attacker could use the same table. If A generates a random large number, how can they verify it is prime? Using trial division would take just as long as the attacker's search, which is impractical.
+
+Fortunately, there are highly efficient **primality tests** that can determine if a number is prime in polynomial time. For instance, **Fermat's Little Theorem** states that if $p$ is a prime number and $a$ is any integer not divisible by $p$, then:
+$$a^{p-1} \equiv 1 \pmod p$$
+(In other words, $a^{p-1} - 1$ is divisible by $p$). We can use this theorem to test if a number is prime.
+
+Two important caveats apply to this test:
+1. **Fermat Pseudoprimes**: Some composite numbers (like Carmichael numbers) can satisfy this formula. To minimize false positives, we run the test using several different prime bases (e.g., $a \in \{2, 3, 5, 7, 11\}$).
+2. **Modular Exponentiation**: Because $a^{p-1}$ would yield an astronomically large number that exceeds system memory, we must perform the exponentiation using modular arithmetic. By taking the remainder (modulo $p$) at each step of the calculation, we keep the numbers small and prevent arithmetic overflow.
 
 The code for this algorithm is as follows:
 
@@ -91,8 +111,7 @@ def is_prime(n):
     return True
 ```
 
-
-Using the above program to test consecutive integers one by one, we can quickly find some prime numbers. For example, using the above program starting from 1,000,000,000, we quickly find a prime: 1,000,000,007.
+Using this program, we can quickly scan for prime numbers. For example, starting our search from one billion, we instantly identify `1,000,000,007` as a prime.
 
 Using Python's built-in functions, we can further simplify the above algorithm:
 
@@ -118,7 +137,7 @@ def is_prime(n):
 
 ## Space Complexity
 
-Space complexity describes the relationship between the memory or storage space used by an algorithm and the size of the input data. It tells us how much additional memory the algorithm needs as the input data grows. It is described in the same way as time complexity, also using a function denoted by O, except that here it represents not the computational workload but the memory space required.
+Space complexity describes the amount of memory an algorithm consumes relative to the size of the input data. Like time complexity, it is expressed using Big O notation to show how memory usage scales.
 
 ### Some Examples
 
@@ -136,7 +155,7 @@ sum = constant_space(arr)
 print(sum)
 ```
 
-In the code above, regardless of the size of the input array, the `constant_space` function only uses one additional integer variable `total` to store the sum. Therefore, its space complexity is $O(1)$.
+In this code, regardless of the size of the input list `arr`, the `constant_space` function only allocates a single integer variable `total` to accumulate the sum, resulting in $O(1)$ space complexity.
 
 #### Linear Space 
  
@@ -150,4 +169,4 @@ result = linear_space(n)
 print(result)
 ```
 
-This function creates a list of length n based on the input n. The space used is directly related to the input size, so the space complexity is $O(n)$.
+This function generates a list of size $n$, meaning its memory consumption grows linearly with the input, resulting in a space complexity of $O(n)$.

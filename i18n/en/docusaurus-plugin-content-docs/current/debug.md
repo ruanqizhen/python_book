@@ -1,52 +1,52 @@
 # Debugging
 
-An old saying in software development goes: "Software has bugs." Software can never be perfect. In computer programming and software development, a "bug" refers to an error or defect in program code that may cause the program to behave abnormally, crash, or produce incorrect results. The existence of bugs can affect the functionality, performance, or other expected behaviors of the software. Especially for beginners, the programs they write may have various problems, such as syntax errors, logic errors, data type errors, and so on. Usually, fixing the errors in a program is not difficult in itself; the key lies in how to locate the problem and identify the exact place where the error occurred. Debugging is the process of finding the problem within the program.
+There is a classic adage in software development: "Software always has bugs." No program is perfect. In computer programming, a **bug** refers to a coding error, flaw, or defect that causes a program to behave unexpectedly, crash, or produce incorrect output. Bugs can compromise software functionality, performance, and security. Especially for beginners, programs often run into syntax errors, logical flaws, or data type mismatches. Fortunately, fixing errors is rarely the hard part; the real challenge lies in locating the exact line where the failure occurs. **Debugging** is the systematic process of finding and fixing these issues within your code.
 
-First, how do you know there is a problem in the program? Generally, it is when the program's behavior does not match expectations. For example, given an input value, the program's output is not the result we expected, or the program displays a bunch of error messages, or the program produces no output at all, the program is too slow, it crashes on its own, etc.
+Typically, you know there is a problem when your program's behavior diverges from expectations: it might produce incorrect output for a given input, display a wall of error messages, run excessively slow, freeze, or crash entirely.
 
-## Viewing the Program's Error Messages
+## Viewing Program Error Messages
 
-If a serious error occurs in the program, Python usually raises an [exception](exception) and provides an error message along with a stack trace (traceback). First, the error message tells us what went wrong, such as ValueError, IndexError. The stack trace shows the order of function calls that led to the error. The bottom line indicates the direct cause of the error, while the lines above show the call relationships between functions. Based on these two pieces of information, you can usually determine the cause and location of the error.
+When a critical error occurs at runtime, Python raises an [exception](exception), stops execution, and prints a **traceback** (stack trace) to the console. The traceback contains two main parts:
+1. **The Exception Type**: The very last line of the traceback tells you the direct cause of the error (such as `ValueError`, `IndexError`, or `ZeroDivisionError`).
+2. **The Stack Trace**: The lines above the error message display the sequence of function calls that led to the failure, including file paths and line numbers.
 
-If you still can't be sure what the problem is, you can try giving the program different inputs, or modifying a few suspicious parts of the code, while running the program several more times to verify the cause of the problem and whether the fix is effective. In addition, the following methods described in detail below are also very effective means of debugging programs and fixing bugs.
+By analyzing the traceback from bottom to top, you can pinpoint exactly where and why the program failed. If the cause is not immediately clear, you can try running the program with different inputs or isolating suspicious parts of the code to verify your assumptions.
 
-## print()
+## print() Debugging
 
-If the program itself does not provide useful error information, you can consider a rather crude but very effective method: printing out some key data and state during the program's execution.
+If a program fails silently without raising an error, you can use a simple yet highly effective debugging technique: printing key variables and state information at strategic points during execution.
 
-When using this debugging method, first, insert some print functions around the potentially problematic code areas, especially before conditional statements, loops, or function calls, to print the relevant variables. You can place print functions at multiple locations in the code to check the order and flow of code execution. If the printed data does not match expectations after a certain step, the problem is likely there.
+To do this, insert `print()` functions around suspicious blocks of code—especially before and after conditional checks, loops, or function invocations. This allows you to track variables and monitor the program's execution flow. If the output of a variable deviates from what you expect after a particular step, the bug is likely located in that section of code.
 
-When using multiple print statements, consider adding labels or comments to them, so you can easily identify which print function each output comes from. For example:
+When using multiple print statements, it helps to label them so you can easily identify where each output originated:
 
 ```python
-print("[Debug] Starting calculation", key_value)
-# The calculation code being monitored
-print("[Debug] Calculation finished", key_value)
+print("[Debug] Starting calculation. key_value =", key_value)
+# Code being monitored
+print("[Debug] Calculation finished. key_value =", key_value)
 ```
 
-Once the problem has been resolved, remember to delete or comment out the print functions to keep the code clean.
+Once you resolve the issue, remember to delete or comment out these temporary print statements to keep your codebase clean.
 
-Although modern development environments provide advanced debugging tools, the print function debugging method remains the first choice for many Python developers in many situations, especially for simple programs and small projects.
+While modern Integrated Development Environments (IDEs) offer sophisticated debugging tools, `print()` debugging remains a quick, practical, and widely used method for simple scripts and small projects.
 
 ## Logging
 
-Although the print function is useful, there are some situations where it cannot be used. For example, the program might be running on a device without a display (network devices, embedded devices, etc.); or there is too much data being printed, and the data on the screen flashes by before you can read it clearly. In such cases, we can consider logging for debugging.
+While printing is handy, it has limitations. For example, a program might run as a background service or on an embedded device without a physical display. Alternatively, a script might print so much data that it scrolls past too quickly to read. In these scenarios, **logging** is the preferred solution.
 
-Logging means recording all the data we need to view into a file, which allows us to record more data for detailed post-mortem analysis.
+Logging means writing execution details and data points to a persistent log file, allowing you to review and analyze the program's history at your convenience. This is particularly valuable for large-scale, production, multi-threaded, or asynchronous applications.
 
-Using logging for debugging is a very effective method, especially for large-scale, production, or multi-threaded, asynchronous applications. Logging provides a way to continuously record the program's execution, which is very valuable for subsequent analysis and troubleshooting. Here are the steps to use logging for debugging programs:
+### 1. Import the Logging Module
 
-### Import the Logging Module
-
-In Python, logging-related operations are in the built-in `logging` module. Before using logging, you need to import this module in your program:
+Python has a built-in `logging` module. To use it, import it at the top of your file:
 
 ```python
 import logging
 ```
 
-### Configure Logging
+### 2. Configure Logging
 
-By configuring logging at the start of the program, you can choose the format of the logs, the save location, etc., for easy reading later.
+You should configure the logging system when your program starts. This setup lets you define the log format, the file destination, and the default severity level:
 
 ```python
 logging.basicConfig(level=logging.DEBUG,
@@ -54,48 +54,49 @@ logging.basicConfig(level=logging.DEBUG,
                     filename='app.log', filemode='w')
 ```
 
-In the above program:
-* `logging.basicConfig()` is a method provided by the logging module for configuring logging.
-* The `level` parameter sets the log level, detailed below.
-* `format='%(asctime)s - %(levelname)s - %(message)s'` defines the format of the log output. Where:
-   * `%(asctime)s` is replaced by the log record's timestamp.
-   * `%(levelname)s` is replaced by the log level (such as "DEBUG", "INFO", etc.).
-   * `%(message)s` is replaced by the actual log message.
-* `filename='app.log'` indicates that log messages are written to a file named `app.log` instead of the default console or terminal output.
-* `filemode='w'` specifies the file mode. `'w'` means that if the `app.log` file already exists, it will be overwritten (i.e., cleared first and then new logs written). If you want to append to an existing log file, you should use `'a'` as the `filemode` value.
+In this configuration:
+* `logging.basicConfig()`: Configures the logging system.
+* `level=logging.DEBUG`: Sets the minimum severity level to record (detailed below).
+* `format`: Defines how each log entry is structured. 
+  * `%(asctime)s` inserts the timestamp of the log entry.
+  * `%(levelname)s` inserts the severity level (e.g., `DEBUG`, `INFO`).
+  * `%(message)s` inserts the log message.
+* `filename='app.log'`: Directs log output to a file named `app.log` instead of the console.
+* `filemode='w'`: Opens the log file in write mode, clearing any old logs when the program starts. (Use `'a'` to append new logs to the end of the file instead).
 
-With the above settings, after the program runs, we will see content similar to the following in the log file `app.log`:
+After running a program with this configuration, the `app.log` file will contain entries like this:
 
 ```
-2023-09-22 15:37:14,528 - DEBUG - This is a debug message
-2023-09-22 15:37:15,530 - INFO - This is an info message
+2026-06-13 15:37:14,528 - DEBUG - Starting calculation
+2026-06-13 15:37:15,530 - INFO - Calculation complete successfully
 ```
 
-Note: `logging.basicConfig()` must be called before all other logging operations. If other modules (including third-party libraries) have already called it before, your configuration will not take effect. It is designed to be configured only once.
+> [!NOTE]
+> `logging.basicConfig()` must be called before any other logging actions. It is designed to run only once; subsequent calls to it in other modules will have no effect.
 
-### Choose the Appropriate Log Level
+### 3. Choosing Log Levels
 
-When viewing and analyzing logs, we may need to handle recorded content differently depending on its importance. Therefore, when recording logs, it is best to assign an appropriate level to each message. The levels of information in log files are as follows:
+To manage log volume and find important messages quickly, categorize your logs by severity. Python provides five standard log levels:
 
-- DEBUG: Detailed information, typically useful only for diagnosing problems.
-- INFO: Confirmation that the program is running as expected.
-- WARNING: Indicates that something unexpected happened, or may happen in the future.
-- ERROR: Indicates that a more serious problem has occurred, and the program has failed to perform a function.
-- CRITICAL: A serious error, the program may not be able to continue running.
+* **DEBUG**: Detailed diagnostic information, primarily used during development.
+* **INFO**: General confirmation that the program is running as expected.
+* **WARNING**: An indication that something unexpected occurred, or a potential issue might arise (e.g., "disk space low"), but the program is still running.
+* **ERROR**: A serious problem that prevented the program from executing a specific function.
+* **CRITICAL**: A catastrophic failure that may cause the program to crash or stop running.
 
-If you specify a certain level when configuring logging, only messages at that level or higher severity will be recorded in the log. For example, if the level is set to WARNING, the log will record WARNING, ERROR, and CRITICAL level messages, while DEBUG and INFO level messages will not be recorded.
+When you set a log level in `basicConfig()`, Python only records messages at that level or higher. For example, if you set the level to `WARNING`, Python will record `WARNING`, `ERROR`, and `CRITICAL` logs, but ignore `DEBUG` and `INFO` logs.
 
-### Add Log Records in the Code
+### 4. Adding Log Entries to Code
 
-Next, add log records at key points in the program or where errors might occur. For example, where you previously used the print function for debugging, you can replace it with log records:
+Replace your temporary print statements with permanent log calls:
 
 ```python
-logging.debug(f"Starting calculation {key_value}")
-# The calculation code being monitored
-logging.debug(f"Calculation finished {key_value}")
+logging.debug(f"Starting calculation. key_value = {key_value}")
+# Code being monitored
+logging.debug(f"Calculation finished. key_value = {key_value}")
 ```
 
-The logging function has an `exc_info` parameter, which, if set to true, will record the exception stack trace information in the log, for example:
+To record exceptions along with their traceback information, set the `exc_info` parameter to `True`:
 
 ```python
 try:
@@ -104,161 +105,125 @@ except ZeroDivisionError:
     logging.error("An exception occurred", exc_info=True)
 ```
 
-To simplify the code, the logging module provides a dedicated method `logging.exception()`, which by default records the exception stack trace information, equivalent to `logging.error(..., exc_info=True)`:
+Alternatively, you can use `logging.exception()`, which automatically records the exception traceback at the `ERROR` level:
 
 ```python
 try:
     x = 1 / 0
 except ZeroDivisionError:
-    # Automatically includes stack trace information, level is ERROR
+    # Automatically records the traceback
     logging.exception("An exception occurred during calculation")
 ```
 
-### Analyze the Log File
+### 5. Analyzing Log Files
 
-When the program exhibits errors or abnormal behavior, view the log file to find clues about exceptions, errors, or other important information. For small or short log files, simply opening the file and browsing may be sufficient. Search for specific keywords, error codes, or other identifiers to quickly locate problems. For large programs with extensive log content, you can consider using auxiliary text editing and filtering tools to search through the content. For particularly complex records, there are many professional log analysis tools and software available on the market, such as Logstash, Graylog, Splunk, etc.
+When your program runs into an issue, check the log file for exceptions, warnings, or unexpected values. For small log files, you can browse through them in any text editor. For larger logs, use search functions (`Ctrl+F`), command-line utilities (like `grep`), or professional log aggregators (like ELK Stack or Splunk) to parse and filter the output.
 
-### Log Rotation and Management
+### 6. Log Rotation and Management
 
-In production environments, DEBUG level logging should generally not be used, as it may generate excessive log data and consume storage resources. Consider using the WARNING level.
+In a production environment, you should avoid logging at the `DEBUG` level because it can generate massive files that consume disk space rapidly. The `WARNING` or `ERROR` level is usually preferred.
 
-Log files in long-running systems will gradually grow, and if not managed, they can also consume a large amount of disk space. Therefore, we can consider periodically archiving, compressing, or deleting logs.
-
-In addition to using operating system tools, Python's logging module also comes with built-in log rotation functionality. Using `logging.handlers.RotatingFileHandler` can automatically split logs based on file size, and using `TimedRotatingFileHandler` can split logs based on time (e.g., daily). This approach is cross-platform and simple to configure.
+To keep log files from growing indefinitely, implement log rotation. Python's `logging.handlers` module provides built-in handlers for this:
+* `RotatingFileHandler`: Automatically rolls over log files when they reach a certain size (e.g., keeping the last five 10MB log files).
+* `TimedRotatingFileHandler`: Rolls over log files based on time intervals (e.g., creating a new log file every midnight).
 
 ## Assertions
 
-Assertions are a debugging aid in Python. The core idea is: developers believe that certain expressions must be `True` at specific points in the program. If the value of these expressions is `False`, Python raises an `AssertionError` exception.
-
-Assertions are accomplished using the `assert` statement, followed by an expression to be tested. If the result of that expression is `False`, an exception is triggered. For example:
+Assertions are development aids that check if a given condition is met. The developer asserts that a specific expression must be `True` at a certain point in the code. If the expression evaluates to `False`, Python immediately raises an `AssertionError`:
 
 ```python
 def apply_discount(product_price, discount):
     final_price = product_price * (1.0 - discount)
-    assert 0 <= final_price <= product_price, "Invalid price"
+    assert 0 <= final_price <= product_price, "Invalid price calculation"
     return final_price
-```    
-    
-In the above example, we expect `final_price` to always be between 0 and `product_price`. If it is not, the assertion will fail and raise an `AssertionError`.
-
-Assertions allow us to clearly define the expected behavior of the code within the program. If there is a problem in the program and its behavior differs from what we pre-defined, assertions can catch it immediately, preventing the error from affecting subsequent code. Assertions can also be used for function parameter checking, ensuring that the function's caller provides correct parameters; they can also be used for program configuration checks, ensuring that various preconditions of the program are met.
-
-Be careful not to overuse assertions, as this can make the code difficult to read and maintain. Assertions can be globally disabled. In optimized mode (using the `-O` command-line switch), all assert statements are globally removed. Therefore, we cannot rely on assertions for critical data validation or to implement any critical logic in the final product.
-
-Security warning: Never use `assert` to validate user input or execute critical business logic (such as permission checks). If someone runs your program with `python -O`, these checks will be directly ignored, leading to serious security vulnerabilities. Assertions are only for internal logic self-checks during development.
-
-## Using an IDE
-
-Many Integrated Development Environments (IDEs) provide powerful debugging capabilities for Python. For example, the most commonly used are PyCharm, VSCode, Eclipse with the PyDev plugin, etc. They usually provide a user-friendly interface for setting breakpoints, inspecting variables and stack information, stepping through code, etc. Debugging code in various IDEs is quite similar. Below, using PyCharm as an example, we provide a brief explanation:
-
-### Set Breakpoints
-
-In the code, click on the blank area next to the line number where you want to pause execution. This will set a red breakpoint marker at that location.
-
-### Start the Debugger
-
-In the top menu bar, select Run -> Debug. The program will stop at the breakpoint and enter debugging mode.
-
-### View Variables and Expressions
-
-When the code execution reaches a breakpoint, PyCharm will pause and display the debugger window. In this window, you can view the current variables, their values, and any expressions you want to evaluate.
-
-### Control Code Execution
-
-In the debugger window, you will see several buttons for controlling code execution:
-* Continue (or press F9): Continue code execution until the next breakpoint or the end of the program.
-* Step Over (or press F8): Execute the next line of code.
-* Step Into (or press F7): Enter the function or method on the current line.
-* Step Out (or press Shift + F8): Complete the execution of the current function or method, then pause.
-
-### Change Variable Values
-
-In the debugger window, you can right-click a variable and select "Set Value" to change its value.
-
-### Conditional Breakpoints
-
-You can set breakpoints to trigger only when specific conditions are met. Right-click a breakpoint and select "Edit". Here, you can set conditions, log expressions, etc.
-
-### Exception Breakpoints
-
-At the bottom of the debugger window, select "View Breakpoints" (or press Ctrl+Shift+F8). Here, you can configure settings to automatically pause when a certain exception occurs.
-
-### View Call Stack
-
-On the left side of the debug window, you can view the current call stack, which can help you understand how the code reached its current position.
-
-### Quick Expression Evaluation
-
-Select an expression in the code, then right-click and choose "Evaluate Expression" (or press Alt+F8) to evaluate the expression's result.
-
-### End Debugging
-In the debugger window, click the red square button to stop debugging.
-
-## Using Python's Built-in pdb Module
-
-If you are not using an IDE, you can use Python's built-in debugger, pdb, which allows you to set breakpoints, step through code, view variable states, etc., to help debug code. Here are the detailed steps for using pdb:
-
-### Import pdb
-
-First, you need to import the pdb module in your code:
-
-```python
-import pdb
 ```
 
-### Set Breakpoints
+Here, we assert that the `final_price` must always fall between `0` and `product_price`. If it does not, the assertion fails and raises an `AssertionError` with the message `"Invalid price calculation"`.
 
-Insert the following statement at the code location where you want to pause execution:
+Assertions serve as internal sanity checks to ensure that a function's arguments are valid or that assumptions about data are correct. They help you catch logic errors early before they propagate through the rest of the application.
+
+> [!CAUTION]
+> Assertions are only for internal developer checks and can be disabled globally at runtime by running Python with the `-O` (optimize) flag. 
+> Never use `assert` to validate user input or enforce security checks (such as checking if a user is logged in). If the program is run with optimization, these assertions are stripped out completely, which can introduce severe security vulnerabilities.
+
+## Debugging with an IDE
+
+Modern Integrated Development Environments (IDEs) like PyCharm and VS Code offer interactive graphical debuggers. These tools let you pause execution, inspect variable states, and step through code line by line. While interface layouts differ, the workflow is consistent across IDEs:
+
+### 1. Setting Breakpoints
+Click the margin next to the line numbers in your code editor. A red dot (breakpoint) will appear, indicating that the debugger should pause execution when it reaches this line.
+
+### 2. Starting the Debugger
+Instead of running your script normally, click the bug icon or select "Debug" from the run menu. The program will start and then pause at your first breakpoint.
+
+### 3. Inspecting Variables
+Once paused, the IDE will display a debug panel showing all local and global variables and their current values. You can also add specific variables or expressions to a "Watch" list to monitor them as code executes.
+
+### 4. Stepping Controls
+Use the debugging toolbar to control execution:
+* **Continue (F9)**: Resume execution until the next breakpoint.
+* **Step Over (F8)**: Execute the next line of code in the current scope.
+* **Step Into (F7)**: Enter the function call on the current line to debug its internal logic.
+* **Step Out (Shift+F8)**: Finish the current function and return to the caller scope.
+
+### 5. Modifying Variable Values
+You can right-click any variable in the debug panel and change its value on the fly. This is useful for testing edge cases or bypassing specific conditions without editing your code.
+
+### 6. Conditional Breakpoints
+You can configure a breakpoint to only pause execution if a specific condition is met (e.g., pausing only when `loop_counter > 500`). Right-click the breakpoint and add a conditional expression.
+
+## Using the Built-in pdb Module
+
+If you are working in a terminal without a graphical IDE, you can debug your code using Python's built-in debugger module, **pdb**.
+
+### 1. Starting the Debugger in Code
+
+To pause your program and enter the interactive debugger, call the built-in `breakpoint()` function directly in your code (available in Python 3.7+):
 
 ```python
-breakpoint()
+x = 10
+breakpoint()  # The debugger will start here
+y = 20
 ```
 
-When the Python interpreter reaches this line, it will automatically pause and enter debugging mode.
+When Python reaches `breakpoint()`, it pauses execution and drops you into an interactive command-line interface.
 
-You can also set conditions for breakpoints so they only trigger when specific conditions are met. For example, to pause execution when x is greater than 10, you can set it like this:
-
-```python
-if x > 10:
-    breakpoint()
-```
-
-A commonly used setup is to have pdb pause at the location where an exception occurs when the program encounters one, using pdb's Post Mortem feature:
+If you want the debugger to start only when a specific error occurs, you can use pdb's post-mortem debugging:
 
 ```python
 try:
-    # your code here
+    # Code that might crash
+    result = 1 / 0
 except:
     import pdb
     pdb.post_mortem()
 ```
 
-This way, when an exception occurs, pdb will automatically start and arrive at the location where the exception happened.
+If the script crashes, pdb will start at the exact stack frame that caused the exception, allowing you to inspect variables.
 
-### Common Debugging Commands
+### 2. Common Debugger Commands
 
-While the program is paused, you can enter the following commands to control the program flow:
+In the pdb prompt, use the following commands to inspect and step through your code:
 
-* `h` or `help`: Display the help menu.
-* `n` or `next`: Execute the next line of code, without entering functions.
-* `s` or `step`: Execute the next line of code, stepping into a function if it is one.
-* `c` or `continue`: Continue execution until the next breakpoint.
-* `q` or `quit`: Exit the debugger.
-* `p <expression>` or `print <expression>`: Print the value of an expression.
-* `l` or `list`: Display the source code around the current location.
-* `ll` or `longlist`: Display all source code of the current function.
-* `u` or `up`: Move up in the call stack.
-* `d` or `down`: Move down in the call stack.
-* `b <line_number>`: Set a breakpoint at the specified line.
-* `b`: Display all breakpoints.
+* `h` (help): List available commands.
+* `n` (next): Run the next line of code (does not step into functions).
+* `s` (step): Run the next line of code, stepping into functions if possible.
+* `c` (continue): Resume execution until the next breakpoint.
+* `q` (quit): Exit the debugger.
+* `p <expression>`: Print the value of the expression.
+* `l` (list): Show the lines of source code surrounding the current line.
+* `ll` (long list): Show all source code of the current function.
+* `u` (up): Move up one level in the call stack.
+* `d` (down): Move down one level in the call stack.
+* `b <line_number>`: Set a breakpoint at the specified line number.
 * `cl <breakpoint_number>`: Clear a specific breakpoint.
 
-## Using the pdb Command-line Tool
+### 3. Running pdb from the Command Line
 
-If you don't want to modify the program to insert breakpoints, you can also directly use the pdb command-line tool to start the Python program file.
+If you do not want to modify your source code to add breakpoints, you can launch your script directly through pdb from the terminal:
 
 ```bash
-$ python -m pdb your_script.py
+python -m pdb your_script.py
 ```
 
-Compared to debugging tools in IDEs, pdb might feel less intuitive, but with more use, you will find it to be a powerful tool that can help you better understand the execution flow and state of your code.
+This starts the script at the very first line of code inside the debugger, allowing you to set up your breakpoints before execution starts.

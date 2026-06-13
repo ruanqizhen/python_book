@@ -1,77 +1,76 @@
 # Hash Table
 
-In previous chapters, we discussed arrays and linked lists. Arrays allow accessing elements by index in $O(1)$ time, but if the index is unknown, searching for a specific element takes $O(n)$ time. Linked lists offer flexible insertion and deletion, but their search efficiency is also $O(n)$.
+In previous chapters, we discussed arrays and linked lists. Arrays allow index-based access in $O(1)$ time, but searching for a specific value without its index requires a linear scan taking $O(n)$ time. Linked lists offer flexible insertion and deletion, but searching them also takes $O(n)$ time.
 
-Is there a data structure that can provide both fast access like an array and flexible key-value storage like a linked list? This brings us to the star of this chapter — the Hash Table.
+Is there a data structure that combines the fast access of an array with the flexible insertion and key-value storage of a linked list? This brings us to the star of this chapter: the **Hash Table**.
 
-A hash table (also called a hash map) is an efficient data structure based on "key-value pairs." It maps a key to a certain position (index) in an array, enabling near real-time fast data access. Hash tables are widely used in scenarios that require fast lookup, insertion, or deletion operations, such as dictionaries in programming languages, database indexes, caching systems (e.g., Redis), and sets.
+A **hash table** (or **hash map**) is an efficient data structure that stores key-value pairs. It uses a mathematical function to map a key to a specific index in an array, enabling near-instantaneous data access. Hash tables are widely used in applications requiring fast lookups, insertions, and deletions, including dictionaries in programming languages, database indexing, caching systems (like Redis), and sets.
 
 ## Hash Function
 
-The core of a hash table lies in how it converts a complex "key" (such as the string "apple") into a simple array "index" (such as the integer 3). This conversion is performed by the **Hash Function**.
+The core of a hash table is how it converts a complex key (such as the string `'apple'`) into an array index (such as the integer `3`). This mapping is performed by a **hash function**.
 
-The main responsibilities of a hash function are:
+A good hash function must satisfy the following criteria:
 
-1. **Determinism**: For the same input, it must always produce the same output.
-2. **Efficiency**: The computation must be fast enough.
-3. **Uniform Distribution**: It takes a key as input and outputs an integer (typically an index). A good hash function should distribute different keys as evenly as possible across the array positions, thereby reducing "collisions."
+1. **Determinism**: It must always produce the same output index for a given input key.
+2. **Efficiency**: It must be extremely fast to compute.
+3. **Uniform distribution**: It should distribute keys as evenly as possible across the slots of the array to minimize "collisions."
 
-If we imagine the array as a row of drawers, the hash function is the administrator who tells you, "This item belongs in drawer number X."
+If we imagine the array as a row of drawers, the hash function acts as the receptionist who tells you exactly which drawer number an item belongs in.
 
 ## Hash Table Operations
 
-In an ideal scenario (where the hash function is well-designed and there are no collisions), the three basic operations of a hash table are all highly efficient:
+In an ideal scenario (where the hash function is well-designed and no collisions occur), the three primary operations of a hash table are highly efficient:
 
 1. **Insert**:
-   * Compute the hash of the key, find the corresponding index, and store the key-value pair at that position.
-   * Time complexity: `O(1)`.
+   * Compute the hash of the key to find the corresponding index, then store the key-value pair at that index.
+   * Time complexity: $O(1)$.
 
 2. **Search**:
-   * Given a key, use the hash function to directly locate the storage position and retrieve the corresponding value.
-   * Time complexity: `O(1)`.
+   * Retrieve the index for the key via the hash function, go directly to that memory location, and fetch the value.
+   * Time complexity: $O(1)$.
 
 3. **Delete**:
-   * Directly locate the position of the key and remove it.
-   * Time complexity: `O(1)`.
+   * Retrieve the index, go directly to that location, and remove the key-value pair.
+   * Time complexity: $O(1)$.
 
 ## Collisions and Resolutions
 
-Although we hope that a hash function can map every key to a unique index, in reality, the length of the array is finite while the possible keys are infinite. Based on the "pigeonhole principle," there will inevitably be two different keys that are mapped to the same index by the hash function. This situation is called a **hash collision**.
+While we want every key to map to a unique index, the number of possible keys is infinite whereas the array size is finite. By the **pigeonhole principle**, multiple keys will inevitably map to the identical index. This event is called a **hash collision**.
 
-When a collision occurs, we must find a way to resolve it, otherwise new data will overwrite old data. There are two common solutions:
+When a collision occurs, we must resolve it to prevent new data from overwriting existing values. The two most common resolution techniques are:
 
 ### 1. Separate Chaining
 
-This is the most intuitive solution. We treat each position (slot) in the hash table as a "bucket." Instead of storing just one piece of data, each bucket stores a linked list.
+This is the most intuitive solution. We treat each slot in the array as a "bucket" that points to a linked list rather than storing a single value.
 
-* **Principle**: When multiple keys map to the same index, the new element is simply appended to the linked list at that index.
-* **Advantages**: Simple to implement; not sensitive to the load factor of the hash table; supports unlimited expansion (as long as memory allows).
-* **Disadvantages**: Requires additional pointer storage space. If collisions are severe, the linked list can become very long, and lookup efficiency degrades from `O(1)` to `O(n)`. In advanced implementations such as Java 8, when a linked list becomes too long, it is transformed into a red-black tree to ensure lookup efficiency of `O(log n)`.
+* **Principle**: When multiple keys map to the same index, they are simply appended to the linked list at that index.
+* **Advantages**: Simple to implement, insensitive to the table's load factor, and supports unlimited expansion (as long as memory allows).
+* **Disadvantages**: Requires extra memory for pointers. If many collisions occur, the linked list can grow long, degrading search efficiency from $O(1)$ to $O(n)$. In optimized language runtimes (like Java 8), when a list grows too long, it is converted into a red-black tree to guarantee $O(\log n)$ search times.
 
 ### 2. Open Addressing
 
-This method does not use linked lists; all data is stored directly in the hash table's main array.
+Unlike separate chaining, open addressing stores all key-value pairs directly in the main array itself.
 
-* **Principle**: When the computed index `i` is already occupied, a rule is followed to probe for the next available position.
+* **Principle**: If the target index `i` is already occupied, the algorithm probes the array for the next empty slot according to a predefined search sequence.
 * **Probing Methods**:
-  * **Linear Probing**: If position `i` is occupied, check `i+1`; if that is also occupied, check `i+2`, and so on.
-  * **Quadratic Probing**: The probing interval increases by a quadratic factor ().
-  * **Double Hashing**: A second hash function is used to compute the probing step size.
-
-* **Advantages**: All data is stored in the array, which is CPU cache-friendly and requires no additional pointer storage.
-* **Disadvantages**: Deletion is cumbersome (slots cannot simply be cleared; they usually need to be marked as "deleted"); it is prone to **clustering**, where data bunches together, leading to longer probing times.
+  * **Linear Probing**: If index `i` is taken, check `i+1`, then `i+2`, and so on.
+  * **Quadratic Probing**: Increase the probing interval quadratically (e.g., check `i + 1^2`, `i + 2^2`, etc.).
+  * **Double Hashing**: Use a secondary hash function to calculate a variable step size.
+* **Advantages**: Storing all data in a contiguous array is highly CPU cache-friendly and avoids the memory overhead of linked list pointers.
+* **Disadvantages**: Deletions are complex (slots cannot simply be cleared; they must be marked as "deleted" to avoid breaking probing paths). It is also prone to **clustering** (where data aggregates in contiguous blocks), which increases probing times.
 
 ### Load Factor and Rehashing
 
-Regardless of which collision resolution method is used, as the number of elements in a hash table increases, the probability of collisions rises sharply. To measure the crowdedness of a hash table, we introduce the **Load Factor**:
+Regardless of the collision resolution strategy, as the number of elements in a hash table increases, the probability of collisions rises. To measure how full the table is, we use the **load factor**:
 
 $$\text{Load Factor} = \frac{\text{Number of Elements}}{\text{Hash Table Capacity}}$$
 
-When the load factor exceeds a certain threshold (e.g., 0.75), the performance of the hash table degrades significantly. At this point, **Rehashing** is necessary: create a larger array (typically twice the original capacity), recompute the hash values of all existing elements, and place them into the new array. This is a costly operation, but it is necessary to maintain efficient performance going forward.
+When the load factor exceeds a threshold (typically 0.75), lookup performance degrades. To maintain efficiency, the table undergoes **rehashing**: a larger array (usually twice the size) is allocated, and all existing keys are re-hashed and moved into the new array. Although rehashing is an $O(n)$ operation, it occurs infrequently enough that the amortized cost of insertions remains $O(1)$.
 
 ## Manually Implementing a Simple Hash Table
 
-To better understand the internal principles, let's manually implement a simple hash table using **separate chaining**:
+To better understand these concepts, let's manually implement a simple hash table using separate chaining:
 
 ```python
 class HashTable:
@@ -128,13 +127,13 @@ print(hash_table.search('age'))   # Output: None
 
 ## Hash Table Implementation in Python
 
-The Python dictionaries (`dict`) and sets (`set`) we use daily are implemented using hash tables under the hood. However, Python's implementation is very sophisticated — it uses **open addressing** (specifically pseudo-random probing), and underwent a major structural optimization after Python 3.6.
+Python's built-in dictionaries (`dict`) and sets (`set`) are implemented using hash tables under the hood. However, Python's internal implementation is highly optimized: it uses open addressing (specifically, pseudo-random probing) and underwent a major structural redesign in Python 3.6.
 
 ### Traditional Hash Table (Before Python 3.6)
 
-Early Python dictionaries were large "sparse arrays." Each array slot (Entry) stored the hash value, a pointer to the key, and a pointer to the value.
+Historically, Python dictionaries were large, sparse arrays where each slot (entry) stored the hash value, key pointer, and value pointer.
 
-Consider a dictionary with a capacity of 8: `d = {'Alice': 'A', 'Bob': 'B', 'Charlie': 'C'}`. In memory, it might look like this:
+For example, a dictionary with a capacity of 8 storing `d = {'Alice': 'A', 'Bob': 'B', 'Charlie': 'C'}` would look like this in memory:
 
 ```text
 # This is a sparse array; many positions are empty (None)
@@ -151,16 +150,16 @@ entries = [
 
 ```
 
-The drawback of this structure is **significant space waste**. Because a certain proportion of free space (low load factor) must be maintained to reduce collisions, a large amount of memory contains `None`.
+This structure suffers from **high memory overhead**. To minimize collisions, the load factor must be kept low, meaning a large portion of the array remains empty (`None`).
 
 ### Compact Hash Table (Python 3.6+)
 
-To save memory and preserve insertion order, Python 3.6 introduced the "compact hash table." It splits the structure into two arrays:
+To optimize memory usage and preserve insertion order, Python 3.6 introduced a compact dictionary layout that splits the data structure into two separate arrays:
 
-1. **indices**: Stores only the hash table index mappings; it is very small (if it is a byte array, each slot takes only 1 byte).
-2. **entries**: Stores the actual data compactly in insertion order, with no gaps.
+1. **indices**: Stores only the index mappings (if the dictionary capacity is small, each slot takes only 1 byte).
+2. **entries**: Stores the actual key-value data compactly in insertion order, with no gaps.
 
-For the same dictionary `d = {'Alice': 'A', 'Bob': 'B', 'Charlie': 'C'}`, the new memory layout is as follows:
+For the same dictionary `d = {'Alice': 'A', 'Bob': 'B', 'Charlie': 'C'}`, the compact layout is structured as follows:
 
 ```python
 # The entries array is stored in insertion order, compact, with no wasted space
@@ -184,12 +183,12 @@ indices = [None, 1, None, None, None, 0, None, 2]
 
 **Significance of This Change**:
 
-* **Memory savings**: The `indices` array is very small, and the `entries` array has no gaps.
-* **Ordering**: Since `entries` are appended in insertion order, Python 3.7+ officially declares that **dictionaries are ordered** (by insertion order).
+* **Memory Efficiency**: The sparse `indices` array is extremely small, and the larger `entries` array has no empty slots.
+* **Insertion Ordering**: Because elements are appended sequentially to the `entries` array, the iteration order matches insertion order. Starting in Python 3.7, dictionaries are officially guaranteed to maintain insertion order.
 
 ## Hash Table Application Examples
 
-The greatest strength of hash tables is their  lookup speed, making them ideal for deduplication, counting, and fast searching.
+The primary advantage of hash tables is their near-instantaneous lookup speed, making them ideal for deduplication, frequency counting, and fast key-value lookups.
 
 ### Example: Longest Consecutive Sequence
 
@@ -231,15 +230,15 @@ print(longest_consecutive(nums))  # Output: 4
 
 ## Summary
 
-The hash table is the ultimate embodiment of the "space-for-time" philosophy in computer science.
+The hash table is a classic embodiment of the "space-for-time" trade-off in computer science.
 
 * **Advantages**:
-  1. **Speed**: The average time complexity for insertion, deletion, and search is all `O(1)`.
-  2. **Flexibility**: Keys can be any hashable object.
+  1. **Speed**: Average time complexity for insertion, deletion, and search operations is $O(1)$.
+  2. **Flexibility**: Any hashable object can be used as a key.
 
 * **Disadvantages**:
-  1. **Unordered**: Traditional hash tables are unordered (although Python dictionaries are now ordered, this is a feature of a specific implementation).
-  2. **Rehashing cost**: When the amount of data is large, rehashing can cause a momentary performance jitter.
-  3. **Collisions**: A poorly designed hash function can lead to performance degradation.
+  1. **Unordered by Nature**: Standard hash tables do not maintain ordering (while Python dictionaries preserve insertion order, this is a specialized implementation feature).
+  2. **Rehashing Overhead**: Resizing large tables can introduce occasional latency spikes when rehashing occurs.
+  3. **Collision Sensitivity**: Poor hash functions or highly clustered data can degrade lookup times toward $O(n)$.
 
 Understanding hash tables — especially collision resolution and the underlying optimization of Python dictionaries — is crucial for writing high-performance code.

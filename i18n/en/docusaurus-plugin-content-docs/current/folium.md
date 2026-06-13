@@ -1,14 +1,14 @@
 # Geographic Data and Folium
 
-In data analysis, if the data contains latitude/longitude or other geographic information, charts alone often cannot intuitively display the distribution patterns of the data. In such cases, we need maps.
+In data analysis, standard charts and plots often fail to capture spatial distribution patterns when working with coordinates or geographic information. In these scenarios, maps are essential.
 
-Folium is a powerful Python library for creating interactive maps. It is built on top of the powerful JavaScript library `Leaflet.js`, serving as a bridge between Python's data processing capabilities (such as Pandas) and Leaflet's powerful map visualization capabilities. With Folium, you can easily visualize processed data (such as coordinates, shapes, routes, heatmaps, etc.) on a map and generate HTML files for convenient display on web pages.
+Folium is a powerful Python library designed for creating interactive maps. Built on top of the popular JavaScript library `Leaflet.js`, it acts as a bridge between Python's data-wrangling libraries (like Pandas) and Leaflet's mapping capabilities. With Folium, you can easily visualize coordinates, routes, regions, and heatmaps on an interactive map, and export the output as standard HTML files to render in any browser or web application.
 
-The following are Folium's core features and usage methods:
+Here are Folium's core features and typical use cases:
 
 ## Installation
 
-Folium is a third-party package. If you haven't installed it yet, you can install it with the following command:
+To install Folium on your system, use `pip`:
 
 ```bash
 pip install folium
@@ -17,7 +17,7 @@ pip install folium
 
 ## Creating a Basic Map
 
-Creating a basic map is very simple. You can use the `folium.Map` class to generate a map based on a center point and zoom level.
+Instantiating a map is straightforward: use `folium.Map()` and specify the center coordinates and initial zoom level.
 
 ```python
 import folium
@@ -27,14 +27,14 @@ import folium
 # zoom_start: Initial zoom level (0-18), higher values mean more detail
 mymap = folium.Map(location=[37.7749, -122.4194], zoom_start=12)
 
-# In Jupyter Notebook, simply enter the object name to display the map
+# In Jupyter Notebook, entering the map variable name will render the interactive map inline
 mymap
 
 ```
 
 ## Adding Markers
 
-The most common element on a map is a marker. We can add markers at specific locations, supporting click popup information (Popup) and mouse hover tooltips (Tooltip).
+Markers are the most fundamental mapping elements. You can place markers at specific latitude and longitude coordinates, adding text popups (rendered when clicked) or hover tooltips:
 
 ```python
 # Add a marker with popup information and icon
@@ -56,11 +56,11 @@ mymap
 
 ```
 
-## Different Layers and Tiles
+## Map Tiles and Styles
 
-Folium supports multiple base map styles (Tiles). You can change the map style through the `tiles` parameter.
+Folium supports a variety of map tile styles, which you can specify using the `tiles` parameter.
 
-*Note: The earlier Stamen series of base map services have changed, and it is now recommended to use CartoDB or OpenStreetMap.*
+*Note: The Stamen tile services are no longer freely available; we recommend using OpenStreetMap or CartoDB styles.*
 
 ```python
 # Use CartoDB Positron style (light gray and white, ideal for overlaying data)
@@ -69,7 +69,7 @@ mymap
 
 ```
 
-Common `tiles` options include:
+Common tile options include:
 
 * `"OpenStreetMap"` (default): Standard color street map.
 * `"CartoDB positron"`: Light minimalist style, ideal as a base map for data visualization.
@@ -77,7 +77,7 @@ Common `tiles` options include:
 
 ## Drawing Shapes (Circles and Polylines)
 
-In addition to point markers, Folium also supports drawing geometric shapes on the map to represent areas or routes.
+You can also draw vector shapes like circles and polylines on a map to highlight regions or represent routes:
 
 ### Circle Markers
 
@@ -119,7 +119,7 @@ mymap
 
 ## Marker Clustering
 
-When there are a large number of data points (e.g., thousands), drawing all markers directly on the map can make it cluttered and sluggish. The `MarkerCluster` plugin can aggregate nearby markers together, which expand as the map zooms in.
+When plotting thousands of points, rendering individual markers can clutter the map and degrade browser performance. The `MarkerCluster` plugin groups neighboring points into aggregate markers that expand automatically as the user zooms in:
 
 ```python
 from folium.plugins import MarkerCluster
@@ -143,11 +143,11 @@ m
 
 ```
 
-## Choropleth Maps
+## Choropleth Maps (Regional Shading)
 
-This is one of Folium's most powerful features. It allows you to color a map based on GeoJSON regions (such as country, state, or county boundaries) and corresponding data (such as population, GDP).
+Choropleth maps shade regions (defined by a GeoJSON boundary file, such as country or state borders) based on a numeric variable (like population density or GDP).
 
-Suppose we have a GeoJSON file containing the boundaries of US states and CSV data containing the unemployment rates for each state.
+For example, to map US state-level unemployment statistics, we pair a GeoJSON boundary file with a Pandas DataFrame:
 
 ```python
 import pandas as pd
@@ -178,7 +178,7 @@ m
 
 ## Heatmaps
 
-Heatmaps are used to display the density of data.
+Heatmaps visualize point density by representing concentrations of coordinates with hot and cold color gradients:
 
 ```python
 from folium.plugins import HeatMap
@@ -199,11 +199,11 @@ m
 
 ## Common Plugins
 
-Folium has a rich plugin ecosystem that can be imported via `folium.plugins`.
+Folium's functionality can be extended using the `folium.plugins` module. Some common plugins include:
 
-* **MiniMap**: Display a small overview map in the bottom-right corner.
-* **MousePosition**: Display the latitude and longitude of the current mouse position.
-* **MeasureControl**: A tool for measuring distances and areas.
+* **`MiniMap`**: Adds a small overview map in the corner to aid navigation.
+* **`MousePosition`**: Displays the coordinates of the mouse cursor in real-time.
+* **`MeasureControl`**: Adds ruler and area calculation tools directly to the map interface.
 
 ```python
 from folium.plugins import MiniMap, MousePosition
@@ -222,7 +222,7 @@ MousePosition(
     empty_string='NaN',
     lng_first=True,
     num_digits=20,
-    prefix='坐标:',
+    prefix='Coordinates:',
     lat_formatter=formatter,
     lng_formatter=formatter,
 ).add_to(m)
@@ -233,7 +233,7 @@ m
 
 ## Saving Maps
 
-A map generated by Folium is essentially an HTML file. You can save it and open it in any browser, or embed it in your website.
+To export your map as a standalone HTML page that can be opened in a browser or embedded in a web application, use the `.save()` method:
 
 ```python
 m.save("my_interactive_map.html")

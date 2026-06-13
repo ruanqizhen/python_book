@@ -1,23 +1,23 @@
 # Simple Animation and Pygame
 
-The goal of this section is to draw multiple movable rigid balls on the screen that collide and bounce off each other, to demonstrate the principle of conservation of momentum taught in middle school physics. There are many libraries in Python that can be used to implement animation, such as Tkinter introduced in the previous section. This section focuses on introducing the Pygame library.
+The goal of this section is to animate multiple moving rigid balls that collide and bounce off one another, demonstrating the principle of conservation of momentum. While Python offers several libraries for creating animations (such as Tkinter, which we explored in the previous chapter), this section focuses on Pygame.
 
 ## Pygame Library
 
-As the name suggests, Pygame is specifically designed for video games. It provides the graphics and sound libraries needed to create games. It allows users to develop games quickly without having to write low-level code from scratch. Pygame is based on SDL (Simple DirectMedia Layer), a cross-platform multimedia library for handling video, audio, input devices, and CD-ROMs.
+Pygame is a library designed specifically for writing video games. It provides wrapper modules for handling graphics, sound, and input, allowing you to develop multimedia applications quickly without writing low-level platform code. Pygame is built on top of SDL (Simple DirectMedia Layer), a cross-platform development library that provides low-level access to audio, keyboard, mouse, joystick, and graphics hardware.
 
-Pygame is not included with Python by default and needs to be installed separately. You can install Pygame using Python's package manager pip:
+Because Pygame is a third-party package, you must install it using `pip`:
 
 ```bash
 pip install pygame
 
 ```
 
-Once installed, you can import the pygame module and start writing game code. We'll use a simple mini-game to introduce how to use pygame.
+Once installed, you can import the module and start building interactive applications. We will walk through a simple arcade game to introduce Pygame's core concepts.
 
 ## Simple Game
 
-Suppose we want to write a simple mini-game: on the screen, a ball falls randomly from the top. At the bottom of the screen, the user can control a horizontally moving paddle. If the paddle catches the ball, the ball bounces up; otherwise, the ball falls and the game ends. Here is the program for this game:
+In this mini-game, a ball drops from the top of the window, and the user controls a horizontal paddle at the bottom using the keyboard. If the paddle catches the ball, it bounces back up; if the ball slips past, the game ends. Here is the complete code:
 
 ```python
 import pygame
@@ -110,19 +110,19 @@ pygame.quit()
 
 ```
 
-In the program above, after importing the pygame module, we first call the `init()` method to initialize it. Then, we use the `display.set_mode()` method to set the game window size.
+The game begins by calling `pygame.init()` to initialize all imported Pygame modules, followed by `pygame.display.set_mode()` to create the game window.
 
-The program defines some game constants and variables, such as the ball's color, movement speed, etc. Among them, `pygame.Rect` is a class used to store and manipulate the coordinates and dimensions of rectangular areas. This class is very useful in game development because it provides a convenient way to track the position and size of game elements (such as characters, obstacles, buttons, etc.) and can be easily used for collision detection and interface layout. We define both game objects, the ball and the paddle, as `Rect` objects.
+We define several constants and variables (like dimensions, speeds, and colors) to track game state. A particularly important class here is `pygame.Rect`, which is used to store and manipulate rectangular areas. `Rect` objects are invaluable in game development because they simplify position tracking, layout calculations, and—most importantly—collision detection. Both the ball and the paddle are represented as `Rect` objects.
 
-Pygame provides functions for drawing simple shapes. For example, you can use the `draw.ellipse()` method to draw a ball, and the `draw.rect()` method to draw a rectangular paddle. When pygame draws graphics, it does not draw directly to the screen, as that would affect animation quality. It first draws all the graphics that need to be rendered into a **buffer**, and when the `display.flip()` method is called, the already-drawn graphics are displayed on the screen. This helps avoid issues like flickering and afterimages.
+Pygame provides drawing functions to render basic shapes on a surface. Here, we use `pygame.draw.ellipse()` to render the ball and `pygame.draw.rect()` for the paddle. To ensure smooth animation and prevent flickering, Pygame employs **double buffering**. All drawing operations occur on an off-screen buffer first. When `pygame.display.flip()` is called, the entire frame is swapped onto the visible screen in a single operation.
 
-In the main loop of the program, it continuously checks whether the user has pressed the left or right arrow keys. If so, it changes the paddle's position accordingly. At the same time, the program constantly monitors the ball's position. If the ball collides with a wall or the paddle, its velocity is changed to make it bounce.
+Within the main loop, the application continuously polls keyboard input via `pygame.key.get_pressed()`, moving the paddle if the left or right arrow keys are held. Simultaneously, the program updates the ball's coordinates, reversing its horizontal or vertical speed whenever it hits a boundary or collides with the paddle (detected using the `.colliderect()` method).
 
 ## Generating Random Numbers
 
-Most programs do not require randomness; they need accurate results. However, randomness is very important for games. Users would not enjoy opening a game and seeing the exact same process every time — they crave a sense of unpredictability and novelty. This is where random numbers come into play.
+While most general-purpose programs require deterministic results, games rely heavily on randomness to create variety and unpredictable challenges. In Pygame and standard Python development, this is handled by the built-in `random` module.
 
-The main way to generate random numbers in Python is through the built-in `random` module, which provides a variety of functions for generating random numbers. Here are some of the most commonly used features:
+The `random` module provides several utility functions for generating random values:
 
 * `random.random()`: Returns a random floating-point number between 0 and 1, including 0 but not 1.
 * `random.uniform(a, b)`: Returns a random floating-point number within a specified range defined by parameters a and b, including a but not b.
@@ -155,9 +155,9 @@ Running the program above will show different results each time.
 
 ## Multiple Balls in Motion
 
-Let us return to the original problem of this section: "Draw multiple movable rigid balls on the screen that collide and bounce off each other." Since there are multiple balls, we can define a Ball class that contains all the properties and methods of a ball, then make each ball an instance.
+Now let's tackle the momentum conservation simulation: rendering and moving multiple balls that collide with one another. To model this, we define a custom `Ball` class to encapsulate each ball's physical state (position, velocity, color, and size).
 
-Another tricky aspect is how the velocities change after two balls collide. Their speed magnitudes, directions, and collision positions may all differ. If we only use simple rules like in the example above, the ball movement would look very unrealistic. Therefore, in the program, we define some vector operations. Their purpose is: when two balls collide, decompose each ball's velocity into two vectors — one component along the line connecting the ball centers, and the other perpendicular to that line. Assuming all balls have equal mass, according to the law of conservation of momentum, the components of the two balls along the line connecting the centers should be swapped, while the components perpendicular to that line remain unchanged. After performing the above calculations, each ball's two motion components are converted back into components along the x and y axes, and the simulation continues.
+Modeling realistic elastic collisions requires vector math. When two balls collide, we decompose their velocity vectors into two components: one component parallel to the normal line (the line connecting the centers of the two spheres) and one component perpendicular to it (tangent to the collision). Under the conservation of momentum (assuming equal mass), the normal velocity components swap, while the tangential velocity components remain unaffected. We calculate the new velocities and convert them back into standard x and y coordinates for the next animation frame.
 
 The program is as follows:
 

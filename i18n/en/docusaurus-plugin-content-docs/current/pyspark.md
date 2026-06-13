@@ -2,9 +2,9 @@
 
 Before reading this chapter, readers are advised to first learn SQL query statements, as this will make it easier to understand the example programs in the text.
 
-PySpark is the Python API for Apache Spark. Apache Spark is a powerful distributed data processing framework designed for large-scale data processing and data analysis. Through PySpark, Python developers can conveniently perform large-scale data analysis and data mining without needing to delve into the complexities of distributed computing.
+PySpark is the Python API for Apache Spark, a powerful distributed data processing engine designed for large-scale data analytics and machine learning. With PySpark, Python developers can perform large-scale data analysis and data mining efficiently, utilizing distributed computing without needing to manage its low-level complexities.
 
-PySpark mainly includes the following components:
+PySpark consists of several key components:
 
 * **Spark SQL**: A library for executing SQL queries and reading data, supporting multiple data formats and storage systems.
 * **DataFrame API**: Provides a distributed data collection, making data processing and analysis more intuitive and efficient.
@@ -12,24 +12,24 @@ PySpark mainly includes the following components:
 * **GraphX**: A library for graph processing (accessed in PySpark through third-party libraries such as GraphFrames).
 * **Spark Streaming**: A library for real-time data stream processing.
 
-Database querying is the most commonly used feature, so this chapter mainly introduces database queries.
+Because querying datasets is the most common use case, this chapter focuses primarily on data queries and manipulations.
 
-## Configuring the PySpark Runtime Environment
+## Setting Up the PySpark Environment
 
 ### Installing PySpark
 
-To use PySpark, you first need to install Spark. You can install PySpark via pip:
+To use PySpark, you can install the package using `pip`:
 
 ```sh
 pip install pyspark
 
 ```
 
-Connecting PySpark to databases is typically done through JDBC (Java Database Connectivity), which is a Java API for executing SQL operations that allows you to access almost any relational database from Spark programs. Spark itself is written in Java, and PySpark is simply a layer of Python interface functions wrapped around Spark. So when using PySpark, it still calls the underlying Java libraries. Therefore, in addition to installing PySpark itself, you also need the JDBC driver for your target database. For example, if you want to connect to a MySQL database, you need to download the MySQL JDBC driver and place it in the classpath.
+Connecting PySpark to relational databases is typically done via JDBC (Java Database Connectivity). Because Apache Spark is built on the Java Virtual Machine (JVM), PySpark acts as a Python wrapper that communicates with the underlying Java libraries. To connect to a database (such as MySQL or PostgreSQL), you must download the database's JDBC driver and include it in Spark's classpath.
 
-### Creating and Closing a SparkSession
+### Managing a SparkSession
 
-SparkSession is a concept introduced after Spark 2.0. It serves as the entry point for program execution, used to configure various Spark settings (such as master URL) and initialize Spark applications.
+Introduced in Spark 2.0, `SparkSession` is the main entry point for Spark applications. It is used to configure Spark settings, manage resources, and interact with Spark APIs:
 
 ```python
 from pyspark.sql import SparkSession
@@ -41,22 +41,22 @@ spark = SparkSession.builder \
 
 ```
 
-Once we have the `spark` object, we can use it to call various Spark features. The specific features available will be introduced in detail later.
+With the `SparkSession` instantiated, you can load data, execute queries, and perform analytical tasks.
 
-At the end of the program, don't forget to close the SparkSession.
+Be sure to stop the SparkSession when your program finishes to release resources:
 
 ```python
 spark.stop()
 
 ```
 
-### Using PySpark in AWS
+### Running PySpark on AWS
 
-AWS has integrated PySpark into many of its services, making it very convenient to use directly. The two most commonly used services are AWS Glue and AWS Athena. Glue has more complex functionality and can handle various data integration tasks, while Athena focuses on data querying and processing. Both services provide a programming environment similar to [Jupyter Notebook](https://www.google.com/search?q=ide%23%E5%9F%BA%E4%BA%8E%E7%BD%91%E9%A1%B5%E7%9A%84%E7%BC%96%E7%A8%8B%E7%8E%AF%E5%A2%83), and they have built-in management of SparkSession, so users no longer need to configure it themselves. In the programming environment they provide, `spark` is already a directly usable global object—just call it directly. The example programs below were all debugged in the AWS Athena Notebook.
+AWS integrates PySpark across many of its serverless analytics tools. The two most common options are AWS Glue (for data integration and ETL pipelines) and AWS Athena (for interactive data analysis). Both services provide notebook environments based on [Jupyter Notebook](ide.md#web-based-programming-environments) where the `SparkSession` is pre-configured. In these notebooks, a global `spark` object is automatically initialized and ready to use.
 
-### Connecting to and Opening a Database
+### Connecting to Databases and Tables
 
-In AWS services, if you have already created a "Database" and "Table", you can use them directly. For example, if we have a database called "my_db" and a table called "my_table", running the following code will print the contents of the table:
+If you are running within AWS Athena, you can query registered tables directly. For example, if you have a database `my_db` and a table `my_table` in your data catalog, you can run:
 
 ```python
 spark.sql("use my_db")  # Open the database named my_db
@@ -69,16 +69,16 @@ spark.sql(              # Call SQL statement to query the contents of my_table
 
 ```
 
-The usage of the sql method will be elaborated on later. The show method is used to display the queried data. By default, it displays the first 20 rows of data. If you need to show more rows, simply pass the desired number of rows, for example `show(30)`.
+The `sql()` method executes SQL queries, while `.show()` prints the resulting DataFrame. By default, `.show()` displays the first 20 rows. You can display more rows by passing an integer, such as `.show(30)`.
 
-In AWS services, data in databases is stored as files in the S3 service. So in many cases, we don't need to configure databases and tables; we can directly read data from files. For example, if a table is stored in parquet format (one of the most commonly used data storage formats on AWS) at the path "s3://my_bucket/my_db/my_table/" in an S3 folder, you can use the following statement to read the data:
+Under the hood, AWS databases store data in Amazon S3. Instead of defining formal table catalogs, you can read files directly from S3 paths. For example, to read a dataset stored in the optimized Parquet format:
 
 ```python
 df = spark.read.parquet("s3://my_bucket/my_db/my_table/")
 
 ```
 
-If you are not using AWS services but running PySpark on your own computer, connecting to a database is a bit more complex. You can connect to a database through the `jdbc` method of the `DataFrameReader` class. We need to specify the JDBC connection URL, username and password, and the table name to access:
+If you are running Spark locally or on-premise, you can load tables from a relational database using Spark's JDBC reader. You must specify the database URL, driver class, and access credentials:
 
 ```python
 # Database connection parameters
@@ -94,9 +94,9 @@ df = spark.read.jdbc(url=jdbc_url, table="my_table_name", properties=connection_
 
 ```
 
-## Two Ways to Write PySpark Programs
+## Spark SQL vs. DataFrame API
 
-We can write PySpark code in two distinctly different styles: one is to directly use SQL statements, and the other is to directly call the APIs provided by PySpark. Let's take a minimal program as an example to see how these two approaches differ. Suppose we have two tables: one is the `student_info` table, which records student IDs, names, home addresses, and other information; the other is the `quize_score` table, which records student IDs and their scores on a particular exam. Merging the data from both tables gives us a new table that includes student names and scores.
+PySpark code can be written in two distinct styles: using raw SQL queries with Spark SQL, or using Pythonic method calls with the DataFrame API. Let's compare these approaches using a simple example. Suppose we have two datasets: `student_info` (student metadata) and `quiz_score` (exam results). We want to join them on student ID to retrieve student names and their respective scores.
 
 The program written with Spark SQL statements is as follows:
 
@@ -121,15 +121,15 @@ student_info.join(
 
 ```
 
-The biggest advantage of using SQL statements directly is that the same SQL statements can be executed in different environments. For example, when using AWS Athena, the same SQL can be used both in Athena Notebook programs and directly run in the Athena Query interactive environment, offering excellent portability. However, when Spark executes a program, it first translates the SQL statements into its own API calls before execution. Users have no control over this translation process, and Spark's translation may not be optimal for certain problems. If you write programs directly using the Spark API, you have more flexibility and can design the most optimized program according to your needs.
+The primary advantage of Spark SQL is portability. The same SQL query can be run in Athena Notebooks, interactive SQL consoles, or other database clients. Under the hood, Spark parses and translates SQL statements into DataFrame execution plans. Using the DataFrame API directly, however, gives you finer programmatic control and can make complex dynamic queries easier to modularize in Python code.
 
-## Basic Operations
+## Common DataFrame Operations
 
-If you are already familiar with the SQL query language, switching to the Spark API is very easy—basically every SQL statement has a corresponding Spark API. Below are some of the most commonly used methods.
+If you are familiar with SQL, transitioning to the DataFrame API is straightforward. Almost every SQL clause has a corresponding DataFrame method. Here are the most common operations:
 
 ### Selecting Columns
 
-Selecting certain columns from a table is one of the fundamental steps in data processing. PySpark uses the `select()` method for column selection, which is equivalent to the SELECT statement in SQL. For example, to select columns named "name" and "age" from a table called df, you can use the following code:
+The `.select()` method projects specific columns from a DataFrame, equivalent to the `SELECT` clause in SQL:
 
 ```python
 selected_data = df.select("name", "age")
@@ -139,7 +139,7 @@ selected_data.show()
 
 ### Filtering Data
 
-The `filter()` and `where()` methods in PySpark have exactly the same functionality; both are used to filter data based on conditions, equivalent to the WHERE statement in SQL. For example, to select all entries where the "age" column data is greater than 30, you can use the following code:
+The `.filter()` and `.where()` methods are aliases and perform identical conditional filtering, equivalent to the SQL `WHERE` clause:
 
 ```python
 filtered_data = df.filter(df["age"] > 30)
@@ -150,7 +150,7 @@ filtered_data.show()
 
 ### Data Transformations
 
-We can also perform computations on data when selecting it. For example, we can add a new column to the data where the values are the result of adding 10 to the "age" column data:
+You can apply transformations and rename columns during selection using functions and column aliases:
 
 ```python
 from pyspark.sql import functions as F
@@ -162,7 +162,7 @@ transformed_data.show()
 
 ### Joining Tables
 
-Join refers to merging data from different tables based on specified conditions. PySpark supports multiple types of join operations, including:
+Joins combine columns from two DataFrames based on a matching key. PySpark supports all standard join types:
 
 * Inner Join (JOIN): Returns only the rows where the join keys match in both tables
 * Left Outer Join (LEFT OUTER JOIN): Returns all rows from the left table, even if there are no matching rows in the right table. If there is no match in the right table, the right table's columns will return null
@@ -170,7 +170,7 @@ Join refers to merging data from different tables based on specified conditions.
 * Full Outer Join (FULL OUTER JOIN): Returns all rows from both tables. If there is no match on one side, the columns on that side will return null
 * Cross Join (CROSS JOIN): Returns the Cartesian product of both tables, with each row from the left table combined with every row from the right table
 
-For example, the following program will return all rows where the id exists in both tables:
+For example, to perform an inner join on the `id` column:
 
 ```python
 inner_join_df = df1.join(df2, df1.id == df2.id, how='inner')
@@ -180,7 +180,7 @@ inner_join_df.show()
 
 ### Basic Aggregation Operations
 
-The `groupBy()` method, used in conjunction with aggregate functions, can achieve functionality similar to `GROUP BY` in SQL. Common aggregate functions include `count()`, `sum()`, `avg()`, `max()`, `min()`, etc.:
+The `.groupBy()` method groups rows by one or more columns so you can calculate group-level metrics using aggregation functions (e.g., `count`, `sum`, `avg`, `max`):
 
 ```python
 from pyspark.sql import functions as F
@@ -197,7 +197,7 @@ department_stats.show()
 
 ```
 
-The equivalent SQL implementation is more concise:
+The equivalent SQL query is often more concise for complex aggregations:
 
 ```python
 spark.sql("""
@@ -213,7 +213,7 @@ spark.sql("""
 
 ### Window Functions
 
-Window Functions allow calculations to be performed on specific subsets (windows) of a dataset while preserving the number of rows in the original data. Common use cases include ranking, cumulative sums, moving averages, etc.:
+Window functions calculate values across a partition of rows associated with the current row, without collapsing the dataset. They are ideal for ranking, cumulative sums, and moving averages:
 
 ```python
 from pyspark.sql.window import Window
@@ -232,7 +232,7 @@ cumulative_df.show()
 
 ```
 
-The corresponding SQL syntax is closer to traditional database usage:
+The equivalent SQL syntax uses the standard `OVER` clause:
 
 ```python
 spark.sql("""
@@ -248,7 +248,7 @@ spark.sql("""
 
 ### Exploding Arrays
 
-The `explode()` function is used to expand array-type columns into multiple rows. This is very useful when dealing with nested arrays or when you need to decompose a column of a single complex data type into multiple rows of data. For example, suppose we have a table where the data in the items column is of array type:
+The `explode()` function transforms a column containing arrays into individual rows, flattening the dataset while repeating the values of non-array columns:
 
 ```python
 from pyspark.sql import Row
@@ -274,7 +274,7 @@ Running the above program will show the data in df:
 
 ```
 
-Calling the `explode()` function transforms each array element into an independent row, copying the values of other columns outside the array:
+Applying `explode()` on the `items` column yields:
 
 ```python
 exploded_df = df.select(df.name, explode(df.items).alias("item"))
@@ -299,7 +299,7 @@ The exploded result is as follows:
 
 ### Data Sorting and Deduplication
 
-Sorting and deduplication are key steps in data cleaning:
+Sorting and removing duplicates are fundamental to data preparation:
 
 ```python
 # Sort by multiple columns: first by department ascending, then by salary descending
@@ -315,9 +315,9 @@ deduplicated_df = df.dropDuplicates(["employee_id"])
 
 ## User-Defined Functions
 
-The built-in functionality of PySpark and the SQL language is quite limited. In most practical applications, we need to write some User Defined Functions (UDFs) to extend functionality.
+When built-in SQL and DataFrame functions are not enough, you can write User-Defined Functions (UDFs) to apply custom Python code to your data.
 
-For example, when querying a database, we might want to reverse the order of the first and last names in the "name" string and display them in a "last-first" format. Although PySpark's built-in functions do not include this capability, we can create a UDF to achieve this. After that, we can call this function in every query. Creating a PySpark UDF is very simple—just add the `@udf` [decorator](https://www.google.com/search?q=decorator) to a regular Python function to define it as a UDF.
+For example, to split a full name string, reverse the order of first and last names, and format it as `LastName·FirstName`, you can write a standard Python function and wrap it as a UDF using the `@udf` decorator. (See the [decorator](decorator.md) chapter for details on decorators).
 
 Below is the demonstration code for implementing this functionality:
 
@@ -355,7 +355,7 @@ Running the above example yields the following result:
 
 ```
 
-You can also register the UDF for use in Spark SQL, for example:
+You can also register UDFs to make them accessible inside SQL query strings:
 
 ```python
 spark.udf.register("format_name", format_name, StringType())
@@ -364,11 +364,11 @@ spark.udf.register("format_name", format_name, StringType())
 
 ## Data Writing and Persistence
 
-After data processing is complete, the results typically need to be persisted. PySpark supports multiple output formats and storage systems.
+After processing, you can write the results back to database systems, file systems, or register them for further queries.
 
 ### Writing to a Database
 
-Data can be written to a relational database through the `jdbc` method of `DataFrameWriter`:
+Write DataFrames back to relational databases via JDBC:
 
 ```python
 # Overwrite mode to write to database
@@ -384,7 +384,7 @@ df.write.mode("append") \
 
 ### Saving to a File System
 
-PySpark supports file output in formats such as Parquet, CSV, and JSON. In AWS environments, data is typically written directly to S3:
+Save DataFrames directly to cloud storage (like Amazon S3) or local filesystems in optimized formats:
 
 ```python
 # Parquet format write (auto-partitioned)
@@ -399,7 +399,7 @@ df.write.option("compression", "gzip") \
 
 ### Registering Temporary Views
 
-When working across multiple data processing steps, you can register a DataFrame as a temporary view for SQL query reuse:
+For multi-step analysis, register a DataFrame as a temporary view so you can query it in subsequent SQL statements:
 
 ```python
 df.createOrReplaceTempView("processed_view")
@@ -414,9 +414,9 @@ spark.sql("""
 
 ## Performance Optimization Tips
 
-### Caching Mechanism
+### Caching Data
 
-For DataFrames that need to be accessed multiple times, caching can reduce redundant computation:
+If you query or reuse the same DataFrame multiple times, caching keeps it in memory, bypassing expensive recomputations:
 
 ```python
 # Cache to memory (default storage level)
@@ -431,9 +431,9 @@ df.unpersist()
 
 ```
 
-### Partition Optimization
+### Partitioning and Reshuffling
 
-Setting the number of partitions appropriately can significantly improve parallel processing efficiency:
+Managing partitions is crucial for optimizing parallel processing speed and network overhead:
 
 ```python
 # Adjust shuffle partition count (default is 200)
@@ -450,7 +450,7 @@ df.write.partitionBy("country") \
 
 ### Broadcast Variables
 
-When performing join operations between a small dataset and a large table, using broadcast variables can avoid data skew:
+When joining a small lookup table with a massive dataset, broadcasting the small table to all worker nodes avoids expensive data shuffles (network transfers):
 
 ```python
 small_df = spark.read.parquet("s3://my_bucket/small_dataset/")
@@ -465,7 +465,7 @@ joined_df = large_df.join(broadcast_df, "key_column")
 
 ### Execution Plan Analysis
 
-Use the `explain()` method to view the query execution plan and optimize complex operations:
+Inspect the execution plan using `.explain()` to diagnose bottlenecks and ensure Spark is optimizing your queries correctly:
 
 ```python
 df.groupBy("department").count().explain(extended=True)
@@ -476,7 +476,7 @@ The output will show detailed information such as the logical plan and physical 
 
 ### Exception Handling
 
-In a distributed environment, it is recommended to use `try-except` blocks to catch exceptions and log errors:
+Because Spark jobs run on a distributed cluster, catch exceptions and log failures explicitly using standard Python logging libraries:
 
 ```python
 import logging

@@ -1,25 +1,25 @@
 # Regular Expressions
 
 :::tip
-Regular Expressions (commonly abbreviated as Regex or Regexp) are patterns used to match character combinations in strings. They are like the "Swiss Army knife" of text processing. In many high-level programming languages, regular expressions are used as an extremely important and powerful text processing tool. Although they may seem obscure and difficult at first, once you grasp their core principles, you can easily handle various complex text search, extraction, and replacement tasks.
+Regular Expressions (commonly abbreviated as Regex or Regexp) are patterns used to match character combinations in strings. They are like the "Swiss Army knife" of text processing. In many high-level programming languages, regular expressions are considered an extremely important and powerful tool. Although they may seem obscure and difficult at first, once you grasp their core principles, you can easily handle various complex text search, extraction, and replacement tasks.
 :::
 
-Python provides excellent support for regular expressions through its built-in `re` module. In this chapter, we will start from the basics, first learning the matching syntax of regular expressions, and then mastering the practical usage of Python's `re` module.
+Python provides excellent support for regular expressions through its built-in `re` module. In this chapter, we will start from the basics, first learning the pattern syntax of regular expressions, and then mastering the practical usage of Python's `re` module.
 
 ## Why Do We Need Regular Expressions?
 
 Before learning regular expressions, let's first see what problems they can solve.
 
-Suppose we have a piece of text and need to find all phone numbers from it. The phone numbers might be in formats like `010-12345678` or `021-87654321`, i.e., "3-digit area code - 8-digit number."
+Suppose we have a piece of text and need to find all phone numbers in it. The phone numbers might be in formats like `010-12345678` or `021-87654321` (i.e., a 3-digit area code followed by a hyphen and an 8-digit number).
 
-If we only used the string methods we've learned before, the code would be very verbose and fragile:
+If we only used the string methods we've learned so far, the code would be very verbose and fragile:
 ```python
 text = "Please call: 010-12345678 or 021-87654321."
 
 # Using only plain string methods, we would need to tediously slice, check lengths,
 # check the position of "-", check whether each part is all digits, etc., and it would be very error-prone.
 ```
-But with regular expressions, we only need to write a concise pattern: `r"\d{3}-\d{8}"`, and then call `re.findall()`!
+With regular expressions, however, we only need to write a concise pattern: `r"\d{3}-\d{8}"`, and call `re.findall()`!
 
 ## Basic Syntax of Regular Expressions
 
@@ -38,13 +38,13 @@ Below are some of the most commonly used syntax rules in regular expressions:
 
 ### 2. Predefined Character Sets (Shorthands)
 
-For convenience, regular expressions provide shortcuts (escape sequences) for commonly used character sets:
+For convenience, regular expressions provide shorthand sequences (escape sequences) for commonly used character sets:
 
-| Shortcut | Equivalent Character Set | Description |
+| Shorthand | Equivalent Character Set | Description |
 | :--- | :--- | :--- |
 | `\d` | `[0-9]` | Matches any **digit** (d stands for decimal). |
 | `\D` | `[^0-9]` | Matches any **non-digit**. |
-| `\w` | `[a-zA-Z0-9_]` | Matches any **letter, digit, or underscore** (w stands for word). In Python 3, this also includes Chinese characters by default. |
+| `\w` | `[a-zA-Z0-9_]` | Matches any **letter, digit, or underscore** (w stands for word). In Python 3, this also includes Unicode characters (such as Chinese characters) by default. |
 | `\W` | `[^a-zA-Z0-9_]` | Matches any character that is **not a letter, digit, or underscore**. |
 | `\s` | `[ \t\n\r\f\v]` | Matches any **whitespace character** (including spaces, tabs, newlines, etc.; s stands for space). |
 | `\S` | `[^ \t\n\r\f\v]` | Matches any **non-whitespace character**. |
@@ -91,13 +91,13 @@ Quantifiers specify the **number of times** the preceding character or character
 
 Now that we've mastered the basic syntax of regular expressions, let's see how to use them in Python code.
 
-### The Salvation of Raw Strings
+### The Magic of Raw Strings
 
-When writing regular expressions in Python, **it is strongly recommended to use raw strings (strings prefixed with `r`)**, for example `r"\d{3}-\d{8}"`.
+When writing regular expressions in Python, **it is strongly recommended to use raw strings (strings prefixed with `r`)**, such as `r"\d{3}-\d{8}"`.
 
-Why is this? Because in ordinary strings, the backslash `\` has escape meaning (e.g., `\n` represents a newline, `\t` represents a tab). Without raw strings, to represent `\d` in a regex, you would have to write `"\\d"`; to match a literal backslash `\`, you would even need to write `"\\\\"` (the four-backslash nightmare!).
+Why is this? Because in ordinary strings, the backslash `\` acts as an escape character (e.g., `\n` represents a newline, `\t` represents a tab). Without raw strings, to represent `\d` in a regex, you would have to write `"\\d"`. To match a literal backslash `\`, you would even need to write `"\\\\"` (the notorious four-backslash nightmare!).
 
-By using `r"..."`, Python passes the backslash unchanged to the regex engine, keeping the code much cleaner:
+By using `r"..."`, Python passes backslashes directly to the regex engine without escaping, keeping the code much cleaner:
 ```python
 # Recommended approach
 pattern = r"\d+"
@@ -105,11 +105,11 @@ pattern = r"\d+"
 
 ### 1. Finding the First Match: `re.search()` and `re.match()`
 
-Both functions are used to find matches in a string, but they have a key difference:
-- **`re.match()`**: **Must match from the beginning of the string (index 0)**. If the beginning doesn't match, it returns `None`.
+Both functions find matches in a string, but they differ in where they start matching:
+- **`re.match()`**: **Must match from the beginning of the string (index 0)**. If the start of the string does not match the pattern, it returns `None`.
 - **`re.search()`**: Scans through the **entire string** to find the first match.
 
-Both return a **Match object** when a match is found, and `None` when none is found.
+Both return a **Match object** when a match is found, and `None` when there is no match.
 
 ```python
 import re
@@ -133,8 +133,8 @@ if search_result:
 
 ### 2. Finding All Matches: `re.findall()` and `re.finditer()`
 
-- **`re.findall()`**: Finds **all** matches of the pattern in the string and returns them as a **list** of matched text.
-- **`re.finditer()`**: Returns an **iterator** that produces a Match object on each iteration. When processing very long text, using `re.finditer` can save a lot of memory.
+- **`re.findall()`**: Finds **all** matches of the pattern in the string and returns them as a **list** of matching substrings.
+- **`re.finditer()`**: Returns an **iterator** that yields a Match object for each match. When processing very long text, using `re.finditer()` saves a lot of memory by yielding matches one by one rather than loading them all into memory at once.
 
 ```python
 import re
@@ -152,7 +152,7 @@ for m in re.finditer(r"\d+", text):
 
 ### 3. Powerful Text Replacement: `re.sub()`
 
-`re.sub(pattern, repl, string)` replaces parts of the string that match the pattern with the specified text `repl`.
+`re.sub(pattern, repl, string)` replaces occurrences of the pattern in the string with the replacement text `repl`.
 
 ```python
 import re
@@ -171,8 +171,8 @@ print(secure_text)  # Output: My phone number is 138-****-5678, his phone number
 ```
 
 > [!TIP]
-> The replacement `repl` in `re.sub` can not only be a string, but also a **function**!
-> This function receives a Match object as a parameter and must return a replacement string. This is extremely powerful for scenarios where the replacement text needs to be computed dynamically:
+> The replacement `repl` in `re.sub()` can be either a string or a **function**!
+> This function takes a Match object as its argument and returns the replacement string. This is extremely powerful for scenarios where the replacement text needs to be computed dynamically:
 > ```python
 > # Dynamic replacement: double all numbers in the text
 > text = "Xiao Ming has 5 apples and 12 bananas."
@@ -182,7 +182,7 @@ print(secure_text)  # Output: My phone number is 138-****-5678, his phone number
 
 ### 4. String Splitting: `re.split()`
 
-Python's built-in `str.split()` can only split by a fixed single character or string, whereas `re.split()` can split strings based on complex regular expression patterns.
+Python's built-in `str.split()` can only split by a fixed separator, whereas `re.split()` can split strings based on complex regular expression patterns.
 
 ```python
 import re
@@ -198,9 +198,9 @@ print(fruits)  # Output: ['apple', 'banana', 'orange', 'watermelon', 'cantaloupe
 
 ## Compiling Regular Expressions: `re.compile()`
 
-In real-world development, if the same regular expression needs to be used thousands of times in a loop or program, frequently parsing the regex pattern can waste valuable CPU time.
+In real-world development, if the same regular expression is used repeatedly (for example, inside a loop), parsing the regex pattern every time can be inefficient.
 
-In such cases, we can use `re.compile()` to **pre-compile** the regex pattern into a special `Pattern` object. The compiled object can directly call methods like `search`, `findall`, `sub`, etc., thereby optimizing runtime efficiency.
+In such cases, we can use `re.compile()` to **pre-compile** the regex pattern into a reusable `Pattern` object. The compiled object can then call methods like `search()`, `findall()`, `sub()`, etc., which optimizes runtime performance.
 
 ```python
 import re
@@ -218,9 +218,9 @@ print(phone_pattern.search(text2).group())  # Output: 18911112222
 
 ---
 
-## In-Depth Look at Group Capture and Match Objects
+## Group Capturing and Match Objects
 
-When a regular expression contains parentheses `(...)`, they capture the corresponding subtext while performing the match. We can easily extract them using the Match object's specific methods:
+When a regular expression contains parentheses `(...)`, they capture the corresponding matched substrings. We can extract these captured subgroups using specific methods of the Match object:
 
 - `group(0)` or `group()`: Returns the **entire** matched text.
 - `group(n)`: Returns the text captured by the **n-th** parenthesized group (1-indexed).
@@ -245,14 +245,14 @@ if match:
 > [!NOTE]
 > **Non-capturing Groups `(?:...)`**
 >
-> Sometimes, we use parentheses only to group certain characters together for applying a quantifier (e.g., `(?:abc)+` means abc repeated), without needing to capture, extract, or have it returned in `groups()`.
-> In such cases, simply add `?:` right after the opening parenthesis to define a **non-capturing group**. This is useful for optimizing performance and managing group indices cleanly.
+> Sometimes, we use parentheses solely to group characters together to apply a quantifier (e.g., `(?:abc)+` to match one or more repetitions of `abc`), without needing to capture the substring or retrieve it via `groups()`.
+> In such cases, add `?:` immediately after the opening parenthesis to define a **non-capturing group**. This is useful for optimizing performance and avoiding clutter in group indices.
 
 ---
 
 ## Regular Expression Flags
 
-Python's `re` module allows passing optional "flag arguments" to adjust matching behavior. Multiple flags can be combined using the bitwise OR operator `|`:
+Python's `re` module allows passing optional flag arguments to adjust matching behavior. Multiple flags can be combined using the bitwise OR operator `|`:
 
 | Flag Name | Short Form | Description |
 | :--- | :--- | :--- |
@@ -280,13 +280,13 @@ print(re.search(r"<div>.*</div>", html, re.S).group())
 
 ## Practice Exercises
 
-By writing and testing regular expressions yourself, your understanding will deepen. Try completing the following exercises:
+Writing and testing regular expressions yourself is the best way to master them. Try completing the following exercises:
 
-1. **Basic Validation**: Write a regular expression to determine whether an input string is a valid Chinese postal code (6 digits, with the first digit not being 0).
-2. **Extract Information**: Given a piece of text containing HTML tags, write a program to extract all the link URLs (i.e., the URL inside `href="..."`).
+1. **Basic Validation**: Write a regular expression to validate whether an input string is a valid Chinese postal code (a 6-digit number that does not start with 0).
+2. **Extract Information**: Given HTML text, write a program to extract all link URLs (i.e., the values of `href` attributes).
    For example, extract `https://google.com` from `<a href="https://google.com">Google</a>`.
-3. **Text Masking**: Write a program using `re.sub` to replace the middle 8 digits (representing the date of birth) of all ID card numbers (18 digits, or 17 digits followed by X/x) that appear in the text with `********`.
-4. **Log Parsing**: Suppose there is a line of web server log:
+3. **Text Masking**: Write a program using `re.sub()` to locate 18-digit ID card numbers (or 17 digits followed by X/x) and replace the middle 8 digits (representing the date of birth) with `********`.
+4. **Log Parsing**: Suppose you have the following line from a web server log:
    `192.168.1.100 - - [28/May/2026:12:34:56 +0800] "GET /index.html HTTP/1.1" 200 4523`
-   Write a regular expression and code to extract from it: the IP address, request time, request method (e.g., GET/POST), request path (e.g., /index.html), and HTTP status code (e.g., 200).
-5. **Word Frequency Statistics**: Write a program that uses `re.split` to split all the words in an English article (excluding commas, periods, exclamation marks, double quotes, and spaces) and then find the top 3 most frequently occurring words.
+   Write a regular expression to extract: the IP address, request time, request method (e.g., GET/POST), request path, and HTTP status code.
+5. **Word Frequency Statistics**: Write a program that uses `re.split()` to extract all individual words from an English paragraph (filtering out punctuation like commas, periods, exclamation marks, and quotes) and then count them to find the top 3 most common words.

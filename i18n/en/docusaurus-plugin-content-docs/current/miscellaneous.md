@@ -1,12 +1,12 @@
 # Some Fun Programs
 
-Python can not only handle tedious data and complex algorithms, but it can also be used to write extremely interesting, creative, and even mind-blowing programs.
+Python is not just for crunching numbers, building web apps, or running machine learning algorithms; it is also a fantastic tool for writing creative, mind-bending, and purely entertaining programs.
 
-## Programming in Pure Chinese
+## Coding with Chinese Identifiers
 
-Python 3 treats source code as UTF-8 encoded. This means that any character classified as a "letter" in the Unicode character set (including Chinese characters) can be used as an identifier. In certain specific domains (such as teaching non-English native speakers, or in financial/legal systems with extremely complex business logic), using Chinese variable names can sometimes improve code readability for domain experts.
+Because Python 3 source code is UTF-8 encoded by default, you can use any Unicode character classified as a "letter" (including Chinese characters) as variable names, function names, and class names. While English is the standard for professional development, using native language identifiers can be very helpful for educational purposes or in domain-specific systems (like finance or law) where local terminology is highly specialized.
 
-The following demonstration is a text-based martial arts mini-game called "Duel at the Forbidden City." In this program, except for Python's reserved keywords (such as def, class, if, while, import, return, etc.), all custom names are written in Chinese.
+The following demonstration is a text-based RPG duel. Except for Python's reserved keywords (like `def`, `class`, `if`, `while`, `import`, and `return`), all class names, method names, variable names, and outputs are written entirely in Chinese to showcase this capability.
 
 ```python
 import random as 天意
@@ -152,28 +152,26 @@ aaa 叶孤城 吐出一口鲜血，支撑不住了！
 
 
 
-## Self-Printing Programs
+## Self-Reproducing Programs (Quines)
 
-### Quine Algorithm
+### What is a Quine?
 
-If the program is saved in a file, the simplest way is to have the program read its own file and then print it out:
+If a program is saved as a file on disk, the simplest way to print its own source code is to read the file itself using `__file__`:
 
 ```python
 print(open(__file__).read())
 ```
 
-If the program only exists in memory, or if file reading/writing functions cannot be called, then you can use the Quine algorithm, also known as a "self-reproducing program." It is named after the American philosopher Willard Van Orman Quine. Its working principle is roughly as follows:
+However, what if the program is running entirely in memory without file system access? A program that prints its own source code *without* reading its own file is called a **Quine**, named after the American philosopher Willard Van Orman Quine. The mathematical logic behind a Quine involves partitioning the program into two parts:
 
-- Divide the program into two main parts: A and B
-   - First define a function Q, where for string A, Q(A) becomes string B after execution.
-   - Part A is the code of Part B represented as a string
-   - Part B's code can receive a string A, then call function Q to compute Q(A), and then print A and Q(A)
+- **Part A**: A text string containing the instructions of Part B.
+- **Part B**: A set of instructions that reads the string from Part A, computes its representation, and prints both Part A and Part B.
 
 ### The `repr()` Function
 
-Before writing the Python code, let's first introduce Python's built-in `repr()` function. The `repr()` function returns the "official" string representation of an input object, which can typically be used to recreate the object. Its main purpose is debugging and development.
+Before writing a Quine in Python, we must understand the built-in `repr()` function. `repr()` returns a formal string representation of an object that, when evaluated as a Python expression, can recreate the object itself. It is primarily used for debugging and logging.
 
-The output of `repr()` is mainly intended for developers, with the purpose of unambiguously expressing the object's type and (most crucially) its characteristics. Unlike the `str()` function, which focuses more on readability, `repr()` focuses more on clarity and consistency. If the input object is a Python built-in type, this string can be directly evaluated as a Python expression to obtain the corresponding object.
+While `str()` formats an object for human readability, `repr()` ensures clarity and unambiguity by showing its exact type and characteristics. For example, passing a string to `str()` prints the raw text, but `repr()` prints it with literal quotation marks.
 
 For example, running the following program shows the characteristics of repr():
 
@@ -183,7 +181,7 @@ print(str(x))   # 输出是没有引号的，这就是字符串的打印结果�
 print(repr(x))  # 输出是带有引号的，表示如果的对象是一个字符串： 'abc'
 ```
 
-For objects we define ourselves, we can achieve the effect of the `repr()` function for custom objects by defining the `__repr__()` method in the class. When `repr(obj)` is called, Python looks for the `__repr__()` method in the class definition of `obj` and executes it. For example:
+To define the `repr()` behavior for your own classes, implement the magic method `__repr__()`. When `repr(obj)` is called, Python executes this method under the hood:
 
 ```python
 class Test:
@@ -204,12 +202,12 @@ print(repr(123))        # 输出：'123'
 print(repr([1, 2, 3]))  # 输出：'[1, 2, 3]'
 ```
 
-In this example, the `Test` class defines the `__repr__()` method, which returns a formatted string showing how to create a new object with the same value as the current object. This practice improves code readability and maintainability, especially during debugging.
+Returning a format that mirrors the constructor syntax is a Python best practice, as it allows developers to easily inspect and recreate the object during debugging.
 
 
-### Python Self-Reproducing Programs
+### Writing a Python Quine
 
-With the help of the repr mechanism, we can easily write a self-reproducing program in Python:
+Using the `repr()` mechanism, we can write a short, self-reproducing Quine in just three lines of Python:
 
 ```python
 x = 'y = "x =" + repr(x) + "\\n"\nprint(y+x)'
@@ -219,7 +217,7 @@ print(y+x)
 
 In the code above, the first line is part A of the Quine algorithm, which defines the code of part B represented as a string. The last two lines of the program are part B.
 
-In Python, you can also use the `%r` string formatting symbol, which implicitly calls the repr() function to embed an object directly into a string. Using the `%r` formatting symbol can make self-reproducing programs more concise:
+We can make this even shorter by using string formatting. The `%r` format placeholder implicitly calls `repr()` on its argument. By combining this with string modulo evaluation, we can write a one-line Quine:
 
 ```python
 x='x=%r;print(x%%x)';print(x%x)
@@ -227,19 +225,20 @@ x='x=%r;print(x%%x)';print(x%x)
 
 ## Solving Sudoku Puzzles
 
-Sudoku is a number puzzle game originating from Japan. Its basic gameplay involves filling numbers into a 9x9 grid, following these rules:
+Sudoku is a popular grid-based logic puzzle. The goal is to fill a 9x9 grid with digits from 1 to 9 such that:
 - Each row must contain the numbers 1 to 9 without repetition.
 - Each column must contain the numbers 1 to 9 without repetition.
 - Each 3x3 small square (region) must contain the numbers 1 to 9 without repetition.
-Typically, the initial board of a Sudoku puzzle has some numbers pre-filled, and players need to deduce the correct numbers for the remaining cells based on these known numbers.
 
-### Solution 1 - Elimination Method
+The puzzle starts with a partially filled grid, and the player must deduce the missing numbers using logic.
 
-Typically, well-designed, relatively simple Sudoku puzzles have a unique solution that can be obtained through direct reasoning without guessing. For such simple puzzles, the following approach can be used to solve them:
+### Approach 1: The Elimination Method
 
-Scan each row and column from left to right, top to bottom. For each cell, determine which numbers are available—those that haven't appeared in the same row, column, or 3x3 region. If a cell is found with only one possible number, fill in that unique number as the answer. Repeat this process until every cell is filled with a number.
+Many beginner-level Sudoku puzzles can be solved entirely through logic and elimination, without any guessing. For these puzzles, we can write an algorithm that runs as follows:
 
-The advantage of this algorithm is its fast execution speed, but it can only solve simple Sudoku puzzles. If the result returned by the program still contains empty cells (number 0), it means the puzzle is more complex and requires other solving methods.
+Iterate through the cells row by row. For each empty cell, compute the set of candidate numbers that do not violate any row, column, or 3x3 block constraints. If a cell has exactly one valid candidate, fill it in. Repeat this sweep until the board is fully solved.
+
+This approach is extremely fast but will fail to complete harder puzzles where cells can have multiple valid candidates. If the grid still contains empty spaces (represented by `0`), we must transition to a search-based algorithm.
 
 The program is as follows:
 
@@ -296,11 +295,11 @@ def solve_sudoku(grid):
 solve_sudoku(sudoku_puzzle)
 ```
 
-### Solution 2 - Backtracking
+### Approach 2: Backtracking (Depth-First Search)
 
-If it is not certain whether a given Sudoku puzzle has a unique solution, then a more complex solving method is needed: for each cell from left to right, top to bottom, list all possible numbers that could be filled in, then try them one by one—that is, fill in one possible number and continue to solve the next cell. If a conflict arises during the subsequent solving process, it means the previous assumption was wrong, and you can backtrack to the previous state and try other possible numbers. This continues until a combination of numbers that satisfies all cells is found.
+To solve any valid Sudoku puzzle, we can use a **backtracking** algorithm. Starting from the first empty cell, the program tries a candidate number and recursively attempts to solve the remaining board. If it encounters a dead-end (no valid numbers are left for a cell down the line), it rolls back the choice, returns to the previous cell, and tries the next candidate. This search continues until a valid configuration is found.
 
-This algorithm is slower and is suitable for more difficult Sudoku puzzles. If the puzzle has multiple solutions, it will print all valid solutions.
+While computationally more expensive than the elimination method, backtracking guarantees a solution for any solvable grid. If the puzzle has multiple solutions, the solver will print all valid solutions.
 
 The program is as follows:
 
@@ -369,15 +368,15 @@ def solve_sudoku(position_index, grid):
 solve_sudoku(0, solution)
 ```
 
-## Solving the 24 Game
+## Solving the "24 Game"
 
-The 24 Game is a simple mathematical calculation game that uses playing cards as props. The rule is to randomly draw 4 cards and combine the numbers on them using addition, subtraction, multiplication, and division to compute 24. For example, if the numbers on the 4 drawn cards are 1, 2, 3, and 4 respectively, you can get 24 through 1 * 2 * 3 * 4. For any 4 numbers, there may be multiple ways to calculate 24; for example, (1 + 2 + 3) * 4 also gives 24. In most cases, it's relatively easy to find a solution; but sometimes certain number combinations may be difficult to solve, or even have no solution at all.
+The 24 Game is a popular math puzzle usually played with cards. The objective is to take four integers and combine them using addition, subtraction, multiplication, and division to get exactly 24. For example, given `1, 2, 3, 4`, a simple solution is `1 * 2 * 3 * 4 = 24`, or `(1 + 2 + 3) * 4 = 24`. While most sets of four numbers have solutions, some are tricky, and some have no solution at all.
 
 We can use two methods to solve the 24 Game problem.
 
-### Simplified Solution (Recursive)
+### Approach 1: A Recursive Solution
 
-The first method is a simplified solution with straightforward logic that can handle most problems. This algorithm first considers two numbers, obtains up to 6 results through addition, subtraction, multiplication, and division, then recursively adds a number to get all results for three numbers, and then recursively adds another number to get all possible results for all 4 numbers. If any result is 24, the problem is solved. However, this recursive method misses one case, where the 4 numbers must first be calculated in pairs before getting the final result, such as (1+2)*(1+7). The code is as follows:
+A simple recursive search can find solutions by combining numbers one by one. It takes two numbers, applies the operators to get candidate values, then recursively combines those with the next number, and so on. However, this simple recursive structure misses parenthetical pairings where numbers are computed in pairs first (e.g., `(a + b) * (c + d)`). Here is the code for the simplified search:
 
 ```python
 from typing import List, Callable, Dict
@@ -408,9 +407,9 @@ def calculate(numbers: List[int], target: float, message: str = ''):
 calculate([3, 3, 8, 8], 24)
 ```
 
-### Comprehensive Solution
+### Approach 2: A Comprehensive Solution
 
-To comprehensively find every possible answer, we also need to consider the priority of calculations. For example, structures like (a + b) * (c + d). We can first divide the numbers into two groups, compute a result within each group first, and then compute between the two groups' results, which covers all possible calculations. The implementation code is as follows:
+To find all mathematically valid solutions—including those with paired parentheses—we partition the four numbers into two subsets, evaluate the combinations within each subset first, and then apply the operators between the two resulting values. Here is the comprehensive solver:
 
 ```python
 from copy import deepcopy

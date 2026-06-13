@@ -1,15 +1,17 @@
 # Exception Handling
 
-An error handling mechanism is a way of dealing with exceptions or errors that occur during program execution. This mechanism allows a program to gracefully handle errors when problems arise, rather than crashing directly or producing unexpected behavior. Error handling is very important for building robust and reliable software. In Python, error handling is implemented through an exception mechanism. An "exception" can be understood as an unexpected error — it is a special event that occurs during program runtime and interrupts the normal flow of the program. Python provides an exception handling mechanism that can define specific response behaviors for exceptions.
+An error handling mechanism is a way of dealing with exceptions or errors that occur during program execution. This mechanism allows a program to gracefully handle errors when problems arise, rather than crashing or producing unexpected behavior. Robust error handling is essential for building reliable software. 
+
+In Python, error handling is implemented through exceptions. An **exception** is a special event that occurs during program execution that disrupts the normal flow of instructions. Python's exception handling mechanism allows you to define specific response behaviors when these unexpected events occur.
 
 ## Default Behavior
 
-If no exception catching is performed in a program, and an exception occurs, Python handles it in the following way:
+If a program does not catch exceptions, Python handles them in the following way:
 
-1. Program termination: When Python encounters an unhandled exception, the program terminates immediately and code after the exception is not executed.
-2. Error message output: Python displays an error message and a traceback (also called a stack trace). The error message tells us what went wrong, such as `ValueError`, `IndexError`. The traceback is like a record of the scene of the incident. The last line is usually the most critical — it tells you exactly what error occurred (such as `ZeroDivisionError`). The lines above tell you "who called whom," helping you trace back the path of code execution.
+1. **Program Termination**: When Python encounters an unhandled exception, it terminates the program immediately. Code following the exception is not executed.
+2. **Error Message Output**: Python prints an error message and a traceback (stack trace) to the console. The traceback acts as a post-mortem record of where the exception occurred. The last line is the most critical: it tells you the exact exception type (such as `ZeroDivisionError`) and details. The lines above show the sequence of function calls that led to the error ("who called whom"), helping you trace the path of execution.
 
-For example, the code below has a division by zero operation. We know that no number can be divided by zero, so it cannot run normally:
+For example, the following code performs a division-by-zero operation, which is mathematically undefined and cannot run normally:
 
 ```python
 def divide(x, y):
@@ -19,7 +21,7 @@ result = divide(1, 0)
 print("Program continues running...")
 ```
 
-Running the above code will produce output similar to the following:
+Running this code produces output similar to the following:
 
 ```
 Traceback (most recent call last):
@@ -30,15 +32,15 @@ Traceback (most recent call last):
 ZeroDivisionError: division by zero
 ```
 
-The program terminates due to the error during division, so the subsequent `print("Program continues running...")` statement is never executed.
+Because the program terminates due to the error during division, the subsequent `print("Program continues running...")` statement is never executed.
 
-For simple programs, such as practice programs written while learning, an unhandled exception just causes the program to terminate, which is not a big problem. But for formal products, or complex applications such as web servers or GUI applications, unhandled exceptions can lead to more serious consequences, such as: disconnecting users, losing user data, failing to properly close or release opened resources, etc. Therefore, proper exception handling is very important — it not only helps developers diagnose and fix errors, but also ensures that the program can still gracefully abort or continue running when errors occur.
+For simple learning programs, an unhandled exception that causes the program to crash is not a major issue. However, for production-grade software (such as web servers or GUI applications), unhandled exceptions can have serious consequences: disconnecting users, losing unsaved data, or failing to release external resources (like database connections or files). Proper exception handling ensures that a program can either recover from errors or shut down gracefully.
 
 ## Catching Exceptions
 
 ### Basic Usage
 
-Python uses the `try` `except` statement to catch and handle exceptions:
+Python uses the `try` ... `except` block to catch and handle exceptions:
 
 ```python
 try:
@@ -50,11 +52,11 @@ except ZeroDivisionError:
     print("Divisor cannot be 0!")
 ```
 
-The code block under `try:` is the part we think might raise an exception.
+The code block under `try:` contains the statements that might raise an exception.
 
-The code block under `except ZeroDivisionError:` is used to handle the exception. `except` is followed by the type of exception. In this example, only `ZeroDivisionError` is handled. When the code in the `try` block raises a `ZeroDivisionError`, Python skips the remaining code in the `try` block and immediately executes the code in this `except` block. So running this code, we will only see the output: "Divisor cannot be 0!"
+The code block under `except ZeroDivisionError:` handles the error. The `except` keyword is followed by the specific exception type. In this example, only `ZeroDivisionError` is caught. When the code in the `try` block raises a `ZeroDivisionError`, Python immediately skips the remaining lines in the `try` block and jumps to the `except` block. Running this code yields only: `"Divisor cannot be 0!"`
 
-If you need to obtain the system's error information, you can assign the exception to a variable using the `as` operator:
+To inspect the system's error message, you can bind the exception object to a variable using the `as` keyword:
 
 ```python
 try:
@@ -65,7 +67,7 @@ except ZeroDivisionError as e:  # Variable e holds the error information
 
 ### Catching Multiple Exceptions
 
-A `try` block can be followed by multiple `except` blocks to catch different types of exceptions, for example:
+A `try` block can be followed by multiple `except` blocks to handle different types of exceptions:
 
 ```python
 try:
@@ -84,11 +86,14 @@ except IndexError:
     print("Index out of range!")
 ```
 
-In this example, the user is first asked to enter a number. If the user enters 0, a `ZeroDivisionError` is triggered by the division operation. If the user enters something that is not a valid integer (such as a string), a `ValueError` is raised when trying to convert it to an integer. If the number entered is too small or too large, exceeding the index range of `some_list`, an `IndexError` is triggered.
+In this example, the user is prompted to enter a number:
+- If the user enters `0`, the division triggers a `ZeroDivisionError`.
+- If the user enters a non-integer string (e.g., `"abc"`), the `int()` conversion raises a `ValueError`.
+- If the user enters a number that is out of bounds for `some_list`, an `IndexError` is triggered.
 
-Exception catching is ordered (top to bottom). If `Exception` (the base class of all exceptions) is caught first, the subsequent `ValueError` will never be caught. This is a common mistake made by beginners.
+Exception handling is evaluated sequentially from top to bottom. If you catch a generic `Exception` (the base class for most standard exceptions) in the first `except` block, it will swallow all exceptions, and the more specific blocks below it (like `ValueError`) will never run. This is a common pitfall to avoid.
 
-If the handling for multiple exceptions is the same, they can also be written in a single `except` statement, for example:
+If the handling logic for multiple exceptions is identical, they can be grouped into a parenthesized tuple:
 
 ```python
 try:
@@ -100,7 +105,7 @@ except (ZeroDivisionError, ValueError) as e:
 
 ### The else Clause
 
-In a `try` `except` statement, an optional `else` clause can be used to define code that is executed only when no exception occurs, for example:
+An optional `else` clause can be added after the `except` blocks. Code in the `else` block executes only if the code in the `try` block runs without raising any exceptions:
 
 ```python
 try:
@@ -111,27 +116,13 @@ else:
     print("Everything is normal!")
 ```
 
-In many cases, the `else` clause is not strictly necessary. For example, the above program could also put the code directly in the `try` block:
+While you could theoretically append this success logic to the end of the `try` block itself, using `else` is a best practice. It clearly separates code that might raise exceptions (placed in the `try` block) from code that is guaranteed to run only if the `try` block succeeds.
 
-```python
-try:
-    x = 1 / 1
-    print("Everything is normal!")
-except ZeroDivisionError:
-    print("Divisor cannot be 0!")
-```
-
-Using `else` primarily improves code readability. It clearly distinguishes code that might raise exceptions (placed in the `try` block) from code that is only executed when no exception occurs (placed in the `else` block).
-
-`else` also has an important function: "narrowing the scope of the try block."
-
-If all code is placed inside `try`, you might accidentally catch exceptions you don't want to catch (for example, an `IndexError` from subsequent logic being caught unintentionally).
-
-Putting code that you are confident will not raise exceptions, or that you do not want to be caught by the current `except` block, into the `else` clause can avoid "accidentally masking errors." This is the deeper technical value of `else`.
+Technically, the `else` clause helps "minimize the scope of the `try` block." If you place all subsequent code inside `try`, you might accidentally catch an exception you didn't intend to catch (for example, catching an `IndexError` thrown by later processing logic rather than the initial statement). Keeping the `try` block as small as possible prevents "accidental error masking."
 
 ### The finally Clause
 
-In a `try` `except` statement, a `finally` clause can also be used. Regardless of whether the operations in the `try` block trigger an exception, the code in the `finally` clause will always be executed. No business logic should be placed in the `finally` clause; its sole purpose is cleanup and task finalization, such as closing opened files, releasing resources, resetting certain states, etc. For example:
+The `finally` clause defines clean-up actions that must be executed under all circumstances, whether or not an exception was raised. You should not place core business logic here; it is reserved for finalizing tasks and releasing resources, such as closing open files, disconnecting database connections, or resetting states:
 
 ```python
 file = None  # Define file first
@@ -147,11 +138,9 @@ finally:
         file.close()
 ```
 
-In the example program above, within the `try` block, the `open` function is used to open the file "sample.txt" in read mode, and the returned file object is assigned to the variable `file`. Any opened file must be closed, and calling `file.close()` closes the file. However, placing `file.close()` inside the `try` block is unsafe because if any exception occurs before the `file.close()` statement, the program will skip it, leaving the file unclosed.
+In this example, the `try` block opens a file and assigns it to the `file` variable. The file must be closed when we are done. Putting `file.close()` at the end of the `try` block is unsafe: if an exception occurs before that line, the function exits early and the file remains open. Placing it in the `finally` block ensures that `file.close()` executes even if the division-by-zero error occurs.
 
-The correct approach is to put `file.close()` in the `finally` clause, so that regardless of whether an exception occurs, the program will call it and close the file.
-
-Note that placing `file.close()` after the entire `try` `except` statement is also unsafe. Because there may still be uncaught exceptions within the `try` `except` statement, or it may actively raise other exceptions, both of which can cause the code after the `try` `except` statement to be skipped. Only placing it in the `finally` clause is safe.
+Relying on putting clean-up code after the entire `try` ... `except` structure is also unsafe. If an uncaught exception occurs, or if you re-raise an exception in the `except` block, the trailing code will be skipped:
 
 ```python
 # This is an unsafe example
@@ -160,19 +149,18 @@ try:
     x = 1 / 0
 except ZeroDivisionError:
     print("Divisor cannot be 0!")
-    # The following line is just for demonstration; it actively raises a demonstration exception
+    # Actively raise a ValueError to demonstrate
     raise ValueError("This is an actively triggered exception")
 except FileNotFoundError:
     print("File not found!")
 
-# Because an unhandled exception (ValueError) appeared in the above statement,
-# the file close operation below will not be executed
+# Because ValueError propagates up, this line is never reached
 file.close()
 ```
 
 ### Do Not Use return in a finally Statement
 
-Using `return` in a `finally` statement can lead to unexpected behavior. For example, running the following program:
+Using a `return` statement inside a `finally` block leads to unexpected and undesirable behavior. Consider this function:
 
 ```python
 def final_func():
@@ -185,51 +173,42 @@ def final_func():
 print(final_func())
 ```
 
-At first glance, `1+2` certainly won't cause an exception, so the program should print 3, but the actual result is 0. This is because the `return`, `break`, and `continue` statements inside the `try` block trigger the `finally` block, and the `return` in the `finally` block clears the previous information, leading to the unexpected result.
+Even though `1 + 2` evaluates successfully, the function prints `0`. When Python encounters `return`, `break`, or `continue` inside a `try` block, it still executes the `finally` block before exiting. If the `finally` block contains its own `return` statement, that return value overrides the one from the `try` block.
 
-Beware: do not use `return` in a `finally` statement.
-
-Using `return` in a `try` block is perfectly normal. But if `return` is also used in the `finally` block, it will override the return value from the `try` or `except` block, and can even swallow exceptions that should have been raised.
+Even worse, a `return` in a `finally` block will silently swallow any exceptions raised in the `try` or `except` blocks:
 
 ```python
 def dangerous_func():
     try:
-        return 1  # Intended to return 1
+        raise ValueError("An error occurred")
     finally:
-        return 0  # finally's return forcibly overrides the result
+        return "Everything is fine"  # Swallows the ValueError!
 ```
 
-Therefore, the best practice is: you can use `return` in `try`, but never write a `return` statement in a `finally` block.
+**Rule of thumb**: Never use `return`, `break`, or `continue` inside a `finally` block.
 
 ## Raising Exceptions Actively
 
-Even when the Python code itself hasn't produced any exception, we can use the `raise` statement to actively raise (or throw) an exception:
+You can actively raise (or throw) exceptions in your code using the `raise` statement, even if Python has not encountered an error:
 
 ```python
 if x < 0:
     raise ValueError("Cannot use a negative number!")
 ```
 
-The code above actively raises a `ValueError` when it finds that a variable is less than zero.
-
-By checking for error conditions in code and actively raising exceptions, we can ensure that the program does not continue executing in an inappropriate state. We can also provide clear error messages for exceptions, explaining the cause of the error, so that problems can be located more quickly when exceptions occur. In some cases, raising an exception can also serve as a way to forcefully exit a function, preventing it from continuing execution.
+By validation checking and actively raising exceptions, you prevent your program from running in an invalid state. Providing clear error messages with your raised exceptions helps other developers diagnose and locate issues quickly.
 
 ## Custom Exceptions
 
-In Python, user-defined exceptions are typically subclasses of standard exceptions. The following content will be easier to understand after learning about [object-oriented programming and classes](oop).
+In Python, custom exceptions are created by subclassing standard exceptions. This concept is easier to understand after learning about [object-oriented programming and classes](oop).
 
-Most user-defined exceptions should inherit from `Exception` or a subclass of `Exception`. In a custom exception class, the `__init__` method can be overridden to accept specific parameters. The `__str__` method can also be overridden to provide more detailed information about the cause of the exception.
+Most custom exceptions should inherit from the built-in `Exception` class (or one of its subclasses). You can override the `__init__` method to accept specific arguments, and the `__str__` method to define how the error message should be formatted.
 
-For example, suppose we are writing an application that needs to handle employee-related operations. We could define the following two user-defined exceptions:
-
-* `EmployeeNotFound`: Indicates that an employee was not found.
-* `InvalidSalary`: Indicates that the salary contains invalid data, such as a negative number.
-
-Here is the code to define these exceptions:
+For example, in an HR application, you might define exceptions for when an employee is not found, or when a salary is invalid:
 
 ```python
 class EmployeeError(Exception):
-    """This is the base class for all employee-related exceptions."""
+    """Base class for all employee-related exceptions."""
     pass
 
 class EmployeeNotFound(EmployeeError):
@@ -241,7 +220,7 @@ class EmployeeNotFound(EmployeeError):
         return f"Employee with ID {self.employee_id} was not found."
 
 class InvalidSalary(EmployeeError):
-    """Indicates that the salary contains invalid data, such as a negative number."""
+    """Indicates that the salary contains invalid data."""
     def __init__(self, salary_value):
         self.salary_value = salary_value
 
@@ -249,7 +228,7 @@ class InvalidSalary(EmployeeError):
         return f"Invalid salary value: {self.salary_value}. Salary must be between 500 and 50000."
 ```
 
-Once the custom exceptions are defined, we can use them just like built-in exceptions:
+Once defined, custom exceptions are raised and caught exactly like built-in exceptions:
 
 ```python
 def set_salary(employee_id, salary):
@@ -258,32 +237,28 @@ def set_salary(employee_id, salary):
     # ... rest of the function ...
 ```
 
-Using custom exceptions with descriptive names can make code more readable and provide more contextual information for specific situations, helping callers handle different exceptions more precisely.
+Custom exceptions with descriptive names make your API more readable and help callers handle different error conditions more precisely.
 
 ## When to Use Exceptions
 
-When designing functions, we often face the choice of whether to raise an exception. For example, a function's input data should be a non-empty list, but the user might pass an empty list, or even data of another type. Should we make the function throw an exception, or return a special value (such as `None` or an empty list) instead?
-
-There is no fixed answer to this; it depends on the specific situation, and many factors may influence our decision:
+When designing functions, you must decide whether to raise an exception or return a special value (like `None`, `False`, or an empty list) when an error occurs. There is no single correct answer, but several factors should guide your decision:
 
 ### Maintaining Consistent Behavior
 
-When designing a function's behavior, we should also refer to how other functions in the same project — or even other projects in the company — handle things. It is best for different parts of the same project to maintain consistent behavior. If most functions in a project use exceptions to handle errors, then newly designed functions should also utilize the exception handling mechanism. Conversely, if most functions in a project use return values as the error handling mechanism (returning `None` on error, or meaningful data otherwise), then newly designed functions should adopt a similar approach.
-
-Some companies or departments may have their own coding standards. If these standards specify which error handling mechanism to adopt, then those standards should be followed.
+Follow the design patterns established in the rest of your codebase or organization. If most of the functions in your project use exception handling for errors, new functions should do the same. If the codebase relies primarily on returning status codes or sentinel values (like `None` on failure), adhere to that pattern.
 
 ### Severity of the Error
 
-For predictable, non-serious errors, it is generally not necessary to throw an exception. For example, if a function's input parameter is a list, then the possibility of an empty input list should be considered. In such a case, you could add logic inside the function to check the input parameter — if the input list is empty, directly return an empty value or `None`, rather than raising an exception.
+For predictable, non-fatal edge cases, returning a special value is often sufficient. For instance, if a function takes a list of items and finds that the input list is empty, returning `None` or an empty list is a natural way to represent "no results."
 
-If a function expects a list as an input parameter, but the user provides an integer, this is a more serious error, indicating that the user may not be using the function correctly. In this case, raising an exception can more prominently alert the user that an error has occurred.
+However, if a function expects a list but receives an integer, this represents a programming bug (incorrect usage). Raising a `TypeError` is the best way to alert the developer of the mistake.
 
 ### Runtime Efficiency
 
-The exception handling mechanism has clear advantages: it has clear handling logic, can carry detailed error information, and supports complex processing flows. But it also has disadvantages, the main one being additional performance overhead, since it needs to carry more data and control more complex jump logic. From a code readability perspective, the exception handling mechanism is clearer; however, programs pursuing extreme performance may be better suited to using return values as the error handling mechanism.
+Exception handling is highly structured and carries rich diagnostic data, but it incurs a performance overhead when exceptions are raised and caught. For applications where performance is critical and errors occur frequently, returning error codes or sentinel values can be faster.
 
-It is worth noting that Python's exception handling mechanism is optimized — when no exception occurs, the `try` block runs very efficiently (with almost no additional overhead). Therefore, the Python community highly advocates the EAFP (Easier to Ask for Forgiveness than Permission) coding style: try to perform the operation first, and handle errors only if they occur, rather than writing `if` checks everywhere. This style is often more efficient and cleaner than checking return values everywhere.
+However, Python's exception mechanism is highly optimized: a `try` block that does not raise an exception runs with virtually zero overhead. Consequently, the Python community strongly encourages the **EAFP** (Easier to Ask for Forgiveness than Permission) style—trying an operation first and catching potential errors, rather than cluttering code with preemptive `if` checks. This style is often cleaner, more readable, and more Pythonic.
 
 ### Error Messages
 
-Regardless of which error handling mechanism is adopted, detailed explanations for errors must always be provided. Only in this way can users of the function easily understand how to handle the errors that arise.
+Regardless of whether you choose to raise exceptions or return special values, always document the expected error behaviors clearly in your function's docstring so that users know how to handle them.

@@ -1,25 +1,25 @@
 # Multiple Inheritance
 
-## Basic Method
+## Basic Usage
 
-Python allows multiple inheritance for classes. You just need to specify multiple parent classes in order when defining a subclass, for example:
+Python support for multiple inheritance allows a class to inherit from more than one parent class. To define a subclass that inherits from multiple base classes, list the parent classes in order inside the parentheses:
 
 ```python
 class A(B, C):
     pass
 ```
 
-The code above indicates that class A inherits all attributes and methods from both classes B and C. Let's look at a more complex example:
+In this code, class `A` inherits all attributes and methods from both `B` and `C`. Let's look at a more concrete example:
 
-Suppose there is a furniture store that only sells two types of furniture: tables and chairs. We will write a program to simulate the attributes and methods of these furniture items in the store. We could design the program roughly like this:
+Suppose you run a furniture store that sells tables and chairs. We want to write a program to model these items. We could design the system like this:
 
-First, write a "Furniture class" that contains all the attributes and methods common to all furniture, such as the furniture's ID, cost price, tax rate, main material, assembly method, and so on. Next, we can design separate "Table class" and "Chair class". These two classes can inherit from the "Furniture class", so they automatically have all the attributes and methods of the "Furniture class". After that, we may also need to write some attributes and methods specific to them. For example, the "Table class" could have a "lay tablecloth" method, while the "Chair class" could have a "place pillow" method. The relationships between the classes in this program are basically set up. Depending on the need, we might also create more specific classes, such as deriving "DiningTable class" or "Desk class" from the "Table class". Every physical piece of furniture in the store can be an object of one of these classes.
+First, we define a base `Furniture` class containing properties common to all inventory—such as ID, cost, tax rate, and material, alongside an `assemble()` method. Next, we create `Table` and `Chair` subclasses that inherit from `Furniture`. These subclasses automatically gain all properties of the base class. We then add specialized behaviors: the `Table` class gets a `lay_tablecloth()` method, and the `Chair` class gets an `add_pillow()` method. Later, we can derive more specific subclasses like `DiningTable` or `OfficeDesk` from `Table`. Every physical item in the store is instantiated from one of these subclasses.
 
-At this point, we suddenly discover that there is also a type of furniture in the store that is both a table and a chair, as shown in the illustration:
+Now, suppose the store introduces a hybrid piece of furniture that functions as both a table and a chair, as shown in the illustration:
 
 ![images/007.png](images/007.png "Table-Chair Combo")
 
-We can call it a table-chair combo. This combo has both the attributes and methods of a table and those of a chair. The most intuitive approach is that it should simultaneously have two parent classes: the "Table" class and the "Chair" class. It should inherit all the attributes and methods from both parent classes:
+We can represent this table-chair combo using multiple inheritance. The combo class should inherit from both the `Table` and `Chair` classes, acquiring the traits of both parent classes:
 
 ```python
 # Base class
@@ -88,37 +88,35 @@ item.add_pillow()
 item.lay_tablecloth()
 ```
 
-Here, let the reader consider a question: In the example above, which class does the super() function in the constructor of ChairWithTableAttached return? Chair or Table? This might be hard to answer.
-
-So which class does the super() function in the constructor of Chair return? The answer should be very clear: "Chair only has one parent class, Furniture, so super() must return Furniture." That's not necessarily true. At the end of this section, we will come back to discuss this question.
+Consider these questions:
+1. In the `__init__` constructor of `ChairWithTableAttached`, which class does `super()` resolve to? `Chair` or `Table`?
+2. In the constructor of `Chair`, what does `super()` resolve to? The intuitive answer might be: "Since `Chair` inherits only from `Furniture`, its `super()` must resolve to `Furniture`." Interestingly, as we will see, this is not always true. We will return to these questions at the end of this section.
 
 ## Problems with Multiple Inheritance
 
-If you are already familiar with class inheritance, the program above is still fairly intuitive. Multiple inheritance may not seem complicated, but if you think about it more deeply, you'll find there are many problems. The "Table-Chair Combo" class inherits from both Table and Chair. The Table and Chair classes may have some attributes and methods with the same names, so which ones does the combo class inherit? Our expectations might also vary:
+While multiple inheritance appears straightforward, it introduces several classical architectural dilemmas when classes share identical attribute or method names (known as name clashes). For our table-chair combo, resolving these clashes depends on the semantics of the shared traits:
 
-* Sometimes we may need to keep methods with the same name from both parent classes. For example, both Table and Chair have a "material" attribute. The table part and the chair part of the "Table-Chair Combo" class might be made of different materials, so we need to keep the "material" attributes from both parent classes.
-* Sometimes we should keep only one copy of a method with the same name from both parent classes. For example, both Table and Chair have a "cost" method. After all, the table-chair combo is one item, so it only needs one price.
-* A more troublesome situation: there is a program that handles all furniture, and its input data type is "Furniture class". When a table-chair combo is passed to the program as an instance of the "Furniture" class, the program reads the "material" method of the instance. At this point, do you think the program will get the attribute inherited from the Table class, the attribute inherited from the Chair class, or the attribute they both inherited from the "Furniture" class in the first place?
+* **Preserving separate versions**: For example, if both `Table` and `Chair` have a `material` attribute, our combo might be composed of a plastic chair attached to a steel table. We would want to preserve both distinct values.
+* **Merging into a single version**: For example, if both `Table` and `Chair` declare a `cost` attribute, the combo itself is sold as a single unit and should have a single, unified price.
+* **The Diamond Problem**: Since both `Table` and `Chair` inherit from `Furniture`, they form a diamond-shaped inheritance tree. If an inventory program treats the combo as a generic `Furniture` object and queries its `material`, which execution path should the program take? Should it fall back to the base `Furniture` defaults, or resolve to one of the subclasses?
 
-Different programming languages have different rules for handling the above issues, and these rules are usually related to whether the subclass has overridden the attributes or methods. C++ is an early programming language that allows multiple inheritance, but because of these easily confusing problems, multiple inheritance creates more trouble than the problems it can solve. In fact, programming languages definitely define how to handle these situations clearly. The problem is that the rules are too complicated, and programmers can't keep track of them. Programmers end up writing code that produces all sorts of inexplicable results. A common piece of advice when learning C++ programming is to avoid using multiple inheritance whenever possible. Some mainstream programming languages that emerged after C++ learned from C++'s lessons and simply disabled multiple inheritance for classes.
+Different languages adopt different strategies to resolve these ambiguities. C++, which supported multiple inheritance early on, suffered from highly complex resolution rules that often led to hard-to-debug behaviors. Because of these challenges, C++ developers are generally advised to avoid multiple inheritance unless absolutely necessary. Many modern object-oriented languages (such as Java and C#) learned from this and explicitly banned multiple inheritance for classes.
 
-In programming languages that prohibit multiple inheritance, "interfaces" are generally used to implement a class with multiple different functionalities. The core difference between a class and an interface is that class inheritance is about borrowing functionality that the parent class already has, while interface implementation is about ensuring that a class can provide certain functionality. For example, if we write a "Table-Chair Combo class" that inherits from the "Table class", it means the combo is a special kind of table, and it directly borrows the various functionalities already implemented by the Table class. In another scenario, if we write a "Table-Chair Combo class" that implements the "Table interface", it does not mean the combo is a special kind of table; it only means the combo will provide all the functionalities that a table should have.
+In languages that prohibit multiple inheritance, **interfaces** are used instead to allow a class to take on multiple roles. While class inheritance is about borrowing *implementation* (code reuse), interfaces represent *behavioral contracts* (guaranteeing that a class provides specific methods). For example, if a `TableChairCombo` class inherits from `Table`, it is physically subclassing `Table` and reusing its code. If it implements a `ChairInterface`, it simply promises to provide the methods expected of a chair, writing the actual implementation itself.
 
-Interfaces allow a special class to have multiple different functionalities without having to belong to both one parent class and another. This avoids the chaotic data relationships brought about by network-like inheritance. Of course, interfaces also have disadvantages, such as not being convenient for code reuse. An interface only specifies what functionality a class needs to implement; the actual implementation code still has to be written separately in each class.
+Interfaces allow a class to support multiple functional behaviors without the risk of tightly coupled, diamond-shaped inheritance graphs. However, interfaces do not support automatic code reuse out of the box: they only specify which methods must exist, leaving the actual code to be written repeatedly inside each implementing class.
 
 ## Abstract Classes
 
-Python does not have the concept of interfaces, but it has a very similar concept: abstract classes.
+Python does not provide a native `interface` keyword, but it implements equivalent functionality using **abstract classes**.
 
-First, let's introduce a concept: abstract method. An abstract method is a method that is declared in a parent class but has no specific implementation. After a subclass inherits from the parent class containing the abstract method, it must implement the method in the subclass. The parent class containing the abstract method cannot be instantiated, because it contains unimplemented methods that cannot be used by concrete objects. Such a class, which cannot be instantiated and can only be inherited by other classes, is an abstract class.
+An **abstract method** is a method declared in a base class that has no implementation; it serves as a contract that subclasses must implement. A class containing one or more abstract methods cannot be instantiated directly, as it is incomplete. Such a class is called an **abstract class** (or **abstract base class**).
 
-Taking the furniture store example from above, it should not allow a furniture object that is neither a chair, nor a table, nor a table-chair combo to appear. This is because, in the program, the furniture store only has these three types of furniture. If an object appears that does not belong to any of the classes defined in the program, it is most likely an inadvertent mistake by the programmer. Therefore, the "Furniture class" is very suitable as an abstract class; it should not generate any instances.
+In our furniture system, we should not be able to instantiate a generic `Furniture` object; any piece of inventory must be a specific type of furniture (like a chair or a table). If a developer tries to instantiate `Furniture` directly, it is likely a design error. Therefore, `Furniture` is a perfect candidate for an abstract class.
 
-Tables and chairs represent both a certain functionality and a certain type of furniture. So when designing, we can separate abstract methods from concrete implementation methods: use the AbstractTable abstract class to define the methods a table must have, and use the Table regular class to define a type of furniture.
+We can separate abstract contracts from concrete implementations. We use `AbstractTable` to define what behaviors a table must support, while concrete classes like `Table` provide the actual code.
 
-Python, unlike some other languages, cannot define a function without implementing it. In Python, both functions and classes are defined and implemented together. Therefore, to make a function abstract, you use a decorator (@abstractmethod). An abstract class is implemented by inheriting from the built-in class ABC (short for Abstract Base Class).
-
-For example, the furniture store program rewritten using abstract classes is as follows:
+In Python, we declare abstract methods using the `@abstractmethod` decorator, and define abstract base classes by inheriting from the built-in `abc.ABC` class. Here is our furniture store program refactored using abstract classes:
 
 ```python
 from abc import ABC, abstractmethod
@@ -210,22 +208,15 @@ combo.place_pillow()
 
 ## MixIn
 
-Abstract classes are very similar to interfaces, and they share the same pros and cons. Abstract classes also do not solve the problem of code reuse. For example, in the above example, the set_material method must be implemented in every class, even though the implementation is the same each time.
+While abstract base classes establish contracts, they do not resolve duplicate implementation details. In the refactored code above, the `set_material()` method has identical implementations across all three concrete classes, yet we had to write the code repeatedly.
 
-In fact, although Python allows multiple inheritance for classes, it can quite effectively avoid the problem of unclear data definitions caused by chaotic inheritance relationships. The fundamental reason is still the "duck typing" strategy adopted by Python, which was mentioned earlier. In Python programs, the focus is on the behavior of objects, not the type of objects. For the example above, whether the "Table-Chair Combo class" inherits from the "Table class" is not important; it does not affect its use in the program at all. What really matters is whether the "Table-Chair Combo class" implements the functionality required for a table. This is already somewhat close to the meaning of "interfaces" in other languages.
+Fortunately, Python's dynamic nature and reliance on **duck typing** make multiple inheritance far cleaner than in static languages. Because Python prioritizes an object's runtime behavior over its explicit type declaration, whether a table-chair combo inherits directly from a `Table` class or a `TableInterface` is architecturally irrelevant. What matters is that the combo object implements the expected methods.
 
-Therefore, when designing class inheritance relationships in Python, the focus should not be on hierarchical relationships like whether a table is a special kind of furniture, or whether a table-chair combo is a special kind of table. What really matters is how to use inheritance to obtain the functionality a class needs. Based on this, the Mixin design approach is more widely used in Python.
+Instead of designing rigid hierarchical trees (e.g., trying to decide if a combo is a subclass of `Table` or `Chair`), Python developers use multiple inheritance for composing capabilities. This approach is implemented via **Mixins**.
 
-Simply put, a MixIn is a small, reusable class that provides a set of additional methods to other classes. Each MixIn performs a specific task. However, a MixIn itself is not a complete class; MixIns are usually not designed to work independently — they are designed to be used together with other classes. MixIns typically do not have their own objects, so they do not need constructors.
+A **Mixin** is a lightweight, specialized class designed to bundle reusable methods and inject them into other classes. A Mixin is not intended for standalone instantiation and typically does not declare its own constructor. By subclassing one or more Mixins, a concrete class can inherit specific, pre-written behaviors.
 
-We can use MixIns to redesign the furniture store program. First, we can abstract some features or functionalities and make them into MixIns. For example:
-
-* MaterialMixin: Used to set the material of furniture.
-* AssemblyMixin: Defines assembly methods for furniture.
-* PillowPlacementMixin: Defines the method for placing a pillow on a chair.
-* TableclothMixin: Defines the method for laying a tablecloth on a table.
-
-Then, the program can use these MixIns to construct the original classes:
+We can use Mixins to refactor our furniture program, breaking capabilities into independent components:
 
 ```python
 # Define MixIns
@@ -289,17 +280,20 @@ combo.place_pillow()
 combo.place_tablecloth()
 ```
 
-In Python community best practices, Mixin classes should usually be placed at the front of the inheritance list. Reason: The role of a Mixin is typically to "enhance" or "override" the behavior of the base class. If a Mixin defines a method with the same name as one in the base class (e.g., save() or update()), placing it after the base class would cause it to be ranked after Furniture in the MRO order, leading to the Mixin's method never being called (shadowed by Furniture). Although there is no such name conflict in this example, as a tutorial, the standard idiom should be taught.
+In Python best practices, Mixin classes are listed first in the class inheritance declaration. Because Mixins are designed to extend or override default behaviors, they must precede base classes. If a Mixin were listed after a base class like `Furniture` that already implements a method with the same name (e.g., `save()`), the base class method would shadow the Mixin's method, rendering the Mixin useless.
 
-### MRO Lookup Order
+### Method Resolution Order (MRO)
 
-In Python, if an attribute or method with the same name is implemented in both a parent class and a subclass, the subclass is always searched first, then the parent class. If there are multiple parent classes, the search follows the order they are written in the inheritance definition. Specifically, in the example above, the search order is: ChairWithTableAttached -> Furniture -> MaterialMixin -> AssemblyMixin -> PillowPlacementMixin -> TableclothMixin -> object.
+When an attribute or method is queried on an object, Python searches the object's class first, then traverses its parent classes in a deterministic sequence. This lookup path is called the **Method Resolution Order (MRO)**.
 
-This order is called the MRO (Method Resolution Order). If an attribute or method with the same name is implemented in both a parent class and a subclass, Python searches according to the MRO (Method Resolution Order) list.
+For our `ChairWithTableAttached` class, the MRO chain resolves as follows: `ChairWithTableAttached` -> `Furniture` -> `MaterialMixin` -> `AssemblyMixin` -> `PillowPlacementMixin` -> `TableclothMixin` -> `object`.
 
-Python 3 uses the C3 linearization algorithm. Its core rules are not only "subclass before parent class" but also "preserve the definition order of parent classes" and "monotonicity" (i.e., if class A comes before class B, then in the MRO of all subclasses, A comes before B).
+Python 3 computes this chain using the **C3 Linearization** algorithm. The algorithm guarantees three core properties:
+1. **Subclasses before superclasses**: A class is always searched before its parents.
+2. **Left-to-right order**: Parent classes are searched in the order they are declared in the class definition.
+3. **Monotonicity**: If class $X$ precedes class $Y$ in one MRO chain, it must precede $Y$ in all MRO chains across the codebase.
 
-Simply put, you can understand it as trying "left to right, depth first," but if it encounters diamond inheritance (i.e., multiple subclasses inherit from the same parent class), it intelligently puts that common parent class at the very end to avoid logical errors.
+Conceptually, C3 linearization performs a left-to-right, depth-first search, but delays common ancestors (diamond inheritance bases) until all of their subclasses have been searched first.
 
 We can view the exact order by using `print(ClassName.mro())`:
 

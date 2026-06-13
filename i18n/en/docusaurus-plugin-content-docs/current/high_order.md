@@ -1,14 +1,14 @@
 # Higher-Order Functions
 
-A Higher-Order Function (HOF) is an important concept in functional programming. A function can be called a higher-order function if it accepts one or more functions as arguments, or returns a function as its result. If a higher-order function receives other functions as arguments, its behavior can be dynamically adjusted at runtime based on the functions passed to it.
+A Higher-Order Function (HOF) is a core concept in functional programming. A function is considered a higher-order function if it meets at least one of the following criteria: it accepts one or more functions as arguments, or it returns a function as its result. When a higher-order function takes other functions as inputs, its behavior can be dynamically configured at runtime based on the functions passed to it.
 
-Python has some built-in higher-order functions, including map(), filter(), and reduce(), which are frequently used in functional programming. Although map() and filter() are used very often in functional programming, in Python, list (or dictionary) comprehensions and generator expressions can essentially replace map() and filter() in functionality. In Python programs, the inhabitants of the planet Pythora prefer to use list comprehensions and generator expressions. However, to ensure code readability, list comprehensions and generator expressions are generally suitable for simple logic, while higher-order functions are more appropriate for implementing complex functionality.
+Python provides several built-in higher-order functions, including `map()`, `filter()`, and `reduce()`, which are widely used in functional programming. Although `map()` and `filter()` are standard functional programming tools, in Python, list (or dictionary) comprehensions and generator expressions can essentially replace them. Indeed, the inhabitants of the planet Pythora generally prefer comprehensions and generator expressions. However, to maintain readability, comprehensions and generator expressions are best suited for simple logic, whereas higher-order functions are more appropriate for implementing complex behavior.
 
 ## map
 
 ### Basic Usage
 
-When introducing [generator expressions](generator#generator-expressions), we used a simple example: suppose we have an input iterator containing a set of data, and we want to generate a new iterator that produces a set of new data, where each number in the new data corresponds to the square of each number in the original sequence. Using a generator expression, the program can be written as follows.
+When we introduced [generator expressions](generator#generator-expressions), we used a simple example: suppose we have an input iterator containing a set of data, and we want to generate a new iterator that yields the squares of those numbers. Using a generator expression, the program can be written as follows:
 
 ```python
 numbers = range(10)
@@ -18,7 +18,7 @@ for num in squared:
     print(num)
 ```
 
-In functional programming, there is another solution to this problem: using the map() function. The map() function accepts a function and an iterable as arguments, and returns a new iterator. Each element in the returned iterator is the result of passing each element of the input iterable through the given function. Rewriting the above code using map() gives:
+Functional programming provides another solution to this problem: the `map()` function. `map()` accepts a function and an iterable as arguments, and returns a new iterator. Each element yielded by the returned iterator is the result of applying the given function to the corresponding element of the input iterable. Rewriting the code using `map()` gives:
 
 ```python
 numbers = range(10)
@@ -28,11 +28,11 @@ for num in squares:
     print(num)
 ```
 
-In the example above, the arguments passed to map are: `numbers`, the iterable to be processed, and the anonymous function `lambda x: x*x`, which indicates that each element in the iterable should be squared.
+In the example above, the arguments passed to `map()` are the iterable to be processed (`numbers`) and the anonymous function `lambda x: x*x`, which specifies that each element in the iterable should be squared.
 
 ### Using Multiple Iterables
 
-When multiple iterables are provided to the map() function, it processes them in parallel. This means it takes the first element from each iterable and applies the function; then takes the second element from each iterable and applies the function again, and so on. For example:
+When multiple iterables are passed to the `map()` function, it processes them in parallel. It takes the first element from each iterable and applies the function, then takes the second element from each iterable and applies the function, and so on. For example:
 
 ```python
 a = [1, 2, 3]
@@ -41,19 +41,19 @@ summed = map(lambda x, y: x + y, a, b)
 print(list(summed))  # [11, 22, 33]
 ```
 
-In the example above, the lambda function takes two parameters and adds them together. If the iterables passed to map() have different lengths, map() will stop when the shortest iterable is exhausted.
+In this example, the lambda function takes two parameters and adds them together. If the iterables passed to `map()` are of different lengths, `map()` stops as soon as the shortest iterable is exhausted.
 
-When using list comprehensions to process multiple iterables, you need to use the [zip()](loop#zip-function) function to convert multiple iterables into a single iterable before processing. However, map() can handle them directly.
+When using list comprehensions to process multiple iterables, you must use the [zip()](loop#the-zip-function) function to pair the elements before processing them. In contrast, `map()` can handle multiple iterables directly.
 
 ### Implementing map()
 
-Let's explore further how we might implement a function similar to map() ourselves. We have the following considerations:
+Let's explore how we might implement a function similar to `map()` ourselves. Consider the following:
 
-* map() can accept multiple iterables, meaning the function has variable-length arguments
-* map() returns an iterator, so we can implement it using a generator function
-* The functionality of map() itself is relatively simple: it just passes the input arguments to the output function in order
+* `map()` can accept multiple iterables, meaning our function must support variable-length arguments.
+* `map()` returns an iterator, so we can implement it using a generator function.
+* The core functionality of `map()` is simple: it applies the target function to the input elements in order.
 
-The implementation code is as follows:
+Here is the implementation:
 
 ```python
 # 自定义的 my_map 函数，旨在模拟内置的 map 函数的功能。
@@ -91,7 +91,7 @@ result = my_map(lambda x: x*x, lst1)
 print(list(result))  # 输出: [1, 4, 9]
 ```
 
-The complexity of the above program lies in handling multiple variable-length iterables. However, if used in conjunction with the zip() function, the above code can be replaced by a simple generator expression:
+The main complexity in the program above is handling multiple iterables of variable lengths. However, if we use the `zip()` function, we can simplify this logic significantly into a generator expression:
 
 ```python
 def my_map(func, *iterables):
@@ -108,21 +108,21 @@ print(list(result))  # 输出: [5, 7, 9]
 
 ### Basic Usage
 
-filter() is used to filter elements from an iterable that satisfy a certain condition. Its basic usage is as follows:
+`filter()` is used to select elements from an iterable that satisfy a specific condition. Its basic usage is as follows:
 
 ```python
 filter(function, iterable)
 ```
 
-It accepts a function and an iterable. It returns a new iterator containing only the original elements for which the input function returns True.
+It accepts a function and an iterable, returning a new iterator that yields only those elements for which the input function returns `True`.
 
-Another example we used when introducing generator expressions happens to demonstrate the usage of the filter() function: suppose we need to select words longer than 5 characters from a list. Using a generator expression, the code would be:
+An example we used when introducing generator expressions also demonstrates the utility of the `filter()` function: suppose we want to select words longer than 5 characters from a list. With a generator expression, we would write:
 
 ```python
 result = (word for word in words if len(word) > 5)
 ```
 
-This example can also be implemented using the filter() function:
+This can also be implemented using the `filter()` function:
 
 ```python
 words = ["apple", "banana", "cherry", "date", "fig", "kiwi"]
@@ -130,7 +130,7 @@ long_words = filter(lambda x: len(x) > 5, words)
 print(list(long_words))  # 输出: ['banana', 'cherry']
 ```
 
-The filter() function only accepts one iterable, so its implementation is much simpler than map(). It can be done using just the generator expression above:
+Since `filter()` only accepts a single iterable, its implementation is much simpler than `map()`. We can implement it using a generator expression:
 
 ```python
 def my_filter(func, iterable):
@@ -144,14 +144,14 @@ print(list(evens))  # 输出: [2, 4, 6, 8]
 
 ### Generating Prime Numbers
 
-Generating prime numbers is a classic example of applying the filter() function. We will use the Sieve of Eratosthenes to generate a sequence of prime numbers. The basic idea is as follows:
+Generating prime numbers is a classic application of the `filter()` function. We will use the Sieve of Eratosthenes to generate a sequence of prime numbers, based on the following process:
 
-1. List all integers starting from 2
-2. Find the first number in the list — this is a prime. Initially, this is 2
-3. Remove all multiples of that prime from the list
-4. Return to step 2 to find the next prime
+1. List all integers starting from 2.
+2. Find the first number in the list — this is a prime. Initially, this is 2.
+3. Remove all multiples of that prime from the list.
+4. Return to step 2 to find the next prime.
 
-The program code is as follows:
+Here is the implementation:
 
 ```python
 from itertools import count
@@ -171,7 +171,7 @@ for _ in range(10):  # 获取前 10 个素数
     print(next(gen))
 ```
 
-In the program above, the count() function from the itertools library is used to generate an integer sequence. When introducing generators, we previously implemented [a similar infinite generator](generator#lazy-generation):
+In the program above, the `count()` function from the `itertools` library generates an infinite sequence of integers. When we introduced generators, we implemented a similar generator:
 
 ```python
 def count(n):
@@ -181,7 +181,7 @@ def count(n):
         n += 1
 ```
 
-Logic as complex as the above cannot be implemented using generator expressions alone; using higher-order functions is a better choice. However, the prime number generator doesn't necessarily have to use filter. Without filter, we would need to maintain a table listing all known non-prime numbers, which makes the program slightly more cumbersome. Below is a prime number generator that does not use filter:
+More complex logic like this cannot be easily implemented with generator expressions alone; using higher-order functions is a cleaner choice. That said, a prime number generator does not strictly require `filter()`. Without `filter()`, we would need to maintain a dictionary of composite numbers and their prime factors, which is slightly more complex. Below is an alternative implementation:
 
 ```python
 def prime_generator():
@@ -210,7 +210,7 @@ for _ in range(10):
     print(next(gen))
 ```
 
-If we don't need very high computational efficiency — instead of recording filtered-out values, we simply re-check each number to see if it is divisible by any other number — we can use a much simpler piece of code: a single generator expression,
+If computational efficiency is not a priority, we can skip maintaining a factor dictionary and instead check each number for primality directly. This allows us to use a much simpler generator expression:
 
 ```python
 from itertools import count
@@ -223,11 +223,11 @@ for _ in range(10):  # 获取前 10 个素数
 
 ### Filtering Falsy Values
 
-The filter() function has a special usage: if its function parameter is set to None, filter will use the "truthiness" of the elements as the filter condition by default. In other words, `filter(None, iterable)` is equivalent to `filter(lambda x: bool(x), iterable)`.
+The `filter()` function has a special behavior: if the function parameter is `None`, `filter()` defaults to checking the truthiness of the elements. In other words, `filter(None, iterable)` is equivalent to `filter(lambda x: bool(x), iterable)`.
 
-In Python, the following values are considered "falsy" (empty values): None, False, numeric 0 (including 0, 0.0, 0j, etc.), empty sequences ('', [], (), etc.), and empty collections (set(), dict(), etc.).
+In Python, the following values are considered "falsy" (or empty): `None`, `False`, numeric zeros (`0`, `0.0`, `0j`, etc.), empty sequences (`''`, `[]`, `()`, etc.), and empty collections (like `set()` and `dict()`).
 
-This usage can be used to quickly clean up "empty" values from a list:
+You can use this feature to quickly filter out falsy values from a list:
 
 ```python
 data = [None, 0, "Python", "", [], False, 42]
@@ -236,7 +236,7 @@ print(clean_data)
 # 输出: ['Python', 42]
 ```
 
-It can also be used to filter empty lines when processing file data:
+It can also be useful for filtering blank lines when processing file content:
 
 ```python
 lines = ["line1\n", "\n", "line2\n", "", "line3"]
@@ -245,7 +245,7 @@ print(non_empty_lines)
 # 输出: ['line1\n', '\n', 'line2\n', 'line3']
 ```
 
-Although `"\n"` is an empty line, as a string, it is not an empty value. If you need stricter filtering to remove all empty lines, you can adjust the filter condition slightly:
+Although `"\n"` represents an empty line visually, as a non-empty string it is considered truthy. If you need a stricter filter to remove all blank lines (including whitespace-only lines), you can adjust the filter condition like this:
 
 ```python
 lines = ["line1\n", "\n", "line2\n", "", "line3"]
@@ -256,59 +256,59 @@ print(non_empty_lines)
 
 ## Fold
 
-In functional programming, Fold (also called reduce or accumulate) is an operation that reduces a data structure (typically a list) to a single value.
+In functional programming, a **Fold** (also called `reduce` or `accumulate`) is an operation that processes a data structure (typically a list) to reduce it to a single value.
 
-Based on the direction of processing and the way of combining (parenthesization), it is divided into Left Fold (left reduce) and Right Fold (right reduce). Although for associative operations like addition (`+`), both produce the same result, for operations like subtraction (`-`), division (`/`), or string concatenation, the results and the execution process are completely different.
+Depending on the direction of processing and how operations are grouped (parenthesized), folds are split into **Left Fold** (`foldl` / left reduce) and **Right Fold** (`foldr` / right reduce). While associative operations like addition (`+`) yield the same result regardless of grouping, non-associative operations like subtraction (`-`), division (`/`), or string concatenation behave differently.
 
 ### Core Difference: Parenthesization
 
-Suppose we have a list `[1, 2, 3]` and a binary operation function `f(x, y)` (or operator $\oplus$ ).
+Suppose we have a list `[1, 2, 3]` and a binary function `f(x, y)` (represented by the operator $\oplus$).
 
 #### Left Fold
 
-- Direction: Left to right.
-- Logic: First combine the first two elements, then combine the result with the third element, and so on.
-- Mathematical expression: $$((1 \oplus 2) \oplus 3)$$
-- Or in function form: $$f(f(1, 2), 3)$$
-- Intuitive understanding: The accumulator is like a snowball, rolling from left to right, sweeping in elements along the way.
+- **Direction**: Left to right.
+- **Logic**: Combine the first two elements, then combine that result with the third element, and so on.
+- **Mathematical expression**: $$((1 \oplus 2) \oplus 3)$$
+- **Functional form**: $$f(f(1, 2), 3)$$
+- **Analogy**: The accumulator is like a snowball rolling from left to right, gathering elements along the way.
 
 #### Right Fold
 
-- Direction: Right to left (logical combination order).
-- Logic: First combine the last two elements, then use the result as an argument to combine with the third-to-last element, and so on.
-- Mathematical expression: $$(1 \oplus (2 \oplus 3))$$
-- Or in function form: $$f(1, f(2, 3))$$
-- Intuitive understanding: Through recursion, first go deep into the rightmost end of the list to get a result, then backtrack layer by layer.
+- **Direction**: Right to left (logical grouping).
+- **Logic**: Combine the last two elements, then combine the second-to-last element with that result, and so on.
+- **Mathematical expression**: $$(1 \oplus (2 \oplus 3))$$
+- **Functional form**: $$f(1, f(2, 3))$$
+- **Analogy**: Using recursion, we traverse to the rightmost end of the list to compute the initial result, then backtrack layer by layer to the left.
 
 ### Demonstration: Subtraction
 
-Subtraction is not associative (i.e., $(a-b)-c \neq a-(b-c)$), so it shows the difference most clearly.
+Subtraction is non-associative (i.e., $(a - b) - c \neq a - (b - c)$), which clearly highlights the distinction.
 
-Assume the list is `[1, 2, 3]`, with an initial value of 0 (reduce usually has no initial value, but here for simplicity we use the list elements directly).
+Let's fold the list `[1, 2, 3]`. For simplicity, we won't use an external initial value, relying instead on the elements themselves.
 
 #### Left Fold
 
-Computation order: `((1 - 2) - 3)`
+Evaluation order: `((1 - 2) - 3)`
 
-- Step 1: `1 - 2 = -1`
-- Step 2: `-1 - 3 = -4`
-- Result: -4
+- **Step 1**: $1 - 2 = -1$
+- **Step 2**: $-1 - 3 = -4$
+- **Result**: $-4$
 
 #### Right Fold
 
-Computation order: `(1 - (2 - 3))`
+Evaluation order: `(1 - (2 - 3))`
 
-- Step 1 (innermost): `2 - 3 = -1`
-- Step 2 (backtrack): `1 - (-1) = 2`
-- Result: 2
+- **Step 1 (innermost)**: $2 - 3 = -1$
+- **Step 2 (backtrack)**: $1 - (-1) = 2$
+- **Result**: $2$
 
-### Code Implementation and Python Features
+### Implementation and Python's Limitations
 
-In Python, the standard library `functools.reduce` implements left fold. Python does not have a built-in right fold function, because Python's support for deep recursion is limited.
+In Python, the standard library function `functools.reduce()` implements a left fold. Python does not provide a built-in right fold function, largely because Python does not optimize for deep recursion.
 
-#### Left Fold
+#### Left Fold Implementation
 
-Left fold is well-suited for implementation with a loop, offering high efficiency and no recursion depth limit.
+A left fold is easily implemented using a loop, which is efficient and avoids recursion depth limits:
 
 ```python
 def fold_left(func, sequence, initial=None):
@@ -329,9 +329,9 @@ print(fold_left(lambda x, y: x - y, [1, 2, 3]))
 
 ```
 
-#### Right Fold
+#### Right Fold Implementation
 
-Right fold is inherently recursive in structure. It must first process the "tail" of the list, obtain a result, and then compute with the "current head" element.
+A right fold is naturally recursive. It must resolve the tail of the list first before combining the result with the head element:
 
 ```python
 def fold_right(func, sequence, initial=None):
@@ -363,7 +363,7 @@ print(fold_right(lambda x, y: x - y, [1, 2, 3]))
 
 ### Basic Usage
 
-The reduce() function is used to reduce a sequence of data according to a specified rule, ultimately producing an accumulated result. The function is used as follows:
+The `reduce()` function applies a binary function to the elements of an iterable in a cumulative way, reducing the sequence to a single value. It is defined as:
 
 ```python
 functools.reduce(function, iterable[, initializer])
@@ -371,15 +371,15 @@ functools.reduce(function, iterable[, initializer])
 
 It takes three parameters:
 
-* function: A function that takes two arguments. The first argument is the accumulated value, and the second argument is the next element taken from iterable
-* iterable: The input sequence or iterable
-* initializer: Optional, an initial value that is placed before the accumulated result. If provided, iteration starts from the first element of the iterable.
+* `function`: A function that accepts two arguments. The first is the accumulated value (or initializer), and the second is the next element from the iterable.
+* `iterable`: The sequence to be reduced.
+* `initializer`: (Optional) A starting value placed before the sequence elements. If provided, the reduction starts by combining the initializer with the first element of the iterable; otherwise, it starts with the first two elements of the iterable.
 
-The reduce() function first applies the input function to the first two elements of the list; then applies the function to that result and the third element; then applies the function to that result and the fourth element, and so on, until all elements in the list have been processed. The final expanded result is an expression similar to the following:
+The `reduce()` function applies the target function to the first two elements, then applies it to that result and the third element, and so on, until the sequence is exhausted. Mathematically, with an initializer:
 
-result = ... function( function( function(initializer, iterable[0]), iterable[1] ), iterable[2]), ...
+`result = function(function(function(initializer, iterable[0]), iterable[1]), iterable[2])`
 
-For example, using the reduce() function to calculate the sum of all integers in a list:
+For example, we can calculate the sum of all integers in a list using `reduce()`:
 
 ```python
 from functools import reduce
@@ -388,8 +388,6 @@ numbers = [1, 2, 3, 4, 5]
 sum_result = reduce(lambda x, y: x + y, numbers)
 print(sum_result)  # 输出: 15
 ```
-
-The function `lambda x, y: x + y` is used for summation; passing it to the reduce() function allows us to calculate the sum of all elements in the input list.
 
 Finding the maximum value is very similar to summation:
 
@@ -401,7 +399,7 @@ max_value = reduce(lambda x, y: x if x > y else y, numbers)
 print(max_value)  # 输出：9
 ```
 
-Reversing a string:
+We can also reverse a string using `reduce()`:
 
 ```python
 from functools import reduce
@@ -411,7 +409,7 @@ reversed_string = reduce(lambda x, y: y + x, s)
 print(reversed_string)  # 输出："olleH"
 ```
 
-Merging dictionaries:
+Or merge a list of dictionaries:
 
 ```python
 from functools import reduce
@@ -425,7 +423,7 @@ print(combined_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 
 ### Implementation
 
-The result of the reduce() function is typically a single value, not an iterator. Therefore, there is no need to use generators to implement its functionality. We have already implemented the fold functionality using a loop earlier; below is an example using recursion:
+Because `reduce()` returns a single value rather than an iterator, we do not need generator syntax to implement it. Since we already showed a loop-based left fold, here is a recursive implementation of `reduce()`:
 
 ```python
 def my_reduce(func, sequence, initial=None):
@@ -451,9 +449,9 @@ product = my_reduce(lambda x, y: x * y, numbers)
 print(product)  # 输出：120
 ```
 
-#### Implementing Right Fold with reduce in Python
+#### Implementing a Right Fold using `reduce()`
 
-The reduce() function uses left fold. If you insist on doing a right fold in Python, you typically don't need to write a recursive function. You can simply reverse the input list and then use the reduce() function. Note that the parameter order may also need adjustment, depending on whether the function is commutative. For example, implementing a right fold for subtraction:
+Since `reduce()` performs a left fold, if you need to perform a right fold, you don't necessarily have to write a recursive function. Instead, you can reverse the sequence and reverse the argument order inside the combining function (especially if the operation is non-commutative). Here is how you can perform a right fold for subtraction using `reduce()`:
 
 ```python
 from functools import reduce
@@ -466,25 +464,25 @@ res = reduce(lambda acc, x: x - acc, reversed([1, 2, 3]))
 # 3. 遇到 1: 1 - (-1) = 2
 
 print(res) # 输出 2
-
 ```
 
 ## sorted
 
-Python's sorted() function can sort any iterable. It is very similar to the [list sort method](list#sorting) introduced earlier, sharing similar algorithms and parameters. The main difference is that the list sort method is specifically for sorting lists in-place — it directly modifies the original list. In contrast, the sorted() function can sort any iterable and returns a new sorted list without modifying the original data.
+Python's `sorted()` function can sort any iterable. It behaves similarly to the [list sort method](list#sorting) introduced earlier, sharing the same sorting algorithm and parameters. The main difference is that `list.sort()` sorts the list in-place (modifying the original list), whereas `sorted()` accepts any iterable and returns a new sorted list, leaving the original data unchanged.
 
-The sorting algorithm will be introduced in the [array sorting](array#sorting) section. Here, we will mainly cover the usage of sorted() as a higher-order function. It accepts three parameters:
+We will explore the underlying sorting algorithm in the [array sorting](array#sorting) section. Here, we focus on the usage of `sorted()` as a higher-order function. It is defined as:
 
 ```python
 sorted(iterable, *, key=None, reverse=False)
 ```
 
 Where:
-* iterable: The iterable to be sorted.
-* key: A function that takes a single argument and is used to extract a comparison key from each element. The default is None (elements are compared directly).
-* reverse: A boolean value. If set to True, the list elements will be sorted in descending order instead of the default ascending order.
 
-The key function needs to return a value, and sorted() will use its return value for sorting. For example, when sorting a set of numbers containing both positive and negative values, by default they are sorted by magnitude. But if the key function is abs(), which returns the absolute value, then sorted() will sort by absolute value:
+* `iterable`: The sequence or collection to be sorted.
+* `key`: A function that extracts a comparison key from each element (e.g., `key=str.lower` or `key=len`). The default is `None`, which compares elements directly.
+* `reverse`: A boolean. If set to `True`, the list is sorted in descending order.
+
+The `key` function is applied to each element, and its return values are used to determine the sorting order. For example, when sorting a mixture of positive and negative numbers, the default order is ascending numeric value. However, if we specify `key=abs`, the numbers are sorted by their absolute values:
 
 ```python
 numbers = [3, -1, 4, -1, 5, -9, 2, -6]
@@ -502,9 +500,9 @@ print(sorted(words))           # 输出: ['Washington', 'banana', 'book', 'pie']
 print(sorted(words, key=len))  # 输出: ['pie', 'book', 'banana', 'Washington']
 ```
 
-The sorted() function can handle more complex sorting tasks, especially for complex input data such as sorting a list of dictionaries. The return value of the key function can be a tuple, enabling multi-level sorting: first by one key (the first element of the tuple), then by a second key (a secondary key), and so on.
+`sorted()` can also handle complex sorting tasks, such as sorting a list of dictionaries or objects. The `key` function can return a tuple to perform multi-level sorting: sorting by the first element of the tuple first, and breaking ties using subsequent elements.
 
-Suppose we have a list of employees, each with data such as name, age, and salary. We can sort them in various ways by setting different key functions.
+Suppose we have a list of employees, represented as dictionaries. We can sort them in multiple ways by customizing the `key` function:
 
 ```python
 employees = [
@@ -526,9 +524,8 @@ print(sorted(employees, key=lambda e: e['工资'], reverse=True))
 print(sorted(employees, key=lambda x: (-x['工资'], x['年龄'])))
 ```
 
-
 ## Exercises
 
-- Find the longest word: Write a program to find the longest word in an input string. For example, given the input "Pythora is an amazing planet to live on", the output should be "Pythora".
-- Sort by dictionary key: Given a list of dictionaries, such as `data = [{"name": "Alice", "age": 25}, {"name": "Bob", "age": 22}, {"name": "Charlie", "age": 30}]`, sort the dictionaries in the data by age.
-- Find the maximum value: Use an anonymous function and reduce() to find the maximum value in an input list (e.g., `[10, 3, 45, 2, 19]`). Although Python has a built-in max() function, please try to implement it using reduce.
+* **Find the longest word**: Write a program to find the longest word in an input string. For example, given the input `"Pythora is an amazing planet to live on"`, the output should be `"Pythora"`.
+* **Sort by dictionary value**: Given a list of dictionaries, such as `data = [{"name": "Alice", "age": 25}, {"name": "Bob", "age": 22}, {"name": "Charlie", "age": 30}]`, sort the dictionaries by the value of the `"age"` key.
+* **Find the maximum value**: Use an anonymous function and `reduce()` to find the maximum value in a list (e.g., `[10, 3, 45, 2, 19]`). Although Python has a built-in `max()` function, implement it using `reduce()` to practice.

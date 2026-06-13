@@ -2,9 +2,9 @@
 
 ## Basic Concepts
 
-A linked list is a fundamental data structure used for storing elements. It is often compared to arrays; in a linked list, elements are not stored sequentially but are linked together through pointers.
+A linked list is a fundamental data structure for storing collections of elements. Unlike arrays, elements in a linked list are not stored in contiguous memory locations; instead, each element is linked to the next via a pointer.
 
-Each element in a linked list is called a node. Each node typically consists of two parts: the data part and the pointer part. The data part stores the value of the element, while the pointer part stores a reference to the next node. The first node of a linked list is called the head node. We usually use the head node to represent the entire linked list. The last node of a linked list is called the tail node. The pointer part of the tail node usually points to None, indicating the end of the linked list.
+Each element in a linked list is called a **node**. A node typically consists of two fields: the **data** field (which stores the element's value) and the **pointer** field (which stores a reference/pointer to the next node in the sequence). The first node of a linked list is called the **head**. We reference the entire list via this head node. The last node is the **tail**, and its pointer points to `None`, signaling the end of the list.
 
 ![](images/008.png "Linked List Diagram")
 
@@ -13,9 +13,9 @@ Each element in a linked list is called a node. Each node typically consists of 
 The most basic operations of a linked list include:
 
 * Creating an empty linked list
-* Inserting a new node. Linked lists do not have indices, so when inserting a new node, you typically use an existing node as a reference, such as inserting before or after a given node, or inserting at the head or tail of the list.
-* Deleting a given node
-* Traversing and searching
+* **Inserting a new node**: Since linked lists do not support index-based access, insertions are typically performed relative to a reference node (e.g., inserting before or after a given node) or at the boundaries (inserting at the head or tail of the list).
+* **Deleting a node**: Remove a node by updating the pointers of its neighbors.
+* **Traversing and searching**: Iterate through the nodes sequentially to find a specific value or display the list.
 
 The following program implements these basic operations:
 
@@ -96,13 +96,13 @@ llist.delete_node(node_to_delete)
 llist.print_list()  # 1 -> 3 -> None
 ```
 
-In the program above, the Node class is used to represent each node in the linked list. Each node has two attributes: data (used to store the value) and next (a reference to the next node).
+In the code above, the `Node` class represents an individual element in the linked list. Each node has two attributes: `data` (which stores the value) and `next` (a reference to the next node).
 
-The LinkedList class is used to represent the entire linked list. It contains an attribute head that points to the first node of the list. The append() method adds a new node to the end of the list. The insert_after_node() method can insert a new node after a given prev_node. The find_node_by_key() method can find a node by its data. The delete_node() method can delete a node.
+The `LinkedList` class represents the list itself. It features a `head` attribute that points to the first node. The `append()` method appends a node to the end, `insert_after_node()` inserts a node directly after a reference node, `find_node_by_key()` searches for a node by value, and `delete_node()` removes a node.
 
-From the example implementation above, it can be seen that if you only insert a node at the head of the linked list (or insert when the predecessor node is known), the time complexity is $O(1)$. However, for the append method in the above code, since it needs to traverse the entire list to find the tail, its time complexity is actually $O(n)$.
+As shown in the implementation above, inserting a node at the head of a linked list (or inserting when the predecessor node is already known) has a time complexity of $O(1)$. However, the `append()` method must traverse the entire list to locate the tail before linking the new node, resulting in a time complexity of $O(n)$.
 
-In the linked list above, the time complexity for deleting a node is $O(n)$, because you can only delete after finding the previous node of the current node. If there were a function to delete the next node, you wouldn't need to traverse the entire list, and the time complexity could be reduced to $O(1)$. Alternatively, in a doubly linked list, the time complexity for deleting a node can also be $O(1)$.
+In a singly linked list, deleting a specific node has a time complexity of $O(n)$ because we must traverse the list to find the node's predecessor. If we only needed to delete the *next* node after a given node, we could bypass traversal and perform the deletion in $O(1)$ time. In a doubly linked list, node deletion is always an $O(1)$ operation because every node maintains a direct reference to its predecessor.
 
 
 
@@ -110,9 +110,9 @@ In the linked list above, the time complexity for deleting a node is $O(n)$, bec
 
 ![images/009.png](images/009.png "Doubly Linked List Diagram")
 
-In a doubly linked list, each node records the positions of both the previous node and the next node. Therefore, in a doubly linked list, you can jump directly from one node to its previous or next node, allowing traversal in either direction. If the next pointer of the last node (tail node) points to the head node, and the previous pointer of the head node points to the tail node, then this forms a circular doubly linked list, as shown in the diagram above.
+In a doubly linked list, each node stores references to both the previous and next nodes. This allows for bidirectional traversal. If the `next` pointer of the tail node points to the head node, and the `prev` pointer of the head node points to the tail node, it forms a **circular doubly linked list**, as illustrated above.
 
-Singly linked lists can also have cycles. In a linked list with a cycle, not all nodes are necessarily within the cycle; some nodes may be outside the cycle while others form it. In practice, non-circular linked lists are more common.
+Singly linked lists can also contain cycles. In a cyclic linked list, some nodes may lie outside the loop while the rest form a closed cycle. In practice, non-circular linked lists are far more common.
 
 ```python
 class Node:
@@ -181,13 +181,13 @@ dllist.delete(node_to_delete)
 dllist.print_list()  # 1 <-> 3 <-> None
 ```
 
-The example above demonstrates a doubly linked list, whose implementation is very similar to a singly linked list. However, each node has two pointers, pointing to the previous node and the next node respectively.
+The implementation of a doubly linked list is similar to that of a singly linked list, except that each node contains two pointers to reference both its predecessor and successor.
 
 ## Common Problems
 
 ### Reverse Linked List
 
-Write a function to reverse a singly linked list. The algorithm for reversing a linked list is quite intuitive: traverse each node and change the direction of the node's pointer. It is important to consider how to temporarily store nodes for setting pointers. This can be done using iteration or recursion.
+To reverse a singly linked list, we traverse the list and redirect each node's pointer to point to its predecessor instead of its successor. We must temporarily store references to adjacent nodes to avoid losing the rest of the list during traversal. This can be accomplished either iteratively or recursively.
 
 ```python
 class Node:
@@ -256,15 +256,19 @@ llist.reverse_recursive()
 llist.print_list()  # 1 -> 2 -> 3 -> 4 -> None
 ```
 
-Whether using iteration or recursion, reversing a linked list requires traversing each node once, so the time complexity is $O(n)$, where n is the number of nodes. The algorithm reuses the original nodes without creating a new linked list, so the space complexity is $O(1)$.
+Both iterative and recursive approaches run in $O(n)$ time, where $n$ is the number of nodes, because they process each node once. Since the reversal is performed in-place by updating existing pointers, the space complexity is $O(1)$.
 
 
 ### Detecting a Cycle
 
 
-Detect whether there is a cycle in a linked list. If there is a cycle, it means that during traversal, you will eventually encounter a node that has been visited before. The most straightforward approach is to mark all visited nodes. If the nodes have extra space to store new data, you can add a marker to each node during traversal to indicate it has been visited. When traversing the list, if you encounter a node that is already marked, it means the list has a cycle. If you cannot mark nodes directly, you have to allocate additional memory for recording, with the most convenient approach being to use a set. During traversal, store each node in the set; if a node is already found in the set, it indicates a cycle.
+To detect if a linked list contains a cycle, we check if any node is visited more than once during traversal.
 
-The space complexity of both algorithms above is $O(n)$, because they both require additional data to record each node. There is also a "fast and slow pointer" algorithm with space complexity of $O(n1)$. The basic idea is to use two pointers, one moving fast (two steps at a time) and the other moving slowly (one step at a time). If there is a cycle in the linked list, the two pointers will eventually meet. The program example is as follows:
+The most straightforward approach is to mark visited nodes. If node structures can be modified, we can add a boolean flag (e.g., `visited = True`) to each node as we pass it. If we encounter a node that is already flagged, a cycle exists. If modifying the nodes is not possible, we can use a set to store visited node references. During traversal, we check if the current node is already in the set; if it is, we have detected a cycle.
+
+Both of the above methods require $O(n)$ auxiliary space to track visited nodes. To optimize this, we can use Floyd's Cycle-Finding Algorithm (often called the "fast and slow pointer" algorithm), which reduces the space complexity to $O(1)$.
+
+The core idea is to traverse the list with two pointers: a slow pointer that moves one step at a time, and a fast pointer that moves two steps at a time. If the list contains a cycle, the fast pointer will eventually wrap around and meet the slow pointer. The implementation is as follows:
 
 ```python
 class Node:
@@ -327,7 +331,9 @@ print(llist.has_cycle())  # True
 
 ### Remove the Nth Node from the End
 
-To delete the nth node from the end in a singly linked list. Since it is a singly linked list, we cannot traverse from back to front; we can only traverse from front to back. To avoid missing the nth node from the end, an intuitive approach is to create a buffer to save the last n nodes traversed during the traversal. When reaching the end of the list, delete the nth node from the end. However, this method wastes some space, since we only need the nth node from the end, not all n nodes. A more memory-efficient approach is to use two pointers, maintaining a gap of n positions between them. This way, when the front pointer reaches the last node, the rear pointer will be pointing exactly at the nth node from the end:
+To remove the $n$-th node from the end of a singly linked list, we must traverse from front to back since the pointers only flow in one direction.
+
+An intuitive approach is to buffer the last $n$ visited nodes during traversal, but this requires $O(n)$ auxiliary memory. A more elegant, $O(1)$ space solution uses two pointers ("fast" and "slow") separated by a gap of $n$ nodes. By advancing the fast pointer $n$ steps ahead first, and then moving both pointers at the same speed, the slow pointer will point to the predecessor of the target node when the fast pointer reaches the end of the list:
 
 ```python
 class Node:
@@ -393,7 +399,7 @@ print("\nAfter removing the 2nd node from the end:")
 llist.print_list()
 ```
 
-This problem also has a more standard and robust "fast and slow pointer" approach. Typically, first let second move n steps; if second becomes None, it means the node to be deleted is the head node.
+This problem has a robust "fast and slow pointer" implementation. We advance the fast pointer $n$ steps. If the fast pointer becomes `None`, it means the node to remove is the head node itself. Otherwise, we advance both pointers until the fast pointer reaches the last node, at which point the slow pointer will be positioned just before the node to be deleted:
 
 ```python
     def remove_nth_from_end(self, n):
@@ -423,7 +429,7 @@ This problem also has a more standard and robust "fast and slow pointer" approac
 
 ### Intersection of Two Linked Lists
 
-To find the intersection point of two linked lists, you can first traverse both lists to get their lengths. Calculate the difference in lengths, and traverse the longer list by that many steps first. Then traverse both lists simultaneously until a common node is found.
+To find the intersection node of two singly linked lists, we can first compute the lengths of both lists. By calculating the difference in lengths, we can advance the pointer of the longer list by this difference. Afterward, we traverse both lists synchronously; the point at which the two pointers meet is the intersection node.
 
 ```python
 class ListNode:
@@ -484,4 +490,4 @@ else:
     print("No intersection found.")
 ```
 
-If the two linked lists are completely disjoint, the function will return None.
+If the two linked lists are completely disjoint, the function returns `None`.

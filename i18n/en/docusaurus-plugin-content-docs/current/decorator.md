@@ -1,12 +1,12 @@
 # Decorators
 
-Decorators allow you to enhance or change the behavior of functions without modifying the existing code. In essence, a decorator is a function that takes a function as an argument and returns a new function. The returned function modifies or extends the functionality of the input function.
+Decorators allow you to enhance or modify the behavior of functions without directly altering their source code. In essence, a decorator is a higher-order function that takes a function as an argument and returns a new function. This returned function extends or alters the execution of the original function.
 
 ## Basic Usage
 
 ### Timing Function Execution
 
-Suppose we find that our program is running very slowly and we want to figure out where the problem lies. The simplest approach is to add timing to the functions that might be running slowly, to see how long each one actually takes. For example, if we have a function called `my_slow_function()` that does something, and we want to add timing to it, we can write it like this:
+Suppose your program is running slowly, and you want to locate the bottleneck. The simplest approach is to measure the execution time of functions suspected of being slow. For example, if we have a function named `my_slow_function()` that performs a task, we can measure its duration like this:
 
 ```python
 import tempfile
@@ -34,11 +34,11 @@ def my_slow_function():
     return temp_file_path
 ```
 
-In the program above, `my_slow_function()` creates a temporary file and writes some data into it. At the start and end of the function, we use `time.time()` to get the current system time. The difference between the two times is the execution time of the function.
+In the code above, `my_slow_function()` creates a temporary file and writes data to it. We use `time.time()` at the beginning and the end of the function to record the system time. The difference between these two timestamps represents the total execution time.
 
 ### A Generic Timer Function
 
-After debugging is done, the inserted timing statements need to be removed or restored. This kind of modification is manageable for a single function, but it becomes quite cumbersome if you need to measure the execution time of many different functions. We can make an improvement: write a generic timer function that takes a function as a parameter, records the system time at the start and end of the function's execution, and then prints the execution time. This way, no matter which function's execution time needs to be measured, we can directly call this timer function to measure it, without having to modify each function individually:
+Once debugging is complete, you must remove or revert these timing statements. While modifying a single function is straightforward, doing so for dozens of functions is tedious and error-prone. A better approach is to write a generic timer function that wraps the target function's execution, records the start and end times, and outputs the elapsed time. This allows us to measure any function without altering its internal code:
 
 ```python
 import tempfile
@@ -69,11 +69,11 @@ def my_slow_function():
 print(timer(my_slow_function))
 ```
 
-The program above creates a generic `timer()` function that takes another function as a parameter. It runs the input function and records its execution time. This approach is already quite good, but it still requires changing how the function is called -- every place where the original function is called must be wrapped with `timer()`. It would be even better if this could be done automatically, and that is exactly what decorators do: they can automatically wrap the original function.
+The generic `timer()` function accepts another function as an argument, executes it, and measures its duration. While this is a step forward, it requires you to change how the function is called. Every call site of `my_slow_function` would need to be wrapped in `timer(my_slow_function)`. We can automate this wrapping process using decorators.
 
 ### A Timing Decorator
 
-First, we need to modify the `timer()` function to work as a decorator. A decorator needs to return a function to replace the original function, so we need `timer()` to return a function, rather than the result of running the original function. The way to use a decorator is to place the decorator function on the line above the function being decorated, with an `@` symbol in front of the decorator function. The improved code is as follows:
+To convert our `timer()` function into a decorator, we must adjust it to return a new function (a wrapper) that will replace the original function, rather than returning the immediate result of the target function. To apply a decorator, place its name prefixed with the `@` symbol on the line directly above the function definition. Here is the updated code:
 
 ```python
 import time
@@ -105,11 +105,11 @@ def my_slow_function():
 print(my_slow_function())
 ```
 
-In the program above, `timer()` is a decorator. It itself receives one parameter, which is the function being decorated. `timer()` returns the `wrapper()` function defined inside it. When the program runs, this `wrapper()` function will replace the decorated function. The `wrapper()` function must have the same input and output as the decorated function. To be more general, we make `wrapper()` accept a variable number of positional and keyword arguments, thus supporting all possible argument combinations, and pass them completely to the decorated function.
+In this implementation, `timer()` is a decorator. It accepts a single parameter, `func`, which is the function being decorated, and returns the nested `wrapper()` function. When the decorated function is called, the program actually executes `wrapper()`. To ensure the decorator can wrap any function, `wrapper()` is defined with `*args` and `**kwargs`. This allows it to capture and forward arbitrary positional and keyword arguments to the original function.
 
-The timing functionality remains the same, but when printing the execution time, it calls the function's `__name__` attribute, which returns the function's name. This way, the printed information includes the name of the decorated function, making it easy for the user to see which function each execution time belongs to.
+The timing logic remains unchanged, but we now use `func.__name__` to print the name of the function being timed. This makes the console output clear and easy to follow when timing multiple functions.
 
-When using a decorator, placing `@timer` above `def my_slow_function():` tells the system to automatically replace all calls to `my_slow_function()` with the decorator's `wrapper` function.
+Placing `@timer` above `def my_slow_function():` tells Python to automatically bind the function name to the wrapper returned by `timer`.
 
 ```python
 @timer
@@ -126,7 +126,7 @@ def my_slow_function():
 my_slow_function = timer(my_slow_function)
 ```
 
-Although it still looks like we are running the decorated function with `print(my_slow_function())`, in reality, the timing logic is also executed. The program output looks roughly like this, with the first line showing the execution time and the second line showing the result of the original function:
+When you call `my_slow_function()`, you are executing the timing wrapper. The console output displays both the execution time and the returned path of the temporary file:
 
 ```
 my_slow_function ran in: 0.001227 seconds
@@ -135,7 +135,7 @@ my_slow_function ran in: 0.001227 seconds
 
 ### Preserving Function Attributes
 
-The functionality of this decorator is already basically complete. However, there is a minor flaw: when the program runs, the decorated function is replaced by `wrapper()`, which causes the function's attributes to differ from what is expected. For example, running the following code:
+Although our decorator works, it introduces a subtle side effect: because the original function is replaced by `wrapper()`, metadata such as the function's name (`__name__`) and docstring (`__doc__`) are replaced by those of the wrapper. For example:
 
 ```python
 print(my_slow_function.__name__)
@@ -146,7 +146,7 @@ print(my_slow_function.__doc__)
 # None
 ```
 
-We can see that these attributes actually belong to the `wrapper()` function. To fix this issue, we need to borrow a built-in Python decorator called `functools.wraps` to also decorate the `wrapper()` function:
+To fix this and preserve the original function's metadata, we use `functools.wraps`, a built-in utility decorator, on our nested `wrapper` function:
 
 ```python
 import time
@@ -186,11 +186,11 @@ print(my_slow_function.__doc__)
 # 在一个临时文件中写入数字 0 到 999 并返回其路径
 ```
 
-`@wraps(func)` updates the relevant attributes of the wrapper function, making them more closely match those of `func`.
+`@wraps(func)` copies the metadata of `func` onto the `wrapper` function, ensuring that reflection and debugging tools see the original function's information.
 
 ## Parameterized Decorators
 
-Looking at the `@wraps(func)` decorator mentioned in the example above, this decorator itself takes a parameter because it needs to obtain information from the decorated function, so it must know which function is being decorated. We can also implement parameterized decorators like this. The approach is to first write a function that takes parameters, and then have this function return the actual decorator. Suppose we need to write a decorator that runs the decorated function multiple times, with the number of repetitions passed in as a parameter to the decorator. Here is the code to implement such a decorator:
+Notice that `@wraps(func)` accepts an argument (`func`). To write a custom decorator that accepts arguments, we must construct a decorator factory. This factory is a function that accepts our configuration parameters and returns the actual decorator. For example, suppose we want to write a decorator `@repeat(num_times=N)` that executes the decorated function $N$ times. Here is how we implement it:
 
 ```python
 from functools import wraps
@@ -217,15 +217,15 @@ def greet(name):
 greet("Qizhen")  # 输出 "Hello Qizhen" 四次
 ```
 
-In the code above, we first define a decorator factory function `repeat(num_times)`, which returns the actual decorator function `decorator_repeat`. Then `decorator_repeat` takes a function as a parameter and returns a new function `wrapper`, which calls the decorated function `func` multiple times.
+In this code, `repeat(num_times)` serves as a decorator factory that returns the actual decorator, `decorator_repeat`. This decorator then takes `func` as an argument and returns the `wrapper` function, which handles the repetition logic.
 
 ## Applications
 
-The timing example above is one very useful application of decorators. Besides recording execution time, decorators can help us with many other tasks. For example:
+Timing functions is just one of many practical use cases for decorators. Let's explore several other common applications in Python development.
 
 ### Logging Function Calls
 
-We can write a decorator that logs the details of function calls, including the function name and the arguments passed to it. This can help us track function usage or analyze program performance issues.
+We can write a decorator to log function calls, capturing the function's name and arguments. This is incredibly helpful for tracing execution flow and debugging runtime behavior.
 
 ```python
 from functools import wraps
@@ -239,7 +239,7 @@ def log(func):
     return wrapper
 ```
 
-In the decorator above, the `wrapper` function uses `logging.info` to log a message before calling the original function, containing the original function's name, positional arguments, and keyword arguments. This is information used to help us debug the program. We can use this decorator as follows:
+In this example, `wrapper` uses `logging.info` to output a diagnostic message before invoking the decorated function, detailing its name and argument values. We can apply and test the decorator like this:
 
 ```python
 # 配置日志记录系统以在控制台打印消息
@@ -254,7 +254,7 @@ def add(x, y):
 print(f"测试函数结果： {add(5, y=7)}")
 ```
 
-Running the test program above, we will not only see the results printed by the program itself, but also the highlighted log output:
+Running this test outputs both the logged details and the final function result:
 
 ```markdown {1}
 INFO:root:【调试】 调用函数 add；位置参数：(5,)；关键字参数：{'y': 7}
@@ -263,7 +263,7 @@ INFO:root:【调试】 调用函数 add；位置参数：(5,)；关键字参数�
 
 ### Caching Function Results
 
-First, take a look at the code below:
+Caching (or memoization) stores function outputs based on their inputs, preventing redundant calculations. Consider the following implementation:
 
 ```python
 from functools import wraps
@@ -278,9 +278,9 @@ def memoize(func):
     return wrapper
 ```
 
-In the decorator above, the `wrapper` function first checks whether `args` is already in `cache`. If it is, it directly returns the cached result. If not, it calls the original function, stores the result in `cache`, and then returns the result. When this decorator is used on a function, the function's results are cached, so that the next time the same input arguments are used, the cached result can be returned directly without re-executing the function. This technique is particularly useful for optimizing functions that are expensive to call and are frequently called with the same arguments.
+In this decorator, `cache` is a dictionary defined in the enclosure. The `wrapper` checks if `args` already exists as a key in `cache`. If it does, it returns the cached value directly; otherwise, it computes the value, caches it, and then returns it. This technique is highly effective for optimizing expensive functions that are repeatedly called with the same inputs.
 
-When we introduced recursive functions, we covered a [memoized recursion](recursive#带缓存的递归) algorithm. With this decorator, there is no need to modify the function code to add caching; you simply add the decorator to a function that previously lacked caching:
+When we introduced recursive functions, we covered a [memoized recursion](recursive#recursion-with-caching-memoization) algorithm. With this decorator, there is no need to modify the function code to add caching; you simply add the decorator to a function that previously lacked caching:
 
 ```python
 @memoize
@@ -298,7 +298,7 @@ Note: The simple caching implementation above requires that the function's argum
 
 ### Parameter Validation
 
-When writing a new function, a safe practice is to first check whether each input parameter is valid. If an input parameter is invalid, the function should stop and trigger error handling. However, writing validation code for every parameter can be quite tedious. Fortunately, we can use decorators to write some common validation logic, which can greatly simplify the code for checking parameter validity in functions. For example, let's write a decorator that checks each input parameter of a function and raises an exception if any parameter is less than or equal to zero.
+When writing functions, a defensive programming best practice is to validate input arguments. If an argument is invalid, the function should raise an exception. Writing repetitive validation code across multiple functions can clutter your codebase. Instead, you can encapsulate validation logic inside a decorator to keep functions clean. For example, let's write a decorator `@validate_positive` that checks if any input argument is less than or equal to zero:
 
 ```python
 from functools import wraps
@@ -316,11 +316,11 @@ def validate_positive(func):
     return wrapper
 ```
 
-In the decorator above, the `wrapper` function checks whether all positional arguments are positive before calling the original function. This is implemented using the `any()` function. If any non-positive argument is found, it raises a `ValueError`. If all arguments are positive, it calls the original function and returns the result.
+In this decorator, the `wrapper` function uses the built-in `any()` function to check if any positional argument or keyword argument value is less than or equal to zero. If it finds one, it raises a `ValueError`; otherwise, it executes the target function.
 
-The `any()` function is a built-in Python function that checks whether at least one element in an iterable (such as a list, tuple, set, or dictionary) is `True`. If the boolean value of any element in the iterable is `True`, `any()` returns `True`; otherwise, if all elements are `False` or the iterable is empty, it returns `False`. There is also a similar `all()` function, which returns `True` only when all elements are `True`; otherwise, it returns `False`.
+The `any()` function returns `True` if at least one element in an iterable is truthy; otherwise, it returns `False`. Conversely, the `all()` function returns `True` only if all elements in the iterable are truthy. Both are handy when performing batch checks on collections.
 
-The following function calculates the total weight of several items. When any input item weight is less than or equal to zero, it will raise an error:
+The following function calculates the total weight of several items. If any input item weight is non-positive, the decorator blocks execution and raises an error:
 
 ```python
 @validate_positive
@@ -337,10 +337,9 @@ print(get_total_weight(1, 2, 3, 4, 5))
 # print(get_total_weight(1, 2, 3, 4, -5))
 ```
 
-
 ### Permission Checking
 
-Sometimes, for reasons such as privacy protection, legal requirements, or company policy, access to certain functions needs to be restricted so that only authorized personnel can use them. We can use decorators to implement this functionality:
+Decorators are widely used in web frameworks and enterprise systems to handle authorization and access control, restricting functions to authorized users only:
 
 ```python
 from functools import wraps
@@ -365,7 +364,7 @@ def requires_permission(permission):
     return decorator
 ```
 
-In the decorator above, the `wrapper` function calls `user.permissions.get(permission)` to check whether the current user has the required permission. If they do, the original function `func()` is called; otherwise, a `PermissionError` exception is raised. The function `user.permissions.get(permission)` is a pre-existing check function we assume is available. To demonstrate the decorator above, we implemented a very simple verification mechanism:
+In this example, the `wrapper` function attempts to locate a `user` object from the function's arguments. It then inspects the user's permissions. If the user lacks the required permission, it raises a `PermissionError`. To demonstrate this setup, we can define a simple `User` class and test the permission checks:
 
 ```python
 # 用于演示的 User 类，它简单的定义了每个用户是否有某项操作的权限
@@ -393,17 +392,16 @@ except PermissionError as e:
     print(e)  # 输出错误信息
 ```
 
-Running the test program above produces the following output:
+Running this demonstration produces the following output:
 
 ```
 贾经理 编辑了文档： 项目计划2033
 用户 小明 没有 编辑 的权限
 ```
 
-
 ### Retry
 
-Some functions have a high probability of failing at runtime. For example, a function that connects to a web page might fail to open the expected page due to intermittent network errors. We can write a decorator that makes such functions retry several times on failure, until they succeed:
+Certain operations, such as network requests or database connections, are prone to transient runtime failures. We can write a decorator to automatically retry a function a specified number of times with a delay between attempts before finally raising an exception:
 
 ```python
 import time
@@ -426,7 +424,7 @@ def retry(attempts=3, delay=1):
     return decorator
 ```
 
-In the decorator above, the `wrapper` function attempts to execute `func`. If an exception occurs during execution and the number of attempts has not yet reached the specified `attempts` count, it waits for the number of seconds specified by `delay` and then tries again. If the maximum number of attempts is reached, it re-raises the exception. We can write a function that might fail to test the decorator above. The test function randomly picks a number between 0 and 1; if 0 is chosen, the function fails; if 1 is chosen, it succeeds. If we try to run this potentially failing function 5 times, we will almost always encounter at least one successful run:
+The `@retry` decorator catches exceptions raised by the target function. If the execution fails, it waits for the specified `delay` and retries, up to the maximum number of `attempts`. If the function continues to fail after all attempts are exhausted, the exception is re-raised. Let's test this decorator with a function that fails randomly:
 
 ```python
 import random

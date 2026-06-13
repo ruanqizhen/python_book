@@ -2,11 +2,11 @@
 
 ## Creating a Dictionary
 
-The dictionary (`dict`) is a versatile data type. In other programming languages, similar data structures or containers are also called Maps, mapping tables, hash tables, etc.
+The dictionary (`dict`) is one of Python's most powerful built-in data types. In other languages, similar associative structures are known as maps, hash tables, or associative arrays.
 
 ### Using Curly Braces
 
-A dictionary is a collection where each element is a key-value pair. When representing a dictionary, the dictionary itself is enclosed in curly braces, elements are separated by commas, and the key and value within each element are separated by a colon `:`. The simplest way to create a dictionary is to use curly braces to wrap the required key-value data:
+A dictionary stores collections of key-value pairs. In a dictionary literal, the entire structure is enclosed in curly braces `{ }`, elements are separated by commas, and keys are separated from their corresponding values by a colon (`:`). To define a dictionary, write:
 
 ```python
 # Create an empty dictionary
@@ -21,22 +21,22 @@ person = {
 ```
 
 Points to note:
-* Dictionary keys must be of an immutable type, such as integers, floats, strings, or tuples. Lists or other dictionaries cannot be used as keys. This is to prevent keys from being modified, which would cause confusion when looking up items in the dictionary.
-* Dictionary keys are unique; if the same key is added repeatedly, the later value will overwrite the previous one.
-* Dictionary values can be of any type, including other dictionaries or lists.
+* Dictionary keys must be of an **immutable** (and hashable) type, such as integers, floats, strings, or tuples. Lists and dictionaries cannot be keys. This constraint ensures keys cannot be modified in place, which would break the dictionary's lookup integrity.
+* Keys are unique: adding a duplicate key overwrites its existing value.
+* Values can be of any data type, including lists, tuples, or other dictionaries.
 
 ### The dict() Function
 
 The `dict()` function can be used to create a dictionary from other data structures.
 
-The simplest way is to pass the keys and values of the dictionary to be created as keyword arguments to the `dict()` function, for example:
+You can create a dictionary by passing key-value pairs as keyword arguments to the `dict()` constructor:
 
 ```python
 # Using keyword arguments
 my_dict = dict(Name="Cai Taixian", Age=25, City="Shanghai")
 ```
 
-Another way to use `dict()` is to pass an iterable object to it, where each element of the input iterable is a tuple or list containing two items. For example:
+Alternatively, you can pass a sequence of two-item collections (like a list of tuples) to `dict()`:
 
 ```python
 # Using a list of (key, value) tuples
@@ -44,7 +44,7 @@ pairs = [("Name", "Ma Tonggai"), ("Age", 25), ("City", "Shanghai")]
 my_dict = dict(pairs)
 ```
 
-If the existing data does not conform to this format, it needs to be converted before being passed to the `dict()` function. A common scenario is when the existing data consists of two lists, one containing all the keys and the other containing all the values. In this case, we can use the [zip()](loop#zip-function) function to combine the two lists into a list of pairs before creating the dictionary:
+If you have two separate lists—one containing keys and the other containing values—you can pair them together using the `zip()` function before passing them to `dict()`:
 
 ```python
 keys = ["Name", "Age", "City"]
@@ -54,13 +54,13 @@ my_dict = dict(zip(keys, values))
 
 ### Dictionary Comprehension
 
-[Dictionary comprehension](comprehension#dictionary-comprehension) is also a commonly used method for creating dictionaries, but it is slightly more complex. We will introduce it after covering some other foundational knowledge.
+[Dictionary comprehension](comprehension#dictionary-comprehensions) is also a commonly used method for creating dictionaries, but it is slightly more complex. We will introduce it after covering some other foundational knowledge.
 
 ## Common Dictionary Operations
 
 ### Checking if a Key Exists
 
-Just like checking if an element exists in a list, checking if a key exists in a dictionary uses the `in` keyword. This returns a boolean indicating whether the key is present in the dictionary.
+To check if a key exists in a dictionary, use the `in` operator (similar to list membership tests), which returns a boolean:
 
 ```python
 person = {
@@ -73,11 +73,11 @@ if "Name" in person:
     print('The key "Name" exists in the dictionary.')
 ```
 
-Due to the way dictionaries store data, checking whether a key exists in a dictionary is far more efficient than checking whether an element exists in a list.
+Under the hood, checking for key membership in a dictionary is extremely fast and far more efficient than searching a list.
 
 ### Accessing Values
 
-Using square brackets and a key, similar to indexing a list, you can retrieve the corresponding value from a dictionary:
+Retrieve a value by placing its key inside square brackets, similar to list indexing:
 
 ```python
 person = {
@@ -89,8 +89,9 @@ person = {
 print(person["Name"])  # Output: Ruan Qizhen
 ```
 
-It is possible that the key you want to access does not exist. If you access a non-existent key, the program will raise a `KeyError` exception. For more on exceptions and their handling, refer to the [Exception Handling](exception) section.
-To avoid exceptions, we can first check if the key exists and then access it. This is cumbersome; a simpler approach is to use the dictionary's `get()` method to access values. If the key does not exist, `get()` will not raise an exception; instead, it returns `None`. We can also specify a default value for `get()` to return when the key does not exist:
+If you request a key that does not exist, Python raises a `KeyError`. (We cover exceptions and how to catch them in the [Exception Handling](exception) chapter.)
+
+To avoid crashes, you can check key membership first, but a cleaner way is to use the `get()` method. If the key is not found, `get()` returns `None` instead of throwing an error. You can also specify a custom fallback value:
 
 ```python
 person = {
@@ -108,13 +109,13 @@ gender = person.get('gender', 'Not Specified')
 print(gender)  # Output: Not Specified
 ```
 
-Accessing values by key in a dictionary is extremely efficient because the underlying data structure of dictionaries is optimized for key lookup speed. We will delve into the efficiency of dictionaries, lists, and other data structures in the [Data Structures and Algorithms](algorithm) section. For now, the important thing to understand is that retrieving data using a key is a very fast operation. Therefore, the primary use of dictionaries is to quickly obtain a value corresponding to a key. In contrast, directly searching for a specific value in a dictionary or finding a key based on a value is very inefficient.
+Accessing values by key is extremely fast because Python dictionaries are implemented using hash tables. We explore these optimizations in the [Data Structures and Algorithms](algorithm) chapter. For now, remember that finding a value via its key is a constant-time operation. Conversely, searching for a key by its value is very slow, as it requires scanning the entire dictionary.
 
-If we have two data collections with a one-to-one mapping between them (each element uniquely corresponds to an element in the other collection), and we need to efficiently find the corresponding element from either collection, we can consider creating two dictionaries. One dictionary uses elements from the first data collection as keys, and the other uses elements from the second data collection as keys. This approach enables efficient bidirectional lookup between the two data collections.
+If you need rapid bidirectional lookups between two unique datasets, create two separate dictionaries: one for forward lookup (e.g., mapping ID to Name) and one for reverse lookup (mapping Name to ID).
 
-Because Python uses dynamic typing, keys in the same dictionary can have different data types, which differs from many other mainstream programming languages. When using data of different types as keys, note that if their values are equal, Python considers them the same key even if the data types differ. For example, the integer `1` and the float `1.0` are considered the same key.
+Because Python is dynamically typed, a single dictionary can mix keys of different types. Note that if two keys evaluate to equal values (like `1` and `1.0`), Python treats them as the same key.
 
-It is strongly recommended not to use floats as dictionary keys. Due to the [precision issues of floating-point storage](calculation#error) in computers, `0.1 + 0.2` is not exactly equal to `0.3`. This will cause your attempt to look up the key `0.1 + 0.2` using `0.3` to fail. For example:
+Warning: Never use floats as dictionary keys. Because floating-point math suffers from precision limits (e.g., `0.1 + 0.2` does not equal `0.3`), looking up keys mathematically can fail unexpectedly:
 
 ```python
 dic = {}
@@ -129,7 +130,7 @@ print(dic[1])        # Output: c    1.0 and 1 are the same key
 
 ### Adding or Modifying Key-Value Pairs
 
-In an assignment statement, using square brackets with a key also allows you to modify data in the dictionary.
+To add a new key-value pair or modify an existing one, assign a value to a key using square brackets:
 
 ```python
 person = {
@@ -147,9 +148,9 @@ print(person)
 # Output: {'Name': 'Zhu Dachang', 'Age': 35, 'City': 'Shanghai', 'Occupation': 'Engineer'}
 ```
 
-Such an assignment statement does not check whether a key already exists. If the key does not exist, it is added; if the key already exists, the corresponding value is updated.
+If the key is not in the dictionary, Python inserts it. If it is already present, Python overwrites the old value.
 
-Sometimes, we may want to avoid overwriting an existing key and instead preserve the original value. This is similar to the problem encountered when accessing values. We can first check if the key exists and then decide whether to assign a value. Again, there is a more concise programming method for this: using the dictionary's `setdefault()` method. The `setdefault()` method is used to get the value for a given key. If the key does not exist in the dictionary, it inserts the key with the specified default value into the dictionary. If the key already exists, it returns the value for that key without changing the dictionary. For example:
+To assign a value only if a key is missing (preserving the value if the key is already present), use the `setdefault()` method. `setdefault()` searches for the key: if found, it returns its value; if not, it inserts the key with the specified default and returns that default:
 
 ```python
 person = {
@@ -170,7 +171,7 @@ print(person)
 # Output: {'Name': 'Xiong Chumo', 'Age': 30, 'City': 'Shanghai', 'Salary': 50000}
 ```
 
-A common use case for `setdefault()` is counting. For example, to count how many times each word appears in a sentence, we could use a program like this:
+A classic use case for `setdefault()` is counting item occurrences:
 
 ```python
 counts = {}
@@ -183,9 +184,9 @@ for word in words:
 print(counts)  # Output: {'Apple': 3, 'Banana': 2, 'Orange': 1}
 ```
 
-In this example, the `setdefault()` method ensures that each word has a corresponding count value in the `counts` dictionary. If a word is not yet in the dictionary, it inserts the word with a count of 0. Then the count for that word can be safely incremented.
+Here, `setdefault(word, 0)` initializes the count of a new word to `0` so we can safely increment it in the next line.
 
-The above program can also achieve the same effect using the `get()` method. If the dictionary's values are simple data types, `get()` can make the code more concise. If the values themselves are complex types like lists or dictionaries, `setdefault()` is preferable. Here is the equivalent implementation using `get()`:
+If you are storing simple counts or accumulators, you can also use `get()` to set a default value on the fly, which is often cleaner:
 
 ```python
 counts = {}
@@ -197,9 +198,9 @@ for word in words:
 print(counts)  # Output: {'Apple': 3, 'Banana': 2, 'Orange': 1}
 ```
 
-In fact, there are even more flexible ways to handle default values for missing keys in a dictionary, which we will cover in detail in the [Counting](counter) section.
+We will cover default values extensively in the [Counting](counter) section.
 
-We introduced [multiple-variable assignment](variable#multiple-variable-assignment) and chained assignment statements earlier. Can the reader analyze what the following program outputs?
+What does the following statement produce?
 
 ```python
 x, y = x[y] = {}, "a"
@@ -208,7 +209,7 @@ print(x)
 
 ### Deleting Key-Value Pairs
 
-Use the `del` statement to delete key-value pairs from a dictionary:
+Delete a key-value pair from a dictionary using the `del` statement:
 
 ```python
 person = {
@@ -224,7 +225,12 @@ print(person)  # Output: {'Name': 'Hao Xiaren', 'City': 'Pythora'}
 
 ### Getting All Keys and Values
 
-Use the `keys()`, `values()`, and `items()` methods to access the dictionary's keys, values, and key-value pairs respectively. These methods all return dictionary view objects, meaning they do not return fixed data. These views reflect changes to the dictionary; when the dictionary data changes, they change accordingly.
+To retrieve dictionary contents, use:
+- `keys()`: returns a view of all keys.
+- `values()`: returns a view of all values.
+- `items()`: returns a view of all key-value pairs as tuples.
+
+These return **view objects**, meaning they are dynamic and automatically reflect any updates or deletions made to the dictionary in real time:
 
 ```python
 person = {
@@ -242,7 +248,7 @@ del person["Age"]       # Delete a key-value pair from the dictionary; all dicti
 print(keys)             # Output: dict_keys(['Name', 'City'])
 ```
 
-These methods are often used in conjunction with dictionary iteration. For example, if we only need to iterate over each value in the dictionary, we can iterate over the `values` view:
+Views are extremely useful for loops. To iterate only over values:
 
 ```python
 person = {
@@ -257,7 +263,7 @@ for value in person.values():
 # Output: Bao Shengong  30  Shanghai
 ```
 
-A more common scenario is iterating over all keys and values in a dictionary simultaneously, using the `items` view:
+To traverse keys and values together, iterate over `items()`:
 
 ```python
 person = {
@@ -275,11 +281,11 @@ for key, value in person.items():
 # City Shanghai
 ```
 
-Note: When using a `for` loop to iterate over a dictionary (or set), never add or remove elements. This will cause a `RuntimeError: dictionary changed size during iteration` error. If modification is needed, it is recommended to first convert the keys to a list: `for key in list(person.keys()): ...`.
+Warning: Never add or remove keys while iterating over a dictionary. Doing so raises a `RuntimeError`. If you need to modify keys during a loop, iterate over a static list copy of the keys instead: `for key in list(my_dict.keys()):`.
 
 ### Unpacking
 
-Similar to list unpacking, dictionaries can be unpacked using the double asterisk `**` operator. Assuming `my_dict = {'a': 1, 'b': 2}`, the unpacking operation `**my_dict` yields `a=1, b=2`.
+Like lists, dictionaries can be unpacked. The double asterisk (`**`) unpacks dictionary items as keyword arguments. Assuming `my_dict = {'a': 1, 'b': 2}`, the unpacking operation `**my_dict` yields `a=1, b=2`.
 
 Unpacking can conveniently merge two dictionaries:
 
@@ -291,16 +297,16 @@ merged_dict = {**dict1, **dict2}
 print(merged_dict)  # Output: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 ```
 
-The main use of dictionary unpacking is [passing arguments to functions](function#variable-number-of-arguments), which we will explain in detail when introducing functions.
+We discuss dictionary unpacking extensively in the [Functions](function#variable-length-arguments) chapter.
 
 ## Common Dictionary Methods
 
-Besides the `get`, `setdefault`, and other methods already introduced, dictionaries have other commonly used methods:
+Other common dictionary methods include:
 
-- `dict.update(another_dict)`: Merges the key-value pairs from another dictionary into the current dictionary.
-- `dict.pop(key)`: Removes and returns the value for the specified key. Raises a `KeyError` if the key does not exist.
-- `dict.clear()`: Removes all items from the dictionary.
-- `dict.fromkeys(seq, value)`: Creates a new dictionary with keys from the sequence `seq` and all values set to `value`.
+- `update(another_dict)`: Merges key-value pairs from another dictionary, overwriting existing keys.
+- `pop(key)`: Removes and returns the value of the specified key.
+- `clear()`: Clears all items.
+- `fromkeys(seq, value)`: Creates a dictionary using keys from a sequence, initialized to a shared default value.
 
 For example:
 
@@ -330,7 +336,7 @@ print(new_dict) # {'a': 0, 'b': 0, 'c': 0}
 
 ## Comparison of the Four Core Containers
 
-In Python programming, Lists, Tuples, Dictionaries, and Sets are the four most core and commonly used built-in data containers. Beginners often confuse their use cases, so here we provide a multi-dimensional comparison to help you make the most appropriate choice in actual programming.
+Python provides four core data containers: Lists, Tuples, Dictionaries, and Sets. Understanding their characteristics will help you select the right tool for the job.
 
 ### Characteristics Comparison Table
 
@@ -356,9 +362,10 @@ In Python programming, Lists, Tuples, Dictionaries, and Sets are the four most c
 
 ## Sets
 
-A set is a commonly used mathematical concept. It is an unordered collection of distinct elements. Sets can contain objects of immutable types, such as numbers, strings, and tuples, but each element in a set must be unique. Duplicate elements are not allowed in a set. Sets in the Python language are very similar to the mathematical definition of sets. They are also unordered, require element uniqueness, and support basic mathematical operations such as intersection and union. However, there are some differences. In mathematics, a set is generally unchangeable once created, but sets in a program can have elements added or deleted after creation.
+A set (`set`) is an unordered collection of unique elements, matching the mathematical concept of a set. It supports operations like union, intersection, and difference. Under the hood, sets are implemented similarly to dictionaries but only contain keys.
+Each element in a set must be unique and **hashable** (immutable). Unlike mathematical sets, programming sets are mutable—you can add or remove elements after creation.
 
-Python sets require all elements to be hashable. Simply put, elements must be immutable. For example, integers, strings, and tuples can all be set elements. Note: If a tuple contains mutable objects (such as `(1, [2, 3])`), that tuple is also unhashable and cannot be used as a set element.
+Note: If a tuple contains mutable objects (such as `(1, [2, 3])`), the tuple becomes unhashable and cannot be placed inside a set.
 
 ### Creating a Set
 
@@ -376,11 +383,11 @@ print(my_set)  # Output: {1, 2, 3, 4, 5}
 empty_set = set()
 ```
 
-Elements in a set are unique, meaning duplicate elements are automatically removed. Note that you cannot use empty curly braces `{}` to create an empty set, as empty curly braces represent an empty dictionary by default, not a set. To create an empty set, you must use `set()`.
+Because elements must be unique, any duplicates are silently discarded. Remember: you cannot create an empty set using `{}` (which defines an empty dictionary). Use `set()` instead.
 
 ### Common Operations
 
-The usage of sets is very similar to dictionaries. In terms of data querying, a set can be thought of as a dictionary with only keys. Below are the most common set operations:
+Sets share dictionary lookup speeds. Common set operations include:
 
 * Adding elements: Use the `add()` method.
 
@@ -410,7 +417,7 @@ if "Orange" not in s:
     print("The set does not contain Orange") 
 ```
 
-* Removing elements: Use the `remove()` or `discard()` method. The `remove()` method raises an error if the element does not exist, while the `discard()` method does not.
+* Removing elements: `remove(x)` deletes `x` and raises a `KeyError` if it is not found. `discard(x)` deletes `x` but does not throw an error if the element is missing:
 
 ```python
 s = set(['Apple', 'Banana', 'Orange'])

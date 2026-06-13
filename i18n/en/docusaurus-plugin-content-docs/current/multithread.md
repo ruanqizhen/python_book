@@ -2,25 +2,29 @@
 
 ## Processes and Threads
 
-Processes and threads are core concepts in operating systems regarding task scheduling and concurrent execution. They are the fundamental building blocks that operating systems use to manage, execute, and schedule applications.
+Processes and threads are fundamental operating system concepts for task scheduling and concurrent execution. They serve as the building blocks for managing, executing, and scheduling applications.
 
-A process is an independently running program instance with its own separate memory space and system resources. From the operating system's perspective, a process is a combination of an executing program and its state, including the program counter, registers, virtual memory, and so on. A thread is a single execution flow within a process. Threads within a process share the same address space and resources, but each has its own call stack, program counter, and register state. A process can have multiple threads. Both processes and threads are scheduled by the operating system. Each process has its own independent address space, but threads do not. In multi-core or multi-processor systems, multiple threads can execute in parallel on different CPU cores.
+A **process** is an independently running instance of a program, allocated its own private memory space and system resources. From the operating system's perspective, a process encompasses the executing code and its current runtime state, including the program counter, registers, and virtual memory.
 
-Simply put: an application has at least one process, and a process has at least one thread.
+A **thread** is the smallest unit of execution within a process. Multiple threads within a single process share the same address space and system resources (such as open files), but each maintains its own call stack, program counter, and register state. A process can spawn multiple threads, both of which are scheduled by the operating system. In a multi-core or multi-processor environment, threads can run in parallel across different CPU cores.
 
-The simple programs we wrote previously all had only one process and one thread. Next, we will discuss how to start multiple threads and processes.
+Simply put, an application consists of at least one process, and a process contains at least one thread.
 
-Multithreading in Python is somewhat awkward. Earlier it was mentioned: "In multi-core or multi-processor systems, multiple threads can execute in parallel on different CPU cores." This is true in general. But Python programs cannot do this: Python programs cannot achieve multi-CPU parallel execution even with multithreading. We will discuss the specific reasons below. Although we cannot make multiple CPUs work in parallel, fortunately multithreading can still allow different peripheral read/write operations to run in parallel, such as accessing multiple files, databases, web pages, etc. at the same time. So in the past, Python's multithreading was mainly used to support concurrent I/O. But now, Python has [asynchronous I/O](asyncio), and multithreading no longer has even this advantage.
+The simple programs we have written so far have all run within a single process and a single thread. In this section, we will explore how to work with multiple threads.
+
+Multithreading in Python has historically been a point of confusion. While threads can execute in parallel across different CPU cores in many languages, standard Python (CPython) restricts this: Python threads cannot achieve true multi-CPU parallel execution. 
+
+We will explore the technical reasons for this (specifically, the Global Interpreter Lock) below. Fortunately, while multithreading cannot speed up CPU-bound calculations in Python, it can still run I/O operations in parallel (such as querying databases, fetching web pages, or reading files concurrently). Historically, Python developers relied on multithreading to handle concurrent I/O; today, however, [asynchronous I/O](asyncio) offers a much more efficient alternative for these tasks.
 
 Nevertheless, multithreading, as a very important concept in programming languages, is still worth studying in depth.
 
 ## threading Module
 
-Python provides multiple ways to create and manage multithreading, among which the most common and direct method is to use the threading module from the standard library.
+Python's `threading` standard library module is the primary tool for creating and managing threads.
 
 ### Creating Threads
 
-Using the threading.Thread class allows you to create a new thread. The most common method is to provide a function as the target parameter of the Thread class constructor. When the thread starts, this function or method will be called. Using the start() method of the Thread object starts the thread, and the thread begins executing the function pointed to by target. If you need to wait for a thread to complete its task before continuing with subsequent program execution, you can use the join() method of the Thread object to wait for the thread to finish:
+You can instantiate a new thread using the `threading.Thread` class, passing the function you want to execute to the `target` parameter of the constructor. Calling `start()` on the `Thread` object begins execution in a separate thread. If the main program needs to block and wait for a thread to complete its execution before continuing, call `join()` on the thread instance:
 
 ```python
 import threading
@@ -41,7 +45,7 @@ thread.join()
 
 ### Thread Naming and Identification
 
-We can name a thread using the name parameter when creating it, and then use the threading.name attribute to get a thread's name. Each thread also has a unique identifier, which can be obtained using threading.get_ident().
+You can assign a custom name to a thread using the `name` parameter during instantiation, and retrieve it using the thread's `name` property. Each thread is also assigned a unique integer identifier by the operating system, which can be accessed using `threading.get_ident()` within the thread, or via the `ident` attribute of the thread object.
 
 ```python
 import threading
@@ -74,18 +78,18 @@ thread2.join()
 # 线程2 (ID: 140173711678240) 结束
 ```
 
-Naming and identifying threads not only improves code readability and maintainability, but also makes it easier to manage and control threads. If problems arise, recording the thread names and identifiers can also help us debug and find issues.
+Naming and identifying threads improves readability, simplifies thread management, and makes debugging concurrency issues much easier.
 
 ### Thread-Local Data
 
-Each thread can have its own data instance, independent of other threads. This is achieved through threading.local(). Thread-local data is useful in certain applications, such as database connections, request contexts, etc.
+Thread-local data allows each thread to maintain its own isolated state that is inaccessible to other threads. This is implemented using `threading.local()`, which is useful for managing thread-specific contexts like database connections or HTTP request sessions.
 
 The following is a simple example of using thread-local data:
 
 ```python
 import threading
 
-# 创建线程局部数据
+# 创建线程局部 data
 local_data = threading.local()
 
 def display_data():
@@ -111,7 +115,7 @@ thread2.start()
 thread1.join()
 thread2.join()
 
-# 在主线程中显示线程局部数据
+# 在主线程中显示线程局部 data
 display_data()
 
 # 输出：
@@ -120,17 +124,17 @@ display_data()
 # 没有数据
 ```
 
-In the above code, we first defined a function called display_data, which is used to display the local data of the current thread. Then, we have a worker function, which is the function run by multiple threads. The worker function has input parameters. When creating a thread, parameters can be passed to the worker function via the args parameter of the threading.Thread function. Each thread in the program sets the thread-local data local_data.value in the worker function. Although all threads use the same name "value" to access their thread-local data, each thread has its own independent data instance, and each thread maintains its own different value.
+Here, `display_data` reads `local_data.value`. In the `worker` function, each thread assigns its own thread-specific value to `local_data.value`. Although both threads reference the same `local_data` object, their values remain isolated.
 
-The main thread did not set local_data.value. If we try to access it in the main thread, the program will throw an AttributeError exception.
+Because the main thread never assigned a value to `local_data.value`, attempting to access it from the main thread raises an `AttributeError`.
 
 ### Daemon Threads
 
-A daemon thread is a thread that runs in the background and does not interact directly with the user. When the main program ends, all daemon threads are automatically terminated, regardless of whether they are still working. This is in contrast to "regular" threads or "user" threads, which continue to execute after the main program ends until the thread itself finishes.
+A **daemon thread** runs in the background. Unlike regular (non-daemon) threads, which keep the Python process alive until they finish, daemon threads do not prevent the main program from exiting. When all non-daemon threads have finished executing, the Python program terminates, automatically killing any active daemon threads.
 
-Daemon threads are typically used to perform background tasks such as garbage collection, log management, monitoring, automatic archiving, etc. Other threads cannot use the join() function to wait for a daemon thread to finish, because daemon threads are generally not supposed to end on their own, but should be automatically shut down when the main program ends. If a new thread is created within a daemon thread, the new thread is called a "child thread" and it will inherit the daemon status of its parent thread by default.
+Daemon threads are ideal for background utility tasks like log collection, system monitoring, or cache cleanup. By default, any thread created inside a daemon thread inherits the daemon status of its parent.
 
-We can make a thread a daemon thread by setting the daemon attribute of the thread object.
+You can configure a thread as a daemon by passing `daemon=True` to the constructor or by modifying its `daemon` property before calling `start()`.
 
 ```python
 import threading
@@ -161,11 +165,11 @@ for i in range(5):
 print("主程序结束，守护线程也随之结束。")
 ```
 
-In the above example, the daemon_thread function is set to run in a daemon thread. It itself is an infinite loop that keeps printing some information. When the main program ends, the daemon thread will also be automatically terminated.
+In this code, the daemon thread runs an infinite loop. Once the main thread finishes printing and exits, the daemon thread is immediately terminated by Python.
 
 ### Creating Threads with Classes
 
-Besides using functions as thread targets, you can also create threads by inheriting the threading.Thread class and overriding its run method.
+Alternatively, you can define threads by subclassing `threading.Thread` and overriding the `run()` method to encapsulate the thread's execution logic:
 
 ```python
 import threading
@@ -200,17 +204,15 @@ thread2.join()
 print("主程序结束")
 ```
 
-The above program defines a MyThread class that inherits from threading.Thread. The __init__ method is used to initialize the thread, and can accept thread name and delay parameters. The run method is used to define the specific behavior of the thread: printing information about the current thread. The program creates two instances of the MyThread class, thread1 and thread2, and passes different parameters to them. The methods for starting threads and waiting for threads to finish are the same as before.
-
-Using classes to create threads makes the code more modular and reusable, and also makes it easier to manage the state and behavior of threads.
+This object-oriented approach encapsulates the thread's arguments and state inside a custom class. The `run()` method acts as the entry point, executing when `start()` is invoked. Subclassing `Thread` makes thread management more modular and reusable in complex projects.
 
 ## Synchronization Mechanisms
 
-Synchronization primitives are a set of tools used to coordinate access by multiple threads to shared resources. Python's threading module provides various synchronization mechanisms to achieve thread safety and avoid potential race conditions.
+Synchronization primitives are tools used to coordinate thread execution and control access to shared state. The `threading` module provides several primitives to guarantee thread safety and prevent race conditions.
 
 ### Mutex Lock
 
-A mutex is one of the most basic synchronization mechanisms, also known as a lock or resource lock. It is mainly used to ensure that only one thread can access a resource or code segment at any given time, preventing multiple threads from simultaneously accessing shared resources, thereby avoiding race conditions or data inconsistency issues. We can use the Lock class from the threading module to implement thread mutex locks.
+A **mutex lock** (mutual exclusion lock) is the most basic synchronization primitive. It ensures that only one thread can execute a critical section of code or access a shared resource at a time, preventing data corruption caused by concurrent writes.
 
 Let's look at the following program:
 
@@ -242,11 +244,11 @@ thread2.join()
 print(f"最终共享资源的值: {shared_resource}")
 ```
 
-The above program defines a shared resource called shared_resource with an initial value of 0. It creates two threads, each doing the same thing: looping 100,000 times, incrementing the value of shared_resource by 1 in each iteration. With two threads, the total should be 200,000 iterations, so the final result should be 200,000. But in reality, when running the above program, the result is non-deterministic, and is likely to be around 170,000.
+In this code, two threads concurrently increment a global counter 100,000 times. You would expect the final count to be exactly 200,000, but running this script yields a non-deterministic total (typically around 170,000).
 
-This error occurs because two threads are running simultaneously and shared_resource is not protected, so the following scenario is likely to happen: thread a reads the value of shared_resource, say it's 3; then thread b reads the value, also 3; then thread a writes back the new value 4; finally, thread b also writes back the new value 4. The program added to shared_resource twice, but the final result only increased by 1.
+This error is caused by a race condition. The increment operation (`shared_resource += 1`) is not atomic; under the hood, Python reads the value, adds one, and writes it back. If both threads read the value simultaneously (e.g., both read `3`), both compute `4`, and both write `4` back, one increment is lost.
 
-To avoid such errors, we need to lock shared_resource before reading it, preventing other threads from using it until we have modified its data and then release the lock, allowing other threads to access it. This way, there will be no data conflicts:
+To resolve this, we use a lock to ensure that the read-modify-write cycle is executed atomically by only one thread at a time:
 
 ```python
 import threading
@@ -288,7 +290,7 @@ Using a mutex lock ensures that only one thread can access and modify a shared r
 
 ### Reentrant Lock
 
-A reentrant lock (RLock) is a special type of mutex that allows the same thread to request the same lock multiple times. This means that if the same thread has already acquired this lock, it can acquire it again without causing a deadlock. It is typically used in recursive functions.
+A **reentrant lock** (`RLock`) is a mutex that can be acquired multiple times by the same thread without causing a deadlock. This is useful for recursive algorithms or nested methods where the same thread needs to repeatedly enter locked sections:
 
 ```python
 import threading
@@ -323,13 +325,11 @@ thread2.join()
 print("主程序结束")
 ```
 
-The above program defines a reentrant lock called reentrant_lock. recursive_function is a recursive function that attempts to acquire the same lock on each recursive call. Since the recursive_function function will try to acquire the same lock multiple times when called by the same thread, it must use a reentrant lock. If a regular mutex lock were used, the program would deadlock because a lock cannot be acquired multiple times by the same thread. The reentrant lock solves this problem, allowing the same thread to safely acquire the same lock multiple times.
+If we used a standard `Lock` here, the program would immediately deadlock on the second recursive call because the thread would block waiting for itself to release the lock. An `RLock` resolves this by keeping track of the recursion depth and owner thread.
 
 ### Semaphore
 
-A semaphore is a more advanced synchronization mechanism used to control access to shared resources. It maintains an internal counter that can limit the number of accesses to a resource, for example, limiting the number of concurrent database connections. Threads can obtain or release resources by incrementing or decrementing the counter.
-
-The following is an example using a semaphore, simulating concurrent access to a limited resource (such as database connections):
+A **semaphore** maintains an internal counter to limit concurrent access to a shared resource. Semaphores are commonly used to rate-limit access to high-load systems, such as database connection pools or API rate-limiters:
 
 ```python
 import threading
@@ -364,15 +364,11 @@ for thread in threads:
 print("所有线程访问完毕")
 ```
 
-In this example, we created a semaphore that allows at most two threads to access the shared resource simultaneously. The access_resource function simulates the process of a thread requesting access to a shared resource. The thread first requests the semaphore; if it acquires the semaphore, it accesses the resource; after accessing, it releases the semaphore. The program creates five threads to simulate concurrent access to a shared resource. Each thread, upon starting, tries to acquire the semaphore. Since the semaphore size is 2, at most two threads can access the resource at the same time.
-
-Using semaphores is an effective way to control concurrent access to a limited number of resources, preventing resource overload and ensuring system stability.
+By initializing `Semaphore(2)`, we restrict access to a maximum of two concurrent threads. Any additional threads that attempt to call `acquire()` will block until one of the active threads releases the semaphore.
 
 ### Condition Variable
 
-A condition variable is a synchronization mechanism used for coordination between threads. Condition variables allow one or more threads to suspend execution until certain conditions are met, and allow another thread to wake up one or all waiting threads when the conditions are satisfied.
-
-The following is an example using a condition variable, simulating the producer-consumer problem:
+A **condition variable** (`Condition`) allows threads to synchronize based on state changes. One or more threads can wait (`wait()`) until a specific condition is met, while another thread updates the state and notifies (`notify()`) the waiting threads:
 
 ```python
 import threading
@@ -422,13 +418,14 @@ producer.join()
 consumer.join()
 ```
 
-In this example, we defined a shared items list called items and a condition variable called condition. The Producer class represents the producer, which produces items and adds them to the items list, then notifies the consumer via condition.notify(). The Consumer class represents the consumer, which waits for items to be available (via condition.wait()) and then consumes items from the items list. The program creates one producer thread and one consumer thread, executing the producer and consumer logic respectively. The producer notifies the consumer after producing items, while the consumer waits when there are no items to consume. This approach effectively coordinates the behavior between the producer and consumer, preventing resource conflicts and unnecessary busy waiting.
+The consumer thread calls `condition.wait()`, which atomically releases the lock and blocks the thread. When the producer appends an item and calls `condition.notify()`, the event loop wakes up the consumer. The consumer then re-acquires the lock and safely processes the data.
 
 ### Event
 
-An Event is a simple synchronization mechanism used to send signals between threads. An event object manages an internal flag, which can be set to true via the set() method, set to false via the clear() method, and waited on to become true via the wait() method.
-
-The following is a multithreading example using an Event, where one thread waits for an event to be triggered by another thread:
+An **event** (`Event`) is a simple communication mechanism where one thread signals a state change and other threads wait for that signal. An event object manages an internal boolean flag:
+* `set()`: Sets the flag to `True`, waking up all waiting threads.
+* `clear()`: Resets the flag to `False`.
+* `wait()`: Blocks the calling thread until the flag becomes `True`.
 
 ```python
 import threading
@@ -463,11 +460,11 @@ trigger_thread.join()
 print("主程序结束")
 ```
 
-In this example, we created an event object called event. We use event.wait() to suspend a thread until the event is triggered. The trigger function represents the thread that triggers the event. It simulates some processing, then uses event.set() to trigger the event. The program creates and starts threads representing the waiter and the trigger respectively. The waiter thread pauses execution until the event is triggered, while the trigger thread triggers the event after completing some work, thereby allowing the waiter thread to continue execution. This approach is very useful when coordinated operations between threads are needed.
+Here, `waiter_thread` blocks at `event.wait()`. Once `trigger_thread` completes its work and calls `event.set()`, the flag becomes true, allowing the waiter thread to resume instantly.
 
 ## Deadlock
 
-A common problem encountered in multithreaded programs is deadlock: two or more threads are unable to proceed because each thread is waiting for other threads to release the resources it needs. This causes all threads to be stuck in a state of mutual waiting, unable to continue execution.
+A **deadlock** occurs when two or more threads are permanently blocked, each waiting for a lock held by another thread in the group.
 
 Below is a simple example of a deadlock:
 
@@ -503,9 +500,9 @@ t2.join()
 print("Finished")
 ```
 
-In the above code, two worker threads attempt to acquire two locks in different orders. If worker1 acquires lock1 while worker2 acquires lock2, then each worker thread will wait for the other to release the lock it needs, resulting in a deadlock.
+If `t1` locks `lock1` and `t2` locks `lock2` concurrently, both will block indefinitely when attempting to acquire their second locks, freezing the application.
 
-There are some common methods to avoid deadlocks. For example, you can fix the lock acquisition order: ensure that all threads always request locks in the same order. This eliminates circular waiting, thereby avoiding deadlocks. Modify the above code to ensure that both worker threads first try to acquire lock1, then lock2:
+To prevent deadlocks, always acquire locks in a consistent, global order. If both threads are forced to acquire `lock1` before `lock2`, circular wait conditions cannot occur:
 
 ```python
 def worker1():
@@ -521,11 +518,11 @@ def worker2():
             print("线程 2 获得锁 2")
 ```
 
-In addition to using a fixed locking order, you can also set a timeout for trying to acquire a lock. This way, if a thread does not obtain the lock within the timeout period, it can give up, back off, try again later, or take other remedial measures. Additionally, specific algorithms or tools can be used to detect deadlocks, and then actions can be taken to break them. This approach may be more effective in more complex systems.
+You can also prevent deadlocks by setting timeouts on lock acquisitions (e.g., `lock.acquire(timeout=2.0)`). If a thread fails to acquire a lock within the timeout, it can back off, release any locks it currently holds, and retry later.
 
 ## Global Interpreter Lock
 
-Let's first write a function for computing prime factorization:
+When the input is a very large integer, this function takes a relatively long time to run. For example, the following loop performs prime factorization on 10,000 numbers:
 
 ```python
 def prime_factors(n):
@@ -544,22 +541,10 @@ def prime_factors(n):
 
 # 测试
 num = 48758440894340
-print(prime_factors(num))  输出： [2, 2, 5, 17, 143407179101]
+print(prime_factors(num))  # 输出： [2, 2, 5, 17, 143407179101]
 ```
 
-When the input is a very large integer, this program takes a relatively long time to run. For example, the following program performs prime factorization on 10,000 numbers:
-
-```python
-import time
-
-start_time = time.time()  # 记录开始时间
-for i in range(1000000000, 1000010000):
-    prime_factors(i)
-end_time = time.time()  # 记录结束时间
-print(f"程序运行时间: {end_time - start_time:.6f} 秒")
-```
-
-On the author's computer, it took a total of 20.3 seconds. This is very slow, but the author's computer has 72 CPU cores, so if the task is evenly distributed among 72 cores and run simultaneously, it should be much faster, right? Let's rewrite the above program as a multithreaded program:
+On my machine, this single-threaded execution took 20.3 seconds. Since my system has multiple CPU cores, distributing this computational work across multiple threads should speed things up dramatically, right? Let's write a multithreaded version:
 
 ```python
 import time
@@ -614,10 +599,10 @@ if __name__ == "__main__":
     main()
 ```
 
-Running it again, it took 19.9 seconds. Ignoring the margin of error, this multithreaded program's runtime seems no different from the single-threaded one.
+Running the multithreaded version took 19.9 seconds. Despite spawning 72 threads, there is virtually no performance improvement.
 
-The reason for the lack of performance improvement is the existence of Python's Global Interpreter Lock (GIL). Python is an interpreted language: the interpreter translates the code we write into "bytecode" while also executing the translated bytecode. In multithreading, when a thread wants to execute Python bytecode, it must first acquire the GIL. This is for data safety considerations, but the result is that even if the program is multithreaded, only one thread can run at any given moment.
+This limitation is due to Python's **Global Interpreter Lock (GIL)**. In CPython (the standard Python implementation), the interpreter is not thread-safe. To protect the integrity of internal objects, the GIL ensures that **only one thread can execute Python bytecode at a time**.
 
-Due to the existence of Python's Global Interpreter Lock (GIL), multithreaded programs do not necessarily run faster, especially for CPU-intensive tasks. However, it is still helpful for speeding up I/O-intensive tasks. But then again, with asynchronous I/O, multithreading is not really needed anymore.
+Because of the GIL, multithreading cannot speed up CPU-bound calculations in Python. It remains useful for concurrent I/O operations (where threads release the GIL while waiting for network packets or disk data). However, for I/O concurrency, `asyncio` is generally preferred over raw threads today.
 
-To take advantage of multiple CPUs, you need to change the above multithreaded program to a [multiprocess](multiprocess) program.
+To utilize multiple CPU cores for parallel calculations in Python, you must bypass the GIL by using [multiprocessing](multiprocess).

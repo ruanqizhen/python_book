@@ -2,20 +2,19 @@
 
 ## Introduction
 
-Matplotlib is a plotting library for creating various data visualization charts. It is powerful and highly flexible, capable of generating static, interactive, and animated graphics ranging from simple to complex.
+Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python. It is highly flexible and capable of generating everything from simple plots to complex, customized graphics.
 
-Matplotlib supports many chart types, such as: line plots, bar plots, heatmaps, and more. It allows customization of chart titles, axis labels, legends, grids, colors, line styles, marker styles, and more. You can also flexibly adjust figure size, layout, and style.
+It supports a wide range of chart types—including line plots, scatter plots, bar charts, histograms, and heatmaps. It allows for full customization of chart elements like titles, axis labels, legends, grids, colors, line styles, and markers, as well as layout properties like figure size and spacing.
 
-In addition, Seaborn is also a commonly used data visualization library. It is based on Matplotlib and Pandas, providing simpler, more elegant, and aesthetically pleasing plotting capabilities, enabling you to quickly generate professional-level statistical charts.
+Seaborn is another popular data visualization library built on top of Matplotlib and integrated with Pandas. It provides a high-level interface for drawing attractive and informative statistical graphics, enabling you to quickly generate professional-grade charts with less code.
 
-You can install these libraries with the following command:
+You can install both libraries using `pip`:
 
 ```sh
-pip install matplotlib, seaborn
-
+pip install matplotlib seaborn
 ```
 
-Import them in your program:
+Import them in your script:
 
 ```python
 import seaborn as sns
@@ -25,16 +24,16 @@ import matplotlib.pyplot as plt
 
 ## Dataset
 
-Before visualizing data, we need to prepare some data. In the field of artificial intelligence, several classic small datasets are widely used in teaching examples, including the Iris dataset, the Boston Housing dataset, and the Titanic passenger dataset. We will also use these datasets to demonstrate how to use the Matplotlib library.
+Before creating plots, we need some data to work with. In the fields of data science and machine learning, several classic toy datasets are widely used for demonstration, including the Iris flower dataset, the Boston Housing dataset, and the Titanic passenger dataset. We will use the Iris dataset to demonstrate Matplotlib and Seaborn.
 
-First, we need to download these datasets and their descriptions online. These data are typically stored in CSV format, with each row representing one data item, such as an iris flower, a house, or a passenger. Each dataset contains different columns representing various features, such as petal length, house area, passenger age, etc.
+These datasets are typically stored in CSV format, where each row represents an individual sample (e.g., an iris flower or a passenger) and each column represents a feature (e.g., petal length, age, or survival status).
 
-Here are some commonly used data download URLs. If they are inaccessible, search for available web pages:
+Here are some common sources for these datasets:
 
 * [UCI Machine Learning Repository](https://archive.ics.uci.edu/)
 * [Kaggle Datasets](https://www.kaggle.com/datasets)
 
-Once we have the download URLs, we can use the [Pandas](https://www.google.com/search?q=pandas) library to load the data into the program. Below is example code for loading datasets:
+We can use Pandas to read these CSV files directly from their URLs. Below is the code to load them:
 
 ```python
 import pandas as pd
@@ -56,7 +55,7 @@ print(titanic.head())
 
 ```
 
-Some Python machine learning libraries already bundle these small datasets. If you install these libraries, using the datasets becomes even simpler. For example, loading the Iris dataset using Scikit-learn:
+Many Python libraries, such as Scikit-learn, bundle these toy datasets. If you have Scikit-learn installed, you can load the dataset directly without downloading files manually:
 
 ```sh
 pip install scikit-learn
@@ -80,15 +79,15 @@ print(df.head())
 
 ```
 
-**All example programs below use the iris df obtained here.**
+**All subsequent examples in this chapter assume you are using the Iris DataFrame (`df`) created above.**
 
 ## Common Charts
 
 ### Scatter plot
 
-A scatter plot is used to display the relationship between two variables. We choose petal length and petal width, using a scatter plot to show the distribution of different species.
+A scatter plot displays the relationship between two numerical variables. Here, we plot petal length against petal width to see how the different iris species are distributed.
 
-Using Matplotlib native plotting:
+Plotting with pure Matplotlib:
 
 ```python
 import matplotlib.pyplot as plt
@@ -113,7 +112,7 @@ plt.show()
 
 ```
 
-Using Seaborn (code is usually more concise):
+Plotting with Seaborn (which is typically more concise and aesthetically polished by default):
 
 ```python
 import matplotlib.pyplot as plt
@@ -129,7 +128,7 @@ plt.show()
 
 ### Line plot
 
-Line plots are typically used to show trends in data over time. Although the Iris dataset does not have a time dimension, we can sort the data to observe variation trends in a certain attribute. The code below shows the petal length variation curves for different species.
+Line plots are typically used to show continuous trends (often over time). Although the Iris dataset does not have a time dimension, we can sort the samples by petal length to visualize the distribution trend across the different species:
 
 ```python
 import matplotlib.pyplot as plt
@@ -151,7 +150,7 @@ plt.show()
 
 ### Bar plot
 
-Bar plots are used to compare values across different categories. For example, we can calculate the average petal length for each iris species and compare them with a bar plot.
+Bar charts compare numerical values across categorical groups. For example, we can compute the average petal length for each iris species and display the results in a bar plot:
 
 ```python
 # Calculate average petal length per species
@@ -169,7 +168,7 @@ plt.show()
 
 ### Pie chart
 
-Pie charts are used to show the proportion of each part relative to the whole. While Seaborn does not directly support pie charts, Matplotlib provides the `pie` function. We can view the proportion of sample counts for each species in the dataset (in the Iris dataset, the three species are evenly distributed, each with 50 samples).
+Pie charts show the relative proportions of categories within a whole. While Seaborn does not have a built-in pie chart function, Matplotlib provides `plt.pie()`. The code below shows the distribution of species in our dataset (which is perfectly balanced with 50 samples per species):
 
 ```python
 # Count the number of each species
@@ -184,7 +183,7 @@ plt.show()
 
 ### Histogram
 
-A histogram is used to display the distribution of a single variable (e.g., which range the data is concentrated in). Let's look at the distribution of sepal length.
+A histogram displays the frequency distribution of a single continuous variable, showing where the data points are concentrated. Let's look at the distribution of sepal lengths:
 
 ```python
 plt.figure(figsize=(8, 6))
@@ -198,7 +197,7 @@ plt.show()
 
 ### Box plot
 
-Box plots are very important in statistics. They intuitively show data dispersion, median, quartiles, and outliers.
+Box plots are essential statistical charts that visually summarize the distribution of data, highlighting the median, quartiles, and outliers:
 
 ```python
 plt.figure(figsize=(8, 6))
@@ -209,11 +208,11 @@ plt.show()
 
 ```
 
-In the figure above, the line inside the box represents the median, the top and bottom boundaries of the box represent the quartiles, and the individual points outside the box represent outliers.
+In a box plot, the horizontal line inside the box represents the median, the top and bottom edges of the box denote the 75th and 25th percentiles (quartiles), and individual points plotted outside the whiskers represent outliers.
 
 ### Polar plot
 
-Polar plots (or radar charts) are commonly used for comparing multi-dimensional data. For example, we can compare the average performance of the three iris species across four feature dimensions.
+Polar plots (often used to create radar or spider charts) are ideal for comparing multi-dimensional profiles. For example, we can compare the average measurements of the three iris species across all four features:
 
 ```python
 import numpy as np
@@ -244,7 +243,7 @@ plt.show()
 
 ### Heatmap
 
-Heatmaps use color intensity to represent numerical values, commonly used to display correlation matrices between features.
+Heatmaps represent tabular numbers using a color gradient, making them excellent for visualizing correlation matrices between features:
 
 ```python
 # Calculate correlation coefficients between features
@@ -259,11 +258,11 @@ plt.show()
 
 ```
 
-From the heatmap, we can intuitively see that petal length and petal width have a very strong positive correlation (red, close to 1.0), while sepal width and petal length show a negative correlation.
+From this heatmap, you can quickly see that petal length and petal width are highly positively correlated (red squares near 1.0), whereas sepal width and petal length are weakly negatively correlated.
 
 ## Layout
 
-In practical applications, we often need to place multiple charts on the same canvas for comparison. Matplotlib's `subplots` function makes this easy.
+In data analysis reports, it is often useful to place multiple charts on a single canvas for side-by-side comparison. Matplotlib's `plt.subplots()` function provides a clean way to manage layouts.
 
 The following code creates a 2x2 grid and plots different charts in each cell:
 
@@ -293,4 +292,4 @@ plt.show()
 
 ```
 
-Using `axes[row, col]` we can precisely control the content of each subplot, which is very useful for generating comprehensive data analysis reports.
+By indexing the `axes` array (e.g., `axes[row, col]`), you can direct specific plots to custom locations on the grid, making it highly effective for building comprehensive visualization dashboards.

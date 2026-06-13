@@ -2,9 +2,9 @@
 
 ## Basic Concepts
 
-In a linked list, each node has only one subsequent node. If each node can point to multiple subsequent nodes, a tree data structure is formed. A linked list can be considered a special kind of tree. Trees are arguably the most frequently asked data structure in interviews — they are more complex than arrays and linked lists, yet not overly so, making them ideal for various interview questions.
+In a linked list, each node has at most one successor. If each node can point to multiple successors, we get a **tree** data structure. A linked list can therefore be viewed as a specialized, linear tree. Trees are among the most frequently tested data structures in interviews; they are more complex than arrays or linked lists, yet highly structured, making them ideal for testing algorithmic thinking.
 
-A tree's node is similar to a linked list's node. The node at the top of the tree is called the root node, and there is only one root node in a tree. The line connecting two nodes is called an edge. The root node is at level 0, its children are at level 1, and so on. The number of edges on the longest path from the root node to the farthest leaf node is called the height of the tree.
+A tree's nodes are structured hierarchically. The node at the very top of the tree is called the **root**, and a tree contains exactly one root node. The connections between nodes are referred to as **edges**. Nodes without any children are called **leaves**. The root node resides at level 0, its children at level 1, and so on. The **height** of a tree is defined as the number of edges on the longest path from the root to any leaf node.
 
 ## Binary Tree
 
@@ -77,17 +77,17 @@ print("Inorder Traversal: ", bt.inorder_traversal(bt.root, ""))
 print("Postorder Traversal: ", bt.postorder_traversal(bt.root, ""))
 ```
 
-In the code above, the `TreeNode` class defines the nodes of the tree. Each node has a value `value` and two pointers to its child nodes: `left` and `right`.
+In the code above, the `TreeNode` class defines the nodes of the tree. Each node stores a value `value` and references to its left and right child nodes.
 
-The `BinaryTree` class is used to create and manipulate a binary tree. The class maintains a property `root` representing the root node of the tree. The `insert_left` and `insert_right` methods are used to insert new data to the left or right of a specified node. The `preorder_traversal`, `inorder_traversal`, and `postorder_traversal` methods are used for preorder, inorder, and postorder traversal of the tree. Each method recursively visits every node and collects node values to form a traversal path. These three traversal methods are named according to the order in which nodes are visited:
+The `BinaryTree` class handles tree construction and traversals. It maintains a reference to the `root` node. The `insert_left()` and `insert_right()` methods append nodes to the specified parent. The `preorder_traversal()`, `inorder_traversal()`, and `postorder_traversal()` methods recursively visit each node to yield a traversal path. These three depth-first traversal strategies are named after the relative order in which the root node is visited:
 
-* **Preorder traversal (preorder_traversal)**: Visit the root node first, then the left subtree, and finally the right subtree.
-* **Inorder traversal (inorder_traversal)**: Visit the left subtree first, then the root node, and finally the right subtree.
-* **Postorder traversal (postorder_traversal)**: Visit the left subtree first, then the right subtree, and finally the root node.
+* **Preorder traversal**: Visit the root node first, then the left subtree, and finally the right subtree (Root $\rightarrow$ Left $\rightarrow$ Right).
+* **Inorder traversal**: Visit the left subtree first, then the root node, and finally the right subtree (Left $\rightarrow$ Root $\rightarrow$ Right).
+* **Postorder traversal**: Visit the left subtree first, then the right subtree, and finally the root node (Left $\rightarrow$ Right $\rightarrow$ Root).
 
 ## Breadth-First Search
 
-Breadth-First Search (BFS) starts from the root of the tree, explores neighboring nodes, and then moves to the next level of nodes. To implement BFS, a queue is typically used: put each node of the current level into the queue, then traverse each element in the queue to process the nodes of the next level.
+Breadth-First Search (BFS) begins at the root node and explores all nodes at the current depth level before moving to the next level. To implement BFS, we use a queue: we enqueue the root, then repeatedly dequeue a node, process it, and enqueue all of its children.
 
 ```python
 from collections import deque
@@ -111,15 +111,15 @@ root.children[1].add_child(Node('F'))
 dfs_recursive(root)
 ```
 
-BFS is suitable for processing hierarchical information, such as finding all contacts within a certain distance from a person in a social network.
+BFS is ideal for hierarchical or distance-based queries, such as finding all connections within a specific degree of separation in a social network.
 
 ## Depth-First Search
 
-Depth-First Search (DFS) differs from BFS in that it explores as far as possible along each branch of the tree. When all edges of node `v` have been explored, the search backtracks to the starting node of the edge that led to the discovery of node `v`. This process continues until all nodes reachable from the source node have been discovered.
+Depth-First Search (DFS) differs from BFS by exploring as deep as possible along each branch before backtracking. When the search reaches a node with no unvisited descendants, it backtracks to the most recent ancestor that still has unexplored branches. This process continues until all reachable nodes have been visited.
 
-If BFS is like ripples on water spreading layer by layer, then DFS is like someone walking through a maze — going down one path until hitting a dead end, then turning back to try another path.
+If BFS is like ripples on water spreading outward layer by layer, DFS is like exploring a maze—plunging down a single path until hitting a dead end, then backtracking to try the next branch.
 
-The preorder, inorder, and postorder traversals introduced earlier are essentially all depth-first searches. They are typically implemented using recursion. Besides recursion, we can also use a stack to simulate the recursive process and implement an iterative version of DFS. Compared to BFS, which uses a **queue** (first-in-first-out), DFS uses a **stack** (last-in-first-out) to manage the nodes to be visited.
+The preorder, inorder, and postorder traversals introduced earlier are all forms of depth-first search. While they are most naturally implemented using recursion, we can also write them iteratively by using an explicit stack to simulate the call stack. While BFS manages nodes with a first-in-first-out (FIFO) **queue**, DFS manages nodes using a last-in-first-out (LIFO) **stack**.
 
 ```python
 def dfs_stack(root):
@@ -151,17 +151,17 @@ dfs_stack(bt.root)
 
 ```
 
-DFS is well-suited for path searching, or for problems where a decision can only be made after reaching a leaf node. For example, finding the maximum depth of a tree, or determining whether there exists a path whose sum equals a specific value.
+DFS is well-suited for pathfinding, or for problems where a decision depends on reaching a leaf node (e.g., finding the maximum depth of a tree or determining if a path sum equals a target value).
 
 ## Binary Search Tree
 
-A Binary Search Tree (BST) is a special type of binary tree with the following properties:
+A Binary Search Tree (BST) is a binary tree that satisfies the following structural properties:
 
-1. If the left subtree of any node is not empty, then all node values in the left subtree are less than the root node's value.
-2. If the right subtree of any node is not empty, then all node values in the right subtree are greater than the root node's value.
-3. The left and right subtrees of any node are also binary search trees themselves.
+1. The left subtree of a node contains only nodes with values less than the node's value.
+2. The right subtree of a node contains only nodes with values greater than the node's value.
+3. The left and right subtrees must also be binary search trees.
 
-In simple terms, the characteristic of a BST is: **left child < root < right child**. This property makes binary search trees very efficient for searching data. Similar to the binary search algorithm, each comparison can eliminate half of the data.
+In short, a BST satisfies the property: **left child < root < right child**. This ordering makes binary search trees highly efficient for search operations; similar to binary search on an array, each comparison eliminates half of the remaining search space.
 
 Below is a simple BST implementation, including insert and search functionality:
 
@@ -220,16 +220,16 @@ print(bst.search(9))  # Output: False
 
 ```
 
-In an ideal case (where the tree is balanced), the time complexity for both insertion and search in a binary search tree is . However, if the inserted data is sorted (e.g., `[1, 2, 3, 4, 5]`), the tree degenerates into a linked list, and the time complexity becomes . To solve this problem, advanced applications typically use **balanced binary search trees** (such as AVL trees or red-black trees), which can automatically adjust their structure to maintain tree balance.
+In a balanced BST, both insertion and search run in $O(\log n)$ time. However, if sorted data (e.g., `[1, 2, 3, 4, 5]`) is inserted sequentially, the tree degenerates into a linear structure similar to a linked list, causing operations to degrade to $O(n)$ time. To prevent this, real-world systems use self-balancing binary search trees (such as AVL trees or red-black trees) that automatically restructure themselves during insertions and deletions.
 
 ## Heap
 
-A Heap is another very important tree-like data structure. A heap is usually a complete binary tree that satisfies the following properties:
+A **heap** is another fundamental tree-based data structure. A heap is typically represented as a complete binary tree that satisfies one of the following properties:
 
 * **Max Heap**: The value of a parent node is always greater than or equal to the values of its child nodes. The root node is the largest element.
 * **Min Heap**: The value of a parent node is always less than or equal to the values of its child nodes. The root node is the smallest element.
 
-Although a heap is logically a tree, in Python we typically use an **array (list)** to implement it. For a node at index `i` in the array:
+Although a heap is logically a tree, it is typically implemented using a flat array (or Python list) for efficiency. For a node at index `i` in this array:
 
 * The index of its left child is `2*i + 1`
 * The index of its right child is `2*i + 2`
@@ -264,4 +264,4 @@ print(f"Heap after conversion: {data}")  # Output: [1, 3, 9, 7, 5]
 
 ```
 
-The most common application of heaps is **Priority Queues**. In a task scheduling system, we may want to process high-priority tasks first, rather than simply following a first-in-first-out order; in this case, a heap is the optimal choice. Additionally, heaps are often used for problems such as "finding the K largest elements."
+The primary application of heaps is implementing **Priority Queues**. For instance, a task scheduling system might need to execute high-priority tasks first rather than in FIFO order, making a heap the perfect choice. Heaps are also widely used for top-K queries, such as "finding the $K$ largest elements".

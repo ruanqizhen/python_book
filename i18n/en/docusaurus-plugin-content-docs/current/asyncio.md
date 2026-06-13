@@ -6,28 +6,32 @@
 
 These two concepts are often discussed together; they are similar, but not the same.
 
-- **Parallelism:** Parallelism refers to multiple tasks executing simultaneously at the same instant. In multi-core or multi-processor systems, multiple tasks can truly execute at the same time.
-- **Concurrency:** Concurrency emphasizes task management, where multiple tasks execute in an interleaved manner. From a macro perspective, these tasks appear to be happening simultaneously, but at the micro level, they may be taking turns using CPU resources. Concurrency focuses on the temporal relationship of task initiation, execution, and completion, rather than real-time execution.
+- **Parallelism**: Multiple tasks execute at the exact same physical instant. True parallelism requires a multi-core or multi-processor hardware architecture.
+- **Concurrency**: Multiple tasks are managed in an interleaved manner. From a high-level perspective, the tasks appear to execute simultaneously; at the micro level, however, they take turns sharing CPU resources. Concurrency is about structuring a program to handle multiple tasks at once, regardless of whether they execute at the same physical millisecond.
 
 ### Coroutines
 
-When a function (caller) calls another function (subroutine), the program's execution flow transfers to the beginning of the subroutine and continues executing until it reaches the subroutine's end point. Upon completion, control returns to the caller, and execution continues from the statement immediately following the subroutine call.
+In traditional programming, when a function (the caller) invokes another function (a subroutine), execution transfers to the beginning of the subroutine and runs continuously to completion. Once finished, control returns to the caller, resuming from the line immediately following the call.
 
-Coroutines are an alternative calling model to subroutine calls, providing a more flexible code execution model. In the coroutine model, a function can pause during execution and resume at a later point. This ability to "yield" control allows coroutines to interact with other code or coroutines while maintaining their own state.
+Coroutines offer an alternative execution model. Instead of running to completion in one go, a coroutine can pause its execution and yield control back to the caller or event loop, saving its current local state. It can then be resumed later from the exact point it paused.
 
-Coroutines can suspend their execution at any point during execution and return control to the caller. The caller can resume the coroutine at an appropriate time, and the coroutine will continue from where it was last suspended. Coroutines are well-suited for multitasking and asynchronous operations because they can yield control while waiting for other operations to complete, allowing the program to handle other tasks. Early coroutines were implemented using [Generators](generator#接收数据), but now this mechanism has been replaced by the async/await mechanism.
+This ability to suspend and resume makes coroutines ideal for multitasking and asynchronous operations. While waiting for an I/O operation (like a network request) to complete, a coroutine yields control, allowing other tasks to run in the meantime. Historically, Python implemented coroutines using [generators](generator#sending-data-to-generators); today, this is natively supported via the `async`/`await` syntax.
 
 ### Implementing Concurrency
 
-Concurrency can be implemented in various ways, including: [multithreading](multithread), [multiprocessing](multiprocess), and coroutines. Compared to multithreading or multiprocessing, coroutines can achieve high concurrency more lightly and efficiently, especially for I/O-intensive tasks. Before Python had convenient support for coroutines, many concurrent tasks were implemented using multithreading. However, switching between different threads incurs additional overhead, so the number of threads should not be too high. Coroutines, on the other hand, have almost no additional overhead when switching between different tasks, making them more efficient and capable of supporting a larger number of concurrent operations. Using coroutines eliminates the need to consider synchronization, data safety, and other issues that must be addressed in multithreaded programming, resulting in higher development efficiency.
+Concurrency in Python can be implemented using [multithreading](multithread), [multiprocessing](multiprocess), or coroutines. 
+
+Compared to threads and processes, coroutines are lightweight and highly efficient, particularly for I/O-bound tasks. While thread context-switching incurs operating system overhead—limiting the practical number of active threads—coroutine switching is managed entirely in user space with minimal cost, allowing a single thread to support thousands of concurrent connections. Furthermore, because asynchronous code runs sequentially in a single thread, it avoids the complexities of resource synchronization and data safety that plague multithreaded development.
 
 ## Asynchronous I/O
 
 ### Basic Usage
 
-Asynchronous I/O is currently the main way to implement coroutines in Python. To implement asynchronous I/O, you need to use async def when defining a function. Such functions are called asynchronous functions, or coroutine functions; correspondingly, functions without async are called synchronous functions. Coroutine functions do not return regular values but instead return a coroutine object. To run a coroutine object, you need to use the await keyword or submit it to the event loop. The event loop is a core concept in asynchronous programming. The event loop continuously checks and executes tasks in the queue.
+Asynchronous I/O is Python's primary concurrency mechanism. To define an asynchronous function (also called a coroutine function), prefix the definition with `async def`. Standard functions without this prefix are called synchronous functions.
 
-Methods and operations related to asynchronous I/O in Python are in the asyncio standard library, which provides tools for creating and managing coroutines. In addition to supporting the async/await syntax, asyncio also provides the event loop, tasks, asynchronous streams, asynchronous locks, and other features necessary for building asynchronous applications.
+Invoking a coroutine function does not immediately run its code; instead, it returns a coroutine object. To execute the coroutine, you must use the `await` keyword or run it within an event loop. The event loop is the core manager of asynchronous applications, continuously monitoring and dispatching tasks in the execution queue.
+
+Python's `asyncio` standard library provides the infrastructure for asynchronous programming, including the event loop, tasks, network streams, synchronization locks, and concurrency utilities.
 
 Below, we start with a very simple example:
 
@@ -42,11 +46,11 @@ async def main():
 asyncio.run(main())
 ```
 
-In the code above, we defined an asynchronous function main() using async def. When calling an asynchronous function, it returns a coroutine object rather than immediately executing the code inside. Therefore, we use asyncio.run() to execute it. asyncio.run() starts the event loop and then runs all asynchronous functions.
+In this code, `async def` defines the asynchronous function `main()`. Since calling `main()` returns a coroutine object rather than running it, we pass it to `asyncio.run()`, which boots up the event loop and manages the coroutine's execution lifecycle.
 
-The program also calls an asyncio.sleep(1) function, which waits for 1 second. Since it is also an asynchronous function, calling it requires await. The program above first prints "Hello", then waits for 1 second, and finally prints "World".
+The code also invokes `asyncio.sleep(1)`. Because `sleep()` is itself a coroutine function, we must prefix it with `await` to yield execution during the delay. The program prints 'Hello', pauses for one second while freeing the event loop, and then prints 'World'.
 
-The program above has only one asynchronous function, so running it is no different from running a regular synchronous function. However, we can use asyncio.create_task() or asyncio.gather() to run multiple asynchronous functions concurrently, and that's where the difference becomes apparent:
+Running a single coroutine is no different from running a synchronous script. The power of `asyncio` is revealed when we run multiple coroutines concurrently using `asyncio.create_task()` or `asyncio.gather()`:
 
 ```python
 import asyncio
@@ -77,7 +81,7 @@ asyncio.run(main())
 # Function A ends
 ```
 
-In the program above, the tasks task1 and task2 created for the two asynchronous functions foo() and bar() respectively run concurrently. The above program can also be written as:
+Here, `foo()` and `bar()` run concurrently. We can write this more concisely using `asyncio.gather()`:
 
 ```python
 import asyncio
@@ -101,24 +105,26 @@ async def main():
 asyncio.run(main())
 ```
 
-The asyncio.gather() function is used to run multiple asynchronous tasks concurrently. It waits for all given asynchronous tasks to complete before returning.
+`asyncio.gather()` registers multiple coroutines with the event loop to run concurrently, waiting for all of them to complete before returning.
 
 ### How It Works
 
-When executing synchronous functions, the system maintains a call stack. The call stack, also known as the execution stack or runtime stack, is used to track function calls during program execution. When a function is called, the computer places relevant information (such as the function's return address, parameters, local variables, etc.) onto the call stack. This information is typically organized as a stack frame. During the execution of a function, more function calls can be made. Each call adds a new stack frame to the top of the call stack. When a function completes its work and is ready to return, its stack frame is popped from the call stack. Control flow returns to where the current function call was made, continuing with the subsequent code. The top of the call stack always holds information about the currently executing function. When this function calls another function, the new function's information is pushed onto the top of the stack.
+Synchronous execution relies on a call stack (or runtime stack) to trace execution frames. When a function is invoked, its parameters, local variables, and return address are pushed onto the stack as a stack frame. If that function calls another, a new frame is pushed onto the top of the stack. When a function returns, its frame is popped, and execution resumes from the calling frame. The top of the stack always represents the active execution frame.
 
-When a program throws an exception, we typically inspect the call stack to trace the location and cause of the error. If there are too many levels of function calls, the call stack may become too deep, potentially causing a stack overflow error. Poorly designed recursive functions are particularly prone to this type of stack overflow error.
+When an exception occurs, Python prints this call stack as a traceback. If functions call each other too many times without returning (such as an infinite recursion), the stack overflows, raising a `RecursionError`.
 
-In programs using asyncio, an event loop is started to manage asynchronous operations within the program. By default, asyncio's event loop runs in a single thread.
+`asyncio` manages concurrency differently. By default, it runs an event loop inside a single thread.
 
-The event loop maintains a list of pending tasks. These tasks are typically coroutine objects that are scheduled and executed within the event loop. The event loop is responsible for listening to and responding to I/O events (such as network requests or file reads/writes) and other types of events, triggering corresponding callback functions or tasks based on the events. When the event loop runs, it continuously checks whether there are tasks that need to be executed or whether events have triggered callback functions. If a task (for example, a coroutine) needs to wait for an asynchronous operation to complete (such as waiting for data to be read from the network), the event loop suspends the task and wakes it up again when the operation completes. Although the event loop itself is typically single-threaded, it achieves concurrency through coroutines and asynchronous I/O operations. This means the program can handle multiple operations simultaneously, even though only one event loop is running in the background.
+The event loop manages a queue of pending tasks (coroutine objects). It acts as a scheduler: when a running coroutine encounters an `await` statement on an I/O operation (like waiting for a database query), the event loop suspends that task, monitors the underlying file descriptor for activity, and runs other ready tasks in the queue. Once the I/O operation completes, the loop resumes the suspended coroutine. By cooperatively yielding control, a single thread achieves massive concurrency without the overhead of operating system threads.
 
 
 ## Other Asynchronous Operations
 
 ### Asynchronous File I/O 
 
-The primary use of asyncio is for handling network-related operations, such as web page access, database queries, etc. Compared to local data reads and writes, network communication is generally very slow. The asyncio library does not include native support for asynchronous file I/O. This is because in many desktop applications or scripts, file operations are fast enough. However, in high-concurrency web servers, even a brief file read/write blockage can stall the entire event loop, preventing it from responding to other requests. Therefore, when dealing with a large number of concurrent requests involving file reads and writes, using third-party libraries (such as aiofiles) is very necessary. For example:
+Asynchronous I/O is primarily designed for high-latency network operations. Because local file systems are relatively fast, Python's standard `asyncio` does not provide native asynchronous file I/O tools. 
+
+However, in a high-concurrency web application, even minor blocking file operations can freeze the single-threaded event loop, delaying all other traffic. For these scenarios, you should use third-party libraries like `aiofiles` to handle file I/O asynchronously:
 
 ```python
 import asyncio
@@ -141,12 +147,12 @@ async def main():
 asyncio.run(main())
 ```
 
-As can be seen from the code above, the logic of asynchronous file reading and writing is almost identical to synchronous file reading and writing, except that all asynchronous function definitions need to add async, and all asynchronous function calls need to add await.
+As shown above, the syntax is identical to standard file operations, save for the `async` definitions and `await` markers.
 
 
-### Asynchronous Context Manager
+### Asynchronous Context Managers
 
-Asynchronous context managers are similar to [regular context managers](magic_methods#上下文管理), but they use async def to define their entry and exit methods: `__aenter__` and `__aexit__`. This allows us to use them in async with statements and perform asynchronous operations within their context. For example, suppose we have a simulated asynchronous database connection:
+Asynchronous context managers are similar to [regular context managers](magic_methods#context-management), but they define their entry and exit logic using `async def` methods: `__aenter__` and `__aexit__`. This allows them to be used with the `async with` statement, enabling asynchronous operations during setup and cleanup (such as connecting to or disconnecting from a database):
 
 ```python
 import asyncio
@@ -179,9 +185,9 @@ asyncio.run(main())
 # Disconnected from database
 ```
 
-### Asynchronous Iterator
+### Asynchronous Iterators
 
-Asynchronous [iterators](iterator) can iterate over elements in an asynchronous environment. They need to define the `__aiter__` and `__anext__` methods and can be used in async for loops. For example, a simulated asynchronous data stream iterator:
+Asynchronous [iterators](iterator) yield elements in an asynchronous context. They must implement the `__aiter__` and `__anext__` methods, and are consumed using the `async for` loop. Here is an example of an asynchronous data stream iterator:
 
 ```python
 class AsyncDataStream:
@@ -210,9 +216,9 @@ async def main():
 asyncio.run(main())
 ```
 
-### Asynchronous Generator
+### Asynchronous Generators
 
-[Generators](generator) can also be asynchronous. Below is an example of an asynchronous generator that yields a number every second:
+[Generators](generator) can also be asynchronous. Below is an asynchronous generator that yields values over time using `await` inside its body:
 
 ```python
 import asyncio
@@ -232,16 +238,16 @@ async def main():
 asyncio.run(main())
 ```
 
-Because the generator is asynchronous, when using a for loop to iterate over it, you need to use the asynchronous for loop `async for`.
+To consume an asynchronous generator, you must use the `async for` loop.
 
 
 ## Blocking Calls in Asynchronous Code
 
-When programming with asynchronous I/O, all functions must be asynchronous to achieve concurrency. However, if some functions are not asynchronous and are particularly time-consuming, the program will be blocked there. While executing this non-async function, the program cannot perform other operations and must wait until the function completes before continuing. In contrast, if the function is asynchronous, when one task is waiting for a read/write result, the program will switch to other asynchronous tasks.
+For cooperative multitasking to work, the event loop must not be blocked. If a task runs a slow, synchronous function, the entire thread halts; no other coroutines can run until that synchronous function returns. In contrast, an asynchronous function yields control during I/O wait periods, allowing other tasks to progress.
 
-Long-running computations, synchronous I/O operations such as synchronous file reads/writes, network requests, database queries, etc., or functions using time.sleep() instead of asyncio.sleep(), can all lead to blocking calls. If possible, these synchronous functions should be replaced with their corresponding asynchronous counterparts. For example, use aiohttp instead of requests for HTTP requests; aiofiles instead of synchronous file reads/writes, etc.
+Common blocking calls include CPU-heavy computations, synchronous file and network I/O (such as the `requests` library), database drivers, or `time.sleep()`. Wherever possible, replace these with asynchronous alternatives, such as `aiohttp` for HTTP requests and `aiofiles` for file operations.
 
-For blocking calls that cannot be made asynchronous, consider running them in a separate thread or process. For example, you can use asyncio.to_thread() to run blocking code in a separate thread:
+If you must use a blocking third-party library or perform heavy CPU calculations, you can delegate the execution to a separate thread using `asyncio.to_thread()` to prevent blocking the event loop:
 
 ```python
 import asyncio
@@ -273,12 +279,16 @@ async def main():
 asyncio.run(main())
 ```
 
-In the demonstration program above, async_task_1 and async_task_2 are two asynchronous functions, but blocking_task is not an asynchronous function. If blocking_task were run directly, the program would be blocked here. Therefore, we use asyncio.to_thread() to run it in a separate thread, so it won't block other operations. Due to the concurrent nature of asynchronous execution, the output order may vary, but typically async_task_1 should finish first because it has the shortest internal delay, followed by blocking_task, and finally async_task_2.
+In this example, `blocking_task` runs standard, synchronous `time.sleep()`. By wrapping it in `asyncio.to_thread()`, we run it in a thread pool, allowing `async_task_1` and `async_task_2` to execute concurrently on the event loop thread.
 
 ## Pros and Cons
 
-In the PHP (Hack) projects the author participated in, almost all functions were asynchronous. This is mainly because the PHP language is mostly used for developing web services, and almost all functions are related to network requests. Python has a wider range of applications, and asynchronous functions are less common in projects with fewer I/O operations.
+In my experience working with large-scale web services, asynchronous code is incredibly powerful. For example, in Hack (PHP) projects, almost all network-bound logic is asynchronous by default. Since Python has a broader range of use cases beyond web development, asynchronous operations are typically reserved for project components that deal heavily with I/O.
 
-The author participated in a Python project many years ago, whose main function was to distribute data from a host machine to several external devices over the network for processing, and then return the results. At that time, Python did not support asynchronous I/O, so multithreading had to be used to parallelize data distribution. (Although yield could be used to implement asynchronous functionality, it was quite cumbersome.) Looking back now, asynchronous I/O operations are still simpler and more efficient.
+Years ago, I worked on a Python project that distributed datasets to multiple network endpoints. Because native `asyncio` did not exist at the time, we had to use multithreading. Implementing asynchronous behaviors using older `yield` techniques was complex and error-prone. Today, `async`/`await` provides a much simpler and cleaner solution.
 
-Compared to multithreading, asynchronous I/O is typically more lightweight because it avoids the overhead of thread context switching, allowing asynchronous I/O to handle a larger number of concurrent tasks simultaneously. Asynchronous I/O is generally easier to scale, especially when facing a large number of concurrent connections. Since the code executes in a single thread, it avoids many of the complexities of multithreaded programming, such as race conditions, deadlocks, etc. The downside is that asynchronous I/O appeared later than multithreading, and many applications have already been built on multithreading, so applying asynchronous I/O might be more complex. Additionally, asynchronous I/O is only suitable for programs with frequent I/O operations. If the program's bottleneck is CPU computation (compute-intensive), due to the existence of Python's Global Interpreter Lock (GIL), multithreading cannot leverage the advantages of multi-core CPUs either, and in this case, multiprocessing must be relied upon to achieve parallel computation.
+Compared to multithreading, asynchronous I/O is highly lightweight, avoiding OS-level thread context-switching overhead and enabling a single process to scale to thousands of concurrent network connections. Writing asynchronous code in a single thread also eliminates race conditions and deadlocks. 
+
+However, `asyncio` is not a magic bullet:
+* **Scope**: It is only beneficial for I/O-bound programs. For CPU-bound tasks, the event loop will still be blocked. Due to Python's Global Interpreter Lock (GIL), neither multithreading nor asyncio can achieve true CPU parallelism; in those cases, you must use [multiprocessing](multiprocess) to distribute work across CPU cores.
+* **Complexity**: Integrating asynchronous code into legacy synchronous codebases can be complex, as asynchronous functions require an async caller context (a phenomenon often called 'async color').

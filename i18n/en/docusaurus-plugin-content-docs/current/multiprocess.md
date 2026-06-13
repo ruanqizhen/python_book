@@ -2,7 +2,7 @@
 
 ## Creating Processes
 
-Similar to creating threads, in Python you can use the multiprocessing module to write multiprocess programs. This module provides a rich API, making it relatively straightforward to create multiprocess applications.
+Similar to threads, Python provides the `multiprocessing` standard library module to create and manage processes, offering a rich API to implement multi-process applications.
 
 Here is an example of creating a new process:
 
@@ -19,16 +19,16 @@ if __name__ == "__main__":
     
 ```
 
-In the example above, we defined a function named worker_function that accepts a parameter number and prints a message about working. This function will run in the child process. The line `p = Process(target=worker_function, args=(1,))` creates a new process object. Through the target parameter, we tell it the function to run is worker_function, and provide the argument (1,) for this function. `p.start()` tells the process to start executing. At this point, a new child process will be created and begin running. The join() method blocks the main process until the child process completes execution. This ensures the main process does not end before the child process finishes.
+In this code, `worker_function` accepts a `number` argument and runs in a separate child process. The line `p = Process(target=worker_function, args=(1,))` instantiates a process object, setting its target function to `worker_function` and passing `(1,)` as arguments. Calling `p.start()` spawns the child process and begins execution, while `p.join()` blocks the parent main process until the child process finishes execution.
 
 
 ## Process Pool
 
-Creating processes and switching between them also has additional overhead, and this overhead is greater than that of threads. Generally, a computer has a limited number of CPU cores. If the number of created processes exceeds the number of CPU cores, it is impossible for each process to have its own dedicated CPU core. Consequently, having more processes will no longer help fully utilize the CPU, and will only add to the burden of process switching. Therefore, we should control the total number of processes to improve parallel computing efficiency. We can use a Process Pool to control the total number of concurrently executing processes, instead of starting a separate process for each task.
+Spawning and context-switching processes incurs higher operating system overhead than working with threads. Because systems have a limited number of physical CPU cores, creating more processes than there are cores does not improve performance; instead, it slows down execution due to CPU context-switching overhead. To maximize parallel efficiency, you should rate-limit active processes. Rather than launching a new process for every task, use a **Process Pool** to maintain a fixed number of worker processes.
 
 ### Creating a Pool
 
-When creating a process pool, you can specify the number of processes to use. If not specified, the process pool defaults to using all available cores on the system.
+When initializing a process pool, you can specify the number of worker processes to maintain. If omitted, the pool defaults to using the number of available CPU cores on your system.
 
 ```python
 from multiprocessing import Pool
@@ -37,7 +37,7 @@ pool = Pool(processes=4)  # 创建一个包含4个进程的进程池
 
 ### Distributing Tasks
 
-The most common way to distribute tasks to a process pool is to use the pool's map and map_async methods. These two methods are similar to Python's built-in [map function](high_order#map), but they support parallel execution of function calls.
+The most common way to distribute work is using the pool's `map` or `map_async` methods. These are asynchronous equivalents of the built-in [map()](high_order#map) function, executing tasks in parallel across the workers:
 
 ```python
 def square(x):
@@ -48,7 +48,7 @@ results = pool.map(square, [1, 2, 3, 4])  # 输出 [1, 4, 9, 16]
 
 The pool.map() method in the program above executes the square() function in parallel across multiple processes.
 
-For individual tasks, you can use the apply and apply_async methods. The apply method is blocking, while apply_async is non-blocking and returns an AsyncResult object.
+For individual tasks, use `apply` (blocking) or `apply_async` (non-blocking, returning an `AsyncResult` object):
 
 ```python
 # 提交任务后，主进程可以继续做其他事情，不会被阻塞
@@ -62,25 +62,25 @@ result = async_result.get()
 
 ### Closing
 
-After completing all tasks, the process pool needs to be closed to prevent submitting more tasks. You can use the close method to close it.
+After submitting all tasks, close the pool to prevent new submissions and clean up resources:
 
 ```python
 pool.close()
 pool.join()  # 等待所有进程完成
 ```
 
-If you need to stop the process pool immediately, you can use the terminate method. This will immediately terminate all processes, which may cause incomplete tasks to be lost.
+Alternatively, calling `terminate()` immediately stops all worker processes, aborting any active tasks.
 
-When using processes from a process pool, each process runs in its own memory space. This means they do not share state or variables with each other, which avoids many concurrency issues found in multithreaded programming. If any task in the process pool raises an exception, that exception will be propagated to the main process, so it is recommended to implement proper exception handling when using a process pool.
+In a process pool, each process runs in its own isolated memory space. They do not share variables or memory state, avoiding the synchronization bugs common in multithreaded code. If a worker process raises an exception, that error is propagated back to the main process when retrieving the results; therefore, you should always handle exceptions when working with a process pool.
 
 
 ## Data Communication
 
-Each process has its own independent memory space, so one process cannot directly read data from another process's variables. To transfer data and communicate between different processes, you need to use some of the tools provided by multiprocessing.
+Because each process has an isolated memory space, processes cannot share variables directly. To pass data between processes, use the communication utilities provided by the `multiprocessing` module.
 
 ### Pipe
 
-A Pipe provides a two-way or one-way communication channel through which two processes can send or receive data.
+A **pipe** (`Pipe`) establishes a communication channel between two processes, which can be unidirectional or bidirectional:
 
 ```python
 from multiprocessing import Process, Pipe
@@ -96,13 +96,13 @@ print(parent_conn.recv())  # 输出: "工作进程发送的数据"
 p.join()
 ```
 
-The Pipe() function returns a tuple containing two connection objects: parent_conn and child_conn. These two connection objects represent the two ends of the pipe. In this example, the main process will use parent_conn to receive messages, while the worker process will use child_conn to send messages.
+`Pipe()` returns a tuple containing two connection objects representing the two endpoints of the pipe. In this code, the parent process uses `parent_conn` to read data, while the child process writes to `child_conn`.
 
 ### Queue
 
-Although a pipe is simple to use, it can only be used for the simplest one-to-one communication. If more processes are involved in communication, or if a large amount of data is being produced and a structure is needed to store the data, then a queue should be used.
+While pipes are easy to use, they are limited to one-to-one communication. For more complex architectures with multiple reader or writer processes, you should use a queue.
 
-A Queue is multiprocess-safe and can be used for communication and data exchange between processes. It allows multiple processes to put data in and take data out.
+A multi-process safe **queue** (`Queue`) coordinates data exchange, allowing multiple processes to push and pop items concurrently:
 
 ```python
 from multiprocessing import Process, Queue
@@ -117,11 +117,11 @@ print(q.get())  # 输出: "工作进程发送的数据"
 p.join()
 ```
 
-Queues are very suitable for scenarios with multiple producers and multiple consumers. For example, some processes are responsible for producing data: reading data such as voltage and signal waveforms from a device under test; other processes are responsible for consuming data: displaying data on a user interface, saving to disk, etc.
+Queues are ideal for producer-consumer architectures. For example, some processes can read telemetry from hardware interfaces and push it to a queue, while consumer processes pull from the queue to plot charts or write logs.
 
 ### Value and Array
 
-When you need to share a single value or array between processes, you can use Value or Array. These objects use shared memory to store data, so they can be accessed by multiple processes.
+To share individual primitives or arrays directly in shared memory, use `Value` or `Array`:
 
 ```python
 from multiprocessing import Process, Value, Array
@@ -142,7 +142,7 @@ print(arr[:])      # 输出: [-1.0, -2.0, -3.0]
 
 ### Manager
 
-A Manager provides a way to share more complex Python objects between processes, such as lists, dictionaries, etc. The Manager starts a new process, and other processes communicate with it through proxies.
+A **manager** (`Manager`) runs a server process that manages Python objects (like lists or dictionaries) and allows other processes to manipulate them via proxy objects:
 
 ```python
 from multiprocessing import Process, Manager
@@ -163,12 +163,12 @@ with Manager() as manager:
     print(d)  # 输出: {'a': 'Initial', 'b': 'Updated'}
 ```
 
-Although using shared objects (such as Value or Array) for inter-process communication may be more straightforward, it can also introduce problems with race conditions and data inconsistency. To ensure data consistency, synchronization mechanisms such as mutex locks may be needed.
+Note that using shared objects like `Value` or `Array` can still lead to race conditions. To guarantee consistency when mutating shared memory, protect the operations using lock primitives.
 
 
 ## Synchronization Mechanisms
 
-We can use tools very similar to the [inter-thread synchronization mechanisms](multithread#同步机制) for inter-process synchronization. Because they are extremely similar, we will only give a brief demonstration here. For detailed explanations, please refer to the introduction in the thread section.
+You can coordinate processes using synchronization primitives similar to those used in [multithreading](multithread#synchronization-mechanisms). Because their usage is identical, we list them here briefly; see the thread synchronization section for detailed explanations.
 
 ### Mutex Lock
 
@@ -237,9 +237,9 @@ event = Event()
 
 ## Demonstration
 
-Compared to multithreaded programming, one of the main advantages of multiprocess programming is that each process runs in its own memory space, which avoids many common concurrency-related problems. However, data exchange and sharing also become more complex.
+While isolated memory spaces prevent the data race bugs common to threads, they make inter-process data exchange more complex.
 
-To take advantage of multiple CPUs, we convert the example used in the multithreading section to multiprocessing.
+To demonstrate the power of parallel execution across multiple CPU cores, we can rewrite the computational prime factorization script from the multithreading section using `multiprocessing`:
 
 ```python
 import time
@@ -289,4 +289,4 @@ if __name__ == "__main__":
     main()
 ```
 
-Running the program above takes 0.8 seconds, a speedup of 25 times. Considering factors such as uneven task distribution, additional overhead, measurement errors, etc., a 25x improvement is already very good.
+Running the multi-process version takes only 0.8 seconds—a 25x speedup. Given task scheduling overhead and execution differences across cores, this is a substantial performance improvement.

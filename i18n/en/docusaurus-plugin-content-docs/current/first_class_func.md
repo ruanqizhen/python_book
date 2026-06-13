@@ -1,12 +1,12 @@
 # First-Class Citizens
 
-In Python, functions are first-class citizens, meaning they hold a very high status. This status is reflected in the fact that functions can be passed as arguments, returned as values, assigned to variables, or stored in data structures. This feature provides great flexibility and dynamism, especially in higher-order functional programming. After we introduce the concept of [object-oriented programming](oop), we will further discuss this ["first-class citizen" nature](objects#函数对象).
+In Python, functions are **first-class citizens**, meaning they hold the same status as any other object (like integers, floats, or strings). This status is reflected in the fact that functions can be assigned to variables, stored in data structures, passed as arguments to other functions, or returned as values from other functions. This feature provides great flexibility and dynamism, especially in higher-order functional programming. After we introduce the concept of [object-oriented programming](oop), we will further discuss this ["first-class citizen" nature of functions](objects#function-objects).
 
 ## Functions as Arguments
 
-We previously introduced a function called [help()](function#函数文档), which can return the documentation for a function. The `help()` function accepts a function as its argument, for example, `help(print)` prints the help documentation for the `print()` function.
+We previously introduced the built-in [help()](function#function-documentation) function, which returns the docstring documentation of a function. The `help()` function accepts a function object as its argument; for example, `help(print)` prints the documentation for the `print()` function.
 
-We can also define our own function that takes other functions as arguments:
+We can also define our own functions that take other functions as arguments:
 
 ```python
 def add(x, y):
@@ -21,28 +21,28 @@ def multiply(x, y):
 def operate(func, x, y):
     return func(x, y)
 
-# Use the operate function and the add function to calculate 3 + 5
+# Use operate with add to calculate 3 + 5
 result1 = operate(add, 3, 5)
 print(result1)  # Output: 8
 
-# Use the operate function and the subtract function to calculate 9 - 4
+# Use operate with subtract to calculate 9 - 4
 result2 = operate(subtract, 9, 4)
 print(result2)  # Output: 5
 
-# Use the operate function and the multiply function to calculate 3 * 7
+# Use operate with multiply to calculate 3 * 7
 result3 = operate(multiply, 3, 7)
 print(result3)  # Output: 21
 ```
 
-The program above defines three simple functions: `add`, `subtract`, and `multiply`, which perform addition, subtraction, and multiplication operations respectively. Additionally, it defines a higher-order function named `operate` that accepts a function as its first argument and two numbers as the remaining arguments. This function calls the passed-in function argument and passes the remaining two numbers as arguments to that function. Finally, we use the `operate` function, passing the previously defined functions and some numbers as arguments.
+In this code, `add`, `subtract`, and `multiply` are simple functions. The `operate` function is a higher-order function because it accepts a function `func` as its first parameter. When we call `operate(add, 3, 5)`, the function executes `add(3, 5)` and returns the result.
 
-Code implemented this way allows users to use different operations or strategies without changing the internal logic of the `operate` function. This avoids repetitive code because all operations use the same `operate` function. It also makes the code clearer and more readable, especially when the operations become more complex.
+This pattern allows you to write modular and reusable code. You can switch operations or execution strategies dynamically at runtime without changing the internal code of the wrapper function.
 
-In object-oriented programming, the polymorphic nature of classes is typically used to achieve this functionality of calling the same function yet exhibiting different behaviors; in procedural programming, one can only rely on conditional statements to implement similar functionality; in functional programming, the approach of passing functions as arguments is used to achieve this.
+In object-oriented programming, this kind of dynamic behavior is typically achieved through classes and polymorphism. In procedural programming, it requires conditional statements (`if` / `else`). In functional programming, it is achieved by passing functions as arguments.
 
 ## Functions as Return Values
 
-Functions can not only serve as arguments to other functions, but also as return values of other functions. Below, let's look at a simple example where one function returns another function:
+Just as functions can be passed into other functions, they can also be returned as results from functions:
 
 ```python
 def get_function(power):
@@ -57,9 +57,9 @@ print(square(4))  # Output: 16
 print(cube(4))    # Output: 64
 ```
 
-In the example above, `get_function` accepts a parameter `power` (exponent) and returns an [inner function](function#嵌套函数) `raise_to_power`. The returned function retains the value of `power` internally, allowing us to create and use functions with different exponents, such as `square` and `cube`.
+In this example, `get_function` accepts a parameter `power` and returns the [nested function](function#nested-functions) `raise_to_power`. The returned function retains access to the `power` variable from its parent scope, allowing us to dynamically generate custom mathematical functions like `square` (raising to the power of 2) or `cube` (raising to the power of 3).
 
-Sometimes, we may want to dynamically create and return different functions based on certain conditions. For example:
+We can also dynamically return different functions based on runtime conditions:
 
 ```python
 def math_operation(operator):
@@ -74,16 +74,16 @@ def math_operation(operator):
     else:
         return subtract
 
-operation = math_operation('+')  # Returns the addition function
+operation = math_operation('+')  # Returns the add function
 print(operation(5, 3))           # Output: 8
 
-operation = math_operation('-')  # Returns the subtraction function
+operation = math_operation('-')  # Returns the subtract function
 print(operation(5, 3))           # Output: 2
 ```
 
 ## Closures
 
-The core idea of a closure is that a function can access and manipulate the local variables of the scope in which it was defined, even when the function is called outside of that defining scope. For example:
+A **closure** is a nested function that retains access to variables from its enclosing lexical scope, even after the outer function has finished executing. For example:
 
 ```python
 def outer_function(x):
@@ -95,18 +95,20 @@ closure_instance = outer_function(10)
 print(closure_instance(5))  # Output: 15
 ```
 
-In the code above, `outer_function` returns a reference to `inner_function`. When we call `closure_instance(5)`, the call occurs outside of `outer_function`. That is, `inner_function` is called outside the scope in which it was defined, yet `inner_function` can still access the local variable `x` from within the scope where it was defined, whose value is 10.
+In this code, `outer_function` returns `inner_function`. When we run `closure_instance(5)`, `outer_function` has already finished running and its local scope should theoretically be gone. However, because `inner_function` references the variable `x` from the outer scope, Python keeps `x` alive in memory. The combination of the function and its captured environment is a closure.
 
-A closure involves at least two functions: an outer function and one or more inner functions. The inner functions reference local variables of the outer function. The inner functions retain references to the local variables of the outer function, so that when the inner function is called, even if the outer function has already finished executing, these variables remain available.
+### Late Binding in Closures
 
-Closures can also lead to unexpected behavior, especially when creating closures within a loop. Because closures capture variables in their defining environment, we must ensure that the captured variables have the expected values. For example:
+Closures can lead to subtle bugs, particularly when defined inside loops. Because Python closures capture variables by reference rather than by value (late binding), the inner functions look up the variable's value when they are called, not when they are defined.
+
+Consider this example:
 
 ```python
 def outer_function():
     functions = []
     for i in range(3):
         def func(x): 
-            return x + i     # Captures i
+            return x + i     # Captures i by reference
         functions.append(func)
     return functions
 
@@ -116,17 +118,17 @@ print(functions[1](10))
 print(functions[2](10)) 
 ```
 
-In the code above, three inner functions are created using a loop. At the time these three inner functions were created, the values of `i` were 0, 1, and 2 respectively. Therefore, when x = 10, we would expect these three inner functions to return 10, 11, and 12 respectively, i.e., the value of `x + i`. However, when this program is executed, the output of all three `print` statements is 12.
+You might expect this to print `10`, `11`, and `12` (corresponding to $10+0$, $10+1$, and $10+2$). Instead, it prints `12`, `12`, and `12`. 
 
-The reason all outputs are 12 is that Python's closures use late binding. This means that the inner function `func` does not copy the current value of `i` (0, 1, 2) at the time of definition, but instead remembers the reference to the variable `i`. When the loop ends, the variable `i` ends up with the value 2. Later, when we call `functions[0](10)`, the program looks up the value of `i`, and by then it reads `i` as 2. Therefore, all functions use the same final value of `i`.
+This happens because all three functions capture the same variable `i`. When the loop finishes, the value of `i` is `2`. When the functions are called later, they all resolve `i` to its final value of `2`.
 
-To fix this problem, we need to fix the value of `i` at the time the function is defined. The most common approach is to use default parameters, because the values of default parameters are evaluated at function definition time:
+To fix this, you must force the closure to capture the value of `i` immediately at definition time. The standard way to do this is by using a default parameter:
 
 ```python
 def outer_function():
     functions = []
     for i in range(3):
-        def func(x, i=i):  # Note: we use a default parameter to capture the current value of i
+        def func(x, i=i):  # Force immediate binding using a default value
             return x + i
         functions.append(func)
     return functions
@@ -137,40 +139,40 @@ print(functions[1](10))  # Output: 11
 print(functions[2](10))  # Output: 12
 ```
 
-Now the program runs as expected.
+Since default parameter values are evaluated only once when the function is defined, each nested function binds the current value of `i` as its default, yielding the correct outputs.
 
-Closures can be used for data and function [encapsulation](class#封装), because closures can hide data by concealing the local variables of the outer function. External programs can only access the data through the defined functions.
-
-Closures are often used together with [decorators](decorator), which are powerful tools for modifying the functionality of other functions or classes.
+Closures are extremely useful for data [encapsulation](class#encapsulation) (hiding state from the global scope) and are the core mechanic behind [decorators](decorator).
 
 ## Currying
 
-Currying is a technique of converting a multi-argument function into a series of single-argument functions. This might sound like an interesting but impractical trick, but in certain contexts, currying can be very useful. In some more advanced features, such as creating higher-order functions, decorators, etc., currying techniques are needed.
+Currying is a functional programming technique where a function with multiple arguments is transformed into a chain of nested, single-argument functions. 
 
-A classic example of currying is for a binary function f(x, y). After currying, we get a function g(x) whose return value is another function that handles y. For example, the following example is a simple addition function that requires two input arguments, but we can turn it into a series of single-argument functions:
+For a two-argument function $f(x, y)$, currying turns it into $g(x)(y)$, where $g(x)$ returns a function that takes $y$ and completes the operation:
 
 ```python
-# This is a single-argument function that implements addition
+# A curried addition function
 def curried_add(x):
     def add_y(y):
         return x + y
     return add_y
 
-# Calculating 3 + 4 can be written as:
+# Evaluating 3 + 4
 print(curried_add(3)(4))  # Output: 7
 
-# You can also fix one of the parameters
+# Generating a specialized function
 add_five = curried_add(5)
 print(add_five(10))       # Output: 15
 ```
 
+Currying is useful in advanced functional programming for composing functions and creating reusable utility wrappers.
+
 ## Partial Functions
 
-Partial functions are a special case of currying. Using partial functions, you can fix the value of one or more arguments and return a new function. This new function can call the original function with the remaining arguments. The main purpose of partial functions is to simplify the number of arguments for particularly commonly used functions.
+A partial function is a practical application of currying. It allows you to freeze one or more arguments of a function, returning a new, simplified function that accepts only the remaining arguments.
 
-Another application scenario is: when you need to call a library function `foo` that requires a single-argument function as its argument `bar`, but the functions we already have typically take multiple arguments. In this case, we can use a partial function to fix the other arguments of the multi-argument function, wrapping it into a single-argument function, thus satisfying the requirement of argument `bar`.
+This is helpful when you need to adapt a multi-argument function to an API that expects a function with fewer arguments.
 
-Python's `functools.partial` can be used to create partial functions. For example:
+Python provides `functools.partial` in the standard library to create partial functions:
 
 ```python
 from functools import partial
@@ -178,63 +180,60 @@ from functools import partial
 def multiply(x, y):
     return x * y
 
-# Create a new function with y preset to 2
+# Create a new function with y locked to 2
 double = partial(multiply, y=2)
 
 print(double(4))  # Output: 8
 print(double(7))  # Output: 14
 ```
 
-## Anonymous Functions
+## Anonymous Functions (Lambda Expressions)
 
-Anonymous functions are functions without a name. These functions are defined using the `lambda` keyword, hence they are also called lambda functions. The term lambda is borrowed from the founding language of functional programming, [Lambda Calculus](https://lv.qizhen.xyz/appendix_languages#lambda-calculus-编程语言).
+Anonymous functions are functions defined without a name. In Python, these are created using the `lambda` keyword and are often called **lambda functions** or **lambda expressions**. The name originates from [Lambda Calculus](https://lv.qizhen.xyz/appendix_languages#lambda-calculus-编程语言), the mathematical foundation of functional programming.
 
-### Basic Usage
+### Basic Syntax
 
-The basic syntax of a lambda function is:
+The syntax for a lambda expression is:
 
 ```python
 lambda arguments: expression
 ```
 
-A lambda function can have any number of arguments, but can only contain a single expression, which must be on one line. The value of the expression is returned when executed.
+A lambda function can take any number of arguments but can only contain a single expression (no multi-line statements or assignments). The expression is automatically returned when the function runs.
 
-For example:
+For example, a function that adds two numbers:
 
 ```python
 lambda x, y: x + y
 ```
 
-In the example above, we defined a lambda function that accepts two arguments `x` and `y` and returns their sum. Using a lambda function is similar to using a regular function — you can call and run it by appending parentheses and arguments after the function:
+You can execute a lambda immediately by wrapping it in parentheses and calling it:
 
 ```python
-(lambda x, y: x + y)(2, 3)  # The function returns 5
+print((lambda x, y: x + y)(2, 3))  # Output: 5
 ```
 
-In practice, lambdas are more often assigned to a variable or parameter, and then the variable or parameter is used to call the lambda function.
+Typically, lambda functions are passed directly as arguments to higher-order functions or assigned to variables:
 
 ```python
 f = lambda x, y: x + y
 print(f(2, 3))  # Output: 5
 ```
 
-In the example above, we assigned the defined lambda function to the variable `f`, and subsequent programs can use the variable `f` to call this lambda function. As a variable pointing to a function, `f` functions essentially the same as directly defining a function named `f`, for example:
+Writing `f = lambda x, y: x + y` is functionally identical to defining the function using the standard `def` syntax:
 
 ```python
 def f(x, y):
     return x + y
 ```
 
-In Python, the syntax `def f(x, y):` essentially also assigns a function object to the variable name `f`. The main differences between using `lambda` and using `def` are:
+The key differences between `lambda` and `def` are:
+* **Purpose**: Lambdas are meant for simple, "throwaway" functions that are used only once (e.g., as key functions for sorting).
+* **Metadata**: Functions created with `def` carry their own name in their [`__name__` attribute](module#execution-on-import), which appears in trackbacks and debugging outputs. Lambda functions always return `<lambda>` as their name, which can make debugging stack traces slightly harder.
 
-- Code style: lambdas are suitable for writing "disposable" functions with simple logic that don't need a dedicated name.
-- Metadata: functions defined with `def` have a [`__name__` attribute](module#导入时运行) that is the function name itself, which makes debugging and error messages clearer; whereas the `__name__` attribute of a lambda function is `<lambda>`, which is less intuitive when debugging than regular functions.
+### Nested Lambdas
 
-In some programming languages (such as JavaScript), programmers tend to use anonymous functions to implement all functionality, referencing them through variables rather than function names.
-
-### Nested Lambda Functions
-
-Although in Python, a lambda function can only have a single-line expression, we can extend the functionality of lambda functions through nested calls. Let's look at such an example:
+Because lambdas are first-class functions, they can be nested to create closures or return new functions:
 
 ```python
 h = lambda a, b: (lambda x: a(x) + b(x))
@@ -243,22 +242,17 @@ combined = h(lambda x: x * 2, lambda x: x * 3)
 print(combined(4))  # Output: (4*2) + (4*3) = 20
 ```
 
-In the program above, `h` is a lambda function that accepts two function arguments `a` and `b`. The arguments `a` and `b` are themselves functions. The return value of `h` is also a function — a lambda function that accepts one argument `x` and then computes and returns the value of `a(x) + b(x)`.
+Here, `h` takes two functions, `a` and `b`. It returns an anonymous function that takes `x` and evaluates `a(x) + b(x)`. Like standard nested functions, nested lambdas fully support lexical closures.
 
-`combined` is a function; it is the lambda function returned after calling `h`. When calling `h` here, we passed two lambda functions as arguments: the first lambda function multiplies its input by 2, and the second multiplies its input by 3.
-Therefore, the new lambda function `combined`, when given an input, multiplies that input by 2, also multiplies that input by 3, and then returns the sum of these two results.
+### Simplifying Code
 
-Nested lambda functions support closures just like nested regular functions, meaning the inner lambda function can access and manipulate the variables and parameters of the outer function.
-
-### Streamlining Code
-
-Lambda functions eliminate verbose function definitions and can often help make code very concise. Let's revisit an example we used earlier:
+Using anonymous functions can compress verbose conditional return structures into highly concise code:
 
 ```python
+# Procedural style:
 def math_operation(operator):
     def add(x, y):
         return x + y
-    
     def subtract(x, y):
         return x - y
 
@@ -267,16 +261,7 @@ def math_operation(operator):
     else:
         return subtract
 
-operation = math_operation('+')
-print(operation(5, 3))  # Output: 8
-
-operation = math_operation('-')
-print(operation(5, 3))  # Output: 2
-```
-
-If we use anonymous functions to implement the exact same logic, the code can be much more concise — in fact, just one line:
-
-```python
+# Functional style using lambdas and tuple lookup:
 math_operation = lambda op: (lambda x, y: x - y, lambda x, y: x + y)[op == '+']
 
 print(math_operation('+')(5, 3))  # Output: 8
@@ -285,13 +270,13 @@ print(math_operation('-')(5, 3))  # Output: 2
 
 ## Exercises
 
-Write **anonymous functions** to implement the following:
+Write **anonymous functions (lambdas)** to implement the following:
 
-1. Square calculation: Calculate the square of a given number. For example, input 4, output 16.
-1. Even number check: Determine whether a number is even. Input a number, return True or False.
-1. Multi-parameter operation: Accept two arguments x and y, return the result of (x + y)^2.
-1. Chained function: Use an anonymous function to implement a chained function (x -> x^2 -> x+1 -> x/2), input x=4, output should be 8.5.
-1. Write a function `apply_func(func, x, y)` that accepts a function `func` and two numbers `x`, `y`, and returns the result of `func(x, y)`. For example, `apply_func(lambda a, b: a + b, 3, 5)` should return 8.
-1. Write a function `make_multiplier(n)` that returns a new function that multiplies its input by n.
-1. Write a higher-order function `apply_n_times(func, x, n)` that accepts a function `func`, a value `x`, and a positive integer `n`, and returns the result of applying `func` to `x` n times. For example: `apply_n_times(lambda x: x * 2, 2, 3)  # Output: 8`
-1. Write a function `choose_func(op)` that returns different functions based on the string argument `op`. For example: `adder = choose_func("add")`
+1. **Square calculation**: Calculate the square of a given number. For example, input 4, output 16.
+2. **Even number check**: Determine whether a number is even. Input a number, return `True` or `False`.
+3. **Multi-parameter operation**: Accept two arguments `x` and `y`, return the result of $(x + y)^2$.
+4. **Chained function**: Implement a chained function ($x \rightarrow x^2 \rightarrow x+1 \rightarrow x/2$). Input `x=4`, output should be `8.5`.
+5. **Callback wrapper**: Write a function `apply_func(func, x, y)` that accepts a function `func` and two numbers `x` and `y`, and returns the result of `func(x, y)`. E.g., `apply_func(lambda a, b: a + b, 3, 5)` returns `8`.
+6. **Multiplier factory**: Write a function `make_multiplier(n)` that returns a function that multiplies its input by `n`.
+7. **N-times execution**: Write a higher-order function `apply_n_times(func, x, n)` that accepts a function `func`, a starting value `x`, and a count `n`, and returns the result of applying `func` to `x` iteratively `n` times. E.g., `apply_n_times(lambda x: x * 2, 2, 3)` should return `8`.
+8. **Operator dispatcher**: Write a function `choose_func(op)` that returns different math functions based on the string argument `op` (e.g., `"add"` returns an addition function).

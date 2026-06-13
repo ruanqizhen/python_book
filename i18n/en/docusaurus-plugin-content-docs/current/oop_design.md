@@ -1,16 +1,16 @@
 # Design Methods and Principles
 
-In the previous sections, when discussing object-oriented programming, we primarily considered it from an implementation perspective: assuming we already know what classes we need, how should we write code for these classes. However, now we need to shift perspective and consider how to design object-oriented programs: for a given problem, what classes should be designed, and what are the relationships between them?
+In the previous sections, we discussed object-oriented programming primarily from an implementation perspective: assuming we already know what classes we need, how do we write the code for them? Now, we need to shift our perspective and consider how to design object-oriented programs: for a given problem, which classes should be created, and how should they relate to one another?
 
-Object-oriented programming is fundamentally designed for large-scale programs. Many of its concepts may not be suitable for small programs. Object-oriented program design must consider how the software will be smoothly upgraded and how features can be easily extended in the future. These considerations are over-engineering for small programs. Many small programs may be discarded after use, with no maintenance or upgrade concerns. Even if new requirements arise in the future, modifying them is very easy, and even starting from scratch to rewrite a program is not much trouble. Spending too much time on object-oriented design for a small program is indeed not worthwhile.
+Object-oriented programming is fundamentally designed for large-scale applications. Many of its concepts are not suited for small programs. Object-oriented design must plan for smooth software upgrades and easy future extensions—considerations that amount to over-engineering for small scripts. Many small programs are discarded after a single use, with no maintenance or upgrade concerns. Even if new requirements arise, modifying them is trivial, and rewriting them from scratch is often painless. Spending too much time on object-oriented design for a simple script is indeed not worthwhile.
 
-But for large-scale programs, the situation is completely different. Large-scale software incurs enormous costs during construction, making it not easily discardable. When faced with new requirements, generally no one would spend the high cost of building another large-scale software. The rational choice is inevitably to patch and extend the existing system. Therefore, when designing large programs, we should already anticipate that they will inevitably need to be extended in the future. For example, when designing a pet store system, we should consider that new animal species may need to be added to the system in the future, and new animal species may have different attributes and methods. When we design a student report system, we need to consider that the report content may need to be expanded in the future, such as adding new subjects; the file types of reports may also change, such as possibly requiring PDF format, web format; the methods of submitting reports will also expand, such as some needing to be sent via email, some needing to be printed, etc. When we design a testing system, we also need to consider possible future expansions, such as new test items, new tested products, new types of testing instruments, and so on.
+For large-scale applications, however, the situation is entirely different. Large software systems represent enormous development costs, meaning they cannot be easily discarded. When new requirements arise, building a replacement system from scratch is rarely viable; the rational choice is almost always to maintain and extend the existing system. Therefore, when designing large programs, we must anticipate that they will inevitably grow and change. For example, when designing a pet store system, we should plan for the future addition of new animal species, each with unique attributes and behaviors. When designing a student report system, we need to consider that report content may expand to include new subjects; report formats might shift to PDF or web pages; and delivery methods may evolve from printing to emailing. Similarly, when designing an automated testing system, we must account for new test items, new products, and new testing instruments.
 
-If we don't prepare for future extensions during the design phase, when the time comes to actually need to extend it, the work will become extremely difficult. The purpose of adopting object-oriented programming is precisely to build a system that is easiest to maintain and extend. Let us quote the purpose of object-oriented programming we mentioned earlier: to create a system that is both flexible and stable, with flexibility reflected in the ability to add new functionality at any time, and stability reflected in not needing to modify existing classes. So, how can we add new functionality without modifying existing code?
+If we fail to plan for these extensions during the design phase, implementing them later becomes extremely difficult. The purpose of object-oriented programming is to build a system that is easy to maintain and extend. To reiterate our definition: we want to create a system that is both flexible and stable—where flexibility means we can add new features at any time, and stability means we do not need to modify existing, working classes. But how do we add new functionality without modifying existing code?
 
-In the previous text, we have detailed the three major features of object-oriented programming: [encapsulation](class#封装), [inheritance](class#继承), and [polymorphism](class#多态). When designing programs, these three features remain the most important considerations. That is, when designing classes, we need to consider what attributes and methods the class has, whether it can inherit attributes and methods from other classes, etc. These three features have been detailed in previous chapters. In the following sections, we will focus on other commonly used design methods and techniques, such as whether one class needs to depend on another class, whether a class is composed of other objects, etc.
+We have already explored the three core pillars of object-oriented programming: [encapsulation](class#encapsulation), [inheritance](class#inheritance), and [polymorphism](class#polymorphism). When designing systems, these three features remain your primary tools. That is, you must decide what attributes and methods a class should possess, and how classes should inherit behaviors from one another. In this chapter, we will shift our focus to other essential design concepts and relationships, such as dependency, composition, and aggregation.
 
-Additionally, computer scientist Robert C. Martin proposed several principles of object-oriented programming in 2000. After further modification and refinement by more experts, these principles were summarized into five guidelines and best practices to follow in object-oriented program design, known as the SOLID principles. These principles are:
+Additionally, we will examine the SOLID principles—a set of five design guidelines popularized by computer scientist Robert C. Martin. These principles represent industry best practices for designing maintainable and extendable object-oriented software:
 
 - S - Single Responsibility Principle (SRP)
 - O - Open/Closed Principle (OCP)
@@ -18,14 +18,14 @@ Additionally, computer scientist Robert C. Martin proposed several principles of
 - I - Interface Segregation Principle (ISP)
 - D - Dependency Inversion Principle (DIP)
 
-These five principles are very important, and we will introduce them below. It is worth noting that the order of these five principles is intended to form the English word "solid". When introducing these principles, we will break this order and start with the foundational principles first.
+These five principles are fundamental to robust software design. Although their names are arranged to spell the acronym 'SOLID', we will present them in a more logical learning order, starting with the most foundational concepts first.
 
 
 ## Abstraction
 
-Abstraction refers to extracting common characteristics from multiple different classes to form a more general, conceptual concept or model. This concept or model can be represented as an abstract class. In this class, we define common attributes and behaviors without concerning ourselves with specific implementation details. Through abstraction, the designed system can reduce complexity. By hiding unnecessary details and only presenting the most critical features, abstraction makes it easier for us to understand and design the system. And by defining common attributes and behaviors, it avoids repeating the same code in multiple places. Based on the abstract class, it will be easier to extend or override, forming various concrete subclasses.
+Abstraction involves identifying common characteristics across different classes and extracting them into a general, high-level model. In Python, this model is represented as an abstract class. An abstract class defines common attributes and method interfaces without specifying their concrete implementations. By hiding unnecessary implementation details and exposing only what is critical, abstraction simplifies system design and reduces complexity. Moreover, sharing attributes and behaviors in a parent class prevents code duplication, making it easy to create specialized concrete subclasses.
 
-For example: When we consider designing a pet store system, there are multiple animals, such as cats and dogs. Although these animals have many different characteristics, they also have some commonalities. For instance, each animal has a name, needs to eat food, and can make sounds. These commonalities can be abstracted into an [abstract class](multiple_inheritance#抽象类) called "Animal":
+For example, in a pet store system, we might have multiple animal types like cats and dogs. While they differ in many ways, they share core behaviors: every animal has a name, eats food, and makes a sound. We can capture these shared traits in an [abstract class](multiple_inheritance#abstract-classes) called `Animal`:
 
 ```python
 from abc import ABC, abstractmethod
@@ -43,9 +43,9 @@ class Animal(ABC):
         pass
 ```
 
-In this Animal class, we have defined the common attribute name, as well as two methods eat and speak. However, we have not provided concrete implementations for these methods, only leaving placeholders.
+In this `Animal` class, we define a common `name` attribute and two abstract methods, `eat` and `speak`. Because these methods have no concrete implementation, they serve as placeholders that subclasses must define.
 
-After this abstraction step is completed, we can define concrete animal classes based on this abstract Animal class:
+We can then define concrete subclasses based on this abstract `Animal` class:
 
 ```python
 class Dog(Animal):
@@ -63,15 +63,15 @@ class Cat(Animal):
         print("The cat is eating fish")
 ```
 
-Each concrete animal class inherits from the Animal class and provides a concrete implementation of the methods. Through this design, we can easily add more animal types to the system without having to define common attributes and behaviors from scratch every time. This is the power of abstraction.
+Each concrete class inherits from `Animal` and provides its own implementation of the abstract methods. With this design, we can easily add new animal species to our pet store without re-defining common traits from scratch.
 
 ## Liskov Substitution Principle
 
-The Liskov Substitution Principle states that subtypes must be able to replace their parent types without causing any errors. In other words, if we have an instance of a parent class, we should be able to replace it with an instance of any of its subclasses, and the application should still work correctly.
+The Liskov Substitution Principle (LSP) states that subclasses must be substitutable for their parent classes without altering the correctness of the program. In other words, if a program works with a base class, it should function correctly when replaced by any subclass of that base class.
 
-We will use a Rectangle class and a Square class to illustrate how to follow the Liskov Substitution Principle. I have seen the Rectangle and Square example in many articles, but it is so classic that I cannot think of a better way to demonstrate the Liskov Substitution Principle, so I will continue using this classic example.
+We will use the classic `Rectangle` and `Square` example to illustrate how to apply—and how to accidentally violate—this principle.
 
-Mathematically, a square is a special type of rectangle, so it is natural to consider: we should derive a Square subclass from the Rectangle base class:
+Mathematically, a square is a special type of rectangle. Therefore, it is intuitive to implement a `Square` subclass that inherits from a `Rectangle` parent class:
 
 ```python
 class Rectangle:
@@ -113,9 +113,11 @@ class Square(Rectangle):
         self._height = value
 ```
 
-In the above design, the Rectangle class has two attributes, length and width (using property [decorators](class#属性装饰器)), and area can be calculated from length and width. Square is a special Rectangle with equal length and width, both called side length in a square. This design matches the natural situation, but it violates the Liskov Substitution Principle. Suppose a program uses the Rectangle class, for example: `shape = Rectangle(3, 5)`. If we directly replace Rectangle in this statement with Square, the program will error because the Square constructor requires side length data, not length and width. That is, in this design, we cannot directly replace the parent class with a subclass in the program. More importantly, this design changes the behavioral contract of the parent class. For a `Rectangle` object, we generally assume that modifying "width" does not affect "height". But for `Square`, modifying the width simultaneously changes the height. If the program has code that relies on the assumption of "independent length and width" (such as code for calculating area), replacing it with `Square` will produce incorrect results.
+In this design, the `Rectangle` class has two attributes, `width` and `height` (defined using property [decorators](class#property-decorators)), and a method to calculate `area()`. Since a square has equal sides, the `Square` subclass overrides the setters so that modifying one dimension automatically updates the other. While this reflects real-world geometry, it violates the Liskov Substitution Principle. 
 
-To follow the Liskov Substitution Principle, we can redesign these two classes so that `Square` is not a subclass of `Rectangle`, but both are subclasses of a more general abstract class `Shape`.
+If a function is written to work with a `Rectangle` instance (e.g., modifying its width and height independently and asserting that the area matches), substituting a `Square` instance will break the program's logic. This is because the subclass alters the behavioral contract established by the parent class (i.e., that width and height can be changed independently).
+
+To follow LSP, we should redesign these classes so that `Square` does not inherit from `Rectangle`. Instead, both classes should inherit from a more general, abstract `Shape` class:
 
 ```python
 from abc import ABC
@@ -141,13 +143,15 @@ class Square(Shape):
         return self.side * self.side
 ```
 
-In this way, both square and rectangle are shapes, but they do not have a subclass-parent class relationship; they are two equal and independent classes. In the program, we will not expect to use Square to replace Rectangle, thus no longer violating the Liskov Substitution Principle. From this example, we can see that classes in object-oriented programming are essentially for software development. When designing classes and the relationships between classes, the primary consideration is the logical relationship of the program, not the relationship between these objects in the real world.
+Now, `Square` and `Rectangle` are sibling classes under the common abstraction `Shape`. We no longer expect a `Square` to substitute for a `Rectangle`, resolving the LSP violation. 
 
-If we violate the Liskov Substitution Principle, we cannot safely use subclasses wherever parent classes are called, which reduces code reusability. If such subclasses that violate this principle are accidentally used in a program, it can easily cause runtime errors. To ensure that such subclasses violating the Liskov Substitution Principle can also run correctly in the program, the cost of testing and maintenance would need to be increased.
+This example highlights a key rule in object-oriented design: **programmatic relationships should be based on behavioral contracts, not real-world classifications**. Violating the Liskov Substitution Principle breaks polymorphism, reduces code reusability, and introduces subtle runtime bugs that increase testing and maintenance costs.
 
 ## Dependency Relationship
 
-A dependency relationship is a relatively loose connection, indicating that one class uses an object of another class within its methods. If class A's methods manipulate objects of class B, then class A depends on class B. Unlike composition and aggregation, dependency does not have a strong lifecycle implication. For example, consider a simple scenario where we have a Printer class (printer) that can print various documents. We also have a Document class (document) representing the document to be printed. In this case, the Printer class depends on the Document class because it needs a Document instance to perform the print operation.
+A dependency relationship is a loose coupling where one class temporarily uses an instance of another class inside its methods. If class `A` receives, creates, or manipulates objects of class `B` inside its methods, class `A` depends on class `B`. Unlike composition or aggregation, dependency does not imply ownership or shared lifecycles.
+
+For example, consider a `Printer` class that prints documents, and a `Document` class containing the text. The `Printer` class depends on `Document` because its printing method requires a `Document` instance to run:
 
 ```python
 class Document:
@@ -165,19 +169,17 @@ printer = Printer()
 printer.print_document(doc)     # Output: "test document"
 ```
 
-In this example, the Printer class has a method print_document that accepts a Document class object as a parameter and prints its content. This means that Printer depends on Document because it needs a Document object to perform its operation. However, note that this dependency does not mean Printer owns Document, or that Document's lifecycle depends on Printer. It simply means that the Printer class uses the Document class in some of its operations.
-
-This relationship is temporary, existing only during the method call, so its binding is looser compared to composition or aggregation relationships.
+In this code, the `Printer` class uses the `Document` object as a parameter. `Printer` does not own the `Document` instance, and the lifecycle of the `Document` is entirely independent of the `Printer`. The relationship exists only during the method execution, making it a loose, temporary coupling.
 
 ## Dependency Inversion Principle
 
-The Dependency Inversion Principle states that a class should not depend on other concrete classes; it should depend on abstract classes.
+The Dependency Inversion Principle (DIP) states that high-level modules should not depend on low-level modules; both should depend on abstractions. Furthermore, abstractions should not depend on details; details should depend on abstractions.
 
-In traditional procedural programming, upper-level modules always depend on lower-level modules. Our natural inclination is also: since abstract concepts are extracted from concrete things, they should depend on concrete things. This principle is called "inversion" because its assertion is the opposite of previous thinking: "Abstraction should not depend on the concrete, but the concrete should depend on abstraction." Upper-level classes should also not depend on lower-level classes; they should all depend on abstraction.
+In traditional procedural design, high-level business logic directly calls low-level utility modules, making high-level logic dependent on low-level details. The Dependency Inversion Principle 'inverts' this relationship by introducing an abstraction layer between them. Both high-level logic and low-level details depend on this shared abstraction.
 
-Although this principle is placed last in SOLID, it is the foundation of the other principles and design methods. The core of the Dependency Inversion Principle is to avoid direct interaction between concrete classes by relying on abstraction, thereby reducing coupling between them. Low coupling means that changes in one class do not affect other classes, thus reducing the difficulty of maintenance and extension.
+DIP is the cornerstone of writing decoupled software. By preventing concrete classes from interacting directly and forcing them to communicate through abstract interfaces, you isolate components from changes. This keeps coupling low, making the codebase easier to test, maintain, and extend.
 
-To better explain this principle, consider the following report generation example. Suppose we have a ReportService class that directly depends on a concrete PDFStudentReport class to generate PDF reports:
+Consider a report generation service. In the following tightly coupled design, `ReportService` directly instantiates and depends on a concrete `PDFStudentReport` class:
 
 ```python
 class PDFStudentReport:
@@ -192,7 +194,9 @@ class ReportService:
         return self.report.generate()
 ```
 
-The problem with the above design is that ReportService directly depends on PDFStudentReport. When requirements change, such as needing to generate a report in web format, we would have to modify the ReportService class. To follow the Dependency Inversion Principle, we can define an abstract Report class, then have PDFStudentReport and other report types (such as WebStudentReport) implement this abstract class. ReportService should depend on this abstract class, not on concrete implementations.
+The problem here is that `ReportService` is hardcoded to use `PDFStudentReport`. If we need to support web-format reports tomorrow, we have to modify the `ReportService` class. 
+
+To apply DIP, we introduce an abstract `Report` parent class. Both `PDFStudentReport` and `WebStudentReport` will inherit from this abstraction, and `ReportService` will depend only on the abstract `Report` interface:
 
 ```python
 from abc import ABC, abstractmethod
@@ -218,13 +222,15 @@ class ReportService:
         return self.report.generate()
 ```
 
-Now, the ReportService class receives an instance of the Report interface through its constructor. We can easily change the type of report by simply providing a different Report implementation, without needing to modify the ReportService class.
+Now, `ReportService` is completely decoupled from concrete report generators. We can inject any subclass of `Report` at runtime without modifying a single line of code in `ReportService`.
 
 ## Single Responsibility Principle
 
-The Single Responsibility Principle, simply put, means a class should do only one thing.
+The Single Responsibility Principle (SRP) states that a class should have one, and only one, reason to change.
 
-What scope of work counts as "one thing"? More specifically, a class is responsible for one thing, meaning that when user or boss requirements change, we only need to change the class design when one specific requirement changes. For example, writing a program to manage student information. This program needs to read student information from a database and also print the information in a certain format. We have different ways to design the classes in the program, such as designing a Student class with two methods: one responsible for reading information from the database and saving the data into corresponding attributes; the other responsible for reading the saved attributes and printing a report:
+A 'reason to change' refers to a single responsibility. If a class is responsible for multiple tasks, changes to one requirement will force modifications in a class that also handles unrelated logic, potentially introducing bugs.
+
+For example, consider a `Student` class that manages student data and also generates formatting for student reports:
 
 ```python
 class Student:
@@ -240,7 +246,9 @@ class Student:
         pass
 ```
 
-The design approach above violates the Single Responsibility Principle because the Student class does two things simultaneously: managing student data and generating reports. In the future, whether the way student data is managed changes or the report format has new requirements, this class will need to be modified. A design that follows the Single Responsibility Principle would place these two functions into separate classes:
+This violates SRP because `Student` handles both data management and presentation logic. If we change how we fetch student data, or if the report layout changes, we must modify the same class.
+
+An SRP-compliant design separates these concerns into distinct classes:
 
 ```python
 class Student:
@@ -261,17 +269,15 @@ class StudentReport:
         pass
 ```
 
-In the design that follows the Single Responsibility Principle, we have moved the responsibility of report generation to a separate StudentReport class. This way, if the data management approach changes, the Student class can be modified independently of report generation, and vice versa.
+By delegating presentation logic to `StudentReport`, we isolate the changes. If the database schema updates, we only edit `Student`. If the report layout changes, we only edit `StudentReport`.
 
-Why should we follow the Single Responsibility Principle?
-
-First, large projects involve multiple people, or even multiple teams. Different functions may be developed and maintained by different people. If changes to different functions affect the same class, conflicts may arise during modification. Second, the Single Responsibility Principle can make version management of the program code clearer -- one function corresponds to one class and one file. This way, when a file is updated, we know which function has changed. Conversely, when we need to change a function, we can directly find the corresponding file.
+SRP keeps classes small and focused. In team environments, it prevents developers from editing the same file for different reasons, reducing git conflicts. It also makes your directory structure cleaner, as each file has a single, well-defined purpose.
 
 ## Interface Segregation Principle
 
-The Interface Segregation Principle, simply put, means that we should ensure that a class is not forced to implement interfaces it does not need. The interface mentioned here can be understood as an abstract class in Python. If an abstract class is defined too broadly, containing various different functions, then the concrete class that inherits from this abstract class must implement every function defined in the abstract class. Even if the concrete class only needs to do one thing, it has to implement other unrelated functions defined in the abstract class. Therefore, when designing abstract classes, each specific function should be designed as a separate abstract class, which is better than a single large and comprehensive abstract class. This way, each concrete class can focus only on the functions directly relevant to it.
+The Interface Segregation Principle (ISP) states that clients should not be forced to depend on interfaces they do not use. In Python, where we use abstract base classes as interfaces, this means we should design small, focused abstract classes rather than large, bloated ones. A class inheriting from an abstract class must implement all of its abstract methods. If the parent class is too broad, subclasses are forced to write dummy implementations for methods they do not need.
 
-Let us use the student report program as an example again. Suppose we define a StudentReport abstract class in the program that defines the functions required for a report: generating reports, sending reports, and printing reports. We write a concrete class PDFStudentReport responsible for handling PDF format report functionality, which inherits the StudentReport abstract class. PDFStudentReport implements the functions for generating, emailing, and printing PDF reports:
+Let's illustrate this with our report service. Suppose we define a broad `StudentReport` abstract class that bundles report generation, emailing, and printing:
 
 ```python
 from abc import ABC, abstractmethod
@@ -300,7 +306,7 @@ class PDFStudentReport(StudentReport):
         print("Print PDF report")
 ```
 
-Now a new requirement arises: the new report format needs to generate reports in web format and can email the report, but does not require printing. We can implement another concrete class, WebStudentReport, that can generate and email web format reports:
+If we need to implement a `WebStudentReport` that only generates and emails reports, it is still forced to inherit and implement the unused printing method:
 
 ```python
 class WebStudentReport(StudentReport):
@@ -315,9 +321,9 @@ class WebStudentReport(StudentReport):
         pass
 ```
 
-In the above example, WebStudentReport is responsible for handling web format report functionality. Although WebStudentReport does not need the capability to print reports, because it inherits from the StudentReport abstract class, it must implement all functions defined in the StudentReport abstract class. Therefore, WebStudentReport is forced to implement a print_out method as well.
+Even though `WebStudentReport` has no printing capability, it must provide a dummy `print_out` method to avoid instantiation errors.
 
-To follow the Interface Segregation Principle, we can split the StudentReport abstract class into multiple abstract classes, each targeting a specific function:
+To follow ISP, we decompose the large interface into three focused interfaces using multiple inheritance:
 
 ```python
 from abc import ABC, abstractmethod
@@ -355,13 +361,15 @@ class WebStudentReport(ReportGeneratable, ReportEmailable):
         print("Send Web report via email")
 ```
 
-This way, WebStudentReport only needs to implement the interfaces that are truly relevant to it, instead of being forced to implement an unnecessary method. Thus, we follow the Interface Segregation Principle, ensuring that each class only implements the interfaces it truly needs.
+Now, `WebStudentReport` only inherits from the interfaces it actually needs, leaving the printing interface to classes like `PDFStudentReport`.
 
 ## Association
 
-An association defines a connection between objects of one class and objects of another class. This connection can be unidirectional or bidirectional, and can have different "strengths" or durations, from temporary to long-term. When designing associations, two characteristics need attention: first, directionality, which specifies whether the relationship between two classes is bidirectional or unidirectional. For example, if class A knows about class B but class B does not know about class A, that is a unidirectional association. Second, multiplicity, whether one object is associated with multiple objects of another class.
+An association represents a structural relationship between classes where objects of one class are connected to objects of another. Associations are characterized by:
+* **Directionality**: Unidirectional (class `A` knows about class `B`, but not vice versa) or bidirectional (both classes hold references to each other).
+* **Multiplicity**: The quantity of associated objects (e.g., one-to-one, one-to-many, or many-to-many).
 
-For example, a school system has two classes, Teacher and Student. The relationship between objects of these two classes is an "association": one teacher can teach multiple students, and one student can be taught by multiple teachers.
+For example, in a school system, `Teacher` and `Student` classes share a many-to-many bidirectional association:
 
 ```python
 class Teacher:
@@ -409,15 +417,13 @@ print(f"{student2.name}'s teachers are:")
 student2.display_teachers()
 ```
 
-In the above example, the relationship between Teacher and Student is bidirectional and has clear multiplicity, because one teacher can have multiple students, and one student can have multiple teachers. In the Teacher class, the associated Student objects are stored in a list. The add_student() method is used to establish this bidirectional relationship. Through this design, we can easily query and manipulate the associations between objects, such as querying all students of a teacher or querying all teachers of a student.
+Here, `Teacher` and `Student` maintain list references to each other. The `add_student()` method coordinates this bidirectional relationship, enabling us to easily navigate the association from either side.
 
 ## Composition
 
-Composition is a concept that refers to a "whole-part" relationship. When an object contains one or more instances of another object, we call this relationship composition. Composition allows us to build more complex, feature-rich objects based on existing objects without needing to inherit from them. Compared to inheritance, composition offers greater flexibility. By simply changing components, we can change the behavior of the whole. Composition helps decouple parts of the system. Each component can be developed and tested independently. Composition can break down complex systems into parts that are easy to understand and manage.
+Composition represents a strong 'whole-part' relationship where the 'part' objects cannot exist independently of the 'whole' object. Composition allows you to build complex behaviors by combining simpler objects rather than relying on deep inheritance hierarchies. This provides greater design flexibility and decouples components so they can be developed and tested in isolation.
 
-Suppose we want to simulate a dog and design a Dog class, where the dog consists of a head, body, four legs, and a tail. The legs are composed of multiple joints, such as hip joints, knee joints, etc. In this design, the relationship between "dog" and "head" should not be inheritance, but composition: "dog" is composed of "head", "body", "tail", etc.
-
-First, define the classes for body parts such as joints, legs, and tail:
+For example, a `Dog` is composed of a head, body, legs, and a tail. The legs are in turn composed of joints. A dog *has a* tail; it does not inherit from it. Therefore, composition is the natural relationship here:
 
 ```python
 class Joint:
@@ -467,13 +473,15 @@ dog.walk()                # Output: Joint movement information
 dog.express_happiness()   # Output: "Wagging the tail."
 ```
 
-Through composition, we provide various functionality to the Dog class while keeping the code organized and maintainable. If we need to modify the structure of the dog's legs or the behavior of joints in the future, we only need to make changes in the corresponding classes.
+By composing the `Dog` class from smaller components, we keep each class simple and focused. If we need to modify how a leg joint moves in the future, we only edit the `Joint` class.
 
 ## Aggregation
 
-Aggregation is a special kind of association, indicating that one class is a part or component of another class. This relationship represents "has-a" semantics, meaning one object can own or contain other objects. Aggregation is typically used to represent whole-part relationships, where the whole does not need to be responsible for the lifecycle of the parts. Only the aggregating class knows about the part classes, while the part classes do not know about the aggregating class. Part objects can move from one aggregating object to another.
+Aggregation is a weaker form of 'whole-part' relationship where the 'part' objects can exist independently of the 'whole'. 
 
-Aggregation and composition are somewhat similar in approach; both can represent "parts" and "whole", where the "whole" owns one or more "parts". The difference lies in whether the "whole" is responsible for the lifecycle of the "parts", i.e., whether it is responsible for the creation and destruction of the "parts". For example, a "tail" is part of a "dog". When a dog object no longer exists, there is no need for the tail object to exist either. The "dog" is responsible for creating and destroying the "tail" -- this is composition. Another example: a "student" can also be seen as part of a "classroom", but outside of the "classroom", the application may also need the "student" to complete other tasks, such as sports activities, etc. That is, the lifecycle of the "student" object cannot be managed by the "classroom". In this case, the relationship between student and classroom is aggregation, not composition.
+The key difference between composition and aggregation lies in **lifecycle ownership**:
+* **Composition**: The whole owns the parts and is responsible for their creation and destruction. If the whole object is destroyed, its parts are destroyed with it (e.g., a `Dog` and its `Tail`).
+* **Aggregation**: The whole contains the parts, but does not manage their lifecycles. If the whole object is destroyed, the parts continue to exist independently (e.g., a `Classroom` and its `Student`s). A student can leave a classroom and join another room, or exist independently in the system.
 
 ```python
 class Student:
@@ -508,15 +516,15 @@ print(f"Students in {classroom_302.room_number}:")
 classroom_302.display_students()
 ```
 
-In the above example, the Classroom class aggregates the Student class. The classroom holds its internal students, but the students can also exist without the classroom. By using aggregation, we can establish a clear hierarchical structure and whole-part relationship, which helps organize and manage objects in the system at a higher logical level.
+Here, `Classroom` holds references to `Student` objects, but it does not instantiate or destroy them. If `classroom_302` is deleted, the `Student` instances continue to exist.
 
 ## Open/Closed Principle
 
-The Open/Closed Principle states that classes should be open for extension but closed for modification.
+The Open/Closed Principle (OCP) states that software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification.
 
-More specifically, we should be able to extend new functionality without modifying existing code. Any modification to the code may introduce new bugs. Therefore, code that is already running without issues should be left as unchanged as possible.
+This means you should be able to add new features without changing the existing, working code. Modifying source code directly always carries the risk of introducing regression bugs into a stable system.
 
-We will continue using StudentReport to explain. This is the already written code:
+Let's demonstrate this by adding formats to our student report generator. Consider this initial class design:
 
 ```python
 class Student:
@@ -528,10 +536,10 @@ class StudentReport:
         self.student = student
 
     def generate_report(self):
-        return f"This is the report for "{self.student.name}". "
+        return f"This is the report for \"{self.student.name}\". "
 ```
 
-Next, we receive a new requirement: the printed report needs to use structured data, returned in dictionary format. We might modify the program like this:
+If we receive a new requirement to support returning reports as dictionaries (JSON), we might be tempted to modify the class like this:
 
 ```python
 class StudentReport:
@@ -540,14 +548,14 @@ class StudentReport:
 
     def generate_report(self, format_type="text"):
         if format_type == "text":
-            return f"This is the report for "{self.student.name}". "
+            return f"This is the report for \"{self.student.name}\". "
         elif format_type == "json":
             return {"student": self.student.name}
 ```
 
-This modification approach violates the Open/Closed Principle because we are constantly modifying the StudentReport class to support new report formats. So how can we add new functionality without changing existing classes?
+This violates OCP because we must edit `StudentReport` every time a new format is requested. 
 
-This requires the use of [abstract classes](oop_design#抽象): we can introduce an abstract "report generator" class, then design each format as a concrete class:
+To follow OCP, we leverage [abstraction](oop_design#abstraction) by creating an abstract base class for report generators and delegating the formatting logic to subclasses:
 
 ```python
 from abc import ABC, abstractmethod
@@ -559,14 +567,14 @@ class ReportGenerator(ABC):
 
 class TextReportGenerator(ReportGenerator):
     def generate(self, student: Student):
-        return f"This is the report for "{student.name}". "
+        return f"This is the report for \"{student.name}\". "
 
 class DictReportGenerator(ReportGenerator):
     def generate(self, student: Student):
         return {"student": student.name}
 ```
 
-Now, when a new report format needs to be added, we simply need to add a new concrete report generator class without modifying any existing classes. Example code using ReportGenerator after the modification:
+We then refactor `StudentReport` to accept any concrete `ReportGenerator` implementation via dependency injection:
 
 ```python
 class Student:
@@ -584,7 +592,7 @@ class StudentReport:
         return self.generator.generate(self.student)
 ```
 
-In this way, when we need to generate reports in different formats, we simply change the generator of the StudentReport instance. For example:
+This allows us to select or change the report format dynamically at runtime:
 
 ```python
 student = Student("ruanqizhen")
@@ -595,8 +603,6 @@ print(text_report.generate(student))  # Output: This is the report for "ruanqizh
 print(dict_report.generate(student))  # Output: {"student": "ruanqizhen"}
 ```
 
-This design fully follows the Open/Closed Principle, because existing code does not need to be modified to add new functionality.
+This design fully satisfies the Open/Closed Principle. We can add infinitely many new report formats without changing `StudentReport` or any existing generator subclasses.
 
-The Open/Closed Principle is the most central of all principles. In fact, it is not limited to "class" design -- any software entity, including classes, modules, functions, etc., should be open for extension but closed for modification. And this principle is precisely the goal of introducing object-oriented programming in software development: we want to create a system that is both flexible and stable, with flexibility reflected in the ability to add new functionality at any time; at the same time, not modifying existing code is a strong guarantee of system stability.
-
-
+The Open/Closed Principle is the core goal of object-oriented design: it achieves a system that is both flexible (features can be added easily) and stable (existing features are protected from regressions).

@@ -1,6 +1,6 @@
 # Data Analysis and Pandas
 
-Pandas is one of the core libraries for data analysis in Python. Its data processing and cleaning capabilities are very powerful, especially when working with tabular data.
+Pandas is one of the core libraries for data analysis in Python. It offers powerful and efficient capabilities for data manipulation, cleaning, and analysis, particularly when working with tabular data.
 
 ## Installation
 
@@ -20,7 +20,7 @@ In the example code below, some import statements are omitted. You will need to 
 
 ## DataFrame Data Structure
 
-In the Pandas library, the most commonly used data structure is the DataFrame, which provides powerful and flexible tools for data processing and analysis. A DataFrame is a two-dimensional, tabular data structure, very similar to an SQL database table or an Excel spreadsheet. DataFrames can store columns of different types, such as integers, floating-point numbers, strings, etc. This is the most frequently used data type in the pandas library. We often use it to read data from databases, or to read data from file formats such as CSV, TSV, etc.
+In Pandas, the most central and widely used data structure is the `DataFrame`. A `DataFrame` is a two-dimensional, tabular data structure that is conceptually similar to an Excel spreadsheet or a relational database table. It represents data in rows and columns, where different columns can hold different data types (such as integers, floats, strings, and booleans). We frequently use DataFrames to load, inspect, and manipulate data from databases or flat files like CSV and TSV.
 
 ### Creating a Simple DataFrame
 
@@ -48,13 +48,13 @@ Output:
 
 The example program above creates a DataFrame named `df` with two columns and three rows.
 
-The columns of a DataFrame represent the features or variables of the data. Each column has a column name in the DataFrame (such as `Name` and `Age` in the example), and these column names make up the column index of the DataFrame. Different columns can have different data types, but the data within each column should have the same data type, such as integers, floating-point numbers, strings, etc. Columns can be accessed and manipulated by their column names. Columns can be dynamically inserted, deleted, or modified in the program.
+The columns of a `DataFrame` represent the features or variables of the dataset. Each column has a name (such as `Name` and `Age` in the example above) that serves as its label, collectively forming the column index. While different columns can store different data types, all values within a single column must share the same type. You can access, add, modify, or delete columns dynamically using their names.
 
-The rows of a DataFrame represent data records. Each row contains a set of related data. Each row is identified in the DataFrame by an index. Rows can be accessed and manipulated by row number (position) or by index (label). Row numbers are auto-generated, starting from 0, similar to the indexing of Python lists or arrays. Rows can also be dynamically inserted, deleted, or modified. The index is an immutable sequence used to identify the rows of the DataFrame. Many data operations, such as data alignment, merging, joining, and grouping, make use of the index.
+The rows of a `DataFrame` represent individual data records. Each row contains a set of related values corresponding to each column, identified by a row index label. Rows can be accessed either by their position (integer offset starting from 0, like a standard list or array) or by their index label. Like columns, rows can be added, updated, or removed dynamically. The index is an immutable sequence that identifies each row, playing a crucial role in operations like merging, joining, aligning, and grouping data.
 
 ### Index
 
-By default, a DataFrame uses row numbers as its index, but the index can also be dates, strings, or other data. For example, in the program above, if you pass an `index` parameter when creating the DataFrame object: `index=['a', 'b', 'c']`, the resulting object will use the index data as the index. The new DataFrame data would then be as follows:
+By default, a `DataFrame` uses auto-incrementing integers starting from 0 as its row index, but you can also use dates, strings, or other custom identifiers. For instance, you can pass an `index` argument (like `index=['a', 'b', 'c']`) when instantiating a `DataFrame` to define custom row labels:
 
 ```
    Name  Age
@@ -75,7 +75,7 @@ Name
 
 ### Creating an Empty DataFrame
 
-We can create an empty DataFrame by calling `empty_df = pd.DataFrame()` and then add data to it. The following code creates an empty DataFrame with a defined schema:
+You can create an empty `DataFrame` using `pd.DataFrame()` and populate it later. The following example demonstrates how to create an empty `DataFrame` with a predefined schema (column names and data types):
 
 ```python
 import pandas as pd
@@ -92,7 +92,7 @@ empty_df = pd.DataFrame(columns=data_types.keys()).astype(data_types)
 
 ### Viewing DataFrame Information
 
-Below are some commonly used methods for viewing DataFrame information. Which method to use depends on the type of information you want to obtain.
+Here are some of the most useful attributes and methods for inspecting a `DataFrame` depending on the type of information you need:
 
 1. **Viewing the shape of the DataFrame**: Use the `.shape` attribute to quickly view the number of rows and columns in the DataFrame.
    ```python
@@ -121,9 +121,9 @@ Below are some commonly used methods for viewing DataFrame information. Which me
 
 ### Other Data Structures
 
-Pandas also supports some other data structures, but they are used much less frequently than DataFrames. So we won't go into detail about other data types. We'll only briefly illustrate using Series as an example:
+Pandas also provides other data structures, though they are used less frequently than `DataFrame`. We will only briefly highlight the `Series` object:
 
-A Series is a one-dimensional labeled array that can hold any data type (integers, strings, floating-point numbers, Python objects, etc.). Each Series object has an index, through which individual data items in the array can be accessed. All data items in a Series must be of the same data type. Once created, the length of a Series is fixed and cannot be changed. However, the data within it can be modified. A Series can have axis labels, and you can use labels to access data.
+A `Series` is a one-dimensional labeled array capable of holding any data type. It represents a single column of data. Like a `DataFrame`, it has an index that allows for label-based lookup. While a `Series` is size-immutable (its length cannot be changed once created), its values are mutable and can be modified in place.
 
 ```python
 import pandas as pd
@@ -138,13 +138,13 @@ print(s['c'])  # Output: 5
 
 ## Reading and Writing Files and Databases
 
-Pandas provides a variety of powerful functions for reading different types of files, making data import simple and efficient. These functions can handle various common data formats, such as CSV, Excel, JSON, HTML, and SQL databases.
+Pandas provides a rich set of I/O functions that make importing and exporting data simple and efficient. It supports a wide variety of common file formats and databases, including CSV, Excel, JSON, HTML, and SQL.
 
 ### Reading and Writing CSV and TSV Files
 
-CSV (Comma-Separated Values) and TSV (Tab-Separated Values) files are the most common text file formats for storing tabular data. In these files, data is stored in rows and columns. In CSV format, columns are separated by commas; in TSV format, columns are separated by tabs. We can use the `pd.read_csv()` function to read both types of files by simply specifying the appropriate delimiter.
+CSV (Comma-Separated Values) and TSV (Tab-Separated Values) are the most common plain-text formats for storing tabular data. In a CSV file, columns are separated by commas, whereas in a TSV file, they are separated by tabs. The `pd.read_csv()` function can read both formats simply by configuring the delimiter.
 
-Parameters of the `pd.read_csv()` function include:
+Key parameters of `pd.read_csv()` include:
 - `filepath_or_buffer`: The path to the file or a file-like object.
 - `sep`: The field delimiter, default is `,`.
 - `header`: The row number used as the column names, default is `0` (first row).
@@ -167,7 +167,7 @@ df = pd.read_csv('data.tsv', sep='\t')
 print(df)
 ```
 
-Since the data file has a header, which is `Name	Age	City`, the `header` parameter uses its default value of `0`. If the data in the file does not have a header, use `header=None` as the parameter. You can also add another parameter `names=['Name', 'Age', 'City']` to specify the column names for the read data.
+Because the input file includes a header line, we rely on the default `header=0`. If the file does not contain header names, you should specify `header=None` and pass a list of column names using the `names` parameter (e.g., `names=['Name', 'Age', 'City']`).
 
 The output of the program above is:
 
@@ -177,7 +177,7 @@ The output of the program above is:
 1   宋外麦   19    北京
 ```
 
-Writing tabular data to a text file is very similar to reading, using the `pd.to_csv()` function. The parameters of this function are also similar to those of the `pd.read_csv()` function:
+Exporting data to a text file is just as straightforward using the `to_csv()` method. Its parameters mirror those of `read_csv()`:
 
 - `path_or_buf`: The file path or a file-like object. If no path is specified, the result is returned as a string.
 - `sep`: The delimiter between fields, default is comma `,`.
@@ -186,7 +186,7 @@ Writing tabular data to a text file is very similar to reading, using the `pd.to
 - `columns`: A list of column names to write to the file.
 - `encoding`: Specifies the encoding format of the file, default is `'utf-8'`.
 
-Suppose we want to save the data read above into a CSV file. Simply call the following line:
+To save a `DataFrame` as a CSV file, call:
 
 ```python
 df.to_csv('my_data.csv', index=False)
@@ -194,7 +194,7 @@ df.to_csv('my_data.csv', index=False)
 
 ### Reading and Writing Excel Files
 
-Using Pandas, reading and writing Excel files is very simple. However, Pandas itself cannot parse Excel; it relies on other libraries to read and write Excel files. Therefore, we need to install the following libraries:
+Pandas also supports reading and writing Microsoft Excel files. Since Pandas relies on external engines to parse Excel formats, you will need to install helper libraries first:
 
 ```sh
 # For handling .xlsx files
@@ -203,7 +203,7 @@ pip install pandas openpyxl
 pip install pandas xlrd
 ```
 
-After that, you can use the `to_excel()` and `read_excel()` functions to write and read `.xls` and `.xlsx` format files. The parameters of these two functions are very similar to `to_csv()` and `read_csv()`. The main difference is the additional `sheet_name` parameter, which specifies the name of the worksheet, defaulting to `"Sheet1"`. Here is a simple example:
+Once installed, you can use `read_excel()` and `to_excel()` to handle `.xls` and `.xlsx` files. Their arguments are very similar to those of the CSV methods, with the addition of the `sheet_name` parameter (which specifies the target worksheet and defaults to `'Sheet1'`):
 
 ```python
 import pandas as pd
@@ -228,13 +228,13 @@ The program above writes the DataFrame data to an Excel file, and then reads the
 
 ### Reading and Writing SQL Databases
 
-To read and write databases with Pandas, you also need to install the required modules first:
+To connect Pandas to databases, install the database connector libraries first:
 
 ```sh
 pip install sqlalchemy pymysql pyhive
 ```
 
-Pandas uses the `read_sql`, `read_sql_query`, or `read_sql_table` functions to read data from a database. First, you need to create a SQLAlchemy engine object, which represents the database connection.
+Pandas provides `read_sql()`, `read_sql_query()`, and `read_sql_table()` to query databases. These functions require a SQLAlchemy connection engine:
 
 ```python
 from sqlalchemy import create_engine
@@ -246,7 +246,7 @@ engine = create_engine('sqlite:///mydatabase.db')
 # For Hive database, similar code: engine = create_engine('hive://hostname:port/database')
 ```
 
-Next, use the `read_sql` function or its variants to read data from the database:
+Once the engine is created, you can query tables or run custom SQL commands:
 
 ```python
 import pandas as pd
@@ -258,27 +258,27 @@ df = pd.read_sql("SELECT * FROM my_table", con=engine)
 df = pd.read_sql_table("my_table", con=engine)
 ```
 
-Use the `to_sql` method to write the contents of a DataFrame to a database table:
+Use the `to_sql()` method to write `DataFrame` contents to a database table:
 
 ```python
 df.to_sql("my_table", con=engine, if_exists='replace', index=False)
 ```
 
-Here, the `if_exists` parameter controls the behavior when the table already exists. If set to `'fail'`, it raises an error if the table exists; `'replace'` means replace the existing table; `'append'` means add the data to the existing table.
+The `if_exists` parameter controls the behavior if the target table already exists: `'fail'` raises an error, `'replace'` overwrites the table, and `'append'` appends the new rows.
 
-The database URL format depends on the type of database being used. It typically includes the username, password, host, port, and database name. When writing a DataFrame to a database, ensure that the structure of the DataFrame is compatible with the target database table.
+Ensure the connection string matches your database backend (incorporating username, password, host, port, and database name), and verify that the `DataFrame` schema matches the table structure.
 
-### Reading and Writing Other File Types
+### Other File Formats
 
-In addition to the data files and databases mentioned above, Pandas also supports some other file types, such as JSON, HTML, etc. However, these are used less frequently, so we will not cover them in detail.
+Pandas also supports JSON, HTML tables, XML, parquet, and more. Their usage pattern is similar (e.g., `read_json()` and `to_json()`), and you can explore them in the official Pandas documentation.
 
 
 
-## Reading Data from a DataFrame
+## Selecting and Querying Data
 
-### Reading Columns
+### Selecting Columns
 
-You can use column names to select data from one or more columns. For example:
+You can select columns using single strings or lists of column names:
 
 ```python
 # Select a single column by column name:
@@ -288,9 +288,9 @@ series = df['Name']
 new_df = df[['Name', 'Age']]
 ```
 
-### Reading Rows
+### Selecting Rows
 
-There are two ways to read row data: by index (loc) or by row number (iloc):
+You can retrieve rows using label-based indexing with `.loc[]` or integer position-based indexing with `.iloc[]`:
 
 ```python
 import pandas as pd
@@ -312,11 +312,11 @@ print(df.iloc[0, 2])   # Output the first and third rows
 print(df.loc['涿郡'])   # Output the two rows with '涿郡' as the index
 ```
 
-It is important to note that the data index may contain duplicate values, so using the index may retrieve multiple rows with that index.
+Note: If your DataFrame index contains duplicate labels, `.loc[]` will return multiple rows matching that label.
 
 ### Slicing
 
-DataFrame slicing is very similar to list slicing. Typically, tabular data has many rows and few columns, so slicing is mainly used for selecting rows. For example:
+DataFrame slicing is very similar to list slicing. Because tabular data typically contains far more rows than columns, standard bracket slicing defaults to selecting rows:
 
 ```python
 import pandas as pd
@@ -334,9 +334,9 @@ print(df[:2])           # Slice the first two rows
 print(df.iloc[:2, 1:])  # Slice the first two rows and the last two columns
 ```
 
-### Conditional Selection
+### Boolean Indexing (Filtering)
 
-We can also use conditional expressions to select rows that meet specific criteria:
+You can filter rows by passing boolean conditions inside the brackets:
 
 ```python
 import pandas as pd
@@ -355,7 +355,7 @@ print(df[df['Age'] > 25] & df['City'] == '南阳'])  # Select rows where age is 
 print(df[df['Age'] > 25]['Name'])  # Combine row condition with column selection
 ```
 
-### Accessing Individual Data Points
+### Accessing a Single Value
 
 We can use `at` with the index and column name, or `iat` with the row and column numbers, to access a single element:
 
@@ -381,11 +381,11 @@ print("Liu Biao's death year:", liubiao_died)
 
 ### Iteration
 
-In programs, most of the time you won't just read a single data point from a DataFrame. Instead, you will need to iterate through and process each piece of data in the DataFrame using loops or similar methods.
+In real-world applications, you often need to iterate over the rows of a `DataFrame` to perform row-by-row computations or logic.
 
-#### Directly Iterating Over Columns
+#### Iterating Over Columns
 
-Iterating directly over a DataFrame actually iterates over its column names. For example:
+Iterating directly over a `DataFrame` yields its column names. To access the underlying series, look them up by column name:
 
 ```python
 import pandas as pd
@@ -400,11 +400,11 @@ for col in df:
 # Column: B, Data: [4, 5, 6]
 ```
 
-However, in actual programs, you will more often need to process data row by row. Row iteration has several main methods.
+For row-by-row iteration, Pandas provides several specialized methods.
 
 #### Iterating Rows with iterrows
 
-`iterrows()` is a generator that yields a tuple (index, Series) for each row in the DataFrame. This is the most commonly used method for row iteration.
+`iterrows()` is a generator that yields an `(index, Series)` tuple for each row. It is simple but can be slow for large DataFrames because it constructs a new `Series` for each row.
 
 ```python
 import pandas as pd
@@ -424,7 +424,7 @@ This method may not be very efficient for large DataFrames, as each row returns 
 
 #### Iterating Rows with itertuples
 
-`itertuples()` is another generator that yields a named tuple for each row in the DataFrame. This method is generally faster than `iterrows()`.
+`itertuples()` yields a named tuple for each row, which is significantly faster and more memory-efficient than `iterrows()`:
 
 ```python
 import pandas as pd
@@ -437,12 +437,12 @@ for row in df.itertuples():
 # Output is identical to the example above
 ```
 
-`itertuples()` is faster than `iterrows()`, but note that the row index is returned as the `Index` attribute in `itertuples()`.
+Note that the row's index is accessed via the `.Index` attribute of the named tuple.
 
 
 #### Using the apply() Function
 
-We can also use higher-order functions to process each piece of data in a DataFrame. Although the `apply()` function is not specifically designed for iteration, it can be used to perform operations on each row or column of a DataFrame.
+Alternatively, you can use `.apply()` to apply a function across an axis (rows or columns). This is often cleaner and more idiomatic than explicit loops:
 
 ```python
 import pandas as pd
@@ -463,7 +463,7 @@ df.apply(process, axis=1)
 
 ### Adding Columns
 
-You can add new columns to the data by using new column names:
+You can add a new column by assigning values to a new column name:
 
 ```python
 import pandas as pd
@@ -487,7 +487,7 @@ Output:
 
 ### Adding Rows
 
-Earlier versions of Pandas typically used the `append` method to add data, but this method has been deprecated. The recommended approach now is to use the `concat` function to add new rows to a DataFrame. The data for the new rows should be provided as a dictionary whose keys correspond to the DataFrame's column names:
+Note: The `append()` method has been deprecated in recent versions of Pandas. The modern, recommended way to add rows is to create a new `DataFrame` and concatenate it with the original using `pd.concat()`:
 
 ```python
 # Create a DataFrame containing multiple new rows
@@ -497,13 +497,11 @@ new_rows = pd.DataFrame({'A': [5, 6], 'B': [8, 9], 'C': [11, 12]})
 df = pd.concat([df, new_rows], ignore_index=True)
 ```
 
-### Deleting Data
+### Deleting Rows and Columns
 
-#### Deleting Rows and Columns
+To delete rows or columns, use `df.drop()`. The `labels` parameter specifies the targets to remove, and the `axis` parameter defines whether they are rows (`axis=0` or `'index'`) or columns (`axis=1` or `'columns'`):
 
-Pandas uses the `df.drop()` function to delete rows or columns. Its most commonly used parameters are `labels` and `axis`. `labels` represents the label(s) of the row(s) or column(s) to delete. `axis` specifies whether to delete rows or columns: `axis=0` (or `axis='index'`) means delete rows; `axis=1` (or `axis='columns'`) means delete columns.
-
-As a demonstration, let's first create a DataFrame:
+Let's illustrate with an example DataFrame:
 
 ```python
 import pandas as pd
@@ -564,7 +562,7 @@ Output:
 
 #### Conditional Deletion
 
-This is essentially selecting data that does not satisfy a condition. Continuing with the data from the example above, running the following code will delete the rows where column 'A' equals 4:
+You can drop rows conditionally by filtering them out. For example, to remove all rows where column `A` equals 4, select all rows where `A != 4`:
 
 ```python
 print(df[df['A'] != 4])
@@ -579,7 +577,7 @@ Output:
 2  3  NaN  12
 ```
 
-Pandas also has a dedicated function `df.dropna()` for deleting all rows containing NaN:
+To quickly remove all rows containing missing values (`NaN`), use `df.dropna()`:
 
 ```python
 print(df.dropna())
@@ -595,7 +593,7 @@ Output:
 4  4  8.0  13
 ```
 
-The `df.drop_duplicates()` function is used to delete all duplicate rows:
+To remove duplicate rows, use `df.drop_duplicates()`:
 
 ```python
 print(df.drop_duplicates())
@@ -615,9 +613,9 @@ Output:
 
 ## Data Merging
 
-Pandas has several methods for merging two or more DataFrames. The `concat` method mentioned above is the most basic, simply concatenating two DataFrames together. Additionally, you can use the `merge()` and `join()` methods. Both are similar to JOIN operations in SQL, combining rows from two DataFrames based on one or more keys. The difference is that `merge()` merges based on the data in specified columns, while `join()` merges based on the index.
+Pandas provides powerful tools to combine multiple DataFrames. While `pd.concat()` simply stacks or glues DataFrames together, `pd.merge()` and `.join()` perform relational database-style joins. Specifically, `pd.merge()` joins on key columns, whereas `.join()` joins on row indices.
 
-The parameters of `pd.merge(left, right, on=None, left_on=None, right_on=None, how='inner')` are as follows:
+Key parameters of `pd.merge()` include:
 - `left` and `right`: The two DataFrames to merge.
 - `on`: The column name to join on. If not specified, Pandas uses the common column names in both DataFrames.
 - `left_on` and `right_on`: The join keys for the left and right DataFrames respectively, used when column names differ.
@@ -637,7 +635,7 @@ result = pd.merge(df1, df2, on='key')
 print(result)
 ```
 
-The program above merges based on the data in the 'key' column. If a row's 'key' value exists in both tables, that row appears in the merge result. The merge result includes all columns from both tables. The merge result is as follows:
+This example performs an inner join on the `key` column. Rows with matching keys in both DataFrames are kept, and columns from both tables are combined:
 
 ```
   key   A   B
@@ -645,7 +643,7 @@ The program above merges based on the data in the 'key' column. If a row's 'key'
 1  K1  A1  B1
 ```
 
-The parameters of `DataFrame.join(other, on=None, how='left')` are as follows:
+Key parameters of `.join()` include:
 - `other`: One or more DataFrames to join.
 - `on`: The column name or index level name to join on. If joining on columns, that column must be the index column.
 - `how`: Specifies how to merge. Values can be `'left'` (default), `'right'`, `'outer'`, or `'inner'`, with the same usage as the `how` parameter in the `merge()` function.
@@ -666,7 +664,7 @@ result = df3.join(df4, how='outer')
 print(result)
 ```
 
-The program above merges data based on the index. Since the merge method is set to `'outer'`, all rows from both the left and right tables appear in the result. Missing data is represented as NaN. For example, for row K1, the data only exists in the left table, so there is no corresponding data in the columns originally from the right table, and thus its data in columns C and D is NaN. The merge result is as follows:
+This example joins on the indices of the DataFrames. Since `how='outer'`, all indices from both tables are kept. Missing values are filled with `NaN`:
 
 ```
       A    B    C    D
@@ -678,9 +676,9 @@ K3  NaN  NaN   C3   D3
 
 ## Data Grouping
 
-We briefly introduced the grouping functionality of DataFrames in the [Statistics and Counting](counter#pandas-库) section. Here, we will explain the related functionality in more detail.
+We briefly introduced the grouping functionality of DataFrames in the [Statistics and Counting](counter#pandas-library) section. Here, we will explain the related functionality in more detail.
 
-Data grouping is typically implemented using the `groupby` method. It can group data by the values in one or more columns, and then apply aggregation functions, transformation functions, or filtering operations to each group. The `groupby` method `DataFrame.groupby(by=None, axis=0, ...)` has two main parameters: `by`, the column name or list of column names to group by, which can also be a mapping or function; and `axis`, which specifies the axis to group on, with 0 (default) meaning group by rows and 1 meaning group by columns.
+Grouping data is done via the `groupby()` method, which partitions a `DataFrame` into groups based on key columns. You can then apply aggregation, transformation, or filtering functions to each group. The two primary arguments are `by` (the column or list of columns to group by) and `axis` (which defaults to `0` for grouping rows).
 
 Suppose we have the following DataFrame:
 
@@ -694,12 +692,13 @@ df = pd.DataFrame(data)
 ```
 
 Next, we can group the data by the `Name` column:
+Next, we group the data by the `Name` column:
 
 ```python
 grouped = df.groupby('Name')
 ```
 
-`grouped` is the grouping result. We can then perform various statistics on this grouping result, such as sum (`sum()`), mean (`mean()`), maximum (`max()`), variance (`std()`), etc.:
+Once grouped, you can compute group-level statistics like sum, mean, max, or standard deviation:
 
 ```python
 # Calculate the average score for each name
@@ -732,7 +731,7 @@ print(mean_scores)
 # 许褚   魏         8.25
 ```
 
-Using the `agg` method, we can apply multiple aggregation functions to the grouped data simultaneously:
+Use `.agg()` to apply multiple aggregation functions to different columns at the same time:
 
 ```python
 grouped = df.groupby('Name')
@@ -748,7 +747,7 @@ print(grouped_agg)
 # 许褚    8.25  8.0  8.5
 ```
 
-In addition to aggregation, you can also transform and filter grouped data:
+You can also transform or filter groups based on custom logic:
 
 ```python
 # Standardize scores within each group
@@ -761,11 +760,11 @@ grouped_filter = grouped.filter(lambda x: x['Score'].mean() > 6)
 
 ## Data Reshaping
 
-Data reshaping refers to rearranging the structure of existing data to obtain a format more suitable for specific analysis or operations. Common data reshaping methods include pivoting, stacking, and melting.
+Data reshaping rearranges the layout of a `DataFrame` to make it more suitable for analysis or visualization. Common techniques include pivoting, stacking/unstacking, and melting.
 
 ### Pivot
 
-The `pivot` method can rearrange a DataFrame to generate a "pivot table," similar to pivot tables in Excel. The `DataFrame.pivot(index=None, columns=None, values=None)` method has three main parameters: `index` specifies the index of the new DataFrame; `columns` specifies the column names of the new DataFrame; `values` specifies the values to fill the new DataFrame.
+The `pivot()` method reshapes data to create a pivot table (similar to Excel). It uses three key arguments: `index` (the column to use as row labels), `columns` (the column to use as new column headers), and `values` (the column to populate the table cells).
 
 Suppose we have the following DataFrame:
 
@@ -805,7 +804,7 @@ date
 
 ### Stacking and Unstacking
 
-The `stack` and `unstack` methods are used to convert columns to rows (stacking) or rows to columns (unstacking). Converting columns to rows produces a Series with a MultiIndex.
+The `stack()` and `unstack()` methods convert between wide and tall formats: `stack()` pivots column labels into row index levels (resulting in a multi-indexed Series), while `unstack()` does the opposite.
 
 ```python
 # Convert columns to rows
@@ -836,12 +835,12 @@ dtype: object
 
 ### Melting
 
-Melting is a data reshaping technique used to convert data from wide format to long format. This operation is typically used to prepare data for analysis, plotting, or other specific types of processing.
+Melting is the inverse of pivoting. It reshapes a `DataFrame` from a wide format to a long format, which is highly useful for plotting and database storage.
 
 - **Wide Format**: In this format, observations for each subject (e.g., time points, entities, etc.) are distributed across multiple columns.
 - **Long Format**: In this format, each row is a single observation, containing one or more identifier (ID) columns and a value column. Multiple observations for each subject are distributed across multiple rows.
 
-The parameters of `pd.melt(frame, id_vars=None, value_vars=None, var_name=None, value_name='value')` are:
+Key parameters of `pd.melt()` include:
 - `frame`: The DataFrame to melt.
 - `id_vars`: The column(s) to keep unchanged during the melt (identifier columns).
 - `value_vars`: The column(s) to melt into rows.
@@ -876,13 +875,13 @@ Running the program above, the data in `df_melted` is:
 
 ## Data Cleaning
 
-Data cleaning is the process of converting raw data into a format that is easy to analyze. It includes handling missing values, duplicate data, data type conversion, data normalization, and many other aspects.
+Data cleaning prepares raw, messy data for analysis. It includes handling missing values, removing duplicates, converting data types, and normalizing formats.
 
 ### Handling Missing Values
 
-Handling missing values is an important aspect of data cleaning. Missing values may exist in the data as NaN (Not a Number), None, or other forms. Properly handling missing values is crucial for effective data analysis.
+Missing data commonly appears as `NaN` (Not a Number) or `None`. Identifying and resolving missing values is a crucial first step in any data pipeline.
 
-Before handling missing values, you first need to identify them in the data. You can use the `isna()` or `isnull()` methods to check for missing values.
+To check for missing values, use `.isna()` or `.isnull()`:
 
 ```python
 import pandas as pd
@@ -906,7 +905,7 @@ dtype: int64
 
 ```
 
-The simplest way to handle missing values is to delete them, as in the program below:
+The simplest way to handle missing values is to drop them:
 
 ```python
 # Delete rows containing missing values
@@ -916,7 +915,7 @@ df.dropna(axis=0, inplace=True)
 df.dropna(axis=1, inplace=True)
 ```
 
-When the amount of data is small, we may not want to delete any data. In such cases, filling in missing values can be considered. The simplest method is to fill with a constant: `df.fillna(value, inplace=True)`. However, in real-world projects, it is more common to fill with the mean or median:
+If dropping data is not an option, you can fill in missing values using `.fillna()`. You can fill them with a static default value, or dynamically using the column's mean or median:
 
 ```python
 df.fillna(df.mean(), inplace=True)    # Fill with the mean
@@ -925,11 +924,11 @@ df.fillna(df.median(), inplace=True)  # Fill with the median
 
 ### Removing Duplicate Data
 
-Duplicate data can affect analysis results. You can use the `drop_duplicates()` method introduced earlier to remove duplicate rows.
+Duplicate records can skew statistics. Use `drop_duplicates()` to keep only unique rows.
 
 ### Data Type Conversion
 
-`astype()` is the main method for data type conversion. It can convert the data type of a DataFrame column or the entire DataFrame to a specified type. For example:
+To cast columns to different data types, use `astype()`:
 
 ```python
 import pandas as pd
@@ -945,10 +944,10 @@ df = df.astype({'A': int, 'B': float})
 
 ### Data Normalization
 
-Data normalization refers to converting data into a standard format for easier analysis and processing. Data normalization typically includes the following aspects:
+Data normalization standardizes values to make comparisons and computations consistent. Common tasks include:
 
 #### String Normalization
-String data may come in various formats and needs to be uniformly normalized. Common string normalizations include case conversion, whitespace removal, etc.:
+String data often has inconsistent casing or trailing spaces. You can use `.str` accessor methods to clean them up:
 
 ```python
 df['column'] = df['column'].str.lower()  # Convert to lowercase
@@ -962,7 +961,7 @@ df['column'] = df['column'].str.replace('old_text', 'new_text')
 
 #### Numeric Normalization
 
-For numeric data, normalization typically includes scaling and transformation operations to make the data conform to a specific range or format. Common numeric normalization methods include:
+Numerical features are often scaled to a standard range (like 0 to 1) or standardized to have a mean of 0 and a standard deviation of 1:
 
 ```python
 
@@ -975,7 +974,7 @@ df['standardized'] = (df['column'] - df['column'].mean()) / df['column'].std()
 
 #### Date-Time Normalization
 
-Date and time data may exist in multiple formats and need to be converted to a unified format.
+Dates and times should be parsed into `datetime` objects to allow component extraction and time-series calculations:
 
 ```python
 
@@ -989,7 +988,7 @@ df['month'] = df['date'].dt.month
 
 #### Categorical Data Normalization
 
-For categorical data, ensure that all categories are consistent, error-free, and non-redundant.
+Categorical columns should be cleaned of redundant labels and cast to Pandas' optimized `category` data type for memory savings:
 
 ```python
 # Unify category names using mapping or replacement methods
@@ -1002,11 +1001,11 @@ df['category'] = df['category'].astype('category')
 
 ### Creating Derived Variables
 
-Creating derived variables (also called feature engineering) refers to generating new columns from existing data. These new columns are typically the result of mathematical operations, logical operations, or more complex function transformations on existing columns. Derived variables are very important for data analysis, visualization, and even building machine learning models.
+Creating derived columns (feature engineering) means generating new variables from existing columns. This is essential for unlocking deeper insights and training machine learning models.
 
 #### Based on Mathematical Operations
 
-You can perform various mathematical operations on columns in a DataFrame to create new derived columns.
+You can perform element-wise arithmetic directly on columns:
 
 ```python
 import pandas as pd
@@ -1031,7 +1030,7 @@ df['A_greater_than_2'] = df['A'] > 2
 ```
 
 ### Renaming Columns
-To improve readability, sometimes you need to rename the columns of a DataFrame. The `rename` method is the primary way to rename columns. You can specify a mapping from old column names to new column names by passing a dictionary.
+To rename columns, use the `.rename()` method with a dictionary mapping old names to new names:
 
 ```python
 import pandas as pd
@@ -1048,7 +1047,7 @@ df.rename(columns={'A': 'a'}, inplace=True)
 df.rename(columns={'B': 'b', 'a': 'alpha'}, inplace=True)
 ```
 
-Another way to rename columns is to directly modify the `columns` attribute of the DataFrame.
+You can also assign a complete list of names directly to the `.columns` attribute:
 
 ```python
 df.columns = ['new_name1', 'new_name2']
@@ -1056,7 +1055,7 @@ df.columns = ['new_name1', 'new_name2']
 
 This method is convenient when you know all the column names and want to replace them all at once.
 
-The `set_axis` method can also be used to rename columns, allowing you to set both row indices and column names simultaneously.
+Alternatively, you can use `.set_axis()` to rename columns or index labels:
 
 ```python
 df = df.set_axis(['new_name1', 'new_name2'], axis=1, inplace=False)
@@ -1064,7 +1063,7 @@ df = df.set_axis(['new_name1', 'new_name2'], axis=1, inplace=False)
 
 ### Data Sorting
 
-Data sorting is a basic data operation used to arrange data based on the values of one or more columns. Sorting can be ascending or descending. Below are the main methods and applications for sorting DataFrame data.
+Use `.sort_values()` to sort rows by the values of one or more columns:
 
 `sort_values` is the most commonly used sorting method in Pandas. It can sort a DataFrame based on the values of one or more columns.
 
