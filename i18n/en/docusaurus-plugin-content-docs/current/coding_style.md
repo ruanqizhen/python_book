@@ -109,11 +109,11 @@ print(result)
 The main issue with this code is its obscure naming. By using descriptive variable and function names, we make the code self-documenting and more readable:
 
 ```python
-# 方案一：计算矩形面积（与 length/width 对应）
+# Option 1: Calculate rectangle area (corresponding to length/width)
 def calculate_rectangle_area(length, width):
     return length * width
 
-# 方案二：计算三角形面积（与公式对应）
+# Option 2: Calculate triangle area (corresponding to the formula)
 def calculate_triangle_area(base, height):
     return base * height / 2
 ```
@@ -135,10 +135,10 @@ if condition:
 Elegant code demonstrates technical maturity and design sense. In Python, utilizing expressive constructs like list comprehensions is often much more elegant and readable than writing out verbose loops:
 
 ```python
-# 使用列表推导式
+# Using list comprehension
 squares = [x * x for x in range(10)]
 
-# 传统循环方式
+# Traditional loop approach
 squares = []
 for x in range(10):
     squares.append(x * x)
@@ -160,15 +160,15 @@ def process_data(data):
         if data.is_valid():
             for item in data.items:
                 if item.is_active():
-                    # 处理每个激活的项目
+                    # Process each active item
                     pass
                 else:
-                    # 处理非激活的项目
+                    # Process inactive items
                     pass
         else:
-            print("数据无效")
+            print("Invalid data")
     else:
-        print("无数据提供")
+        print("No data provided")
 ```
 
 Using early returns (guard clauses) flattens the control flow, making the main logic easy to scan:
@@ -176,18 +176,18 @@ Using early returns (guard clauses) flattens the control flow, making the main l
 ```python
 def process_data(data):
     if not data:
-        print("无数据提供")
+        print("No data provided")
         return
     if not data.is_valid():
-        print("数据无效")
+        print("Invalid data")
         return
 
     for item in data.items:
         if item.is_active():
-            # 处理每个激活的项目
+            # Process each active item
             pass
         else:
-            # 处理非激活的项目
+            # Process inactive items
             pass
 ```
 
@@ -207,14 +207,14 @@ Your code should explicitly express its intent rather than relying on implicit b
 For example, when converting user input, you should explicitly handle potential errors to prevent the application from failing or entering an undefined state:
 
 ```python
-user_input = input("请输入一个数据：")
+user_input = input("Please enter data: ")
 
-# 明确的错误处理
+# Explicit error handling
 try:
     number = int(user_input)
 except ValueError:
-    print("输入错误！输入不是一个有效的数值。")
-    # 可以添加更多的错误处理逻辑，如请求重新输入
+    print("Input error! The input is not a valid number.")
+    # More error handling logic can be added here, such as requesting re-input
 else:
-    print(f"你输入的数是：{number}")
+    print(f"The number you entered is: {number}")
 ```

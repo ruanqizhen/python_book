@@ -177,8 +177,8 @@ For example, running the following program shows the characteristics of repr():
 
 ```python
 x = "abc"
-print(str(x))   # 输出是没有引号的，这就是字符串的打印结果： abc
-print(repr(x))  # 输出是带有引号的，表示如果的对象是一个字符串： 'abc'
+print(str(x))   # Output has no quotes, which is the printed result of a string: abc
+print(repr(x))  # Output has quotes, indicating that the object is a string: 'abc'
 ```
 
 To define the `repr()` behavior for your own classes, implement the magic method `__repr__()`. When `repr(obj)` is called, Python executes this method under the hood:
@@ -191,15 +191,15 @@ class Test:
     def __repr__(self):
         return f'Test({self.value!r})'
 
-# 创建 Test 对象
+# Create a Test object
 obj = Test('hello world')
 
-# 使用 repr() 函数
-print(repr(obj))  # 输出：Test('hello world')
+# Use the repr() function
+print(repr(obj))  # Output: Test('hello world')
 
-# 内置类型的例子
-print(repr(123))        # 输出：'123'
-print(repr([1, 2, 3]))  # 输出：'[1, 2, 3]'
+# Examples of built-in types
+print(repr(123))        # Output: '123'
+print(repr([1, 2, 3]))  # Output: '[1, 2, 3]'
 ```
 
 Returning a format that mirrors the constructor syntax is a Python best practice, as it allows developers to easily inspect and recreate the object during debugging.
@@ -243,7 +243,7 @@ This approach is extremely fast but will fail to complete harder puzzles where c
 The program is as follows:
 
 ```python
-# 用一个二维列表表示数独问题。0 表示空格，其它数字是问题给定的初始数字
+# Represent the Sudoku puzzle with a 2D list. 0 represents an empty cell, other numbers are the initial numbers given
 sudoku_puzzle = [
     [2, 0, 0, 0, 0, 0, 6, 9, 0],
     [0, 5, 0, 0, 0, 3, 0, 0, 0],
@@ -257,12 +257,12 @@ sudoku_puzzle = [
 ]
 
 def get_block_numbers(position, grid):
-    """返回一个 3x3 区域内所有已经存在的所有数字。"""
+    """Return all numbers already existing in a 3x3 region."""
     block_row, block_col = position[0] // 3, position[1] // 3
     return [grid[r + 3 * block_row][c + 3 * block_col] for r in range(3) for c in range(3)]
 
 def get_possible_numbers(position, grid):
-    """返回当前位置，可以填写的所有数字"""
+    """Return all possible numbers that can be filled in the current cell"""
     if sudoku_puzzle[position[0]][position[1]] > 0:
         return {sudoku_puzzle[position[0]][position[1]]}
 
@@ -275,7 +275,7 @@ def get_possible_numbers(position, grid):
     return all_numbers - used_numbers
 
 def solve_sudoku(grid):
-    """使用排除法解决数独问题"""
+    """Solve the Sudoku puzzle using the elimination method"""
     solved = False
     while not solved:
         solved = True
@@ -287,11 +287,11 @@ def solve_sudoku(grid):
                         grid[i][j] = possible_numbers.pop()
                         solved = False
 
-    print("答案：")
+    print("Answer:")
     for row in grid:
         print(row)
 
-# 主程序入口
+# Main program entry
 solve_sudoku(sudoku_puzzle)
 ```
 
@@ -304,7 +304,7 @@ While computationally more expensive than the elimination method, backtracking g
 The program is as follows:
 
 ```python
-# 用一个二维列表表示数独问题。0 表示空格，其它数字是问题给定的初始数字
+# Represent the Sudoku puzzle with a 2D list. 0 represents an empty cell, other numbers are the initial numbers given
 sudoku_puzzle = [
     [0, 0, 0, 0, 0, 0, 2, 0, 8],
     [9, 2, 0, 0, 0, 4, 0, 0, 0],
@@ -317,21 +317,21 @@ sudoku_puzzle = [
     [2, 0, 9, 0, 0, 0, 0, 0, 0],
 ]
 
-# 列出 9*9 宫格内的所有位置，方便程序中使用
+# List all positions in the 9x9 grid for ease of use in the program
 all_positions = [(row, col) for row in range(9) for col in range(9)]
 
-# 为数独 9*9 宫格生成一个副本，用于保存答案
+# Generate a copy of the 9x9 Sudoku grid to save the solution
 solution = [row[:] for row in sudoku_puzzle]
 
 
 def get_block_numbers(position, grid):
-    """返回一个 3x3 区域内所有已经存在的所有数字。"""
+    """Return all numbers already existing in a 3x3 region."""
     block_row, block_col = position[0] // 3, position[1] // 3
     return [grid[r + 3 * block_row][c + 3 * block_col] for r in range(3) for c in range(3)]
 
 
 def get_possible_numbers(position, grid):
-    """返回当前位置，可以填写的所有数字"""
+    """Return all possible numbers that can be filled in the current cell"""
     if sudoku_puzzle[position[0]][position[1]] > 0:
         return [sudoku_puzzle[position[0]][position[1]]]
 
@@ -345,7 +345,7 @@ def get_possible_numbers(position, grid):
 
 
 def solve_sudoku(position_index, grid):
-    """使用递归方法解决数独问题"""
+    """Solve the Sudoku puzzle using recursion"""
     if position_index == 81:
         print("\nSolution:\n")
         for row in grid:
@@ -364,7 +364,7 @@ def solve_sudoku(position_index, grid):
     return False
 
 
-# 主程序入口
+# Main program entry
 solve_sudoku(0, solution)
 ```
 
@@ -381,7 +381,7 @@ A simple recursive search can find solutions by combining numbers one by one. It
 ```python
 from typing import List, Callable, Dict
 
-# 定义运算符和所对应的运算的 Lambda 函数
+# Define the operators and their corresponding lambda functions
 Operators: Dict[str, Callable[[float, float], float]] = {
     "+": lambda a, t: t - a,
     "-": lambda a, t: a - t,
@@ -403,7 +403,7 @@ def calculate(numbers: List[int], target: float, message: str = ''):
             if result is not None:
                 calculate(remaining, result, f"{message}{num}{operator}(")
 
-# 运行测试：
+# Run test:
 calculate([3, 3, 8, 8], 24)
 ```
 

@@ -42,7 +42,7 @@ An **instance attribute** is unique to a specific object. It is created by assig
 
 ```python
 class Animal:
-    name = '旺财'
+    name = 'Buddy'
 
 dog = Animal()
 dog.age = 3
@@ -68,11 +68,11 @@ class Animal:
         self.species = species
 
 # Usage:
-dog = Animal("旺财", "狗")
-chick = Animal("花冠", "鸡")
+dog = Animal("Buddy", "Dog")
+chick = Animal("Feather", "Chicken")
 
-print(dog.name)       # Output: Wangcai
-print(chick.name)     # Output: Huaguan
+print(dog.name)       # Output: Buddy
+print(chick.name)     # Output: Feather
 ```
 
 In this code, the `__init__` method accepts the custom arguments `name` and `species`, binding them as instance attributes via `self.name` and `self.species`.
@@ -85,16 +85,16 @@ If a class attribute and an instance attribute share the same name, the instance
 
 ```python
 class Animal:
-    name = "动物"
+    name = "Animal"
     def __init__(self, name, species):
         self.name = name
         self.species = species
 
 # Usage:
-dog = Animal("旺财", "狗")
+dog = Animal("Buddy", "Dog")
 
 print(Animal.name)     # Output: animal - accessing class attribute via class name
-print(dog.name)        # Output: Wangcai - accessing instance attribute via object
+print(dog.name)        # Output: Buddy - accessing instance attribute via object
 ```
 
 To prevent confusion and avoid bugs, always access class attributes using the class name rather than an instance. This is especially important when dealing with mutable attributes, where in-place modifications can lead to unexpected behaviors:
@@ -170,15 +170,15 @@ class Animal:
         self.species = species
 
     def speak(self):
-        print("这是默认声音。")
+        print("This is the default sound.")
 
     def eat(self):
-        print(f"{self.name} 正在吃饭。")
+        print(f"{self.name} is eating.")
 
 # Usage:
-dog = Animal("旺财", "狗")
+dog = Animal("Buddy", "Dog")
 dog.speak()       # Output: This is the default sound.
-dog.eat()         # Output: Wangcai is eating.
+dog.eat()         # Output: Buddy is eating.
 ```
 
 Because instance methods are bound to specific object instances, they can read and write attributes unique to the instance they belong to.
@@ -204,8 +204,8 @@ class Animal:
     def get_total_animals(cls):
         return cls.total_animals
         
-cat = Animal("猫")
-dog = Animal("狗")
+cat = Animal("Cat")
+dog = Animal("Dog")
 
 # Using the class method
 print(Animal.get_total_animals())  # Output: 2
@@ -241,13 +241,13 @@ class Animal:
         return cls(species, age, gender)
 
 # Using the factory method to create an animal
-complex_animal = Animal.create_complex_animal("熊猫", 5, "雄性")
+complex_animal = Animal.create_complex_animal("Panda", 5, "Male")
 
 # Checking the attributes of the newly created complex animal
-print(f"种类：{complex_animal.species}；年龄：{complex_animal.age}；性别：{complex_animal.gender}")
+print(f"Species: {complex_animal.species}; Age: {complex_animal.age}; Gender: {complex_animal.gender}")
 
 # Output:
-# 种类：熊猫；年龄：5；性别：雄性
+# Species: Panda; Age: 5; Gender: Male
 ```
 
 ### Static Methods
@@ -299,28 +299,28 @@ class Animal:
         self.species = species
 
     def speak(self):
-        print(f"我是一只{self.species}")
+        print(f"I am a {self.species}")
 
 # Define the subclass
 class Dog(Animal):  # Specify the parent class name in parentheses to indicate inheritance
     def __init__(self, name, breed):
         # Call the parent class's constructor
-        super().__init__(species="狗")
+        super().__init__(species="Dog")
         self.name = name
         self.breed = breed
 
     # Override the parent class's method
     def speak(self):
-        print(f"我是一条{self.breed}，名叫：{self.name}。我会汪汪叫。")
+        print(f"I am a {self.breed} named {self.name}. I can bark.")
 
     # Subclass-specific method
     def wag_tail(self):
-        print(f"{self.name}正在摇尾巴。")
+        print(f"{self.name} is wagging its tail.")
 ```
 
 The subclass `Dog` inherits `Animal`'s properties. It overrides `__init__` and `speak()`, and defines a new subclass-specific method `wag_tail()`.
 
-Inside overridden methods, use the `super()` function to call the parent class's implementation. For example, `super().__init__(species="狗")` delegates the initialization of common attributes to the parent class.
+Inside overridden methods, use the `super()` function to call the parent class's implementation. For example, `super().__init__(species="Dog")` delegates the initialization of common attributes to the parent class.
 
 > [!TIP]
 > Always use `super()` instead of explicitly calling the parent class by name (e.g., `Animal.__init__(self)`). `super()` decouples the subclass from its specific parent, making inheritance paths easier to refactor, and is essential for resolving method resolution order (MRO) correctly in [multiple inheritance](multiple_inheritance) structures.
@@ -328,11 +328,11 @@ Inside overridden methods, use the `super()` function to call the parent class's
 We can instantiate and test our classes like this:
 
 ```python
-dog = Dog(name="旺财", breed="金毛猎犬")
-dog.speak()     # Output: I am a Golden Retriever named Wangcai. I can bark.
-dog.wag_tail()  # Output: Wangcai is wagging its tail.
+dog = Dog(name="Buddy", breed="Golden Retriever")
+dog.speak()     # Output: I am a Golden Retriever named Buddy. I can bark.
+dog.wag_tail()  # Output: Buddy is wagging its tail.
 
-cat = Animal(species="猫")
+cat = Animal(species="Cat")
 cat.speak()     # Output: I am a cat
 ```
 
@@ -400,11 +400,11 @@ Duck typing is derived from the phrase: *"If it walks like a duck, swims like a 
 ```python
 class Cat:
     def speak(self):
-        return "喵喵！"
+        return "Meow!"
 
 class Dog:
     def speak(self):
-        return "汪汪！"
+        return "Woof!"
 
 def animal_voice(animal):
     return animal.speak()
@@ -425,12 +425,12 @@ Class methods also support polymorphism. For example, we can invoke class method
 class Dog:
     @classmethod
     def speak(cls):
-        return f"{cls.__name__} 汪汪！"
+        return f"{cls.__name__} Woof!"
 
 class Cat:
     @classmethod
     def speak(cls):
-        return f"{cls.__name__} 喵喵！"
+        return f"{cls.__name__} Meow!"
 
 def animal_voice(classes):
     for c in classes:
@@ -440,8 +440,8 @@ def animal_voice(classes):
 animal_voice([Dog, Cat])
 
 # Output:
-# Dog 汪汪！
-# Cat 喵喵！
+# Dog Woof!
+# Cat Meow!
 ```
 
 ## Access Restrictions
@@ -460,7 +460,7 @@ class MyClass:
         self._protected_variable = "Protected"
     
     def _protected_method(self):
-        return "这是一个受保护方法"
+        return "This is a protected method"
 ```
 
 * **Double Underscore Name Mangling (`__variable`)**: If a name begins with a double underscore (and does not end with one), the interpreter performs **name mangling**, rewriting the attribute name to `_ClassName__variable`. This is not a security feature (you can still access it using the mangled name), but rather a mechanism to prevent naming collisions with subclass attributes:
@@ -471,7 +471,7 @@ class MyClass:
         self.__private_variable = "Private"
     
     def __private_method(self):
-        return "这是一个私有方法"
+        return "This is a private method"
 ```
 
 Because `__private_variable` is mangled to `_MyClass__private_variable`, attempting to access `obj.__private_variable` directly raises an `AttributeError`.
@@ -490,7 +490,7 @@ class Animal:
 
 
 def main():
-    animal = Animal("旺财")
+    animal = Animal("Buddy")
 
     # Not recommended to access class data directly
     # print(animal._name)
@@ -520,13 +520,13 @@ class Circle:
     def radius(self, value):
         """Set the radius of the circle, ensuring it is a positive number"""
         if value <= 0:
-            raise ValueError("半径必须是正数")
+            raise ValueError("Radius must be a positive number")
         self._radius = value
         
     @radius.deleter
     def radius(self):
         """Prevent deleting the radius attribute and print a message"""
-        print("半径属性不能被删除!")
+        print("Radius attribute cannot be deleted!")
         # If deletion is needed, call del self._radius
     
     @property
@@ -600,20 +600,20 @@ class Knight:
     name: str
     power: int
     skill: str
-    state: str = "生龙活虎"  # Supports setting default values
+    state: str = "Healthy"  # Supports setting default values
 ```
 
 We can instantiate and compare objects out of the box:
 
 ```python
 # Automatically generated __init__ method, supports positional or keyword arguments
-k1 = Knight("西门吹雪", 100, "一剑西来")
-k2 = Knight("西门吹雪", 100, "一剑西来")
-k3 = Knight("叶孤城", 95, "天外飞仙")
+k1 = Knight("Arthur", 100, "Excalibur")
+k2 = Knight("Arthur", 100, "Excalibur")
+k3 = Knight("Lancelot", 95, "Heavenly Strike")
 
 # 1. Automatically generated __repr__ method, clear and beautiful output
 print(k1)
-# Output: Knight(name='西门吹雪', power=100, skill='一剑西来', state='生龙活虎')
+# Output: Knight(name='Arthur', power=100, skill='Excalibur', state='Healthy')
 
 # 2. Automatically generated __eq__ comparison method, compares by field values
 print(k1 == k2)  # Output: True
@@ -623,7 +623,7 @@ print(k1 == k3)  # Output: False
 ### Why Should You Use Data Classes?
 
 1. **Eliminates Boilerplate**: Automates initialization, serialization, and equality check definitions.
-2. **Field Defaults**: Allows setting default values directly in annotations (e.g., `state: str = "生龙活虎"`).
+2. **Field Defaults**: Allows setting default values directly in annotations (e.g., `state: str = "Healthy"`).
 3. **Immutable Models**: Specify `@dataclass(frozen=True)` to make instance attributes read-only. Frozen data classes are hashable, meaning instances can be used as dictionary keys or set elements.
 4. **Tooling Integration**: Leveraging type hints makes data classes compatible with static type checkers (like mypy) and IDE autocomplete systems.
 

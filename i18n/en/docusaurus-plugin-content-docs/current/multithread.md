@@ -33,13 +33,13 @@ def print_numbers():
     for i in range(5):
         print(i)
 
-# 创建线程
+# Create thread
 thread = threading.Thread(target=print_numbers)
 
-# 启动线程
+# Start thread
 thread.start()
 
-# 等待线程结束
+# Wait for thread to finish
 thread.join()
 ```
 
@@ -52,18 +52,18 @@ import threading
 import time
 
 def worker():
-    # 获取当前线程的名称
+    # Get the name of the current thread
     current_thread_name = threading.current_thread().name
-    # 获取当前线程的标识
+    # Get the identifier of the current thread
     thread_ident = threading.get_ident()
     
-    print(f"{current_thread_name} (ID: {thread_ident}) 开始")
+    print(f"{current_thread_name} (ID: {thread_ident}) started")
     time.sleep(2)
-    print(f"{current_thread_name} (ID: {thread_ident}) 结束")
+    print(f"{current_thread_name} (ID: {thread_ident}) finished")
 
-# 创建两个线程，并给它们命名
-thread1 = threading.Thread(target=worker, name="线程1")
-thread2 = threading.Thread(target=worker, name="线程2")
+# Create two threads and name them
+thread1 = threading.Thread(target=worker, name="Thread-1")
+thread2 = threading.Thread(target=worker, name="Thread-2")
 
 thread1.start()
 thread2.start()
@@ -71,11 +71,11 @@ thread2.start()
 thread1.join()
 thread2.join()
 
-# 输出类似：
-# 线程1 (ID: 140173712739104) 开始
-# 线程2 (ID: 140173711678240) 开始
-# 线程1 (ID: 140173712739104) 结束
-# 线程2 (ID: 140173711678240) 结束
+# Output similar to:
+# Thread-1 (ID: 140173712739104) started
+# Thread-2 (ID: 140173711678240) started
+# Thread-1 (ID: 140173712739104) finished
+# Thread-2 (ID: 140173711678240) finished
 ```
 
 Naming and identifying threads improves readability, simplifies thread management, and makes debugging concurrency issues much easier.
@@ -89,23 +89,23 @@ The following is a simple example of using thread-local data:
 ```python
 import threading
 
-# 创建线程局部 data
+# Create thread-local data
 local_data = threading.local()
 
 def display_data():
     try:
         value = local_data.value
     except AttributeError:
-        print("没有数据")
+        print("No data")
     else:
-        print(f"数据是 {value}")
+        print(f"Data is {value}")
 
 def worker(number):
-    # 每个线程根据输入参数设置一个线程局部变量
+    # Each thread sets a thread-local variable based on the input argument
     local_data.value = number
     display_data()
 
-# 创建两个线程
+# Create two threads
 thread1 = threading.Thread(target=worker, args=(1,))
 thread2 = threading.Thread(target=worker, args=(2,))
 
@@ -115,13 +115,13 @@ thread2.start()
 thread1.join()
 thread2.join()
 
-# 在主线程中显示线程局部 data
+# Display thread-local data in the main thread
 display_data()
 
-# 输出：
-# 数据是 1
-# 数据是 2
-# 没有数据
+# Output:
+# Data is 1
+# Data is 2
+# No data
 ```
 
 Here, `display_data` reads `local_data.value`. In the `worker` function, each thread assigns its own thread-specific value to `local_data.value`. Although both threads reference the same `local_data` object, their values remain isolated.
@@ -140,29 +140,29 @@ You can configure a thread as a daemon by passing `daemon=True` to the construct
 import threading
 import time
 
-# 定义守护线程执行的函数
+# Define function to be executed by the daemon thread
 def daemon_thread():
     while True:
-        print("守护线程正在运行...")
+        print("Daemon thread is running...")
         time.sleep(1)
 
-# 创建守护线程
-# 推荐方式 1：在创建时指定
+# Create daemon thread
+# Recommended approach 1: Specify at creation time
 d_thread = threading.Thread(target=daemon_thread, daemon=True)
 
-# 推荐方式 2：设置属性
+# Recommended approach 2: Set the property
 # d_thread = threading.Thread(target=daemon_thread)
 # d_thread.daemon = True
 
 d_thread.start()
 
-# 主程序执行一些任务
+# Main program performs some tasks
 for i in range(5):
-    print("主程序正在运行...")
+    print("Main program is running...")
     time.sleep(2)
 
-# 主程序结束后，守护线程也将随之结束
-print("主程序结束，守护线程也随之结束。")
+# Once the main program ends, the daemon thread will also end
+print("Main program ended, daemon thread also ended.")
 ```
 
 In this code, the daemon thread runs an infinite loop. Once the main thread finishes printing and exits, the daemon thread is immediately terminated by Python.
@@ -175,7 +175,7 @@ Alternatively, you can define threads by subclassing `threading.Thread` and over
 import threading
 import time
 
-# 定义一个继承自 threading.Thread 的类
+# Define a class inheriting from threading.Thread
 class MyThread(threading.Thread):
     def __init__(self, name, delay):
         super().__init__()
@@ -183,25 +183,25 @@ class MyThread(threading.Thread):
         self.delay = delay
 
     def run(self):
-        print(f"线程 {self.name} 开始运行")
+        print(f"Thread {self.name} started running")
         for i in range(5):
             time.sleep(self.delay)
-            print(f"线程 {self.name} 正在运行，执行 {i + 1} 次")
-        print(f"线程 {self.name} 结束运行")
+            print(f"Thread {self.name} is running, execution count: {i + 1}")
+        print(f"Thread {self.name} finished running")
 
-# 创建线程实例
+# Create thread instances
 thread1 = MyThread("Thread-1", 1)
 thread2 = MyThread("Thread-2", 1.5)
 
-# 启动线程
+# Start threads
 thread1.start()
 thread2.start()
 
-# 等待所有线程完成
+# Wait for all threads to complete
 thread1.join()
 thread2.join()
 
-print("主程序结束")
+print("Main program ended")
 ```
 
 This object-oriented approach encapsulates the thread's arguments and state inside a custom class. The `run()` method acts as the entry point, executing when `start()` is invoked. Subclassing `Thread` makes thread management more modular and reusable in complex projects.
@@ -219,29 +219,29 @@ Let's look at the following program:
 ```python
 import threading
 
-# 共享资源
+# Shared resource
 shared_resource = 0
 
-# 一个简单的线程函数，增加共享资源的值
+# A simple thread function to increment the shared resource value
 def increase_resource():
     global shared_resource
 
-    for _ in range(100000):  # 大量操作以突出效果
+    for _ in range(100000):  # Perform large number of operations to highlight the race condition
         shared_resource += 1
 
-# 创建线程
+# Create threads
 thread1 = threading.Thread(target=increase_resource)
 thread2 = threading.Thread(target=increase_resource)
 
-# 启动线程
+# Start threads
 thread1.start()
 thread2.start()
 
-# 等待线程完成
+# Wait for threads to complete
 thread1.join()
 thread2.join()
 
-print(f"最终共享资源的值: {shared_resource}")
+print(f"Final shared resource value: {shared_resource}")
 ```
 
 In this code, two threads concurrently increment a global counter 100,000 times. You would expect the final count to be exactly 200,000, but running this script yields a non-deterministic total (typically around 170,000).
@@ -253,35 +253,35 @@ To resolve this, we use a lock to ensure that the read-modify-write cycle is exe
 ```python
 import threading
 
-# 共享资源
+# Shared resource
 shared_resource = 0
-# 创建一个锁对象
+# Create a lock object
 lock = threading.Lock()
 
-# 一个简单的线程函数，增加共享资源的值
+# A simple thread function to increment the shared resource value
 def increase_resource():
     global shared_resource
 
-    for _ in range(100000):  # 大量操作以突出效果
-        lock.acquire()  # 请求锁
+    for _ in range(100000):  # Perform large number of operations to highlight the race condition
+        lock.acquire()  # Acquire the lock
         try:
             shared_resource += 1
         finally:
-            lock.release()  # 释放锁
+            lock.release()  # Release the lock
 
-# 创建线程
+# Create threads
 thread1 = threading.Thread(target=increase_resource)
 thread2 = threading.Thread(target=increase_resource)
 
-# 启动线程
+# Start threads
 thread1.start()
 thread2.start()
 
-# 等待线程完成
+# Wait for threads to complete
 thread1.join()
 thread2.join()
 
-print(f"最终共享资源的值: {shared_resource}")
+print(f"Final shared resource value: {shared_resource}")
 ```
 
 Placing the operations that need protection inside a `with lock:` block ensures that this code will not be executed simultaneously by different threads. If the program logic is complex and cannot use the with statement, you can also use the lock.acquire() function to request a lock and the lock.release() function to release it. Running the above program gives a deterministic result of 200,000.
@@ -296,23 +296,23 @@ A **reentrant lock** (`RLock`) is a mutex that can be acquired multiple times by
 import threading
 import time
 
-# 创建一个可重入锁
+# Create a reentrant lock
 reentrant_lock = threading.RLock()
 
-# 一个递归函数，它会重复获取同一个锁
+# A recursive function that repeatedly acquires the same lock
 def recursive_function(count):
     if count > 0:
         with reentrant_lock:
-            print(f"线程 {threading.current_thread().name} 获取了锁，计数为 {count}")
+            print(f"Thread {threading.current_thread().name} acquired lock, count is {count}")
             time.sleep(0.1)
             recursive_function(count - 1)
 
-# 线程函数
+# Thread function
 def thread_function():
     with reentrant_lock:
         recursive_function(3)
 
-# 创建并启动线程
+# Create and start threads
 thread1 = threading.Thread(target=thread_function, name="Thread-1")
 thread2 = threading.Thread(target=thread_function, name="Thread-2")
 
@@ -322,7 +322,7 @@ thread2.start()
 thread1.join()
 thread2.join()
 
-print("主程序结束")
+print("Main program ended")
 ```
 
 If we used a standard `Lock` here, the program would immediately deadlock on the second recursive call because the thread would block waiting for itself to release the lock. An `RLock` resolves this by keeping track of the recursion depth and owner thread.
@@ -336,32 +336,32 @@ import threading
 import time
 import random
 
-# 创建一个信号量，最多允许两个线程同时访问共享资源
+# Create a semaphore, allowing at most two threads to access the shared resource concurrently
 semaphore = threading.Semaphore(2)
 
 def access_resource(thread_number):
-    print(f"线程 {thread_number} 正在请求访问资源")
-    # 请求信号量
+    print(f"Thread {thread_number} is requesting resource access")
+    # Request semaphore
     semaphore.acquire()
-    print(f"线程 {thread_number} 获得了访问权限")
-    # 模拟资源访问
+    print(f"Thread {thread_number} obtained access permission")
+    # Simulate resource access
     time.sleep(random.uniform(0.1, 1.0))
-    print(f"线程 {thread_number} 完成了访问")
-    # 释放信号量
+    print(f"Thread {thread_number} completed access")
+    # Release semaphore
     semaphore.release()
 
-# 创建并启动线程
+# Create and start threads
 threads = []
 for i in range(5):
     thread = threading.Thread(target=access_resource, args=(i,))
     threads.append(thread)
     thread.start()
 
-# 等待所有线程完成
+# Wait for all threads to complete
 for thread in threads:
     thread.join()
 
-print("所有线程访问完毕")
+print("All threads completed access")
 ```
 
 By initializing `Semaphore(2)`, we restrict access to a maximum of two concurrent threads. Any additional threads that attempt to call `acquire()` will block until one of the active threads releases the semaphore.
@@ -375,41 +375,41 @@ import threading
 import time
 import random
 
-# 商品列表
+# Product list
 items = []
-# 创建条件变量
+# Create condition variable
 condition = threading.Condition()
 
-# 生产者类
+# Producer class
 class Producer(threading.Thread):
     def run(self):
         global items
         for i in range(5):
-            time.sleep(random.uniform(0.1, 1.0))  # 模拟生产时间
-            item = f'商品{i}'
+            time.sleep(random.uniform(0.1, 1.0))  # Simulate production time
+            item = f'Product-{i}'
             with condition:
                 items.append(item)
-                print(f'{self.name} 生产了 {item}')
-                condition.notify()  # 通知消费者
+                print(f'{self.name} produced {item}')
+                condition.notify()  # Notify consumers
 
-# 消费者类
+# Consumer class
 class Consumer(threading.Thread):
     def run(self):
         global items
         while True:
             with condition:
-                # 使用 while 循环检查条件，防止虚假唤醒或资源被抢占
+                # Use while loop to check the condition, preventing spurious wakeups or resource preemption
                 while not items:  
-                    print(f'{self.name} 等待商品...')
-                    condition.wait()  # 等待商品
+                    print(f'{self.name} waiting for products...')
+                    condition.wait()  # Wait for products
                 
                 item = items.pop(0)
-                print(f'{self.name} 消费了 {item}')
-            time.sleep(random.uniform(0.1, 1.0))  # 模拟消费时间
+                print(f'{self.name} consumed {item}')
+            time.sleep(random.uniform(0.1, 1.0))  # Simulate consumption time
 
-# 创建并启动生产者和消费者线程
-producer = Producer(name='生产者')
-consumer = Consumer(name='消费者')
+# Create and start producer and consumer threads
+producer = Producer(name='Producer')
+consumer = Consumer(name='Consumer')
 
 producer.start()
 consumer.start()
@@ -431,23 +431,23 @@ An **event** (`Event`) is a simple communication mechanism where one thread sign
 import threading
 import time
 
-# 创建一个事件对象
+# Create an event object
 event = threading.Event()
 
-# 等待事件的线程
+# Thread waiting for the event
 def waiter(event):
-    print("等待者线程: 正在等待事件")
+    print("Waiter thread: waiting for event")
     event.wait()
-    print("等待者线程: 事件已发生，继续执行")
+    print("Waiter thread: event occurred, continuing execution")
 
-# 触发事件的线程
+# Thread triggering the event
 def trigger(event):
-    print("触发者线程: 正在处理一些事情")
-    time.sleep(2)  # 模拟一些工作
-    print("触发者线程: 工作完成，触发事件")
+    print("Trigger thread: processing some tasks")
+    time.sleep(2)  # Simulate some work
+    print("Trigger thread: work complete, triggering event")
     event.set()
 
-# 创建并启动线程
+# Create and start threads
 waiter_thread = threading.Thread(target=waiter, args=(event,))
 trigger_thread = threading.Thread(target=trigger, args=(event,))
 
@@ -457,7 +457,7 @@ trigger_thread.start()
 waiter_thread.join()
 trigger_thread.join()
 
-print("主程序结束")
+print("Main program ended")
 ```
 
 Here, `waiter_thread` blocks at `event.wait()`. Once `trigger_thread` completes its work and calls `event.set()`, the flag becomes true, allowing the waiter thread to resume instantly.
@@ -471,23 +471,23 @@ Below is a simple example of a deadlock:
 ```python
 import threading
 
-# 创建两把锁
+# Create two locks
 lock1 = threading.Lock()
 lock2 = threading.Lock()
 
 def worker1():
     with lock1:
-        print("线程 1 获得锁 1")
+        print("Thread 1 acquired lock 1")
         with lock2:
-            print("线程 1 获得锁 2")
+            print("Thread 1 acquired lock 2")
 
 def worker2():
     with lock2:
-        print("线程 2 获得锁 2")
+        print("Thread 2 acquired lock 2")
         with lock1:
-            print("线程 2 获得锁 1")
+            print("Thread 2 acquired lock 1")
 
-# 创建并启动线程
+# Create and start threads
 t1 = threading.Thread(target=worker1)
 t2 = threading.Thread(target=worker2)
 
@@ -507,15 +507,15 @@ To prevent deadlocks, always acquire locks in a consistent, global order. If bot
 ```python
 def worker1():
     with lock1:
-        print("线程 1 获得锁 1")
+        print("Thread 1 acquired lock 1")
         with lock2:
-            print("线程 1 获得锁 2")
+            print("Thread 1 acquired lock 2")
 
 def worker2():
-    with lock1:  # 修改这里
-        print("线程 2 获得锁 1")
+    with lock1:  # Modified here
+        print("Thread 2 acquired lock 1")
         with lock2:
-            print("线程 2 获得锁 2")
+            print("Thread 2 acquired lock 2")
 ```
 
 You can also prevent deadlocks by setting timeouts on lock acquisitions (e.g., `lock.acquire(timeout=2.0)`). If a thread fails to acquire a lock within the timeout, it can back off, release any locks it currently holds, and retry later.
@@ -539,9 +539,9 @@ def prime_factors(n):
     
     return factors
 
-# 测试
+# Test
 num = 48758440894340
-print(prime_factors(num))  # 输出： [2, 2, 5, 17, 143407179101]
+print(prime_factors(num))  # Output: [2, 2, 5, 17, 143407179101]
 ```
 
 On my machine, this single-threaded execution took 20.3 seconds. Since my system has multiple CPU cores, distributing this computational work across multiple threads should speed things up dramatically, right? Let's write a multithreaded version:
@@ -577,23 +577,23 @@ def main():
     threads = []
 
     for i in range(num_threads):
-        # 根据线程数分割数字范围
+        # Split the number range based on the number of threads
         start = numbers[i * step]
         if i == num_threads - 1:
             end = numbers.stop
         else:
             end = numbers[(i + 1) * step]
-        # 创建并启动线程
+        # Create and start thread
         t = threading.Thread(target=threaded_prime_factors, args=(start, end))
         threads.append(t)
         t.start()
 
-    # 等待所有线程完成
+    # Wait for all threads to complete
     for t in threads:
         t.join()
 
     end_time = time.time()
-    print(f"程序运行时间: {end_time - start_time:.6f} 秒")
+    print(f"Execution time: {end_time - start_time:.6f} seconds")
 
 if __name__ == "__main__":
     main()

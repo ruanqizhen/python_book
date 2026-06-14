@@ -10,7 +10,7 @@ Here is an example of creating a new process:
 from multiprocessing import Process
 
 def worker_function(number):
-    print(f"进程 {number} 正在工作。")
+    print(f"Process {number} is working.")
 
 if __name__ == "__main__":
     p = Process(target=worker_function, args=(1,))
@@ -32,7 +32,7 @@ When initializing a process pool, you can specify the number of worker processes
 
 ```python
 from multiprocessing import Pool
-pool = Pool(processes=4)  # 创建一个包含4个进程的进程池
+pool = Pool(processes=4)  # Create a process pool with 4 processes
 ```
 
 ### Distributing Tasks
@@ -43,7 +43,7 @@ The most common way to distribute work is using the pool's `map` or `map_async` 
 def square(x):
     return x * x
 
-results = pool.map(square, [1, 2, 3, 4])  # 输出 [1, 4, 9, 16]
+results = pool.map(square, [1, 2, 3, 4])  # Output: [1, 4, 9, 16]
 ```
 
 The pool.map() method in the program above executes the square() function in parallel across multiple processes.
@@ -51,12 +51,12 @@ The pool.map() method in the program above executes the square() function in par
 For individual tasks, use `apply` (blocking) or `apply_async` (non-blocking, returning an `AsyncResult` object):
 
 ```python
-# 提交任务后，主进程可以继续做其他事情，不会被阻塞
+# After submitting the task, the main process can continue doing other things without being blocked
 async_result = pool.apply_async(func, args=(arg1, arg2))
 
-print("任务已提交，正在后台运行...")
+print("Task submitted, running in the background...")
 
-# 当需要结果时，再调用 get()，此时如果任务未完成则会阻塞
+# When the result is needed, call get(). If the task is not complete, this will block
 result = async_result.get()
 ```
 
@@ -66,7 +66,7 @@ After submitting all tasks, close the pool to prevent new submissions and clean 
 
 ```python
 pool.close()
-pool.join()  # 等待所有进程完成
+pool.join()  # Wait for all processes to complete
 ```
 
 Alternatively, calling `terminate()` immediately stops all worker processes, aborting any active tasks.
@@ -86,13 +86,13 @@ A **pipe** (`Pipe`) establishes a communication channel between two processes, w
 from multiprocessing import Process, Pipe
 
 def worker(conn):
-    conn.send("工作进程发送的数据")
+    conn.send("Data sent by the worker process")
     conn.close()
 
 parent_conn, child_conn = Pipe()
 p = Process(target=worker, args=(child_conn,))
 p.start()
-print(parent_conn.recv())  # 输出: "工作进程发送的数据"
+print(parent_conn.recv())  # Output: "Data sent by the worker process"
 p.join()
 ```
 
@@ -108,12 +108,12 @@ A multi-process safe **queue** (`Queue`) coordinates data exchange, allowing mul
 from multiprocessing import Process, Queue
 
 def worker(q):
-    q.put("工作进程发送的数据")
+    q.put("Data sent by the worker process")
 
 q = Queue()
 p = Process(target=worker, args=(q,))
 p.start()
-print(q.get())  # 输出: "工作进程发送的数据"
+print(q.get())  # Output: "Data sent by the worker process"
 p.join()
 ```
 
@@ -131,13 +131,13 @@ def worker(val, arr):
     for i in range(len(arr)):
         arr[i] = -arr[i]
 
-val = Value('i', 0)                # 'i' 表示整数
-arr = Array('d', [1.0, 2.0, 3.0])  # 'd' 表示双精度浮点数
+val = Value('i', 0)                # 'i' represents integer
+arr = Array('d', [1.0, 2.0, 3.0])  # 'd' represents double-precision float
 p = Process(target=worker, args=(val, arr))
 p.start()
 p.join()
-print(val.value)   # 输出: 100
-print(arr[:])      # 输出: [-1.0, -2.0, -3.0]
+print(val.value)   # Output: 100
+print(arr[:])      # Output: [-1.0, -2.0, -3.0]
 ```
 
 ### Manager
@@ -159,8 +159,8 @@ with Manager() as manager:
     p.start()
     p.join()
 
-    print(l)  # 输出: [1, 100, 3]
-    print(d)  # 输出: {'a': 'Initial', 'b': 'Updated'}
+    print(l)  # Output: [1, 100, 3]
+    print(d)  # Output: {'a': 'Initial', 'b': 'Updated'}
 ```
 
 Note that using shared objects like `Value` or `Array` can still lead to race conditions. To guarantee consistency when mutating shared memory, protect the operations using lock primitives.
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     for item in range(10):
         p = Process(target=printer, args=(item, lock))
         p.start()
-        # 注意：这里最好加上 join，否则主进程可能先于子进程结束
+        # Note: It is best to call join here, otherwise the main process might finish before the child process
         p.join()
 ```
 
@@ -282,7 +282,7 @@ def main():
         pool.starmap(process_range, chunks)
 
     end_time = time.time()
-    print(f"程序运行时间: {end_time - start_time:.6f} 秒")
+    print(f"Execution time: {end_time - start_time:.6f} seconds")
 
 
 if __name__ == "__main__":

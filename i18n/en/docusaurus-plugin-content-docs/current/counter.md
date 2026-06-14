@@ -7,7 +7,7 @@ The residents of Pythora often use Python for data processing. A common task is 
 The most straightforward way is to use Python's built-in dictionary data type:
 
 ```python
-elements = ['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果']
+elements = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
 counts = {}
 
 for element in elements:
@@ -22,7 +22,7 @@ print(counts)
 When we introduced the [dictionary](dict#adding-or-modifying-key-value-pairs) data type, we noted that we can use built-in dictionary methods to avoid manually checking whether an element is already in the dictionary. Using these built-in methods simplifies the code:
 
 ```python
-elements = ['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果']
+elements = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
 counts = {}
 
 for element in elements:
@@ -35,7 +35,7 @@ print(counts)
 Even better:
 
 ```python
-elements = ['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果']
+elements = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
 counts = {}
 
 for element in elements:
@@ -54,16 +54,16 @@ A `defaultdict` accepts a callable (a factory function) when initialized. When y
 from collections import defaultdict
 from itertools import count
 
-# 使用 itertools.count 创建一个计数器迭代器
+# Use itertools.count to create a counter iterator
 counter = count()
-# 每次遇到新键时，调用 next(counter) 获取下一个整数
+# Every time a new key is encountered, call next(counter) to get the next integer
 inc_defaultdict = defaultdict(counter.__next__)
 
-# 测试：
-print(inc_defaultdict["a"])  # 输出 0
-print(inc_defaultdict["a"])  # 输出 0 (已存在)
-print(inc_defaultdict["b"])  # 输出 1
-print(inc_defaultdict["c"])  # 输出 2
+# Test:
+print(inc_defaultdict["a"])  # Output: 0
+print(inc_defaultdict["a"])  # Output: 0 (already exists)
+print(inc_defaultdict["b"])  # Output: 1
+print(inc_defaultdict["c"])  # Output: 2
 ```
 
 This makes `defaultdict` highly suitable for tasks where you need a default value for any missing key, such as when grouping or counting, eliminating the need to check for a key's existence beforehand.
@@ -73,13 +73,13 @@ Here is an example of using `defaultdict` for frequency counting:
 ```python
 from collections import defaultdict
 
-elements = ['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果']
+elements = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
 counts = defaultdict(int)
 
 for element in elements:
     counts[element] += 1
 
-print(dict(counts))   # 输出: {'苹果': 3, '香蕉': 2, '桔子': 1}
+print(dict(counts))   # Output: {'apple': 3, 'banana': 2, 'orange': 1}
 ```
 
 You can also use `defaultdict` for grouping tasks, such as grouping surnames by their first letter:
@@ -95,7 +95,7 @@ for surname in surnames:
     names_by_first_letter[first_letter].append(surname)
 
 print(dict(names_by_first_letter))
-# 输出: {'S': ['Smith'], 'J': ['Johnson', 'Jones'], 'W': ['Williams'], 'B': ['Brown'], 'D': ['Davis']}
+# Output: {'S': ['Smith'], 'J': ['Johnson', 'Jones'], 'W': ['Williams'], 'B': ['Brown'], 'D': ['Davis']}
 ```
 
 ## Counter Class
@@ -105,10 +105,10 @@ Python's collections module also includes a specialized `dict` subclass called `
 ```python
 from collections import Counter
 
-elements = ['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果']
+elements = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']
 counts = Counter(elements)
 
-print(counts)   # 输出: Counter({'苹果': 3, '香蕉': 2, '桔子': 1})
+print(counts)   # Output: Counter({'apple': 3, 'banana': 2, 'orange': 1})
 ```
 
 Because `Counter` is tailored for counting, it goes beyond simple tallying to provide advanced utility methods. For instance, the `most_common()` method allows you to quickly retrieve the elements with the highest frequencies:
@@ -116,10 +116,10 @@ Because `Counter` is tailored for counting, it goes beyond simple tallying to pr
 ```python
 from collections import Counter
 
-counts = Counter(['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果'])
+counts = Counter(['apple', 'banana', 'apple', 'orange', 'banana', 'apple'])
 
-# 最常见的 2 个元素：
-print(counts.most_common(2))  # 输出： [('苹果', 3), ('香蕉', 2)]
+# 2 most common elements:
+print(counts.most_common(2))  # Output: [('apple', 3), ('banana', 2)]
 ```
 
 The `Counter` class also overloads standard mathematical operators such as addition (`+`), subtraction (`-`), intersection (`&`), and union (`|`) to allow direct mathematical operations on multiple counters:
@@ -128,17 +128,17 @@ The `Counter` class also overloads standard mathematical operators such as addit
 c1 = Counter(a=3, b=1)
 c2 = Counter(a=1, b=2)
 
-# 加法
-c1 + c2  # 输出: Counter({'a': 4, 'b': 3})
+# Addition
+c1 + c2  # Output: Counter({'a': 4, 'b': 3})
 
-# 减法
-c1 - c2  # 输出: Counter({'a': 2})
+# Subtraction
+c1 - c2  # Output: Counter({'a': 2})
 
-# 交集
-c1 & c2  # 输出: Counter({'a': 1, 'b': 1})
+# Intersection
+c1 & c2  # Output: Counter({'a': 1, 'b': 1})
 
-# 并集
-c1 | c2  # 输出: Counter({'a': 3, 'b': 2})
+# Union
+c1 | c2  # Output: Counter({'a': 3, 'b': 2})
 ```
 
 ## pandas Library
@@ -154,17 +154,17 @@ A `Series` is a one-dimensional array-like object in `pandas`. Its `value_counts
 ```python
 import pandas as pd
 
-# 创建一个 Series 对象
-s = pd.Series(['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果'])
+# Create a Series object
+s = pd.Series(['apple', 'banana', 'apple', 'orange', 'banana', 'apple'])
 
-# 使用 value_counts() 计数
+# Count using value_counts()
 counts = s.value_counts()
 print(counts)
 
-# 输出：
-# 苹果   3
-# 香蕉   2
-# 桔子   1
+# Output:
+# apple     3
+# banana    2
+# orange    1
 # dtype: int64
 ```
 
@@ -176,19 +176,19 @@ The primary data structure in `pandas` is the `DataFrame`—a two-dimensional, t
 import pandas as pd
 
 df = pd.DataFrame({
-    'Fruit': ['苹果', '香蕉', '苹果', '桔子', '香蕉', '苹果'],
+    'Fruit': ['apple', 'banana', 'apple', 'orange', 'banana', 'apple'],
     'Quantity': [5, 3, 6, 2, 7, 8]
 })
 
-# 使用 groupby() 按 'Fruit' 列计数
+# Use groupby() to count by the 'Fruit' column
 counts = df.groupby('Fruit').size()
 print(counts)
 
-# 输出：
+# Output:
 # Fruit
-# 苹果   3
-# 香蕉   2
-# 桔子   1
+# apple     3
+# banana    2
+# orange    1
 # dtype: int64
 ```
 
@@ -206,7 +206,7 @@ import numpy as np
 x = np.array([0, 1, 1, 3, 2, 1, 7])
 count = np.bincount(x)
 
-print(count)  输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 次...
+print(count)  # Output: [1 3 1 1 0 0 0 1], indicating 0 appears 1 time; 1 appears 3 times...
 ```
 
 ## Exercises
@@ -220,5 +220,5 @@ from collections import Counter
 input_string = "pneumonoultramicroscopicsilicovolcanoconiosis"
 character_count = Counter(input_string)
 for char, count in character_count.items():
-    print(f"字符 '{char}' 出现了 {count} 次")
+    print(f"Character '{char}' occurred {count} times")
 ```

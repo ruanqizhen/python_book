@@ -13,24 +13,24 @@ import tempfile
 import time
 
 def my_slow_function():
-    start_time = time.time()    # 记录开始时间
+    start_time = time.time()    # Record start time
     
-    # 这下面一段是原本函数中的代码，在一个临时文件中写入一些数据
-    # 创建一个临时文件
+    # The block below is the code from the original function, writing some data to a temporary file
+    # Create a temporary file
     with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
-        # 随便写入一些数据
+        # Write some random data
         for i in range(1000):
-            # 将字符串转换为字节对象并写入一个新行
+            # Convert the string to a bytes object and write a new line
             temp_file.write((str(i) + '\n').encode('utf-8')) 
             
-        # 获取临时文件的路径以便稍后使用    
+        # Get the temporary file path for later use
         temp_file_path = temp_file.name  
-    # 原函数中的代码到此结束
+    # Original function code ends here
     
-    end_time = time.time()       # 记录结束时间
-    print(end_time - start_time) # 打印函数运行的总时间
+    end_time = time.time()       # Record end time
+    print(end_time - start_time) # Print the total execution time of the function
     
-    # 下面是原函数的返回语句
+    # Return statement of the original function below
     return temp_file_path
 ```
 
@@ -44,28 +44,28 @@ Once debugging is complete, you must remove or revert these timing statements. W
 import tempfile
 import time
 
-# 这是通用的计时函数
+# This is the generic timing function
 def timer(func):
-    start_time = time.time()      # 记录开始时间
-    result = func()               # 运行目标函数
-    end_time = time.time()        # 记录结束时间
-    print(end_time - start_time)  # 打印函数运行的总时间
+    start_time = time.time()      # Record start time
+    result = func()               # Run target function
+    end_time = time.time()        # Record end time
+    print(end_time - start_time)  # Print the total execution time of the function
     return result
     
 def my_slow_function():
-    # 创建一个临时文件
+    # Create a temporary file
     with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
-        # 随便写入一些数据
+        # Write some random data
         for i in range(1000):
-            # 将字符串转换为字节对象并写入一个新行
+            # Convert the string to a bytes object and write a new line
             temp_file.write((str(i) + '\n').encode('utf-8')) 
             
-        # 获取临时文件的路径以便稍后使用    
+        # Get the temporary file path for later use
         temp_file_path = temp_file.name  
     
-    return temp_file_path # 返回临时文件的路径
+    return temp_file_path # Return the path of the temporary file
     
-# 试验一下： 下面的调用会打印出程序运行时间
+# Try it out: the call below will print the program execution time
 print(timer(my_slow_function))
 ```
 
@@ -79,29 +79,29 @@ To convert our `timer()` function into a decorator, we must adjust it to return 
 import time
 import tempfile
 
-# 通用的计时装饰器
+# Generic timing decorator
 def timer(func):
-    """装饰器：测量并打印函数执行时间"""
+    """Decorator: Measure and print function execution time"""
     def wrapper(*args, **kwargs):
-        start_time = time.time()        # 记录开始时间
-        result = func(*args, **kwargs)  # 运行目标函数
-        end_time = time.time()          # 记录结束时间
+        start_time = time.time()        # Record start time
+        result = func(*args, **kwargs)  # Run target function
+        end_time = time.time()          # Record end time
         print(f"{func.__name__} ran in: {end_time - start_time:.6f} seconds")
         return result
     return wrapper
 
-@timer  # 使用 timer 装饰器
+@timer  # Apply the timer decorator
 def my_slow_function():
-    """在一个临时文件中写入数字 0 到 999 并返回其路径"""
-    # 创建一个临时文件
+    """Write numbers 0 to 999 to a temporary file and return its path"""
+    # Create a temporary file
     with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
-        # 写入数据
+        # Write data
         for i in range(1000):
-            temp_file.write((str(i) + '\n').encode('utf-8'))  # 将字符串转换为字节对象并写入
-        temp_file_path = temp_file.name  # 获取临时文件的路径
+            temp_file.write((str(i) + '\n').encode('utf-8'))  # Convert string to bytes and write
+        temp_file_path = temp_file.name  # Get the path of the temporary file
     return temp_file_path
 
-# 试验一下：
+# Try it out:
 print(my_slow_function())
 ```
 
@@ -153,37 +153,37 @@ import time
 import tempfile
 from functools import wraps
 
-# 通用的计时装饰器
+# Generic timing decorator
 def timer(func):
-    """装饰器：测量并打印函数执行时间"""
+    """Decorator: Measure and print function execution time"""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        start_time = time.time()        # 记录开始时间
-        result = func(*args, **kwargs)  # 运行目标函数
-        end_time = time.time()          # 记录结束时间
+        start_time = time.time()        # Record start time
+        result = func(*args, **kwargs)  # Run target function
+        end_time = time.time()          # Record end time
         print(f"{func.__name__} ran in: {end_time - start_time:.6f} seconds")
         return result
     return wrapper
 
-@timer  # 使用 timer 装饰器
+@timer  # Apply the timer decorator
 def my_slow_function():
-    """在一个临时文件中写入数字 0 到 999 并返回其路径"""
-    # 创建一个临时文件
+    """Write numbers 0 to 999 to a temporary file and return its path"""
+    # Create a temporary file
     with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_file:
-        # 写入数据
+        # Write data
         for i in range(1000):
-            temp_file.write((str(i) + '\n').encode('utf-8'))  # 将字符串转换为字节对象并写入
-        temp_file_path = temp_file.name  # 获取临时文件的路径
+            temp_file.write((str(i) + '\n').encode('utf-8'))  # Convert string to bytes and write
+        temp_file_path = temp_file.name  # Get the path of the temporary file
     return temp_file_path
 
-# 试验一下：
+# Try it out:
 print(my_slow_function.__name__)
 print(my_slow_function.__doc__)
 
 
-# 输出：
+# Output:
 # my_slow_function
-# 在一个临时文件中写入数字 0 到 999 并返回其路径
+# Write numbers 0 to 999 to a temporary file and return its path
 ```
 
 `@wraps(func)` copies the metadata of `func` onto the `wrapper` function, ensuring that reflection and debugging tools see the original function's information.
@@ -197,7 +197,7 @@ from functools import wraps
 
 def repeat(num_times):
     """
-    装饰器接收一个参数 num_times，它决定了被装饰的函数要被调用的次数。
+    The decorator accepts an argument num_times, which determines how many times the decorated function is called.
     """
     def decorator_repeat(func):
         @wraps(func)
@@ -208,13 +208,13 @@ def repeat(num_times):
         return wrapper
     return decorator_repeat
 
-# 使用带参数的装饰器
+# Use the decorator with arguments
 @repeat(num_times=4)
 def greet(name):
     print(f"Hello {name}")
 
-# 调用
-greet("Qizhen")  # 输出 "Hello Qizhen" 四次
+# Call
+greet("Qizhen")  # Output "Hello Qizhen" four times
 ```
 
 In this code, `repeat(num_times)` serves as a decorator factory that returns the actual decorator, `decorator_repeat`. This decorator then takes `func` as an argument and returns the `wrapper` function, which handles the repetition logic.
@@ -234,7 +234,7 @@ import logging
 def log(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logging.info(f"【调试】 调用函数 {func.__name__}；位置参数：{args}；关键字参数：{kwargs}")
+        logging.info(f"[Debug] Called function {func.__name__}; positional arguments: {args}; keyword arguments: {kwargs}")
         return func(*args, **kwargs)
     return wrapper
 ```
@@ -242,23 +242,23 @@ def log(func):
 In this example, `wrapper` uses `logging.info` to output a diagnostic message before invoking the decorated function, detailing its name and argument values. We can apply and test the decorator like this:
 
 ```python
-# 配置日志记录系统以在控制台打印消息
+# Configure logging system to print messages to the console
 logging.basicConfig(level=logging.INFO)
 
-@log   # 装饰器
+@log   # Decorator
 def add(x, y):
-    """加法函数，只是用来测试装饰器"""
+    """Addition function, just used for testing the decorator"""
     return x + y
 
-# 调用测试函数并观察日志输出
-print(f"测试函数结果： {add(5, y=7)}")
+# Call the test function and observe the log output
+print(f"Test function result: {add(5, y=7)}")
 ```
 
 Running this test outputs both the logged details and the final function result:
 
 ```markdown {1}
-INFO:root:【调试】 调用函数 add；位置参数：(5,)；关键字参数：{'y': 7}
-测试函数结果： 12
+INFO:root:[Debug] Called function add; positional arguments: (5,); keyword arguments: {'y': 7}
+Test function result: 12
 ```
 
 ### Caching Function Results
@@ -290,8 +290,8 @@ def fibonacci(n):
     else:
         return fibonacci(n - 1) + fibonacci(n - 2)
 
-# 测试
-print(fibonacci(30))  # 有了缓存可以轻松计算很大的斐波那契数
+# Test
+print(fibonacci(30))  # With caching, we can easily compute large Fibonacci numbers
 ```
 
 Note: The simple caching implementation above requires that the function's arguments be hashable, meaning the arguments cannot contain mutable objects like lists or dictionaries. If you need to handle complex arguments, it is recommended to use `functools.lru_cache` from Python's standard library.
@@ -306,12 +306,12 @@ from functools import wraps
 def validate_positive(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # 检查位置参数
+        # Check positional arguments
         if any(arg <= 0 for arg in args):
-            raise ValueError("位置参数必须为正数！")
-        # 检查关键字参数
+            raise ValueError("Positional arguments must be positive numbers!")
+        # Check keyword arguments
         if any(val <= 0 for val in kwargs.values()):
-            raise ValueError("关键字参数必须为正数！")
+            raise ValueError("Keyword arguments must be positive numbers!")
         return func(*args, **kwargs)
     return wrapper
 ```
@@ -330,10 +330,10 @@ def get_total_weight(*args):
         result += weight
     return result
 
-# 测试
+# Test
 print(get_total_weight(1, 2, 3, 4, 5))
 
-# 运行下面的代码会抛出一个 ValueError 异常，因为参数中有负数
+# Running the code below will raise a ValueError because of the negative argument
 # print(get_total_weight(1, 2, 3, 4, -5))
 ```
 
@@ -348,18 +348,18 @@ def requires_permission(permission):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # 尝试获取 user 对象
+            # Try to get the user object
             user = None
             if args:
-                user = args[0] # 假设第一个位置参数是 user
+                user = args[0] # Assume the first positional argument is user
             elif 'user' in kwargs:
-                user = kwargs['user'] # 或者通过关键字获取
+                user = kwargs['user'] # Or get it via keyword
             
-            # 进行检查 (需要确保 user 存在且有 permissions 属性)
+            # Perform check (make sure user exists and has a permissions attribute)
             if user and hasattr(user, 'permissions') and user.permissions.get(permission):
                 return func(*args, **kwargs)
             
-            raise PermissionError(f"权限不足或无法识别用户")
+            raise PermissionError(f"Insufficient permissions or unidentified user")
         return wrapper
     return decorator
 ```
@@ -367,36 +367,36 @@ def requires_permission(permission):
 In this example, the `wrapper` function attempts to locate a `user` object from the function's arguments. It then inspects the user's permissions. If the user lacks the required permission, it raises a `PermissionError`. To demonstrate this setup, we can define a simple `User` class and test the permission checks:
 
 ```python
-# 用于演示的 User 类，它简单的定义了每个用户是否有某项操作的权限
+# User class for demonstration purposes; it simply defines whether each user has permission for a specific operation
 class User:
     def __init__(self, name, permissions):
         self.name = name
         self.permissions = permissions
 
-# 假设两个用户，一个有文档编辑权限，一个没有：
-editor = User("贾经理", {'编辑': True})
-viewer = User("小明", {'编辑': False})
+# Suppose we have two users: one with document edit permissions and one without:
+editor = User("Manager Brown", {'edit': True})
+viewer = User("Alex", {'edit': False})
 
-# 下面是一个需要检查访问权限的函数
-@requires_permission('编辑')
+# The function below requires permission checking
+@requires_permission('edit')
 def edit_document(user, document):
-    return f"{user.name} 编辑了文档： {document}"
+    return f"{user.name} edited the document: {document}"
 
 
-# 测试：
-print(edit_document(editor, "项目计划2033"))     # 应该允许编辑
+# Test:
+print(edit_document(editor, "Project Plan 2033"))     # Should allow editing
 
 try:
-    print(edit_document(viewer, "工资调整计划"))  # 应该引发异常
+    print(edit_document(viewer, "Salary Adjustment Plan"))  # Should raise an exception
 except PermissionError as e:
-    print(e)  # 输出错误信息
+    print(e)  # Print error message
 ```
 
 Running this demonstration produces the following output:
 
 ```
-贾经理 编辑了文档： 项目计划2033
-用户 小明 没有 编辑 的权限
+Manager Brown edited the document: Project Plan 2033
+User Alex does not have edit permissions
 ```
 
 ### Retry
@@ -419,7 +419,7 @@ def retry(attempts=3, delay=1):
                         time.sleep(delay)
                         continue
                     else:
-                        raise  # 直接 raise，保留完整的原始异常调用栈
+                        raise  # Directly raise to preserve the complete original exception traceback
         return wrapper
     return decorator
 ```
@@ -431,15 +431,15 @@ import random
 
 @retry(attempts=5, delay=2)
 def may_fail_func():
-    """一个可能失败的函数"""
+    """A function that may fail"""
     if random.randint(0, 1) == 0:
-        print("函数运行失败！")
-        raise ValueError("多个随机数都是 0。")
-    return "函数运行成功！"
+        print("Function execution failed!")
+        raise ValueError("Multiple random numbers are 0.")
+    return "Function execution succeeded!"
 
 try:
     result = may_fail_func()
     print(result)
 except ValueError as e:
-    print(f"多次尝试后，依然失败： {e}")
+    print(f"Still failed after multiple attempts: {e}")
 ```

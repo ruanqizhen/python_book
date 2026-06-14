@@ -42,18 +42,18 @@ This algorithm is straightforward: initialize the maximum value to the first ele
 
 ```python
 def find_max_value(arr):
-    """查找数组中的最大值"""
-    # 检查输入数组是否为空
+    """Find the maximum value in the array."""
+    # Check if the input array is empty
     if not len(arr):
         return None
     
-    # 设置当前结果为元素第一个值
+    # Initialize the maximum value with the first element
     max_value = arr[0]
     
-    # 遍历数组
+    # Traverse the array
     for num in arr:
         if num > max_value:
-            # 如果有更大值，就更新当前结果
+            # If a larger value is found, update the maximum value
             max_value = num
             
     return max_value
@@ -69,31 +69,31 @@ Binary search works by checking the middle element of a sorted search range. If 
 
 ```python
 def binary_search(sorted_arr, target):
-    """返回目标数据在 sorted_arr 中的索引，如果没有找到，则返回 -1"""
+    """Return the index of the target in sorted_arr, or -1 if not found."""
     
     left, right = 0, len(sorted_arr) - 1
     
     while left <= right:
-        mid = (left + right) // 2  # 中间位置的索引
+        mid = (left + right) // 2  # Index of the middle element
         
         if sorted_arr[mid] == target:
-            return mid             # 找到目标
+            return mid             # Found the target
         elif sorted_arr[mid] < target:
-            left = mid + 1         # 搜索右半部分
+            left = mid + 1         # Search the right half
         else:
-            right = mid - 1        # 搜索左半部分
+            right = mid - 1        # Search the left half
             
-    return -1                      # 目标没有找到
+    return -1                      # Target not found
 
-# 示例
+# Example
 sorted_arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 target = 7
 
 index = binary_search(sorted_arr, target)
 if index != -1:
-    print(f"目标数据 {target} 的索引是 {index}")
+    print(f"The index of target {target} is {index}")
 else:
-    print(f"目标数据 {target} 没有找到")
+    print(f"Target {target} not found")
 ```
 
 Binary search can also be implemented recursively:
@@ -123,7 +123,7 @@ The most direct approach is to shift the array right by one position $k$ times.
 ```python
 def rotate_naive(nums, k):
     n = len(nums)
-    k = k % n  # 防止 k 比数组长度还大
+    k = k % n  # Prevent k from being larger than the array length
     for _ in range(k):
         previous = nums[-1]
         for i in range(n):
@@ -218,10 +218,10 @@ To merge two sorted arrays, we can use the two-pointer technique.
 
 ```python
 def merge_sorted_arrays(nums1, nums2):
-    # 用于存放结果
+    # For storing the merged result
     merged = []
     
-    # 当前位置指向两个数组的起始位置
+    # Pointers initialized to the start of the two arrays
     p1, p2 = 0, 0
 
     # Compare and merge until one of the lists is exhausted
@@ -322,7 +322,7 @@ def quick_sort(arr):
     right = [x for x in arr if x > pivot]
     return quick_sort(left) + middle + quick_sort(right)
 
-# 测试代码
+# Test code
 arr = [3, 6, 8, 10, 1, 2, 1]
 print("Original array:", arr)
 sorted_arr = quick_sort(arr)
@@ -350,7 +350,7 @@ def merge_sort(arr):
     left = arr[:mid]
     right = arr[mid:]
 
-    # 递归地排序左右两个子序列
+    # Recursively sort the left and right halves
     left = merge_sort(left)
     right = merge_sort(right)
 
@@ -360,7 +360,7 @@ def merge(left, right):
     result = []
     i = j = 0
 
-    # 当左右两个序列都有值时，进行合并操作
+    # Merge elements while both sublists have values
     while i < len(left) and j < len(right):
         if left[i] < right[j]:
             result.append(left[i])
@@ -369,22 +369,22 @@ def merge(left, right):
             result.append(right[j])
             j += 1
 
-    # 如果左序列还有剩余，则加入结果
+    # If there are remaining elements in the left sublist
     while i < len(left):
         result.append(left[i])
         i += 1
 
-    # 如果右序列还有剩余，则加入结果
+    # If there are remaining elements in the right sublist
     while j < len(right):
         result.append(right[j])
         j += 1
 
     return result
 
-# 测试归并排序
+# Test merge sort
 arr = [38, 27, 43, 3, 9, 82, 10]
 sorted_arr = merge_sort(arr)
-print(sorted_arr)  # 输出: [3, 9, 10, 27, 38, 43, 82]
+print(sorted_arr)  # Output: [3, 9, 10, 27, 38, 43, 82]
 ```
 
 While Merge Sort is more complex to implement than Quick Sort, it has a distinct advantage: its time complexity is guaranteed to be $O(n \log n)$ in the best, worst, and average cases, where $n$ is the length of the array.
@@ -399,24 +399,24 @@ Suppose we want to sort the integers `[5, 4, 2, 8, 7]`. We first allocate a "cou
 
 ```python
 def counting_sort(arr):
-    # 找到待排序数组中的最大值
+    # Find the maximum value in the array to sort
     max_val = max(arr)
     
-    # 初始化计数数组
+    # Initialize counting array
     count = [0] * (max_val + 1)
 
-    # 遍历待排序数组，更新计数数组
+    # Traverse the input array and update the counting array
     for num in arr:
         count[num] += 1
 
-    # 从计数数组生成排序后的数组
+    # Reconstruct the sorted array from the counting array
     sorted_arr = []
     for i, cnt in enumerate(count):
         sorted_arr.extend([i] * cnt)
     
     return sorted_arr
 
-# 测试代码
+# Test code
 arr = [4, 2, 2, 8, 3, 3, 1]
 print("Original array:", arr)
 sorted_arr = counting_sort(arr)
