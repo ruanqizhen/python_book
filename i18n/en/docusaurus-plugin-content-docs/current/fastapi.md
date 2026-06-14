@@ -88,8 +88,8 @@ app = FastAPI(title="Pythora Knight Inn Intelligence System")
 
 # Simulated martial world intelligence database
 KNIGHTS_DB = {
-    "西门吹雪": {"power": 100, "skill": "一剑西来", "state": "生龙活虎"},
-    "叶孤城": {"power": 95, "skill": "天外飞仙", "state": "重伤倒地"},
+    "Arthur": {"power": 100, "skill": "Excalibur", "state": "Healthy"},
+    "Lancelot": {"power": 95, "skill": "Heavenly Strike", "state": "Injured"},
 }
 
 # The path parameter {name} is automatically mapped to the name parameter in the function signature
@@ -180,7 +180,7 @@ app = FastAPI()
 async def fetch_remote_intelligence(target: str):
     # Use asyncio.sleep to simulate non-blocking I/O waiting
     await asyncio.sleep(2)  
-    return f"【{target}】is currently drinking wine in Dali City..."
+    return f"[{target}] is currently drinking wine in Camelot..."
 
 @app.get("/intelligence/async/{target}")
 async def get_async_intelligence(target: str):
