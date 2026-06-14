@@ -36,6 +36,7 @@ const config = {
           sidebarCollapsed: false,
           // Please change this to your repo.
           editUrl: 'https://github.com/ruanqizhen/python_book/edit/main/',
+          editLocalizedFiles: true,
           routeBasePath: '/',
           path: './docs',
           remarkPlugins: [math],
