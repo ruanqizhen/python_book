@@ -30,9 +30,9 @@ To mitigate the risks of module reuse and combat software decay, we need a bette
 
 The physical world is made of entities. A room contains tables, chairs, and computers. Many of these entities share characteristics and can be grouped into a **class**. For example, *Human* is a class, and the individual *Ruan Qizhen* is an entity within that class. All humans share common traits, such as walking upright, speaking, and thinking.
 
-Since software is built to model and solve real-world problems, programming adopts a similar categorization. For instance, in an enterprise management system, employees like Zhang San and Li Si share common attributes—such as names, genders, and ages—even though their specific values differ.
+Since software is built to model and solve real-world problems, programming adopts a similar categorization. For instance, in an enterprise management system, employees like Alice and Bob share common attributes—such as names, genders, and ages—even though their specific values differ.
 
-An **object** (or **instance**) is a specific entity that belongs to a class. In our example, the individual employee Zhang San is an object instantiated from the `Employee` class.
+An **object** (or **instance**) is a specific entity that belongs to a class. In our example, the individual employee Alice is an object instantiated from the `Employee` class.
 
 **Attributes** (also referred to as **data** or **variables**) represent the static properties or state of an object. For example, `Employee` objects have attributes like `name`, `gender`, and `age`.
 

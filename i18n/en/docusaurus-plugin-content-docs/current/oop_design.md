@@ -395,11 +395,11 @@ class Student:
             print(teacher.name)
 
 # Create objects
-teacher1 = Teacher("Teacher Zhang")
-teacher2 = Teacher("Teacher Li")
+teacher1 = Teacher("Mr. Smith")
+teacher2 = Teacher("Ms. Davis")
 
-student1 = Student("Xiao Ming")
-student2 = Student("Xiao Hong")
+student1 = Student("Alex")
+student2 = Student("Emily")
 
 # Establish association
 teacher1.add_student(student1)
@@ -502,8 +502,8 @@ class Classroom:
             print(student.name)
 
 # Create objects
-student1 = Student("Xiao Ming", "001")
-student2 = Student("Xiao Hong", "002")
+student1 = Student("Alex", "001")
+student2 = Student("Emily", "002")
 
 classroom_302 = Classroom("302 Classroom")
 

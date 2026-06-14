@@ -29,7 +29,7 @@ For example, the program below:
 ```python
 import pandas as pd
 # Create a DataFrame
-data = {'Name': ['范统', '夏建仁', '李拜天'],
+data = {'Name': ['John', 'Jane', 'Bob'],
         'Age': [20, 21, 19]}
 df = pd.DataFrame(data)
 
@@ -40,10 +40,10 @@ print(df)
 Output:
 
 ```
-  Name  Age
-0   范统   20
-1  夏移各   21
-2  李拜天   19
+   Name  Age
+0  John   20
+1  Jane   21
+2   Bob   19
 ```
 
 The example program above creates a DataFrame named `df` with two columns and three rows.
@@ -58,19 +58,19 @@ By default, a `DataFrame` uses auto-incrementing integers starting from 0 as its
 
 ```
    Name  Age
-a   范统   20
-b  夏移各   21
-c  李拜天   19
+a  John   20
+b  Jane   21
+c   Bob   19
 ```
 
 We can also use the `set_index` method to set one or more columns as the index. For example, `df.set_index('Name', inplace=True)` will set the `Name` column as the index, and the data becomes:
 
 ```
-       Age
+      Age
 Name     
-范统     20
-夏移各    21
-李拜天    19
+John   20
+Jane   21
+Bob    19
 ```
 
 ### Creating an Empty DataFrame
@@ -82,7 +82,7 @@ import pandas as pd
 
 # Define column names and data types
 data_types = {
-    'Name': 'object'  # object is typically used for strings
+    'Name': 'object',
     'age': 'int64',
 }
 
@@ -156,8 +156,8 @@ Suppose we have a file named `data.tsv` with the following content:
 
 ```txt title="data.tsv"
 Name	Age	City
-杜其演	24	上海
-宋外麦	19	北京
+Alice	24	New York
+Charlie	19	London
 ```
 
 The code to read this file would be:
@@ -172,9 +172,9 @@ Because the input file includes a header line, we rely on the default `header=0`
 The output of the program above is:
 
 ```
-    Name  Age    City
-0   杜其演   24    上海
-1   宋外麦   19    北京
+      Name  Age      City
+0    Alice   24  New York
+1  Charlie   19    London
 ```
 
 Exporting data to a text file is just as straightforward using the `to_csv()` method. Its parameters mirror those of `read_csv()`:
@@ -209,9 +209,9 @@ Once installed, you can use `read_excel()` and `to_excel()` to handle `.xls` and
 import pandas as pd
 
 # Create an example DataFrame
-data = {'Name': ['姜米调', '高丽黛', '钱泰少'],
+data = {'Name': ['David', 'Emily', 'Frank'],
         'Age': [25, 30, 35],
-        'City': ['上海', '北京', '西安']}
+        'City': ['New York', 'London', 'Boston']}
 df = pd.DataFrame(data)
 
 # Write the DataFrame to an Excel file
@@ -296,9 +296,9 @@ You can retrieve rows using label-based indexing with `.loc[]` or integer positi
 import pandas as pd
 
 # Create an example DataFrame
-data = {'Name': ['刘备', '关羽', '张飞'],
+data = {'Name': ['Arthur', 'Lancelot', 'Galahad'],
         'Age': [40, 35, 30],
-        'City': ['涿郡', '解县', '涿郡']}
+        'City': ['London', 'Camelot', 'London']}
 df = pd.DataFrame(data)
 
 # Set the City column as the index
@@ -309,7 +309,7 @@ print(df.iloc[0])      # Output the first row
 print(df.iloc[0, 2])   # Output the first and third rows
 
 # Select rows by index
-print(df.loc['涿郡'])   # Output the two rows with '涿郡' as the index
+print(df.loc['London'])   # Output the two rows with 'London' as the index
 ```
 
 Note: If your DataFrame index contains duplicate labels, `.loc[]` will return multiple rows matching that label.
@@ -322,9 +322,9 @@ DataFrame slicing is very similar to list slicing. Because tabular data typicall
 import pandas as pd
 
 # Create an example DataFrame
-data = {'Name': ['刘备', '关羽', '张飞'],
+data = {'Name': ['Arthur', 'Lancelot', 'Galahad'],
         'Age': [40, 35, 30],
-        'City': ['涿郡', '解县', '涿郡']}
+        'City': ['London', 'Camelot', 'London']}
 df = pd.DataFrame(data)
 
 # Slice rows by row number
@@ -342,15 +342,15 @@ You can filter rows by passing boolean conditions inside the brackets:
 import pandas as pd
 
 # Create an example DataFrame
-data = {'Name': ['赵云', '黄忠', '马超'],
+data = {'Name': ['David', 'Edward', 'Frank'],
         'Age': [25, 60, 30],
-        'City': ['常山', '南阳', '茂陵']}
+        'City': ['San Francisco', 'Chicago', 'Austin']}
 df = pd.DataFrame(data)
 
 print(df[df['Age'] > 25])          # Select rows where age is greater than 25
-print(df[df['City'] == '南阳'])     # Select rows where the city is '南阳'
+print(df[df['City'] == 'Chicago'])     # Select rows where the city is 'Chicago'
 
-print(df[df['Age'] > 25] & df['City'] == '南阳'])  # Select rows where age is greater than 25 and city is '南阳'
+print(df[df['Age'] > 25] & df['City'] == 'Chicago')  # Select rows where age is greater than 25 and city is 'Chicago'
 
 print(df[df['Age'] > 25]['Name'])  # Combine row condition with column selection
 ```
@@ -362,21 +362,21 @@ We can use `at` with the index and column name, or `iat` with the row and column
 ```python
 import pandas as pd
 
-data = {'Name': ['孙权', '刘表', '曹操'],
-        'Born': ['182', '142', '155'],
-        'Died': ['252', '208', '220']}
+data = {'Name': ['Washington', 'Jefferson', 'Lincoln'],
+        'Born': ['1732', '1743', '1809'],
+        'Died': ['1799', '1826', '1865']}
 df = pd.DataFrame(data)
 
 # Set the Name column as the index
 df.set_index('Name', inplace=True)
 
 # Access an element using at
-sunquan_born = df.at['孙权', 'Born']
-print("Sun Quan's birth year:", sunquan_born)
+washington_born = df.at['Washington', 'Born']
+print("Washington's birth year:", washington_born)
 
 # Access an element using iat
-liubiao_died = df.iat[1, 1]
-print("Liu Biao's death year:", liubiao_died)
+jefferson_died = df.iat[1, 1]
+print("Jefferson's death year:", jefferson_died)
 ```
 
 ### Iteration
@@ -685,8 +685,8 @@ Suppose we have the following DataFrame:
 ```python
 import pandas as pd
 
-data = {'Name': ['典韦', '许褚', '典韦', '许褚', '甘宁'],
-        'Kingdom': ['魏', '魏', '魏', '魏', '吴'],
+data = {'Name': ['Grace', 'Heidi', 'Grace', 'Heidi', 'Ivan'],
+        'Team': ['Red', 'Red', 'Red', 'Red', 'Blue'],
         'Score': [9, 8, 5.5, 8.5, 7]}
 df = pd.DataFrame(data)
 ```
@@ -706,29 +706,29 @@ mean_scores = grouped.mean()
 print(mean_scores)
 
 # Output:
-#       Score
-# Name       
-# 典韦     7.25
-# 甘宁     7.00
-# 许褚     8.25
+#        Score
+# Name        
+# Grace   7.25
+# Ivan    7.00
+# Heidi   8.25
 ```
 
-We can group by a combination of multiple columns, for example by `Name` and `Kingdom`:
+We can group by a combination of multiple columns, for example by `Name` and `Team`:
 
 ```python
 
-grouped = df.groupby(['Name', 'Kingdom'])
+grouped = df.groupby(['Name', 'Team'])
 
 # Calculate the average score for each name
 mean_scores = grouped.mean()
 print(mean_scores)
 
 # Output:
-#               Score
-# Name Kingdom       
-# 典韦   魏         7.25
-# 甘宁   吴         7.00
-# 许褚   魏         8.25
+#             Score
+# Name  Team       
+# Grace Red    7.25
+# Ivan  Blue   7.00
+# Heidi Red    8.25
 ```
 
 Use `.agg()` to apply multiple aggregation functions to different columns at the same time:
@@ -739,12 +739,12 @@ grouped_agg = grouped.agg({'Score': ['mean', 'min', 'max']})
 print(grouped_agg)
 
 # Output:
-#      Score          
-#       mean  min  max
-# Name                
-# 典韦    7.25  5.5  9.0
-# 甘宁    7.00  7.0  7.0
-# 许褚    8.25  8.0  8.5
+#       Score          
+#        mean  min  max
+# Name                 
+# Grace  7.25  5.5  9.0
+# Ivan   7.00  7.0  7.0
+# Heidi  8.25  8.0  8.5
 ```
 
 You can also transform or filter groups based on custom logic:

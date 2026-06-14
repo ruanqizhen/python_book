@@ -56,39 +56,39 @@ Let's explore how we might implement a function similar to `map()` ourselves. Co
 Here is the implementation:
 
 ```python
-# 自定义的 my_map 函数，旨在模拟内置的 map 函数的功能。
-# 它接受一个函数和一个或多个可迭代对象作为参数。
+# Custom my_map function, designed to simulate the functionality of the built-in map function.
+# It accepts a function and one or more iterables as arguments.
 def my_map(func, *iterables):
-    # 将所有传入的可迭代对象转换为迭代器。
-    # 这使得我们可以使用 next 函数从它们中提取值。
+    # Convert all passed iterables to iterators.
+    # This allows us to extract values from them using the next function.
     iterators = [iter(it) for it in iterables]
     
-    # 无限循环，直到其中一个迭代器耗尽为止。
+    # Infinite loop until one of the iterators is exhausted.
     while True:
-        # 使用一个临时列表来存储从各个迭代器中获取的元素。
+        # Use a temporary list to store elements retrieved from each iterator.
         result = []
-        # 遍历所有的迭代器。
+        # Traverse all iterators.
         for it in iterators:
             try:
-                # 从当前迭代器获取下一个元素，将获取到的元素添加到结果列表中。
+                # Retrieve the next element from the current iterator, and add it to the result list.
                 item = next(it)
                 result.append(item)
             except StopIteration:
-                # 如果某个迭代器中没有更多的元素可供提取，则退出循环并结束生成。
+                # If an iterator has no more elements, exit the loop and finish generation.
                 return
         
-        # 使用传入的函数对从迭代器中获取的元素进行操作，
-        # 然后使用yield返回结果。
+        # Apply the passed function to the elements retrieved from the iterators,
+        # and return the result using yield.
         yield func(*tuple(result))
         
-# 测试自定义的 my_map 函数。
+# Test the custom my_map function.
 lst1 = [1, 2, 3]
 lst2 = [4, 5, 6]
 result = my_map(lambda x, y: x + y, lst1, lst2)
-print(list(result))  # 输出: [5, 7, 9]
+print(list(result))  # Output: [5, 7, 9]
 
 result = my_map(lambda x: x*x, lst1)
-print(list(result))  # 输出: [1, 4, 9]
+print(list(result))  # Output: [1, 4, 9]
 ```
 
 The main complexity in the program above is handling multiple iterables of variable lengths. However, if we use the `zip()` function, we can simplify this logic significantly into a generator expression:
@@ -97,11 +97,11 @@ The main complexity in the program above is handling multiple iterables of varia
 def my_map(func, *iterables):
     return (func(*items) for items in zip(*iterables))
 
-# 测试
+# Test
 lst1 = [1, 2, 3]
 lst2 = [4, 5, 6]
 result = my_map(lambda x, y: x + y, lst1, lst2)
-print(list(result))  # 输出: [5, 7, 9]
+print(list(result))  # Output: [5, 7, 9]
 ```
 
 ## filter
@@ -127,7 +127,7 @@ This can also be implemented using the `filter()` function:
 ```python
 words = ["apple", "banana", "cherry", "date", "fig", "kiwi"]
 long_words = filter(lambda x: len(x) > 5, words)
-print(list(long_words))  # 输出: ['banana', 'cherry']
+print(list(long_words))  # Output: ['banana', 'cherry']
 ```
 
 Since `filter()` only accepts a single iterable, its implementation is much simpler than `map()`. We can implement it using a generator expression:
@@ -136,10 +136,10 @@ Since `filter()` only accepts a single iterable, its implementation is much simp
 def my_filter(func, iterable):
     return (item for item in iterable if func(item))
 
-# 测试
+# Test
 lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 evens = my_filter(lambda x: x % 2 == 0, lst)
-print(list(evens))  # 输出: [2, 4, 6, 8]
+print(list(evens))  # Output: [2, 4, 6, 8]
 ```
 
 ### Generating Prime Numbers
@@ -157,15 +157,15 @@ Here is the implementation:
 from itertools import count
 
 def prime_generator():
-    # 生成素数序列的生成器
-    numbers = count(2)         # 生成一个从 2 开始的整数序列
+    # Generator that produces a sequence of prime numbers
+    numbers = count(2)         # Generate an integer sequence starting from 2
     while True:
-        prime = next(numbers)  # 序列中，下一个没有被过滤掉的数字，是一个新的素数
-        yield prime            # 返回当前素数
-        # 过滤掉序列中所有能被当前素数整除的数
+        prime = next(numbers)  # The next unfiltered number in the sequence is a new prime
+        yield prime            # Return the current prime
+        # Filter out all numbers in the sequence that are divisible by the current prime
         numbers = filter(lambda x, prime=prime: x % prime, numbers)
 
-# 测试
+# Test
 gen = prime_generator()
 for _ in range(10):  # 获取前 10 个素数
     print(next(gen))
@@ -175,7 +175,7 @@ In the program above, the `count()` function from the `itertools` library genera
 
 ```python
 def count(n):
-    # 生成从n开始的整数序列
+    # Generate an integer sequence starting from n
     while True:
         yield n
         n += 1
@@ -185,22 +185,22 @@ More complex logic like this cannot be easily implemented with generator express
 
 ```python
 def prime_generator():
-    # 生成素数序列的生成器
-    factors = {}  # 记录所有非素数的因子的字典
-    q = 2         # 从 2 开始
+    # Generator that produces a sequence of prime numbers
+    factors = {}  # Dictionary to record factors of composite numbers
+    q = 2         # Start from 2
 
     while True:
         if q not in factors:
-            # q 不在非素数字典中，是一个新的素数
+            # q is not in the composite dictionary, so it is a new prime
             yield q
-            # q 的平方是仅以 q 为因子的最小合数
+            # The square of q is the smallest composite number with q as its only prime factor
             factors[q*q] = [q]
         else:
-            # q 不是素数，要找有同样因子的更大一点的其它合数
+            # q is not a prime; find the next composite numbers sharing the same factors
             for p in factors[q]:
-                # p 是 q 的因子，比 q 大的下一个包含 p 因子的合数一定是 p+q  
+                # p is a factor of q; the next composite containing factor p must be p+q  
                 factors.setdefault(p + q, []).append(p)
-            # q 已经处理过，删除以节省内存
+            # q has been processed; delete it to save memory
             del factors[q]
         q += 1
 
@@ -217,7 +217,7 @@ from itertools import count
 
 gen = (i for i in count(2) if all(i % j != 0 for j in range(2, int(i**.5) + 1)))
 
-for _ in range(10):  # 获取前 10 个素数
+for _ in range(10):  # Get the first 10 primes
     print(next(gen))
 ```
 
@@ -233,7 +233,7 @@ You can use this feature to quickly filter out falsy values from a list:
 data = [None, 0, "Python", "", [], False, 42]
 clean_data = list(filter(None, data))
 print(clean_data)
-# 输出: ['Python', 42]
+# Output: ['Python', 42]
 ```
 
 It can also be useful for filtering blank lines when processing file content:
@@ -242,7 +242,7 @@ It can also be useful for filtering blank lines when processing file content:
 lines = ["line1\n", "\n", "line2\n", "", "line3"]
 non_empty_lines = list(filter(None, lines))
 print(non_empty_lines)
-# 输出: ['line1\n', '\n', 'line2\n', 'line3']
+# Output: ['line1\n', '\n', 'line2\n', 'line3']
 ```
 
 Although `"\n"` represents an empty line visually, as a non-empty string it is considered truthy. If you need a stricter filter to remove all blank lines (including whitespace-only lines), you can adjust the filter condition like this:
@@ -251,7 +251,7 @@ Although `"\n"` represents an empty line visually, as a non-empty string it is c
 lines = ["line1\n", "\n", "line2\n", "", "line3"]
 non_empty_lines = list(filter(lambda x: x.strip(), lines))
 print(non_empty_lines)
-# 输出: ['line1\n', 'line2\n', 'line3']
+# Output: ['line1\n', 'line2\n', 'line3']
 ```
 
 ## Fold
@@ -319,13 +319,13 @@ def fold_left(func, sequence, initial=None):
         value = initial
     
     for element in it:
-        # 核心：累积值在左，新元素在右
+        # Core: accumulator on the left, new element on the right
         value = func(value, element) 
     return value
 
-# 测试
+# Test
 print(fold_left(lambda x, y: x - y, [1, 2, 3])) 
-# 输出: -4  -> ((1-2)-3)
+# Output: -4  -> ((1-2)-3)
 
 ```
 
@@ -343,19 +343,19 @@ def fold_right(func, sequence, initial=None):
     if len(sequence) == 1 and initial is None:
         return sequence[0]
         
-    # 如果没有初始值，拿出第一个，处理剩余的
+    # If no initial value is set, take the first element and process the rest
     head = sequence[0]
     tail = sequence[1:]
     
     if initial is None:
-        # 递归调用：先算出 tail 的归并结果
+        # Recursive call: calculate the reduction result of the tail first
         return func(head, fold_right(func, tail))
     else:
         return func(head, fold_right(func, tail, initial))
 
-# 测试
+# Test
 print(fold_right(lambda x, y: x - y, [1, 2, 3]))
-# 输出: 2   -> (1-(2-3))
+# Output: 2   -> (1-(2-3))
 
 ```
 
@@ -386,7 +386,7 @@ from functools import reduce
 
 numbers = [1, 2, 3, 4, 5]
 sum_result = reduce(lambda x, y: x + y, numbers)
-print(sum_result)  # 输出: 15
+print(sum_result)  # Output: 15
 ```
 
 Finding the maximum value is very similar to summation:
@@ -396,7 +396,7 @@ from functools import reduce
 
 numbers = [5, 8, 2, 1, 9, 3]
 max_value = reduce(lambda x, y: x if x > y else y, numbers)
-print(max_value)  # 输出：9
+print(max_value)  # Output: 9
 ```
 
 We can also reverse a string using `reduce()`:
@@ -406,7 +406,7 @@ from functools import reduce
 
 s = "Hello"
 reversed_string = reduce(lambda x, y: y + x, s)
-print(reversed_string)  # 输出："olleH"
+print(reversed_string)  # Output: "olleH"
 ```
 
 Or merge a list of dictionaries:
@@ -416,9 +416,9 @@ from functools import reduce
 
 list_of_dicts = [{"a": 1, "b": 2}, {"c": 3}, {"d": 4}]
 combined_dict = reduce(lambda x, y: {**x, **y}, list_of_dicts)
-print(combined_dict)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+print(combined_dict)  # Output: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 
-# 注意：这种写法每次都会创建新字典，数据量大时性能较低。
+# Note: This approach creates a new dictionary every time, resulting in lower performance with large datasets.
 ```
 
 ### Implementation
@@ -427,26 +427,26 @@ Because `reduce()` returns a single value rather than an iterator, we do not nee
 
 ```python
 def my_reduce(func, sequence, initial=None):
-    # 如果初始值被设置，先考虑它
+    # If the initial value is set, consider it first
     if not sequence:
         if initial is None:
             raise TypeError("my_reduce() of empty sequence with no initial value")
         return initial
     
-    # 如果没有 initial，用第一个元素作为初始值
+    # If there is no initial, use the first element as the starting value
     if initial is None:
         return my_reduce(func, sequence[1:], sequence[0])
     
-    # 左归并：先算 func(acc, x)，再递归
+    # Left fold: compute func(acc, x) first, then recurse
     return my_reduce(func, sequence[1:], func(initial, sequence[0]))
 
-# 测试
+# Test
 numbers = [1, 2, 3, 4, 5]
 total = my_reduce(lambda x, y: x + y, numbers)
-print(total)  # 输出：15
+print(total)  # Output: 15
 
 product = my_reduce(lambda x, y: x * y, numbers)
-print(product)  # 输出：120
+print(product)  # Output: 120
 ```
 
 #### Implementing a Right Fold using `reduce()`
@@ -458,12 +458,12 @@ from functools import reduce
 
 data = [1, 2, 3]
 res = reduce(lambda acc, x: x - acc, reversed([1, 2, 3]))
-# 步骤：
-# 1. 初始: [3, 2, 1], 取 3
-# 2. 遇到 2: 2 - 3 = -1
-# 3. 遇到 1: 1 - (-1) = 2
+# Steps:
+# 1. Start: [3, 2, 1], take 3
+# 2. Encounter 2: 2 - 3 = -1
+# 3. Encounter 1: 1 - (-1) = 2
 
-print(res) # 输出 2
+print(res) # Output 2
 ```
 
 ## sorted
@@ -487,17 +487,17 @@ The `key` function is applied to each element, and its return values are used to
 ```python
 numbers = [3, -1, 4, -1, 5, -9, 2, -6]
 
-# 直接排序
-print(sorted(numbers))           # 输出： [-9, -6, -1, -1, 2, 3, 4, 5]
-# 按绝对值排序
-print(sorted(numbers, key=abs))  # 输出： [-1, -1, 2, 3, 4, 5, -6, -9]
+# Sort directly
+print(sorted(numbers))           # Output: [-9, -6, -1, -1, 2, 3, 4, 5]
+# Sort by absolute values
+print(sorted(numbers, key=abs))  # Output: [-1, -1, 2, 3, 4, 5, -6, -9]
 
 words = ["banana", "pie", "Washington", "book"]
 
-# 默认按字母表顺序排序 A~Z,a~z
-print(sorted(words))           # 输出: ['Washington', 'banana', 'book', 'pie']
-# 按单词长度排序
-print(sorted(words, key=len))  # 输出: ['pie', 'book', 'banana', 'Washington']
+# Default sorting by alphabetical order A~Z, a~z
+print(sorted(words))           # Output: ['Washington', 'banana', 'book', 'pie']
+# Sort by word length
+print(sorted(words, key=len))  # Output: ['pie', 'book', 'banana', 'Washington']
 ```
 
 `sorted()` can also handle complex sorting tasks, such as sorting a list of dictionaries or objects. The `key` function can return a tuple to perform multi-level sorting: sorting by the first element of the tuple first, and breaking ties using subsequent elements.
@@ -506,22 +506,21 @@ Suppose we have a list of employees, represented as dictionaries. We can sort th
 
 ```python
 employees = [
-    {'姓名': '张三', '年龄': 45, '工资': 75000},
-    {'姓名': '李四', '年龄': 30, '工资': 50000},
-    {'姓名': '王五', '年龄': 22, '工资': 75000},
-    {'姓名': '马六', '年龄': 22, '工资': 50000},
-    {'姓名': '小明', '年龄': 30, '工资': 40000},
+    {'name': 'Alice', 'age': 45, 'salary': 75000},
+    {'name': 'Bob', 'age': 30, 'salary': 50000},
+    {'name': 'Charlie', 'age': 22, 'salary': 75000},
+    {'name': 'David', 'age': 22, 'salary': 50000},
+    {'name': 'Emily', 'age': 30, 'salary': 40000},
 ]
 
-# 按年龄排序
+# Sort by age
+print(sorted(employees, key=lambda e: e['age']))
 
-print(sorted(employees, key=lambda e: e['年龄']))
+# Sort by salary, descending
+print(sorted(employees, key=lambda e: e['salary'], reverse=True))
 
-# 按薪水排序，降序
-print(sorted(employees, key=lambda e: e['工资'], reverse=True))
-
-# 按薪水降序排序，薪水相同则按年龄升序排序
-print(sorted(employees, key=lambda x: (-x['工资'], x['年龄'])))
+# Sort by salary descending, then by age ascending
+print(sorted(employees, key=lambda x: (-x['salary'], x['age'])))
 ```
 
 ## Exercises

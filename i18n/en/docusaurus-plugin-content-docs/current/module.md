@@ -128,7 +128,7 @@ We have created two functions: `hello()` and `add()`. Save the newly created fil
 ```python
 import mymodule
 
-mymodule.hello("Xiao Ming")
+mymodule.hello("Alice")
 result = mymodule.add(5, 3)
 print(result)
 ```

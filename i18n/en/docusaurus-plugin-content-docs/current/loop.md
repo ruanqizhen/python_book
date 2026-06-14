@@ -180,18 +180,18 @@ print(result)  # Output: [(1, 'a'), (2, 'b'), (3, 'c')]
 This lets you traverse parallel datasets simultaneously. For example, you can zip a list of names with a list of scores:
 
 ```python
-students = ['Zhang San', 'Li Si', 'Wang Wu', 'Zhao Liu', 'Xiao Ming']
+students = ['Alice', 'Bob', 'Charlie', 'David', 'Emily']
 scores = [90, 85, 88, 92, 95]
 
 for student, score in zip(students, scores):
     print(f'{student}\'s score is: {score}')
     
 # The output of this code will be:
-# Zhang San's score is: 90
-# Li Si's score is: 85
-# Wang Wu's score is: 88
-# Zhao Liu's score is: 92
-# Xiao Ming's score is: 95
+# Alice's score is: 90
+# Bob's score is: 85
+# Charlie's score is: 88
+# David's score is: 92
+# Emily's score is: 95
 ```
 
 Note: `zip()` stops as soon as the shortest input list is exhausted (truncating the output). To iterate until the longest list is exhausted, use `zip_longest` from the `itertools` module, which fills missing entries with `None` or a custom `fillvalue`:

@@ -185,12 +185,12 @@ def display_data(**kwargs):
         print(f"{key}: {value}")
 
 # Call the function
-display_data(name="Ruan Qizhen", age=35, city="Shanghai")
+display_data(name="Ruan Qizhen", age=35, city="New York")
 
 # Output:
 # name: Ruan Qizhen
 # age: 35
-# city: Shanghai
+# city: New York
 ```
 
 `*args` collects positional arguments, whereas `**kwargs` collects keyword arguments. Consequently, they must be placed at the very end of the parameter list, with `*args` preceding `**kwargs`. This ordering allows a function to bind regular parameters first, and then capture any remaining arguments using these two parameters. For example:

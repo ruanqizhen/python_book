@@ -19,7 +19,7 @@ Here is a custom iterator that yields consecutive integers up to a specified lim
 class CountUpTo:
     def __init__(self, max):
         self.max = max
-        self.num = 0  # 初始化 self.num
+        self.num = 0  # Initialize self.num
 
     def __iter__(self):
         return self
@@ -32,15 +32,15 @@ class CountUpTo:
         else:
             raise StopIteration
 
-# 创建迭代器
+# Create iterator
 counter = CountUpTo(5)
-# 测试
-print(next(counter))     # 输出: 0
-print(next(counter))     # 输出: 1
-print(next(counter))     # 输出: 2
-print(next(counter))     # 输出: 3
-print(next(counter))     # 输出: 4
-# print(next(counter))     # 已经到头，再调用 next 会产生 StopIteration 异常
+# Test
+print(next(counter))     # Output: 0
+print(next(counter))     # Output: 1
+print(next(counter))     # Output: 2
+print(next(counter))     # Output: 3
+print(next(counter))     # Output: 4
+# print(next(counter))     # Already at the end; calling next again will raise a StopIteration exception
 ```
 
 The `CountUpTo` class has identical functionality to the `count_up_to()` [generator function](generator#generator-functions) we built earlier, but uses class syntax instead.
@@ -53,8 +53,8 @@ In most everyday code, you don't write custom iterators. Instead, you obtain the
 my_list = [1, 2, 3]
 my_iter = iter(my_list)
 
-print(next(my_iter))  # 输出 1
-print(next(my_iter))  # 输出 2
+print(next(my_iter))  # Output: 1
+print(next(my_iter))  # Output: 2
 ```
 
 Here, `my_list` is the iterable, and `my_iter` is the active iterator generated from it.
@@ -74,21 +74,21 @@ We previously used `count()` when [generating prime numbers](high_order#generati
 ```python
 from itertools import count, cycle, repeat
 
-# 从 10 开始的无限等差数列，步长为 2
+# Infinite arithmetic progression starting from 10 with a step of 2
 for num in count(10, 2):
-    if num > 20:   # 为了避免无限循环，添加一个退出条件
+    if num > 20:   # To avoid an infinite loop, add an exit condition
         break
     print(num)
 
-# 无限重复列表 [1, 2, 3]
+# Infinite repetition of list [1, 2, 3]
 counter = 0
 for item in cycle([1, 2, 3]):
-    if counter > 8:  # 为了避免无限循环，添加一个退出条件
+    if counter > 8:  # To avoid an infinite loop, add an exit condition
         break
     print(item)
     counter += 1
 
-# 重复字符串 "Hello" 5 次
+# Repeat string "Hello" 5 times
 for item in repeat("Hello", 5):
     print(item)
 ```
@@ -109,14 +109,14 @@ accumulate(iterable[, func, *, initial=None]): Returns accumulated sums or the a
 from itertools import accumulate
 import operator
 
-# 累加
+# Cumulative sum
 data = [1, 2, 3, 4, 5]
 result = list(accumulate(data))
-print(result)  # 输出: [1, 3, 6, 10, 15]
+print(result)  # Output: [1, 3, 6, 10, 15]
 
-# 累积乘积
+# Cumulative product
 result = list(accumulate(data, operator.mul))
-print(result)  # 输出: [1, 2, 6, 24, 120]
+print(result)  # Output: [1, 2, 6, 24, 120]
 ```
 
 The `accumulate()` function is similar to [`reduce()`](high_order#reduce). The main difference is that `reduce()` returns only the final cumulative result, whereas `accumulate()` yields every intermediate step in the reduction.
@@ -128,9 +128,9 @@ chain(*iterables): Chains multiple iterators into a single long sequence.
 ```python
 from itertools import chain
 
-# 连接多个列表
+# Concatenate multiple lists
 result = list(chain([1, 2, 3], ['a', 'b', 'c']))
-print(result)  # 输出: [1, 2, 3, 'a', 'b', 'c']
+print(result)  # Output: [1, 2, 3, 'a', 'b', 'c']
 ```
 
 While `chain()` behaves similarly to the `+` operator, `+` requires matching sequence types and allocates a new combined collection in memory. In contrast, `chain()` works with arbitrary iterables and yields values lazily, making it highly memory-efficient for large datasets.
@@ -144,11 +144,11 @@ The following functions filter datasets in specialized ways, similar to the [`fi
 ```python
 from itertools import compress
 
-# 根据布尔值筛选元素
+# Filter elements based on boolean values
 data = [1, 2, 3, 4, 5]
 selectors = [True, False, True, False, True]
 result = list(compress(data, selectors))
-print(result)  # 输出: [1, 3, 5]
+print(result)  # Output: [1, 3, 5]
 ```
 
 While `filter()` applies a test function to each element, `compress()` uses a parallel boolean selector sequence to filter elements.
@@ -158,9 +158,9 @@ While `filter()` applies a test function to each element, `compress()` uses a pa
 ```python
 from itertools import dropwhile
 
-# 当元素小于 3 时跳过
+# Skip elements while they are less than 3
 result = list(dropwhile(lambda x: x < 3, [1, 2, 3, 4, 5, 2, 1]))
-print(result)  # 输出: [3, 4, 5, 2, 1]
+print(result)  # Output: [3, 4, 5, 2, 1]
 ```
 
 Unlike `filter()`, which checks every item in a sequence, `dropwhile()` only checks elements at the beginning of the stream. Once the condition evaluates to `False`, it stops checking and yields all remaining elements without further inspection.
@@ -170,9 +170,9 @@ Unlike `filter()`, which checks every item in a sequence, `dropwhile()` only che
 ```python
 from itertools import takewhile
 
-# 当元素小于 3 时产生元素
+# Yield elements while they are less than 3
 result = list(takewhile(lambda x: x < 3, [1, 2, 3, 4, 5]))
-print(result)  # 输出: [1, 2]
+print(result)  # Output: [1, 2]
 ```
 
 * filterfalse(predicate, iterable): Yields elements for which predicate returns false.
@@ -180,9 +180,9 @@ print(result)  # 输出: [1, 2]
 ```python
 from itertools import filterfalse
 
-# 产生使得 lambda 返回假的元素
+# Yield elements for which the lambda returns False
 result = list(filterfalse(lambda x: x % 2, [1, 2, 3, 4, 5]))
-print(result)  # 输出: [2, 4]
+print(result)  # Output: [2, 4]
 ```
 
 `filterfalse()` returns elements for which the test function evaluates to `False`, reversing the behavior of `filter()`.
@@ -196,9 +196,9 @@ While standard slicing (`[start:stop:step]`) only works on concrete sequence typ
 ```python
 from itertools import islice
 
-# 从序列中切片
+# Slice from a sequence
 result = islice(range(10), 2, 8, 2)
-print(list(result))  # 输出: [2, 4, 6]
+print(list(result))  # Output: [2, 4, 6]
 ```
 
 * groupby(iterable, key=None): Groups adjacent elements in the sequence according to the return value of the key function.
@@ -208,15 +208,15 @@ print(list(result))  # 输出: [2, 4, 6]
 ```python
 from itertools import groupby
 
-# 根据长度分组
+# Group by length
 data = ['abc', 'de', 'fgh', 'i', 'jk']
-# groupby 之前必须先排序，否则只能合并相邻项
+# Must sort before groupby, otherwise it only groups adjacent items
 data.sort(key=len) 
 
 for k, g in groupby(data, key=len):
     print(k, list(g)) 
     
-# 排序后的输出:
+# Output after sorting:
 # 1 ['i']
 # 2 ['de', 'jk']
 # 3 ['abc', 'fgh']
@@ -228,16 +228,16 @@ Another example, grouping students by class:
 from itertools import groupby
 
 students = [
-    {"name": "张三", "class": "A"},
-    {"name": "李四", "class": "B"},
-    {"name": "王五", "class": "A"},
-    {"name": "赵六", "class": "B"}
+    {"name": "Alice", "class": "A"},
+    {"name": "Bob", "class": "B"},
+    {"name": "Charlie", "class": "A"},
+    {"name": "David", "class": "B"}
 ]
 
-# 首先按照班级排序
+# Sort by class first
 students.sort(key=lambda x: x["class"])
 
-# 然后使用 groupby
+# Then use groupby
 for key, group in groupby(students, key=lambda x: x["class"]):
     print(key, list(group))
 ```
@@ -254,16 +254,11 @@ from itertools import starmap
 # 使用参数解包应用函数
 result = list(starmap(pow, [(2, 3), (3, 2)]))
 print(result)  # 输出: [8, 9]
-```
+print(result)  # Output: [8, 9]
 
-* zip_longest(*iterables, fillvalue=None): Similar to the built-in [zip() function](loop#the-zip-function), but uses the longest iterable as the reference.
-
-```python
-from itertools import zip_longest
-
-# 以最长的可迭代对象为准的 zip
+# Zip using the longest iterable as the reference
 result = list(zip_longest('ABCD', 'xy', fillvalue='-'))
-print(result)  # 输出: [('A', 'x'), ('B', 'y'), ('C', '-'), ('D', '-')]
+print(result)  # Output: [('A', 'x'), ('B', 'y'), ('C', '-'), ('D', '-')]
 ```
 
 ### Permutations and Combinations
@@ -273,26 +268,14 @@ These functions compute permutations and combinations dynamically:
 * product(*iterables, repeat=1): Computes the Cartesian product—the set of all possible ordered pairs from the input sets.
 
 ```python
-from itertools import product
+from itertools import product, permutations, combinations, combinations_with_replacement
 
-# 计算两个列表的笛卡尔积
+# Calculate the Cartesian product of two lists
 result = list(product([1, 2], ['a', 'b']))
-print(result)  # 输出: [(1, 'a'), (1, 'b'), (2, 'a'), (2, 'b')]
-```
+print(result)  # Output: [(1, 'a'), (1, 'b'), (2, 'a'), (2, 'b')]
 
-* permutations(iterable, r=None): Generates all possible permutations (where order matters) of length `r`.
-
-```python
-from itertools import permutations
-
-# 产生所有可能的三元素排列
+# Generate all possible 3-element permutations
 result = list(permutations([1, 2, 3], 3))
-print(result)  # 输出: [(1, 2, 3), (1, 3, 2), (2, 1, 3), (2, 3, 1), (3, 1, 2), (3, 2, 1)]
-```
-
-* combinations(iterable, r): Generates all combinations (where order does not matter) of length `r` without repeating elements.
-
-```python
 from itertools import combinations
 
 # 产生所有可能的两元素组合
@@ -336,9 +319,9 @@ Each member has a name and a value. Enumerations are immutable and prevent updat
 You can retrieve members by their name or value:
 
 ```python
-print(Color.RED)        # 输出: Color.RED
-print(Color.RED.name)   # 输出: RED
-print(Color.RED.value)  # 输出: 1
+print(Color.RED)        # Output: Color.RED
+print(Color.RED.name)   # Output: RED
+print(Color.RED.value)  # Output: 1
 ```
 
 ### Iterating Over Enumerations
@@ -370,8 +353,8 @@ At this point, `RED` has a value of 1, `GREEN` has a value of 2, and `BLUE` has 
 Retrieve a member dynamically using string names or literal values:
 
 ```python
-print(Color(1))       # 输出: Color.RED
-print(Color['RED'])   # 输出: Color.RED
+print(Color(1))       # Output: Color.RED
+print(Color['RED'])   # Output: Color.RED
 ```
 
 ### Comparing Enumerations
@@ -379,8 +362,8 @@ print(Color['RED'])   # 输出: Color.RED
 Because they represent unique singletons, compare enumeration members using the identity `is` operator or equality `==`:
 
 ```python
-print(Color.RED is Color.RED)   # 输出: True
-print(Color.RED == Color.GREEN) # 输出: False
+print(Color.RED is Color.RED)   # Output: True
+print(Color.RED == Color.GREEN) # Output: False
 ```
 
 ### Type Checking
@@ -390,7 +373,7 @@ We can validate inputs by asserting that arguments are members of our enumeratio
 ```python
 from enum import Enum
 
-# 定义一个枚举类
+# Define an enum class
 class Color(Enum):
     RED = 1
     GREEN = 2
@@ -398,17 +381,17 @@ class Color(Enum):
 
 def print_color(color):
     if not isinstance(color, Color):
-        raise ValueError("不是一个有效的 Color 枚举成员")
-    print("选中的颜色是:", color.name)
+        raise ValueError("Not a valid Color enum member")
+    print("Selected color is:", color.name)
 
-# 正确使用枚举
-print_color(Color.RED)  # 输出: 选中的颜色是: RED
+# Correct usage of enum
+print_color(Color.RED)  # Output: Selected color is: RED
 
-# 错误使用枚举
+# Incorrect usage of enum
 try:
-    print_color(1)  # 尝试传入一个非枚举值
+    print_color(1)  # Try passing a non-enum value
 except ValueError as e:
-    print(e)  # 输出: 不是一个有效的 Color 枚举成员
+    print(e)  # Output: Not a valid Color enum member
 ```
 
 In this code, the `print_color()` function runs an `isinstance()` check to enforce type safety, raising an error if a raw integer is passed.
@@ -427,27 +410,27 @@ class Color(Enum):
     PURPLE = 4
 
     def describe(self):
-        return f"颜色名：{self.name}；颜色值：{self.value}"
+        return f"Color name: {self.name}; Color value: {self.value}"
 
-    # 混合颜色
+    # Mix colors
     @classmethod
     def mix(cls, color1, color2, ratio=0.5):
         if color1 == cls.RED and color2 == cls.BLUE or color1 == cls.BLUE and color2 == cls.RED:
-            if ratio == 0.5:  # 这里是一个简化的示例，假设只有 0.5 的比例是 PURPLE
+            if ratio == 0.5:  # This is a simplified example, assuming only a 0.5 ratio produces PURPLE
                 return cls.PURPLE
-        return f"按照比例 {ratio} 混合 {color1.name} 和 {color2.name} 无法产生已定义的颜色"
+        return f"Mixing {color1.name} and {color2.name} at a ratio of {ratio} cannot produce a defined color"
 
-print(Color.RED.describe())              # 输出: 颜色名：RED；颜色值：1
+print(Color.RED.describe())              # Output: Color name: RED; Color value: 1
 
-# 演示颜色组合
+# Demonstrate color combination
 result = Color.mix(Color.RED, Color.BLUE)
 if isinstance(result, Color):
-    print(f"混合后的颜色是 {result.name}")   # 输出: 混合后的颜色是 PURPLE
+    print(f"Mixed color is {result.name}")   # Output: Mixed color is PURPLE
 else:
     print(result)
 
 result = Color.mix(Color.RED, Color.BLUE, 0.3)
-print(result)         # 输出: 按照比例 0.3 混合 RED 和 BLUE 无法产生已定义的颜色
+print(result)         # Output: Mixing RED and BLUE at a ratio of 0.3 cannot produce a defined color
 ```
 
 ## Named Tuples
@@ -457,28 +440,28 @@ A **named tuple** allows you to access elements using dot notation (by field nam
 ```python
 from collections import namedtuple
 
-# 定义一个命名元组
+# Define a named tuple
 Person = namedtuple("Person", ["name", "age", "gender"])
 
-# 创建一个Person对象
-p1 = Person(name="阮奇桢", age=40, gender="男")
+# Create a Person object
+p1 = Person(name="Qizhen Ruan", age=40, gender="Male")
 
-print(p1.name)         # 输出: 阮奇桢
-print(p1.age)          # 输出: 40
-print(p1.gender)       # 输出: 男
+print(p1.name)         # Output: Qizhen Ruan
+print(p1.age)          # Output: 40
+print(p1.gender)       # Output: Male
 
-# 使用索引
-print(p1[0])           # 输出: 阮奇桢
+# Use index
+print(p1[0])           # Output: Qizhen Ruan
 
-# 将命名元组转化为字典
-print(p1._asdict())    # 输出: {'name': '阮奇桢', 'age': 40, 'gender': '男'}
+# Convert named tuple to a dictionary
+print(p1._asdict())    # Output: {'name': 'Qizhen Ruan', 'age': 40, 'gender': 'Male'}
 
-# 替换命名元组的字段值
-p2 = p1._replace(name="栓柱")
-print(p2)              # 输出: Person(name='栓柱', age=40, gender='男')
+# Replace a field value of the named tuple
+p2 = p1._replace(name="Bob")
+print(p2)              # Output: Person(name='Bob', age=40, gender='Male')
 
-# 获取所有字段名称
-print(Person._fields)  # 输出: ('name', 'age', 'gender')
+# Get all field names
+print(Person._fields)  # Output: ('name', 'age', 'gender')
 ```
 
 Because named tuples are subclassed from standard tuples, they remain immutable. While you cannot modify fields in-place, the `_replace()` method returns a new named tuple instance with the specified updates.
@@ -493,5 +476,5 @@ class Person(NamedTuple):
     age: int
     gender: str
 
-p1 = Person(name="阮奇桢", age=40, gender="男")
+p1 = Person(name="Qizhen Ruan", age=40, gender="Male")
 ```

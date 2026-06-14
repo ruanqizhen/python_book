@@ -100,7 +100,7 @@ Here, `x` is the variable name, `5` is the value, and the `=` symbol is the assi
 Python supports optional type hints to document the expected data types of variables:
 
 ```python
-name: str = "Gu Huozai"
+name: str = "Alex Smith"
 age: int = 30
 height: float = 5.9
 is_student: bool = False

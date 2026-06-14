@@ -29,7 +29,7 @@ Tip: If your string contains double quotes, enclose it in single quotes. If it c
 This is a comment, the program logic will not use the text here.
 The following statement can print text with double quotes:
 """
-print('Xiao Ming said: "It wasn\'t me!"')
+print('Alex said: "It wasn\'t me!"')
 print("I'm a student.")
 ```
 
@@ -217,19 +217,19 @@ String formatting inserts dynamic values into a string template. Python offers s
 To define an f-string, prefix a string literal with `f` or `F`. You can then embed variables or expressions directly inside curly braces `{}`. When Python executes the code, it evaluates the expressions and inserts the results in place:
 
 ```python
-name = "Lao Wang"
+name = "Mr. Green"
 age = 60
 print(f"I am {name}, and I am {age} years old this year.")
-# Output: I am Lao Wang, and I am 60 years old this year.
+# Output: I am Mr. Green, and I am 60 years old this year.
 ```
 
 f-strings support arbitrary expressions and function calls inside the braces:
 
 ```python
-name = "Lao Wang"
+name = "Mr. Green"
 age = 60
 print(f"I am {name}, and in five years I will be {age + 5} years old.")
-# Output: I am Lao Wang, and in five years I will be 65 years old.
+# Output: I am Mr. Green, and in five years I will be 65 years old.
 ```
 
 To convert any data type into a standard string representation, use the built-in `str()` function:

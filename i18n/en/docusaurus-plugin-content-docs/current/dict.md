@@ -14,7 +14,7 @@ empty_dict = {}
 
 # Create a dictionary with content
 person = {
-    "Name": "Du Ziteng",
+    "Name": "Jane Doe",
     "Age": 30,
     "City": "Pythora"
 }
@@ -33,14 +33,14 @@ You can create a dictionary by passing key-value pairs as keyword arguments to t
 
 ```python
 # Using keyword arguments
-my_dict = dict(Name="Cai Taixian", Age=25, City="Shanghai")
+my_dict = dict(Name="Alice Smith", Age=25, City="New York")
 ```
 
 Alternatively, you can pass a sequence of two-item collections (like a list of tuples) to `dict()`:
 
 ```python
 # Using a list of (key, value) tuples
-pairs = [("Name", "Ma Tonggai"), ("Age", 25), ("City", "Shanghai")]
+pairs = [("Name", "Bob Jones"), ("Age", 25), ("City", "New York")]
 my_dict = dict(pairs)
 ```
 
@@ -48,7 +48,7 @@ If you have two separate lists—one containing keys and the other containing va
 
 ```python
 keys = ["Name", "Age", "City"]
-values = ["Mei Liangxin", 25, "Shanghai"]
+values = ["Charlie Brown", 25, "New York"]
 my_dict = dict(zip(keys, values))
 ```
 
@@ -64,9 +64,9 @@ To check if a key exists in a dictionary, use the `in` operator (similar to list
 
 ```python
 person = {
-    "Name": "Tang Hulu",
+    "Name": "David Miller",
     "Age": 43,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 if "Name" in person:
@@ -83,7 +83,7 @@ Retrieve a value by placing its key inside square brackets, similar to list inde
 person = {
     "Name": "Ruan Qizhen",
     "Age": 30,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 print(person["Name"])  # Output: Ruan Qizhen
@@ -95,9 +95,9 @@ To avoid crashes, you can check key membership first, but a cleaner way is to us
 
 ```python
 person = {
-    "Name": "Shi Zhenxiang",
+    "Name": "Eva Davis",
     "Age": 20,
-    "City": "Beijing"
+    "City": "Chicago"
 }
 
 # Using the get method; returns None if the key does not exist
@@ -134,9 +134,9 @@ To add a new key-value pair or modify an existing one, assign a value to a key u
 
 ```python
 person = {
-    "Name": "Zhu Dachang",
+    "Name": "Frank Wilson",
     "Age": 30,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 # Update age
@@ -145,7 +145,7 @@ person["Age"] = 35
 person["Occupation"] = "Engineer"
 
 print(person)
-# Output: {'Name': 'Zhu Dachang', 'Age': 35, 'City': 'Shanghai', 'Occupation': 'Engineer'}
+# Output: {'Name': 'Frank Wilson', 'Age': 35, 'City': 'New York', 'Occupation': 'Engineer'}
 ```
 
 If the key is not in the dictionary, Python inserts it. If it is already present, Python overwrites the old value.
@@ -154,9 +154,9 @@ To assign a value only if a key is missing (preserving the value if the key is a
 
 ```python
 person = {
-    "Name": "Xiong Chumo",
+    "Name": "Grace Taylor",
     "Age": 30,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 # Using setdefault to set a default value for a non-existent key; here "Salary" does not exist
@@ -165,10 +165,10 @@ print(salary)  # Output: 50000
 
 # Using setdefault to get an existing value; here "City" already exists
 city = person.setdefault('City', 'Magic City')
-print(city)  # Output: Shanghai
+print(city)  # Output: New York
 
 print(person)
-# Output: {'Name': 'Xiong Chumo', 'Age': 30, 'City': 'Shanghai', 'Salary': 50000}
+# Output: {'Name': 'Grace Taylor', 'Age': 30, 'City': 'New York', 'Salary': 50000}
 ```
 
 A classic use case for `setdefault()` is counting item occurrences:
@@ -213,14 +213,14 @@ Delete a key-value pair from a dictionary using the `del` statement:
 
 ```python
 person = {
-    "Name": "Hao Xiaren",
+    "Name": "Henry Harris",
     "Age": 50,
     "City": "Pythora"
 }
 
 del person["Age"]
 
-print(person)  # Output: {'Name': 'Hao Xiaren', 'City': 'Pythora'}
+print(person)  # Output: {'Name': 'Henry Harris', 'City': 'Pythora'}
 ```
 
 ### Getting All Keys and Values
@@ -234,15 +234,15 @@ These return **view objects**, meaning they are dynamic and automatically reflec
 
 ```python
 person = {
-    "Name": "Yang Yiqun",
+    "Name": "Henry Clark",
     "Age": 30,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 keys = person.keys()
 print(keys)             # Output: dict_keys(['Name', 'Age', 'City'])
-print(person.values())  # Output: dict_values(['Yang Yiqun', 30, 'Shanghai'])
-print(person.items())   # Output: dict_items([('Name', 'Yang Yiqun'), ('Age', 30), ('City', 'Shanghai')])
+print(person.values())  # Output: dict_values(['Henry Clark', 30, 'New York'])
+print(person.items())   # Output: dict_items([('Name', 'Henry Clark'), ('Age', 30), ('City', 'New York')])
 
 del person["Age"]       # Delete a key-value pair from the dictionary; all dictionary views will reflect the change
 print(keys)             # Output: dict_keys(['Name', 'City'])
@@ -252,33 +252,33 @@ Views are extremely useful for loops. To iterate only over values:
 
 ```python
 person = {
-    "Name": "Bao Shengong",
+    "Name": "Ivy Martin",
     "Age": 30,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 for value in person.values():
     print(value)
     
-# Output: Bao Shengong  30  Shanghai
+# Output: Ivy Martin  30  New York
 ```
 
 To traverse keys and values together, iterate over `items()`:
 
 ```python
 person = {
-    "Name": "Zheng Zhifan",
+    "Name": "Jack Robinson",
     "Age": 30,
-    "City": "Shanghai"
+    "City": "New York"
 }
 
 for key, value in person.items():
     print(key, value)
 
 # Output:
-# Name Zheng Zhifan
+# Name Jack Robinson
 # Age 30
-# City Shanghai
+# City New York
 ```
 
 Warning: Never add or remove keys while iterating over a dictionary. Doing so raises a `RuntimeError`. If you need to modify keys during a loop, iterate over a static list copy of the keys instead: `for key in list(my_dict.keys()):`.
@@ -491,10 +491,10 @@ Here is a more practical example. Suppose we have two lists, one of friends and 
 
 ```python
 # Friend list
-friends = ["Zhang San", "Li Si", "Wang Wu", "Zhao Liu"]
+friends = ["Alice", "Bob", "Charlie", "David"]
 
 # Colleague list
-colleagues = ["Sun Qi", "Zhou Ba", "Zhang San", "Li Si"]
+colleagues = ["Eva", "Frank", "Alice", "Bob"]
 
 # Using sets to find people who are both friends and colleagues
 friends_set = set(friends)

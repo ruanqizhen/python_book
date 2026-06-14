@@ -283,7 +283,7 @@ To serialize data safely to JSON:
 ```python
 import json
 
-data = {"name": "Xiao Ming", "age": 25, "is_student": True}
+data = {"name": "Alex", "age": 25, "is_student": True}
 
 # Serialize: dict to JSON file
 with open('data.json', 'w', encoding='utf-8') as f:

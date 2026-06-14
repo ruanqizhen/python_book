@@ -10,16 +10,16 @@ Python provides excellent support for regular expressions through its built-in `
 
 Before learning regular expressions, let's first see what problems they can solve.
 
-Suppose we have a piece of text and need to find all phone numbers in it. The phone numbers might be in formats like `010-12345678` or `021-87654321` (i.e., a 3-digit area code followed by a hyphen and an 8-digit number).
+Suppose we have a piece of text and need to find all phone numbers in it. The phone numbers might be in formats like `212-555-0199` or `415-555-0142` (i.e., a 3-digit area code followed by a hyphen, a 3-digit prefix, a hyphen, and a 4-digit line number).
 
 If we only used the string methods we've learned so far, the code would be very verbose and fragile:
 ```python
-text = "Please call: 010-12345678 or 021-87654321."
+text = "Please call: 212-555-0199 or 415-555-0142."
 
 # Using only plain string methods, we would need to tediously slice, check lengths,
 # check the position of "-", check whether each part is all digits, etc., and it would be very error-prone.
 ```
-With regular expressions, however, we only need to write a concise pattern: `r"\d{3}-\d{8}"`, and call `re.findall()`!
+With regular expressions, however, we only need to write a concise pattern: `r"\d{3}-\d{3}-\d{4}"`, and call `re.findall()`!
 
 ## Basic Syntax of Regular Expressions
 
@@ -157,17 +157,17 @@ for m in re.finditer(r"\d+", text):
 ```python
 import re
 
-text = "My phone number is 138-1234-5678, his phone number is 139-8765-4321."
+text = "My phone number is 212-555-0199, his phone number is 415-555-0142."
 
 # Example 1: Replace hyphens in phone numbers with spaces
 new_text = re.sub(r"-", " ", text)
-print(new_text)  # Output: My phone number is 138 1234 5678, his phone number is 139 8765 4321.
+print(new_text)  # Output: My phone number is 212 555 0199, his phone number is 415 555 0142.
 
-# Example 2: Phone number masking (hide the middle four digits)
-# We use parentheses to split the phone number into three groups: first 3 digits, middle 4 digits, last 4 digits
-# \1, \2, \3 correspond to the captured content of the first, second, and third groups respectively. We replace the second group with ****
-secure_text = re.sub(r"(\d{3})-(\d{4})-(\d{4})", r"\1-****-\3", text)
-print(secure_text)  # Output: My phone number is 138-****-5678, his phone number is 139-****-4321.
+# Example 2: Phone number masking (hide the middle three digits)
+# We use parentheses to split the phone number into three groups: first 3 digits, middle 3 digits, last 4 digits
+# \1, \2, \3 correspond to the captured content of the first, second, and third groups respectively. We replace the second group with ***
+secure_text = re.sub(r"(\d{3})-(\d{3})-(\d{4})", r"\1-***-\3", text)
+print(secure_text)  # Output: My phone number is 212-***-0199, his phone number is 415-***-0142.
 ```
 
 > [!TIP]
@@ -175,9 +175,9 @@ print(secure_text)  # Output: My phone number is 138-****-5678, his phone number
 > This function takes a Match object as its argument and returns the replacement string. This is extremely powerful for scenarios where the replacement text needs to be computed dynamically:
 > ```python
 > # Dynamic replacement: double all numbers in the text
-> text = "Xiao Ming has 5 apples and 12 bananas."
+> text = "Alex has 5 apples and 12 bananas."
 > doubled_text = re.sub(r"\d+", lambda m: str(int(m.group()) * 2), text)
-> print(doubled_text)  # Output: Xiao Ming has 10 apples and 24 bananas.
+> print(doubled_text)  # Output: Alex has 10 apples and 24 bananas.
 > ```
 
 ### 4. String Splitting: `re.split()`
@@ -205,15 +205,15 @@ In such cases, we can use `re.compile()` to **pre-compile** the regex pattern in
 ```python
 import re
 
-# Compile the regular expression
-phone_pattern = re.compile(r"\b1[3-9]\d{9}\b")
+# Compile the regular expression (10-digit phone numbers)
+phone_pattern = re.compile(r"\b[2-9]\d{9}\b")
 
 # Call methods directly on the Pattern object, no need to pass the pattern argument again
-text1 = "Contact: 13800138000"
-text2 = "Customer service: 18911112222"
+text1 = "Contact: 2125550199"
+text2 = "Customer service: 4155550142"
 
-print(phone_pattern.search(text1).group())  # Output: 13800138000
-print(phone_pattern.search(text2).group())  # Output: 18911112222
+print(phone_pattern.search(text1).group())  # Output: 2125550199
+print(phone_pattern.search(text2).group())  # Output: 4155550142
 ```
 
 ---
@@ -282,10 +282,10 @@ print(re.search(r"<div>.*</div>", html, re.S).group())
 
 Writing and testing regular expressions yourself is the best way to master them. Try completing the following exercises:
 
-1. **Basic Validation**: Write a regular expression to validate whether an input string is a valid Chinese postal code (a 6-digit number that does not start with 0).
+1. **Basic Validation**: Write a regular expression to validate whether an input string is a valid US ZIP code (a 5-digit number, or 5 digits followed by a hyphen and 4 digits).
 2. **Extract Information**: Given HTML text, write a program to extract all link URLs (i.e., the values of `href` attributes).
    For example, extract `https://google.com` from `<a href="https://google.com">Google</a>`.
-3. **Text Masking**: Write a program using `re.sub()` to locate 18-digit ID card numbers (or 17 digits followed by X/x) and replace the middle 8 digits (representing the date of birth) with `********`.
+3. **Text Masking**: Write a program using `re.sub()` to locate US Social Security Numbers (SSNs in the format `XXX-XX-XXXX`) and replace the middle two digits with `**` (e.g., `XXX-**-XXXX`).
 4. **Log Parsing**: Suppose you have the following line from a web server log:
    `192.168.1.100 - - [28/May/2026:12:34:56 +0800] "GET /index.html HTTP/1.1" 200 4523`
    Write a regular expression to extract: the IP address, request time, request method (e.g., GET/POST), request path, and HTTP status code.
