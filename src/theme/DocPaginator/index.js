@@ -22,13 +22,13 @@ export default function DocPaginatorWrapper(props) {
 		repoId='R_kgDOKhrU6g'
 		category='Announcements'
 		categoryId='DIC_kwDOKhrU6s4CaOFt'
-		mapping='pathname'
-		strict='1'
+        mapping='specific'
+        term={giscus_term}
 		reactionsEnabled='1'
 		emitMetadata='1'
 		inputPosition='top'
 		theme={colorMode}
-		lang='zh-CN'
+		lang='en'
         loading="lazy"
 	  />
     </>
