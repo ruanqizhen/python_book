@@ -1,53 +1,271 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * The Python Codex Custom Stylesheet
+ * Custom CSS overrides to give the Python book a premium, modern, 
+ * and Python-themed aesthetic.
  */
 
-/* You can override the default Infima variables here. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* Color Variables and Typography Root */
 :root {
-  --ifm-color-primary: #1010c0;
-  --ifm-color-primary-dark: rgb(33, 175, 144);
-  --ifm-color-primary-darker: rgb(31, 165, 136);
-  --ifm-color-primary-darkest: rgb(26, 136, 112);
-  --ifm-color-primary-light: rgb(70, 203, 174);
-  --ifm-color-primary-lighter: rgb(102, 212, 189);
-  --ifm-color-primary-lightest: rgb(146, 224, 208);
-  --ifm-code-font-size: 95%;
+  /* Brand Constants */
+  --py-blue-brand: #306998;
+  --py-yellow-accent: #ffd43b;
+
+  /* Infima Core Themes (Python Blue Theme #306998 - HSL 207, 52%, 39%) */
+  --ifm-color-primary: #306998;
+  --ifm-color-primary-dark: #2b5f89;
+  --ifm-color-primary-darker: #285880;
+  --ifm-color-primary-darkest: #21496a;
+  --ifm-color-primary-light: #3574a7;
+  --ifm-color-primary-lighter: #387ba1;
+  --ifm-color-primary-lightest: #438cc5;
+
+  /* Fonts */
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, monospace;
+  --ifm-code-font-size: 90%;
+  
+  /* Layout tweaks */
+  --ifm-pre-padding: 1.25rem;
 }
 
+/* Dark Mode Configuration (Python Light Blue Theme #4B8BBE - HSL 206, 48%, 52%) */
 html[data-theme='dark'] {
-  --ifm-color-primary: rgb(150, 150, 250);
+  --ifm-color-primary: #4b8bbe;
+  --ifm-color-primary-dark: #3c7fae;
+  --ifm-color-primary-darker: #36739e;
+  --ifm-color-primary-darkest: #2c5e82;
+  --ifm-color-primary-light: #5b97c4;
+  --ifm-color-primary-lighter: #65a0ca;
+  --ifm-color-primary-lightest: #7fb0d4;
 }
 
 [data-theme='dark'] img {
-  filter: brightness(.75) contrast(1.2);
+  filter: brightness(.85) contrast(1.15);
 }
 
-.docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.1);
-  display: block;
-  margin: 0 calc(-1 * var(--ifm-pre-padding));
-  padding: 0 var(--ifm-pre-padding);
+/* Typography & Hierarchy */
+.markdown {
+  line-height: 1.8;
+  font-size: 1.05rem;
+  letter-spacing: -0.005em;
 }
 
-html[data-theme='dark'] .docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.navbar__title {
-  font-size: 1.2em;
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--ifm-heading-color);
 }
 
 .main-wrapper h1,
 .markdown > h1 {
-  font-size: 2.2em;
+  font-size: 2.3em;
+  position: relative;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme='dark'] .main-wrapper h1,
+html[data-theme='dark'] .markdown > h1 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .markdown > h2 {
-  font-size: 1.5em;
+  font-size: 1.6em;
+  border-bottom: none;
+  padding-top: 1rem;
 }
 
 .markdown > h3 {
-  font-size: 1.2em;
+  font-size: 1.25em;
+}
+
+/* Code Highlighting Lines */
+.docusaurus-highlight-code-line {
+  background-color: rgba(255, 212, 59, 0.12);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+  border-left: 3px solid var(--py-yellow-accent);
+}
+
+html[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(75, 139, 190, 0.15);
+  border-left: 3px solid var(--ifm-color-primary);
+}
+
+/* Glassmorphic Navbar & Split Color Border */
+.navbar {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease;
+}
+
+html[data-theme='dark'] .navbar {
+  background: rgba(27, 27, 29, 0.8) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--py-blue-brand) 0%, var(--py-blue-brand) 50%, var(--py-yellow-accent) 50%, var(--py-yellow-accent) 100%);
+  z-index: 10;
+}
+
+.navbar__title {
+  font-weight: 700;
+  font-size: 1.15em;
+  letter-spacing: -0.01em;
+}
+
+/* Sidebar Styling & Custom Active States */
+.menu__link {
+  font-size: 0.95rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.menu__link--active {
+  background-color: rgba(48, 105, 152, 0.07) !important;
+  color: var(--ifm-color-primary) !important;
+  border-left: 3.5px solid var(--py-yellow-accent) !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  font-weight: 600 !important;
+  padding-left: 0.8rem !important;
+}
+
+html[data-theme='dark'] .menu__link--active {
+  background-color: rgba(75, 139, 190, 0.12) !important;
+  border-left: 3.5px solid var(--ifm-color-primary) !important;
+}
+
+.menu__link:hover:not(.menu__link--active) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme='dark'] .menu__link:hover:not(.menu__link--active) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Code Blocks Styles */
+.theme-code-block {
+  border-radius: 10px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+  overflow: hidden;
+  border-left: 4px solid var(--ifm-color-primary) !important;
+}
+
+html[data-theme='dark'] .theme-code-block {
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+.theme-code-block pre {
+  line-height: 1.6;
+}
+
+/* Inline Code styling */
+code:not(.theme-code-block *) {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85em;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background-color: rgba(48, 105, 152, 0.06);
+  color: #21496a;
+  border: 1px solid rgba(48, 105, 152, 0.12);
+  word-break: break-word;
+}
+
+html[data-theme='dark'] code:not(.theme-code-block *) {
+  background-color: rgba(75, 139, 190, 0.12);
+  color: #92c5ec;
+  border: 1px solid rgba(75, 139, 190, 0.2);
+}
+
+/* Custom Styled Admonitions */
+.admonition {
+  border-radius: 8px !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02) !important;
+  border-width: 1px 1px 1px 0px !important;
+  border-style: solid !important;
+  margin-bottom: 1.5rem;
+}
+
+.admonition-note {
+  border-color: rgba(48, 105, 152, 0.1) rgba(48, 105, 152, 0.1) rgba(48, 105, 152, 0.1) !important;
+  border-left: 5px solid var(--ifm-color-primary) !important;
+  background-color: rgba(48, 105, 152, 0.04) !important;
+}
+
+.admonition-tip {
+  border-color: rgba(255, 212, 59, 0.1) rgba(255, 212, 59, 0.1) rgba(255, 212, 59, 0.1) !important;
+  border-left: 5px solid var(--py-yellow-accent) !important;
+  background-color: rgba(255, 212, 59, 0.04) !important;
+}
+
+.admonition-info {
+  border-color: rgba(0, 168, 150, 0.1) rgba(0, 168, 150, 0.1) rgba(0, 168, 150, 0.1) !important;
+  border-left: 5px solid #00a896 !important;
+  background-color: rgba(0, 168, 150, 0.04) !important;
+}
+
+.admonition-warning {
+  border-color: rgba(230, 126, 34, 0.1) rgba(230, 126, 34, 0.1) rgba(230, 126, 34, 0.1) !important;
+  border-left: 5px solid #e67e22 !important;
+  background-color: rgba(230, 126, 34, 0.04) !important;
+}
+
+.admonition-danger {
+  border-color: rgba(231, 76, 60, 0.1) rgba(231, 76, 60, 0.1) rgba(231, 76, 60, 0.1) !important;
+  border-left: 5px solid #e74c3c !important;
+  background-color: rgba(231, 76, 60, 0.04) !important;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(48, 105, 152, 0.18);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(48, 105, 152, 0.35);
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: rgba(75, 139, 190, 0.2);
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 139, 190, 0.4);
+}
+
+/* Links transition */
+a {
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }

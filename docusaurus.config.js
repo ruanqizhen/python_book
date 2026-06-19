@@ -12,7 +12,12 @@ const config = {
   url: 'https://py.qizhen.xyz',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    format: 'detect',
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
   favicon: 'img/favicon.ico',
   projectName: 'python_book', // Usually your repo name.
   i18n: {
