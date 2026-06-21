@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 
 export default function NotFoundContent({ className }) {
-  const [seconds, setSeconds] = useState(2);
+  const [seconds, setSeconds] = useState(4);
+  const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
+    }
     const timer = setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
@@ -20,88 +24,92 @@ export default function NotFoundContent({ className }) {
   return (
     <main className="container margin-vert--xl">
       <div className="row">
-        <div className="col col--6 col--offset-3">
+        <div className="col col--8 col--offset-2 col--md--6 col--md--offset-3">
           <div style={{
             textAlign: 'center',
             padding: '3rem 2rem',
             background: 'var(--ifm-card-background-color)',
-            borderRadius: 'var(--border-radius-premium)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+            borderRadius: '12px',
+            border: '1px solid rgba(48, 105, 152, 0.15)',
+            boxShadow: '0 8px 32px rgba(48, 105, 152, 0.08)',
             backdropFilter: 'blur(10px)',
             marginTop: '2rem'
           }}>
             <div style={{
-              fontSize: '6rem',
+              fontSize: '6.5rem',
               fontWeight: 800,
               lineHeight: 1,
-              background: 'linear-gradient(135deg, var(--cyber-glow-purple), var(--cyber-glow-cyan))',
+              background: 'linear-gradient(135deg, var(--py-blue-brand), var(--py-yellow-accent))',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               marginBottom: '1rem',
-              fontFamily: 'var(--ifm-heading-font-family)'
+              fontFamily: 'var(--ifm-font-family-monospace)',
+              letterSpacing: '-2px'
             }}>
               404
             </div>
             <h1 style={{
-              fontSize: '2rem',
+              fontSize: '1.75rem',
               fontWeight: 700,
               marginBottom: '1.5rem',
-              background: 'linear-gradient(to right, var(--ifm-heading-color) 60%, var(--cyber-glow-cyan))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontFamily: 'var(--ifm-heading-font-family)',
-              borderBottom: 'none'
+              color: 'var(--ifm-heading-color)',
+              fontFamily: 'var(--ifm-font-family-monospace)',
+              borderBottom: 'none',
+              wordBreak: 'break-all',
+              paddingBottom: 0
             }}>
-              您似乎在算力洪流中迷失了方向
+              NameError: name '{currentPath || 'page'}' is not defined
             </h1>
             <p style={{
-              fontSize: '1.1rem',
+              fontSize: '1.05rem',
               color: 'var(--ifm-text-color)',
-              marginBottom: '2rem'
+              marginBottom: '2rem',
+              lineHeight: '1.6'
             }}>
-              抱歉，您所访问的页面并不存在。我们将执行“自动熔断机制”：
+              You have strayed beyond the logical boundary of planet Pythora. To prevent a memory leak or stack overflow, the system is executing an automatic garbage collection recovery:
             </p>
             <div style={{
-              fontSize: '1.2rem',
+              fontSize: '1.1rem',
               fontWeight: 600,
               color: 'var(--ifm-color-primary)',
               marginBottom: '2.5rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px'
+              gap: '10px'
             }}>
               <span style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '32px',
-                height: '32px',
+                width: '36px',
+                height: '36px',
                 borderRadius: '50%',
-                background: 'rgba(139, 92, 246, 0.1)',
-                border: '1px solid var(--cyber-glow-purple)',
-                fontSize: '1.1rem'
+                background: 'rgba(48, 105, 152, 0.08)',
+                border: '2px solid var(--ifm-color-primary)',
+                fontFamily: 'var(--ifm-font-family-monospace)',
+                fontSize: '1.1rem',
+                color: 'var(--ifm-color-primary)'
               }}>
                 {seconds}
               </span>
-              <span>秒后自动返回书籍首页...</span>
+              <span>seconds before returning to Saint Mountain OlymPyth...</span>
             </div>
             <div>
               <Link
                 className="button button--primary button--lg"
                 to="/"
                 style={{
-                  borderRadius: 'var(--border-radius-premium)',
-                  padding: '0.8rem 2rem',
+                  borderRadius: '8px',
+                  padding: '0.8rem 2.2rem',
                   fontWeight: 600,
-                  background: 'linear-gradient(135deg, var(--cyber-glow-purple), var(--cyber-glow-cyan))',
+                  background: 'linear-gradient(135deg, var(--py-blue-brand), var(--ifm-color-primary-dark))',
                   border: 'none',
-                  boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)',
+                  boxShadow: '0 4px 15px rgba(48, 105, 152, 0.3)',
                   transition: 'all 0.3s ease'
                 }}
               >
-                立即返回首页
+                Compile Back to Safety
               </Link>
             </div>
           </div>
@@ -110,3 +118,4 @@ export default function NotFoundContent({ className }) {
     </main>
   );
 }
+
