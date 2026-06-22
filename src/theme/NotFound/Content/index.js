@@ -6,20 +6,25 @@ export default function NotFoundContent({ className }) {
   const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
+    let path = '';
     if (typeof window !== 'undefined') {
-      setCurrentPath(window.location.pathname);
+      path = window.location.pathname;
+      setCurrentPath(path);
     }
+    const isEn = path.startsWith('/en/') || path === '/en';
     const timer = setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          window.location.href = '/';
+          window.location.href = isEn ? '/en/' : '/';
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const isEn = currentPath.startsWith('/en/') || currentPath === '/en';
 
   return (
     <main className="container margin-vert--xl">
@@ -98,7 +103,7 @@ export default function NotFoundContent({ className }) {
             <div>
               <Link
                 className="button button--primary button--lg"
-                to="/"
+                to={isEn ? '/en/' : '/'}
                 style={{
                   borderRadius: '8px',
                   padding: '0.8rem 2.2rem',
