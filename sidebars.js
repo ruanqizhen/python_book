@@ -30,6 +30,7 @@ const sidebars = {
         'exception',
         'file_io',
         'debug',
+        'pytest',
       ],
     },
     {
@@ -63,6 +64,7 @@ const sidebars = {
         'magic_methods',
         'oop_design',
         'coding_style',
+        'type_hinting',
       ],
     },
     {
@@ -107,9 +109,10 @@ const sidebars = {
         'pygame',
         'pyspark',
         'folium',
-        'miscellaneous',
+        'requests',
         'fastapi',
         'ai_api',
+        'miscellaneous',
       ],
     },
     'epilogue',
