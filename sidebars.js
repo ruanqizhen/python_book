@@ -30,7 +30,6 @@ const sidebars = {
         'exception',
         'file_io',
         'debug',
-        'pytest',
       ],
     },
     {
@@ -102,6 +101,7 @@ const sidebars = {
       items: [
         'time',
         'regex',
+        'pytest',
         'numpy',
         'pandas',
         'matplotlib',
