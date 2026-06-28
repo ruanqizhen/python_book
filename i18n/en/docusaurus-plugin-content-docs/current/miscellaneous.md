@@ -210,8 +210,8 @@ Returning a format that mirrors the constructor syntax is a Python best practice
 Using the `repr()` mechanism, we can write a short, self-reproducing Quine in just three lines of Python:
 
 ```python
-x = 'y = "x =" + repr(x) + "\\n"\nprint(y+x)'
-y = "x =" + repr(x) + "\n"
+x = 'y = "x = " + repr(x) + "\\n"\nprint(y+x)'
+y = "x = " + repr(x) + "\n"
 print(y+x)
 ```
 

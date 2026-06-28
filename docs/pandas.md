@@ -350,7 +350,7 @@ df = pd.DataFrame(data)
 print(df[df['Age'] > 25])          # 选择年龄大于25岁的行
 print(df[df['City'] == '南阳'])     # 选择城市为南阳的行
 
-print(df[df['Age'] > 25] & df['City'] == '南阳'])  # 选择年龄大于25岁并且城市为南阳的行
+print(df[(df['Age'] > 25) & (df['City'] == '南阳')])  # 选择年龄大于25岁并且城市为南阳的行
 
 print(df[df['Age'] > 25]['Name'])  # 结合行条件和列选择
 ```

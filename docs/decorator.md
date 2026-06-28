@@ -362,7 +362,8 @@ def requires_permission(permission):
             if user and hasattr(user, 'permissions') and user.permissions.get(permission):
                 return func(*args, **kwargs)
             
-            raise PermissionError(f"权限不足或无法识别用户")
+            error_msg = f"用户 {user.name} 没有 {permission} 的权限" if user and hasattr(user, 'name') else "权限不足或无法识别用户"
+            raise PermissionError(error_msg)
         return wrapper
     return decorator
 ```

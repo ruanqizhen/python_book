@@ -183,10 +183,13 @@ def printer(item, lock):
 
 if __name__ == "__main__":
     lock = Lock()
+    processes = []
     for item in range(10):
         p = Process(target=printer, args=(item, lock))
+        processes.append(p)
         p.start()
-        # Note: It is best to call join here, otherwise the main process might finish before the child process
+        
+    for p in processes:
         p.join()
 ```
 

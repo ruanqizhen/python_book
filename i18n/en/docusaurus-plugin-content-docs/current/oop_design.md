@@ -596,11 +596,11 @@ This allows us to select or change the report format dynamically at runtime:
 
 ```python
 student = Student("ruanqizhen")
-text_report = StudentReport(TextReportGenerator())
-dict_report = StudentReport(DictReportGenerator())
+text_report = StudentReport(student, TextReportGenerator())
+dict_report = StudentReport(student, DictReportGenerator())
 
-print(text_report.generate(student))  # Output: This is the report for "ruanqizhen"
-print(dict_report.generate(student))  # Output: {"student": "ruanqizhen"}
+print(text_report.generate())  # Output: This is the report for "ruanqizhen". 
+print(dict_report.generate())  # Output: {'student': 'ruanqizhen'}
 ```
 
 This design fully satisfies the Open/Closed Principle. We can add infinitely many new report formats without changing `StudentReport` or any existing generator subclasses.

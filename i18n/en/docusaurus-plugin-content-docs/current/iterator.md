@@ -251,9 +251,8 @@ for key, group in groupby(students, key=lambda x: x["class"]):
 ```python
 from itertools import starmap
 
-# 使用参数解包应用函数
+# Use parameter unpacking to apply a function
 result = list(starmap(pow, [(2, 3), (3, 2)]))
-print(result)  # 输出: [8, 9]
 print(result)  # Output: [8, 9]
 
 # Zip using the longest iterable as the reference
@@ -278,9 +277,9 @@ print(result)  # Output: [(1, 'a'), (1, 'b'), (2, 'a'), (2, 'b')]
 result = list(permutations([1, 2, 3], 3))
 from itertools import combinations
 
-# 产生所有可能的两元素组合
+# Generate all possible two-element combinations
 result = list(combinations([1, 2, 3], 2))
-print(result)  # 输出: [(1, 2), (1, 3), (2, 3)]
+print(result)  # Output: [(1, 2), (1, 3), (2, 3)]
 ```
 
 * combinations_with_replacement(iterable, r): Generates combinations of length `r`, allowing individual elements to repeat.
@@ -288,9 +287,9 @@ print(result)  # 输出: [(1, 2), (1, 3), (2, 3)]
 ```python
 from itertools import combinations_with_replacement
 
-# 产生所有可能的两元素组合，允许重复
+# Generate all possible two-element combinations with replacement
 result = list(combinations_with_replacement([1, 2, 3], 2))
-print(result)  # 输出: [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
+print(result)  # Output: [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
 ```
 
 ## Enumerations

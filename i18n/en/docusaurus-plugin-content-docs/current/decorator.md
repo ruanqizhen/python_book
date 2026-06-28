@@ -396,7 +396,7 @@ Running this demonstration produces the following output:
 
 ```
 Manager Brown edited the document: Project Plan 2033
-User Alex does not have edit permissions
+Insufficient permissions or unidentified user
 ```
 
 ### Retry

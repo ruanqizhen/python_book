@@ -82,7 +82,7 @@ def binary_search(sorted_arr, target):
         else:
             right = mid - 1        # 搜索左半部分
             
-    return -1                      # 目标没有找到
+    print(count)  # 输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 次...       # 目标没有找到
 
 # 示例
 sorted_arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]

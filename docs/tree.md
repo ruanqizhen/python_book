@@ -94,6 +94,14 @@ BinaryTree 类用于创建和操作二叉树。类中维护了一个属性 root 
 ```python
 from collections import deque
 
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
+
 def bfs_queue(node):
     queue = deque([node])
     while queue:
@@ -110,7 +118,7 @@ root.children[0].add_child(Node('D'))
 root.children[0].add_child(Node('E'))
 root.children[1].add_child(Node('F'))
 
-dfs_recursive(root)
+bfs_queue(root)
 ```
 
 
@@ -224,7 +232,7 @@ print(bst.search(9))  # 输出: False
 
 ```
 
-在理想情况下（树是平衡的），二叉搜索树的插入和查找的时间复杂度都是 。但是，如果插入的数据是有序的（例如 `[1, 2, 3, 4, 5]`），树会退化成一个链表，此时时间复杂度会变成 。为了解决这个问题，在高级应用中通常会使用**平衡二叉树**（如 AVL 树或红黑树），它们能自动调整结构以保持树的平衡。
+在理想情况下（树是平衡的），二叉搜索树的插入和查找的时间复杂度都是 $O(\log_2 n)$。但是，如果插入的数据是有序的（例如 `[1, 2, 3, 4, 5]`），树会退化成一个链表，此时时间复杂度会变成 $O(n)$。为了解决这个问题，在高级应用中通常会使用**平衡二叉树**（如 AVL 树或红黑树），它们能自动调整结构以保持树的平衡。
 
 ## 堆
 

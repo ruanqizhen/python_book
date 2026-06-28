@@ -102,10 +102,10 @@ The program written with Spark SQL statements is as follows:
 
 ```python
 spark.sql("""
-    SELECT student_info.name, quize_score.score
+    SELECT student_info.name, quiz_score.score
     FROM student_info
-    JOIN quize_score
-    ON student_info.student_id = quize_score.student_id
+    JOIN quiz_score
+    ON student_info.student_id = quiz_score.student_id
 """).show()
 
 ```
@@ -114,9 +114,9 @@ The code implementing the same functionality using the PySpark API is as follows
 
 ```python
 student_info.join(
-    quize_score, student_info.student_id == quize_score.student_id
+    quiz_score, student_info.student_id == quiz_score.student_id
 ).select(
-    student_info.name, quize_score.score
+    student_info.name, quiz_score.score
 ).show()
 
 ```

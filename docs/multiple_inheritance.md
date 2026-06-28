@@ -274,7 +274,7 @@ class Table(TableclothMixin, Furniture):
         self.shape = shape
 
 
-class ChairWithTableAttached(Furniture, PillowPlacementMixin, TableclothMixin):
+class ChairWithTableAttached(PillowPlacementMixin, TableclothMixin, Furniture):
     def __init__(self, id, cost, number_of_legs=4, shape="圆形"):
         super().__init__(id, cost)
         self.number_of_legs = number_of_legs
@@ -289,7 +289,7 @@ combo.place_pillow()
 combo.place_tablecloth()
 ```
 
-在 Python 社区的最佳实践中，Mixin 类通常应该放在继承列表的最前面。 原因： Mixin 的作用通常是“增强”或“覆盖”基础类的行为。如果 Mixin 中定义了与基类同名的方法（例如 save() 或 update()），把它放在后面会导致 MRO 顺序中它排在 Furniture 之后，从而导致 Mixin 的方法永远不会被调用（被 Furniture 遮蔽了）。虽然本例中没有同名方法冲突，但作为教程应传授标准的 idiom。
+在 Python 社区的最佳实践中，Mixin 类通常应该放在继承列表的最前面。这是因为 Mixin 的作用通常是“增强”或“覆盖”基础类的行为。如果把它放在后面，会导致在 MRO 顺序中它排在基础类之后。如果基础类中定义了与 Mixin 同名的方法（例如 save() 或 update()），Mixin 的方法就会被基础类遮蔽，从而导致它永远不会被调用。虽然在本例中没有出现同名方法冲突，但我们在编写代码时应当养成遵循这一规范的好习惯。
 
 ### 查找顺序
 

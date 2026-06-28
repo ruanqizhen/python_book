@@ -101,6 +101,14 @@ def bfs_queue(node):
             queue.append(child)
 
 # Usage example
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+    
+    def add_child(self, obj):
+        self.children.append(obj)
+
 root = Node('A')
 root.add_child(Node('B'))
 root.add_child(Node('C'))
@@ -108,7 +116,7 @@ root.children[0].add_child(Node('D'))
 root.children[0].add_child(Node('E'))
 root.children[1].add_child(Node('F'))
 
-dfs_recursive(root)
+bfs_queue(root)
 ```
 
 BFS is ideal for hierarchical or distance-based queries, such as finding all connections within a specific degree of separation in a social network.

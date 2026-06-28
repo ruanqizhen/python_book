@@ -396,7 +396,7 @@ class Producer(threading.Thread):
 class Consumer(threading.Thread):
     def run(self):
         global items
-        while True:
+        for _ in range(5):
             with condition:
                 # Use while loop to check the condition, preventing spurious wakeups or resource preemption
                 while not items:  

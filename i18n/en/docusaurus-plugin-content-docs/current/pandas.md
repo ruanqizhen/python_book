@@ -350,7 +350,7 @@ df = pd.DataFrame(data)
 print(df[df['Age'] > 25])          # Select rows where age is greater than 25
 print(df[df['City'] == 'Chicago'])     # Select rows where the city is 'Chicago'
 
-print(df[df['Age'] > 25] & df['City'] == 'Chicago')  # Select rows where age is greater than 25 and city is 'Chicago'
+print(df[(df['Age'] > 25) & (df['City'] == 'Chicago')])  # Select rows where age is greater than 25 and city is 'Chicago'
 
 print(df[df['Age'] > 25]['Name'])  # Combine row condition with column selection
 ```

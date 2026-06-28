@@ -211,8 +211,8 @@ print(repr([1, 2, 3]))  # 输出：'[1, 2, 3]'
 借助 repr 机制，我们可以在 Python 中轻松的编写一段自产生程序：
 
 ```python
-x = 'y = "x =" + repr(x) + "\\n"\nprint(y+x)'
-y = "x =" + repr(x) + "\n"
+x = 'y = "x = " + repr(x) + "\\n"\nprint(y+x)'
+y = "x = " + repr(x) + "\n"
 print(y+x)
 ```
 

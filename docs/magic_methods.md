@@ -362,7 +362,7 @@ class HistoricalAttributes:
     def __setattr__(self, name, value):
         # 此时 self._history 已经安全存在了
         if hasattr(self, '_forbidden_attributes'):
-             if name in self._forbidden_attributes:
+            if name in self._forbidden_attributes:
                 raise AttributeError(f"'{name}' 是一个只读属性。")
             
         # 记录历史

@@ -287,7 +287,9 @@ print(("红", "绿", "蓝")[color])
 def action_a():
     print("A 被执行了")
     return "A"
-def action_b(): print("B 被执行了") return "B"
+def action_b():
+    print("B 被执行了")
+    return "B"
 
 condition = True
 ```

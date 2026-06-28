@@ -478,7 +478,7 @@ print(arr[..., 0])
 #   [100 105 110 115]]]
 
 
-# Use Ellipsis to select all elements with index 1 in the first and last dimensions, equivalent to arr[1, :, :, 1]
+# Use Ellipsis to select all elements with index 1 in the first dimension and index 0 in the last dimension, equivalent to arr[1, :, :, 0]
 print(arr[1, ..., 0])
 
 # Output:

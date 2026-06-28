@@ -100,9 +100,9 @@ species = df['species_name'].unique()
 # 绘制散点图
 plt.figure(figsize=(8, 6))
 for i, specie in enumerate(species):
-    subset = df[df['species_name'] == specie]
-    plt.scatter(subset['petal length (cm)'], subset['petal width (cm)'], 
-                label=specie, color=colors[i])
+    subset = df[df['species_name'] == specie]
+    plt.scatter(subset['petal length (cm)'], subset['petal width (cm)'], 
+                label=specie, color=colors[i])
 
 # 添加标题和标签
 plt.title("Iris Dataset - Petal Length vs Width")
