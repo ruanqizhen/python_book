@@ -258,7 +258,7 @@ def prime_factors(n):
             factors.append(i)
             n //= i
 
-    if n > 2:
+    if n > 1:
         factors.append(n)
 
     return factors

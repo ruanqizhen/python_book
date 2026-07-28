@@ -62,7 +62,7 @@ Inside a loop, you can print, process, or save data. However, **never modify, in
 fruits = ['apple', 'banana', 'orange']
 
 for fruit in fruits:
-    fruits[2:2] = 'watermelon'
+    fruits[2:2] = ['watermelon']
     print(fruit)
 ```
 

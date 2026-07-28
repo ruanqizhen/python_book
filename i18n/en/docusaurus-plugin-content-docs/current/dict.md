@@ -317,12 +317,12 @@ my_dict = {'a': 1, 'b': 2, 'c': 3}
 # Using the update method
 another_dict = {'e': 5, 'f': 6}
 my_dict.update(another_dict)
-print(my_dict)                # Output: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
+print(my_dict)                # Output: {'a': 1, 'b': 2, 'c': 3, 'e': 5, 'f': 6}
 
 # Using the pop method
 value = my_dict.pop('f')
 print(value)                  # Output: 6
-print(my_dict)                # Output: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}
+print(my_dict)                # Output: {'a': 1, 'b': 2, 'c': 3, 'e': 5}
 
 # Using the clear method
 my_dict.clear()

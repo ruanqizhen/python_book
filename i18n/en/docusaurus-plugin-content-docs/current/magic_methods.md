@@ -300,7 +300,7 @@ Suppose we want to create a custom `SortedList` class that behaves like a standa
 ```python
 class SortedList:
     def __init__(self, initial_data=None):
-        self.data = sorted(initial_data)
+        self.data = sorted(initial_data) if initial_data is not None else []
 
     def __len__(self):
         return len(self.data)

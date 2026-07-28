@@ -140,10 +140,10 @@ print(math.sqrt(2.3))  # Output: 1.51657508881031
 Python supports complex numbers out of the box. They are written by appending a `j` or `J` to specify the imaginary part:
 
 ```python
-print((3 + 4j) + (2 - 3j))  # Output: 5 + j
-print((3 + 4j) - (2 - 3j))  # Output: 1 + 7j
-print((3 + 4j) * (2 - 3j))  # Output: 18 - 1j
-print((3 + 4j) / (2 - 3j))  # Output: -0.46153846153846156 + 1.3076923076923077j
+print((3 + 4j) + (2 - 3j))  # Output: (5+1j)
+print((3 + 4j) - (2 - 3j))  # Output: (1+7j)
+print((3 + 4j) * (2 - 3j))  # Output: (18-1j)
+print((3 + 4j) / (2 - 3j))  # Output: (-0.46153846153846156+1.3076923076923077j)
 ```
 
 Note that standard functions in the `math` library only accept real numbers. To perform operations on complex numbers, use the `cmath` (complex math) library:

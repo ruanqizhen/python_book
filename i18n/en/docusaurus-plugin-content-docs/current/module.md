@@ -381,7 +381,7 @@ qr.add_data('https://www.example.com')
 qr.make(fit=True)
 
 # Create the QR code image
-img = qr.make_image(fill='black', back_color='white')
+img = qr.make_image(fill_color='black', back_color='white')
 
 # Display the image
 img.show()

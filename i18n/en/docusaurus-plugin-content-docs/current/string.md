@@ -277,7 +277,7 @@ Other common formatting specifiers include padding, alignment, and percentages:
   ```python
   number = 123.456
   formatted_number = f"{number:10.2e}"  # Explicitly specify e for scientific notation
-  print(formatted_number)               # Output:   1.2e+02
+  print(formatted_number)               # Output:   1.23e+02
   ```
   Here `10.2` means a total width of 10 characters, `.2` means two digits after the decimal point.
 
