@@ -427,7 +427,11 @@ dir_part, file_part = p.parent, p.name  # 返回 (Path('folder/subfolder'), 'fil
 
 使用 pathlib 的优势对比：
 ```python
+import os
 from pathlib import Path
+
+folder = 'folder'
+subfolder = 'subfolder'
 # os.path 写法 (旧)
 path = os.path.join(folder, subfolder, 'file.txt')
 # pathlib 写法 (新) - 支持使用 / 运算符拼接

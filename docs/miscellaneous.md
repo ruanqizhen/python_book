@@ -48,7 +48,7 @@ class 侠客:
         if 本座.内力 <= 0:
             本座.内力 = 0
             本座.状态 = "重伤倒地"
-            输出(f"aaa {本座.名号} 吐出一口鲜血，支撑不住了！")
+            输出(f"{本座.名号} 吐出一口鲜血，支撑不住了！")
         else:
             输出(f"   {本座.名号} 剩余内力：{本座.内力}")
             等待(1) # 暂停一下，增加阅读沉浸感
@@ -379,10 +379,10 @@ solve_sudoku(0, solution)
 第一种方法是简化的解法，逻辑简单易懂，能够处理大部分题目。这个算法首先考虑两个数字，通过加减乘除得到最多 6 个结果，然后递归地增加一个数字，得到所有三个数字的结果，再递归增加一个数字，得到所有 4 个数字的可能结果。如果其中有结果是 24，那么问题就解决了。然而，这种递归方法遗漏了一种情况，即 4 个数字必须先两两计算，然后再得到最终结果，例如 (1+2)*(1+7)。其程序代码如下：
 
 ```python
-from typing import List, Callable, Dict
+from typing import List, Callable, Dict, Optional
 
-# 定义运算符和所对应的运算的 Lambda 函数
-Operators: Dict[str, Callable[[float, float], float]] = {
+# 定义运算符和所对应的运算的 Lambda 函数（逆向求解用）
+Operators: Dict[str, Callable[[float, float], Optional[float]]] = {
     "+": lambda a, t: t - a,
     "-": lambda a, t: a - t,
     "*": lambda a, t: t / a if a != 0 else None,
@@ -392,7 +392,9 @@ Operators: Dict[str, Callable[[float, float], float]] = {
 def calculate(numbers: List[int], target: float, message: str = ''):
     if len(numbers) == 1:
         if numbers[0] == target:
-            print(f"{message[:-1]}{numbers[0]}))")
+            # 动态计算需要的右括号数量，避免硬编码
+            depth = message.count('(')
+            print(f"{message[:-1]}{numbers[0]}{')' * depth}")
         return
     
     for num in set(numbers):
@@ -440,7 +442,8 @@ def print_result(a_value: float, a_string: str, b_value: float, b_string: str):
 
 # Function to generate all 1-3 groups of numbers
 def all_1_3_groups(numbers: List[int]):
-    return {numbers[i]: numbers[:i] + numbers[i+1:] for i in range(len(numbers))}
+    # 使用 list 而非 dict，避免重复数字时键覆盖导致分组丢失（如 [1,2,1,7]）
+    return [(numbers[i], numbers[:i] + numbers[i+1:]) for i in range(len(numbers))]
 
 # Function to generate all 2-2 groups of numbers
 def all_2_2_groups(numbers: List[int]):
@@ -472,7 +475,7 @@ def process_3_operands(numbers_3: List[int]):
 
 # Function to process four operands and print results
 def process_4_operands(numbers: List[int]):
-    for num, others in all_1_3_groups(numbers).items():
+    for num, others in all_1_3_groups(numbers):
         results_3_operands = process_3_operands(others)
         for result_3 in results_3_operands:
             print_result(num, str(num), result_3[0], result_3[1])

@@ -118,7 +118,7 @@ class Square(Rectangle):
 为了遵循里氏替换原则，我们可以重新设计这两个类，使得 `Square` 不是 `Rectangle` 的子类，而是两者都是更通用的抽象类 `Shape` 的子类。
 
 ```python
-from abc import ABC
+from abc import ABC, abstractmethod
 
 class Shape(ABC):
     @abstractmethod
@@ -589,11 +589,11 @@ class StudentReport:
 
 ```python
 student = Student("ruanqizhen")
-text_report = StudentReport(TextReportGenerator())
-dict_report = StudentReport(DictReportGenerator())
+text_report = StudentReport(student, TextReportGenerator())
+dict_report = StudentReport(student, DictReportGenerator())
 
-print(text_report.generate(student))  # 输出： 这是“ruanqizhen”的报告
-print(dict_report.generate(student))  # 输出： {"学生": "ruanqizhen"}
+print(text_report.generate())  # 输出： 这是“ruanqizhen”的报告
+print(dict_report.generate())  # 输出： {"学生": "ruanqizhen"}
 ```
 
 这种设计完全遵循了开放封闭原则，因为现有的代码不需要为了添加新功能而进行修改。

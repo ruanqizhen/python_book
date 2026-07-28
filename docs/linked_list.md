@@ -256,7 +256,7 @@ llist.reverse_recursive()
 llist.print_list()  # 1 -> 2 -> 3 -> 4 -> None
 ```
 
-无论循环还是递归，翻转链表都需要遍历链表每个节点一次，所以时间复杂度为 $O(n)$，n 是节点数量。算法利用了原来的节点，并不用生成新链表，所以空间复杂度是 $O(1)$.
+无论循环还是递归，翻转链表都需要遍历链表每个节点一次，所以时间复杂度为 $O(n)$，n 是节点数量。迭代版利用了原来的节点，不生成新链表，空间复杂度是 $O(1)$；递归版由于递归调用栈深度为 $O(n)$，空间复杂度是 $O(n)$。
 
 
 ### 检测环
@@ -264,7 +264,7 @@ llist.print_list()  # 1 -> 2 -> 3 -> 4 -> None
 
 检测链表中是否有环。如果有环，那么说明遍历链表的时候，走着走着就又会遇到一个之前遇到过的节点。所以最直接的办法，就是把所有遍历过的节点都标注一下。如果节点有额外的空间可以存放新数据，那么就在遍历的时候，在每个节点上添加个新数据，表明已经走过了。当遍历链表时，遇到了已经标记过的节点，则表示链表有环。如果不能在节点上直接标注，就只好在额外开辟一块内存用于记录，最方便的是使用集合数据。遍历时，把每个节点都存入集合，如果发现节点已经在集合里了，就说明有环。
 
-上面这两种算法的空间复杂度都是 $O(n)$，因为都需要额外的数据来记录每个节点。还有一种空间复杂的为 $O(n1)$ 的“快慢指针”算法。基本思想是使用两个指针，一个移动得快（两步一次），另一个移动得慢（一步一次）。如果链表中存在环，那么两个指针最终会相遇。程序示例如下：
+上面这两种算法的空间复杂度都是 $O(n)$，因为都需要额外的数据来记录每个节点。还有一种空间复杂度为 $O(1)$ 的“快慢指针”算法。基本思想是使用两个指针，一个移动得快（两步一次），另一个移动得慢（一步一次）。如果链表中存在环，那么两个指针最终会相遇。程序示例如下：
 
 ```python
 class Node:
@@ -357,25 +357,29 @@ class LinkedList:
         print("None")
 
     def remove_nth_from_end(self, n):
-        first = self.head
-        second = self.head
+        # 标准快慢指针写法，健壮且易懂
+        fast = self.head
+        slow = self.head
 
-        # Advance the second pointer by n nodes.
+        # 让快指针先走 n 步
         for _ in range(n):
-            if not second.next:  # If n is equal to the length of the linked list
-                if second == self.head:  # Move head to the next node
-                    self.head = self.head.next
+            if fast is None:
+                print("n 大于链表长度")
                 return
-            second = second.next
+            fast = fast.next
+        
+        # 如果快指针走到 None，说明要删除的是头节点
+        if fast is None:
+            self.head = self.head.next
+            return
 
-        # Move both pointers until the second reaches the end
-        while second:
-            second = second.next
-            prev = first
-            first = first.next
-
-        # Now, the first pointer points to the node to be removed
-        prev.next = first.next
+        # 快慢指针同步移动
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+        
+        # 此时 slow 指向倒数第 n+1 个节点
+        slow.next = slow.next.next
 
 # Using the LinkedList
 llist = LinkedList()
@@ -393,7 +397,7 @@ print("\nAfter removing the 2nd node from the end:")
 llist.print_list()
 ```
 
-这个问题还有个更加标准且健壮的“快慢指针”写法。通常先让 second 移动 n 步，如果 second 变为 None，说明要删除的是头节点。
+**标准写法说明**（这是第二种更健壮的实现，功能与上面相同）：
 
 ```python
     def remove_nth_from_end(self, n):

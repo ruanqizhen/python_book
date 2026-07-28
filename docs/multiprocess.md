@@ -255,7 +255,7 @@ def prime_factors(n):
             factors.append(i)
             n //= i
 
-    if n > 2:
+    if n > 1:
         factors.append(n)
 
     return factors
@@ -270,10 +270,11 @@ def main():
     num_processes = 72
     start_num = 1000000000
     end_num = 1000010000
-    step = (end_num - start_num) // num_processes
+    # 使用向上取整并用 min 防止越界，确保覆盖所有数字
+    step = (end_num - start_num + num_processes - 1) // num_processes
 
     chunks = [
-        (start_num + i * step, start_num + (i + 1) * step) for i in range(num_processes)
+        (start_num + i * step, min(start_num + (i + 1) * step, end_num)) for i in range(num_processes)
     ]
 
     start_time = time.time()

@@ -82,7 +82,7 @@ def binary_search(sorted_arr, target):
         else:
             right = mid - 1        # 搜索左半部分
             
-    print(count)  # 输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 次...       # 目标没有找到
+    return -1                      # 目标没有找到
 
 # 示例
 sorted_arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -98,16 +98,16 @@ else:
 我们也经常会看到用递归方法实现的二分查找：
 
 ```python
-def binary_search(sorted_arr, target, left, right):
-   if left > right:
-	   return -1
-   mid = (left + right) // 2
-   if sorted_arr[mid] == target:
-	   return mid
-   elif sorted_arr[mid] > target:
-	   return binary_search(sorted_arr, target, left, mid - 1)
-   else:
-	   return binary_search(sorted_arr, target, mid + 1, right)
+def binary_search_recursive(sorted_arr, target, left, right):
+    if left > right:
+        return -1
+    mid = (left + right) // 2
+    if sorted_arr[mid] == target:
+        return mid
+    elif sorted_arr[mid] > target:
+        return binary_search_recursive(sorted_arr, target, left, mid - 1)
+    else:
+        return binary_search_recursive(sorted_arr, target, mid + 1, right)
 ```
 
 
@@ -122,6 +122,8 @@ def binary_search(sorted_arr, target, left, right):
 ```python
 def rotate_naive(nums, k):
     n = len(nums)
+    if n == 0:
+        return
     k = k % n  # 防止 k 比数组长度还大
     for _ in range(k):
         previous = nums[-1]
@@ -140,6 +142,8 @@ print(nums)  # Output: [5,6,7,1,2,3,4]
 ```python
 def rotate_with_extra_array(nums, k):
     n = len(nums)
+    if n == 0:
+        return
     k = k % n
     rotated = [0] * n
     for i in range(n):
@@ -164,6 +168,8 @@ def reverse(nums, start, end):
 
 def rotate_with_reversal(nums, k):
     n = len(nums)
+    if n == 0:
+        return
     k = k % n
     reverse(nums, 0, n - 1)
     reverse(nums, 0, k - 1)
@@ -384,6 +390,10 @@ print(sorted_arr)  # 输出: [3, 9, 10, 27, 38, 43, 82]
 
 ```python
 def counting_sort(arr):
+    if not arr:
+        return []
+    if min(arr) < 0:
+        raise ValueError("counting_sort 只支持非负整数")
     # 找到待排序数组中的最大值
     max_val = max(arr)
     

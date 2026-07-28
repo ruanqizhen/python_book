@@ -11,7 +11,7 @@ Matplotlib 支持多种图表类型，比如：折线图（Line plot）、柱状
 可以通过以下命令安装这几个库：
 
 ```sh
-pip install matplotlib, seaborn
+pip install matplotlib seaborn
 
 ```
 

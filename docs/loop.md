@@ -64,7 +64,7 @@ for letter in word:
 fruits = ['苹果', '香蕉', '桔子']
 
 for fruit in fruits:
-    fruits[2:2] = '西瓜'
+    fruits[2:2] = ['西瓜']
     print(fruit)
 ```
 
@@ -161,7 +161,7 @@ for i, fruit in enumerate(fruits):
 fruits = ['苹果', '香蕉', '草莓', '桔子']
 
 for i, fruit in enumerate(fruits, 1):
-    print(f"Element {i} is {fruit}")
+    print(f"第 {i} 个水果是： {fruit}")
 
 # 输出:
 # 第 1 个水果是： 苹果

@@ -158,6 +158,8 @@ print(isValid(test_string))  # 应该返回 True
 实现代码如下：
 
 ```python
+from collections import deque
+
 class MinStack:
     def __init__(self):
         self.stack = deque()      # 主栈

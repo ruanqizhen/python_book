@@ -42,7 +42,7 @@ print(df)
 ```
   Name  Age
 0   范统   20
-1  夏移各   21
+1  夏建仁   21
 2  李拜天   19
 ```
 
@@ -59,7 +59,7 @@ DataFrame 的行表示数据记录，每一行包含了一组相关的数据。�
 ```
    Name  Age
 a   范统   20
-b  夏移各   21
+b  夏建仁   21
 c  李拜天   19
 ```
 
@@ -82,7 +82,7 @@ import pandas as pd
 
 # 定义列名和数据类型
 data_types = {
-    'Name': 'object'  # object通常用于字符串
+    'Name': 'object',  # object通常用于字符串
     'age': 'int64',
 }
 
@@ -218,7 +218,7 @@ df = pd.DataFrame(data)
 df.to_excel('my_data.xlsx', index=False)
 
 # 读取名为 'Sheet1' 的工作表
-df_2 = pd.read_excel('file.xlsx', sheet_name='Sheet1')
+df_2 = pd.read_excel('my_data.xlsx', sheet_name='Sheet1')
 
 # 显示 DataFrame
 print(df_2)
@@ -305,8 +305,8 @@ df = pd.DataFrame(data)
 df.set_index('City', inplace=True)
 
 # 通过行号选择行
-print(df.iloc[0])      # 输出第一行数据
-print(df.iloc[0, 2])   # 输出第一和第三行数据
+print(df.iloc[0])        # 输出第一行数据
+print(df.iloc[[0, 2]])   # 输出第一和第三行数据
 
 # 通过索引选择行
 print(df.loc['涿郡'])   # 输出以涿郡为索引的两行数据
@@ -605,7 +605,6 @@ print(df.drop_duplicates())
 输出为：
 
 ```
-   A    B   C
    A    B   C
 0  1  5.0  10
 1  2  6.0  11

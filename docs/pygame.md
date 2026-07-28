@@ -9,9 +9,11 @@ Pygame 顾名思义，是专为电子游戏设计的。它提供了创建游戏�
 Pygame 不是 Python 自带的，需要额外安装，可以通过 Python 的包管理器 pip 来安装 Pygame：
 
 ```bash
-pip install pygame
+pip install pygame numpy
 
 ```
+
+多球碰撞示例还依赖 numpy 库，已一并安装。
 
 一旦安装好了，就可以导入 pygame 模块并开始编写游戏代码了。我们使用一个简易的小游戏来介绍一下如何使用 pygame。
 
@@ -48,7 +50,7 @@ paddle_speed = 5
 paddle = pygame.Rect(screen_width // 2 - paddle_width // 2, screen_height - 40, paddle_width, paddle_height)
 
 # 初始化球的位置 (Rect 对象，用于碰撞检测)
-ball = pygame.Rect(random.randint(ball_radius, screen_width - ball_radius), 0, ball_radius * 2, ball_radius * 2)
+ball = pygame.Rect(random.randint(0, screen_width - ball_radius * 2), 0, ball_radius * 2, ball_radius * 2)
 ball_dx = random.choice([-1, 1]) * ball_speed
 ball_dy = ball_speed
 
@@ -207,7 +209,7 @@ class Ball:
 
     # 绘制球到屏幕上
     def draw(self):
-        pygame.draw.circle(screen, self.color, self.position.astype(int), self.radius)  # 在屏幕上绘制球
+        pygame.draw.circle(self.screen, self.color, tuple(self.position.astype(int)), self.radius)  # 在屏幕上绘制球
 
 
 # 碰撞检测与处理函数
@@ -216,6 +218,10 @@ def hit_others_check(a, b):
     dist_vec = a.position - b.position
     dist = np.linalg.norm(dist_vec)
     
+    # 避免两球中心完全重合时除以零
+    if dist == 0:
+        return
+
     # 如果两个球之间的距离小于它们半径之和，说明它们发生了碰撞
     if dist <= a.radius + b.radius:
         # 计算碰撞法线方向（连心线方向）

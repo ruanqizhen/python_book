@@ -171,7 +171,7 @@ except FileNotFoundError:
 file.close()    
 ```
 
-### 不要在 try 语句中使用 return
+### 不要在 finally 语句中使用 return
 
 在 try 语句中使用 return 可能会导致一些意料之外的行为，例如运行下面的程序：
 

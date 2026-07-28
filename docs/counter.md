@@ -200,13 +200,13 @@ print(counts)
 
 NumPy 库中已经有实现好的 bincount 方法了，我们可以直接拿来调用，比如：
 
-```
+```python
 import numpy as np
 
 x = np.array([0, 1, 1, 3, 2, 1, 7])
 count = np.bincount(x)
 
-print(count)  输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 次...
+print(count)  # 输出： [1 3 1 1 0 0 0 1] 它表示 0 出现 1 次；1 出现 3 次...
 ```
 
 

@@ -173,8 +173,14 @@ def print_all(*args):
     for arg in args:
         print(arg)
         
-print_all(1, 2)         # 输出： 1 2
-print_all(1, 2, 3, 4)   # 输出： 1 2 3 4
+print_all(1, 2)         # 输出：
+                        # 1
+                        # 2
+print_all(1, 2, 3, 4)   # 输出：
+                        # 1
+                        # 2
+                        # 3
+                        # 4
 ```
 
 在上面这个函数中，参数 `*args` （arguments 的缩写）前面的星号，表示它可以接收多个参数。函数接收不定数量的参数是利用了元组的打包和拆包功能。在函数体内，args 是一个由所有输入参数组成的元组。上面的代码只是用来演示一下不定数量参数，实际上， print() 函数本身就是一个可以接收不定数量参数的函数，可以调用一个 print() 函数打印多个数据，比如 `print(1, 2)`。
@@ -286,7 +292,7 @@ def filter_even_numbers(numbers: list[int]) -> list[int]:
 
 注意：从 Python 3.9 开始，你可以直接使用内置类型 list、dict 等作为泛型提示，例如 `list[int]`。在旧版本中，需要使用 `from typing import List` 导入大写的 List 作为数据类型。
 
-这里我们使用了typing模块中的List，它允许我们提供更具体的类型提示，表示 numbers 是一个整数列表。
+这里直接使用了内置类型 list 作为泛型提示，例如 `list[int]`，表示 numbers 是一个整数列表。在旧版本中才需要使用 typing 模块中的 List。
 
 
 ### 函数文档
@@ -541,7 +547,7 @@ def custom_function():
     print("Hello, World!")
 
 # 调用 custom_function
-custom_function()  # 输出：【自定义打印】 
+custom_function()  # 输出：【自定义打印】: Hello, World!
 ```
 
 上面的程序重新定义了一个 print 函数，与 Python 内置的 print() 函数重名，但功能却不同。程序逻辑本身没有问题，在调用 print() 函数是，它会根据 LEGB 规则，优先调用我们自己定义的 print 函数。

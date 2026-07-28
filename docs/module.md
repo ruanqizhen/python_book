@@ -223,7 +223,7 @@ sys.path.append('/path/to/directory')
 
 在 macOS 或 Linux 上设置 PYTHONPATH 需要在 shell 配置文件中设置环境变量，步骤如下：
 1. 打开你的 shell 配置文件，不同 shell 的配置文件会有不同，例如：`~/.bashrc`、 `~/.bash_profile` 或者 `~/.zshrc`
-2. 在文件中添加一行： `export PYTHONPATH="$PYTHONPATH:/path/to/directory` （替换 `/path/to/directory` 为真正想要添加的目录路径。）
+2. 在文件中添加一行： `export PYTHONPATH="$PYTHONPATH:/path/to/directory"` （替换 `/path/to/directory` 为真正想要添加的目录路径。）
 3. 保存文件并重新加载配置(运行 source ~/.bashrc 命令或者重启终端)
 
 #### site-packages
@@ -382,7 +382,7 @@ qr.add_data('https://www.example.com')
 qr.make(fit=True)
 
 # 创建二维码图片
-img = qr.make_image(fill='black', back_color='white')
+img = qr.make_image(fill_color='black', back_color='white')
 
 # 显示图片
 img.show()

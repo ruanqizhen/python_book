@@ -34,7 +34,7 @@ class Point:
 # 测试一下：
 p = Point(1, 2)      # 输出: 创建点 (1, 2)
 print(p)             # 输出: (1, 2)
-print(repr(p))       # 输出: 点 (1, 2)
+print(repr(p))       # 输出: Point(1, 2)
 del p                # 输出: 点 (1, 2) 被销毁
 ```
         
@@ -301,7 +301,7 @@ print(bool(f_zero))  # False, 因为分子是 0
 ```python
 class SortedList:
     def __init__(self, initial_data=None):
-        self.data = sorted(initial_data)
+        self.data = sorted(initial_data) if initial_data is not None else []
 
     def __len__(self):
         return len(self.data)
@@ -444,6 +444,8 @@ print(obj.__dict__)  # 输出：{'x': 1, 'y': 2, 'value': 3}
 使用字典保存对象的属性虽然灵活，但字典有额外的内存开销。如果我们已经知道对象只需要固定的几个属性，那么使用 `__slots__` 可以避免这种字典开销，从而更有效地使用内存。定义 `__slots__` 的方法是在类中创建一个名为 `__slots__` 的属性，并将期望的属性名作为字符串保存在一个元组或列表中。
 
 ```python
+from math import gcd
+
 class Fraction:
     __slots__ = ('numerator', 'denominator')
     

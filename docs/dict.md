@@ -315,12 +315,12 @@ my_dict = {'a': 1, 'b': 2, 'c': 3}
 # 使用 update 方法
 another_dict = {'e': 5, 'f': 6}
 my_dict.update(another_dict)
-print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
+print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'e': 5, 'f': 6}
 
 # 使用 pop 方法
 value = my_dict.pop('f')
 print(value)                  # 输出: 6
-print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}
+print(my_dict)                # 输出: {'a': 1, 'b': 2, 'c': 3, 'e': 5}
 
 # 使用 clear 方法
 my_dict.clear()

@@ -70,10 +70,10 @@ class ChairWithTableAttached(Chair, Table):
 
     # 重写 description 方法
     def description(self):
-        # 下面直接使用类名调用了父类中的方法，这里没办法使用 super()函数，
-        # 因为这里要使用多个父类，而 super()函数只能返回其中一个父类
-        chair_desc = Chair.description(self)  
-        table_desc = Table.description(self)  
+        # 使用 Furniture 的基础描述作为公共部分，避免 super() 在多继承中的交叉调用导致重复
+        base_desc = Furniture.description(self)
+        chair_desc = base_desc + f"共有 {self.number_of_legs} 条腿。"
+        table_desc = base_desc + f"桌子形状： {self.shape}。"
         return f"椅子部分：{chair_desc}  桌子部分：{table_desc}"
 
 # 示例
@@ -293,7 +293,7 @@ combo.place_tablecloth()
 
 ### 查找顺序
 
-Python 如果某个同名的属性或方法在父类和子类中都有实现，那么在调用的时候，总是会先找子类，再找父类。如果有多个父类，就按照继承时的书写顺序来找，具体到上面的示例就是按照 ChairWithTableAttached -> Furniture -> MaterialMixin -> AssemblyMixin -> PillowPlacementMixin -> TableclothMixin -> object 的顺序来查找。
+Python 如果某个同名的属性或方法在父类和子类中都有实现，那么在调用的时候，总是会先找子类，再找父类。如果有多个父类，就按照 C3 线性化计算的 MRO 顺序来找，具体到上面的示例就是按照 ChairWithTableAttached -> PillowPlacementMixin -> TableclothMixin -> Furniture -> MaterialMixin -> AssemblyMixin -> object 的顺序来查找。可通过 `print(ChairWithTableAttached.mro())` 验证。
 
 这一顺序被称为 MRO（Method Resolution Order）。如果某个同名的属性或方法在父类和子类中都有实现，Python 会按照 MRO（Method Resolution Order）列表进行查找。
 

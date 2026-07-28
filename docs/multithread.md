@@ -41,7 +41,7 @@ thread.join()
 
 ### 线程的命名和标识
 
-我们可以在创建线程时使用 name 参数为其命名，然后使用 threading.name 属性获取一个线程的名称。每个线程还有一个唯一的标识，可以使用 threading.get_ident() 获取。
+我们可以在创建线程时使用 name 参数为其命名，然后通过线程实例的 name 属性或 `threading.current_thread().name` 获取一个线程的名称。每个线程还有一个唯一的标识，可以使用 threading.get_ident() 获取。
 
 ```python
 import threading
@@ -129,7 +129,7 @@ display_data()
 
 守护线程（Daemon Thread）是一个在后台运行的线程，不与用户直接交互。当主程序结束时，所有守护线程都会被自动终止，不论它们是否正在工作。这与“常规”线程或“用户”线程相反，常规线程在主程序结束后会继续执行直至线程自己结束。
 
-守护线程通常用于执行后台任务，例如垃圾回收、日志管理、监控、自动存档等。其它线程无法使用 join() 函数等待守护线程结束，因为守护线程通常不应该自己结束，而是应该等到主程序结束时被自动关闭。如果在守护线程中，再创建一个新线程，新线程被称为“子线程”，它会默认继承其父线程的守护线程状态。
+守护线程通常用于执行后台任务，例如垃圾回收、日志管理、监控、自动存档等。守护线程也可以使用 join() 等待其结束，只是在主程序结束时，如果守护线程仍在运行，它会被自动终止，不会阻止主程序退出。如果在守护线程中，再创建一个新线程，新线程被称为“子线程”，它会默认继承其父线程的守护线程状态。
 
 我们可以通过设置线程对象的 daemon 属性来使线程变为守护线程。
 
@@ -403,7 +403,8 @@ class Producer(threading.Thread):
 class Consumer(threading.Thread):
     def run(self):
         global items
-        while True:
+        consumed = 0
+        while consumed < 5:  # 与生产者数量一致，消费完即退出，避免无限等待
             with condition:
                 # 使用 while 循环检查条件，防止虚假唤醒或资源被抢占
                 while not items:  
@@ -412,11 +413,13 @@ class Consumer(threading.Thread):
                 
                 item = items.pop(0)
                 print(f'{self.name} 消费了 {item}')
+                consumed += 1
             time.sleep(random.uniform(0.1, 1.0))  # 模拟消费时间
 
 # 创建并启动生产者和消费者线程
 producer = Producer(name='生产者')
 consumer = Consumer(name='消费者')
+consumer.daemon = True  # 设为守护线程，主程序结束时自动退出，避免 join 永久阻塞
 
 producer.start()
 consumer.start()
@@ -543,7 +546,7 @@ def prime_factors(n):
             factors.append(i)
             n //= i
             
-    if n > 2:
+    if n > 1:
         factors.append(n)
     
     return factors

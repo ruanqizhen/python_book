@@ -288,7 +288,7 @@ print(CountInstances.counter)  # 输出: 2
 
 ```python
 def disable_methods(cls):
-    for name, method in cls.__dict__.items():
+    for name, method in list(cls.__dict__.items()):
         if callable(method):
             # 在这里，把类中所有方法都设置为一个函数，它什么都不做值返回字符串："方法不可使用"
             setattr(cls, name, lambda *args, **kwargs: "方法不可使用")
@@ -320,7 +320,7 @@ print(obj.greet())  # 输出: 方法不可使用
 
 ```python
 # 注意：第二个参数 (object,) 是一个元组，必须加逗号，否则会被视为普通变量
-Animal = type('Animal', (object), {'species': '狗'})
+Animal = type('Animal', (object,), {'species': '狗'})
 ```
 
 上面的程序动态的创建了一个新的 Animal 类。之所以说是动态，因为这个新类的类型，继承关系，属性设置等，都是不是固定写在代码里的，是可以程序运行时临时产生的。它与下面的静态创建类的代码产生的结果是相同的：

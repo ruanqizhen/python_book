@@ -86,7 +86,7 @@ jdbc_url = "jdbc:mysql://my_database_host:port/database_name"
 connection_properties = {
     "user": "my_database_username",
     "password": "my_database_password",
-    "driver": "com.mysql.jdbc.Driver"
+    "driver": "com.mysql.cj.jdbc.Driver"
 }
 
 # 读取数据库表
@@ -358,7 +358,12 @@ df.show(truncate=False)
 还可以通过注册，在 Spark SQL 中使用 udf，比如：
 
 ```python
-spark.udf.register("format_name", format_name, StringType())
+# 注册原始 Python 函数，避免双重包装已装饰的 UDF
+def format_name_py(name):
+    first_name, last_name = name.split()
+    return f"{last_name}·{first_name}"
+
+spark.udf.register("format_name", format_name_py, StringType())
 
 ```
 
@@ -375,9 +380,8 @@ spark.udf.register("format_name", format_name, StringType())
 df.write.mode("overwrite") \
         .jdbc(url=jdbc_url, table="processed_data", properties=connection_properties)
 
-# 追加模式写入分区表
+# 追加模式写入（truncate 选项仅适用于 overwrite 模式，append 模式下应移除）
 df.write.mode("append") \
-        .option("truncate", "true") \
         .jdbc(url=jdbc_url, table="partitioned_data", properties=connection_properties)
 
 ```
@@ -453,6 +457,9 @@ df.write.partitionBy("country") \
 当需要在小数据集与大表进行连接操作时，使用广播变量可避免数据倾斜：
 
 ```python
+from pyspark.sql import functions as F
+
+large_df = spark.read.parquet("s3://my_bucket/large_dataset/")
 small_df = spark.read.parquet("s3://my_bucket/small_dataset/")
 broadcast_df = F.broadcast(small_df)
 

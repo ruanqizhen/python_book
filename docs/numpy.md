@@ -40,7 +40,7 @@ image_array = np.array(image)
 
 ```python
 zeros_array = np.zeros((2, 3))  # 创建一个 2x3 的零矩阵
-ones_array = np.ones((3, 4))    # 创建一个 3x4 的单位矩阵
+ones_array = np.ones((3, 4))    # 创建一个 3x4 的全一矩阵
 range_array = np.arange(10)     # 创建一个元素值从 0 到 9 的数组
 random_array = np.random.randint(0, 10, (3, 4))  # 创建一个 3x4 的矩阵，元素都是 0 到 9 的随机整数
 ```
@@ -196,9 +196,9 @@ print("矩阵加法 A + B:\n", addition)
 subtraction = A - B
 print("\n矩阵减法 A - B:\n", subtraction)
 
-# 矩阵乘法（叉乘）
+# 矩阵逐元素相乘（Hadamard 积）
 elementwise_multiplication = A * B
-print("\n矩阵叉乘 A * B:\n", elementwise_multiplication)
+print("\n矩阵逐元素相乘 A * B:\n", elementwise_multiplication)
 
 # 矩阵乘法（点乘）
 dot_product = np.dot(A, B)
@@ -382,7 +382,7 @@ B = 2
 # B会被广播到 3x1，然后与 A 相乘
 C = A * B
 
-# 结果： C = [[2, 4, 6]]
+# 结果： C = [[2], [4], [6]]
 ```
 
 ### 优缺点

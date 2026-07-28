@@ -184,6 +184,8 @@ asyncio.run(main())
 异步[迭代器](iterator)可以在异步环境中迭代元素。它们需要定义 `__aiter__` 和 `__anext__` 方法，并可以在 async for 循环中使用。例如，一个模拟的异步数据流迭代器：
 
 ```python
+import asyncio
+
 class AsyncDataStream:
     def __init__(self, data):
         self.data = data
