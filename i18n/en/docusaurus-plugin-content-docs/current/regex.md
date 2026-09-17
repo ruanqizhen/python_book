@@ -109,6 +109,8 @@ Both functions find matches in a string, but they differ in where they start mat
 - **`re.match()`**: **Must match from the beginning of the string (index 0)**. If the start of the string does not match the pattern, it returns `None`.
 - **`re.search()`**: Scans through the **entire string** to find the first match.
 
+**New in Python 3.15**: `re.match()` has a more explicit alias, `re.prefixmatch()` (and `pattern.prefixmatch()` on compiled patterns), with identical behavior. New code should prefer `re.prefixmatch()` — the name says what it does. The old name keeps working and will not be removed, so existing code needs no changes. This is a nice example of the explicitness theme from the [Coding Style](coding_style) chapter.
+
 Both return a **Match object** when a match is found, and `None` when there is no match.
 
 ```python
@@ -234,7 +236,7 @@ email = "user.name@example.com"
 # Group 2: Domain (\w+\.\w+)
 pattern = r"^([\w\.]+)@([\w\.]+)$"
 
-match = re.match(pattern, email)
+match = re.match(pattern, email)  # Python 3.15+: re.prefixmatch(pattern, email) is equivalent but more explicit
 if match:
     print(f"Full email: {match.group(0)}")   # Output: user.name@example.com
     print(f"Username:   {match.group(1)}")   # Output: user.name

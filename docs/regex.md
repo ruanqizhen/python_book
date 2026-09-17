@@ -109,6 +109,8 @@ pattern = r"\d+"
 - **`re.match()`**：**必须从字符串的开头（索引 0）**开始匹配，如果开头不匹配，直接返回 `None`。
 - **`re.search()`**：在**整个字符串**中扫描，寻找第一个匹配项。
 
+**Python 3.15 补充**：`re.match()` 有了一个名字更直白的新别名 `re.prefixmatch()`（编译后的模式对象上是 `pattern.prefixmatch()`），功能完全相同。新代码建议使用 `re.prefixmatch()`——“从开头匹配”一看即懂。旧名字继续有效，不会被删除，已有代码无需修改。这也是[代码风格](coding_style)一章“显式优于隐式”思想的一个实例。
+
 它们在匹配成功时都会返回一个 **Match 对象**，未找到时返回 `None`。
 
 ```python
@@ -234,7 +236,7 @@ email = "user.name@example.com"
 # 分组 2: 域名 (\w+\.\w+)
 pattern = r"^([\w\.]+)@([\w\.]+)$"
 
-match = re.match(pattern, email)
+match = re.match(pattern, email)  # Python 3.15+ 也可写成 re.prefixmatch(pattern, email)，含义相同但更直白
 if match:
     print(f"完整邮箱: {match.group(0)}")   # 输出: user.name@example.com
     print(f"用户名:   {match.group(1)}")   # 输出: user.name

@@ -117,6 +117,21 @@ for sublist in matrix:
         flattened.append(item)
 ```
 
+**Python 3.15+ 新写法**：推导式中可以直接使用 `*` / `**` 解包，上面的平展操作可以写成只有一层循环的推导式：
+
+```python
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+flattened = [*sublist for sublist in matrix]
+print(flattened)  # 输出： [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+字典推导式同样适用，`{**d for d in dicts}` 可以把多个字典合并成一个（键冲突时后面的覆盖前面的）。旧的多重循环写法依然有效，而且更直观地展示了循环逻辑，初学时建议先掌握它。
+
 配合切片操作，同样可以把一维列表转换成二维：
 
 ```

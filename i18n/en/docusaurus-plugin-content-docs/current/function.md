@@ -130,6 +130,21 @@ print(new_dict(2))    # Output: [2]
 print(new_dict('a'))  # Output: ['a']
 ```
 
+When `None` itself is a valid argument value (i.e. the caller might deliberately pass `None`), the pattern above cannot distinguish "no argument given" from "given `None`". The traditional workaround was a private `_MISSING = object()`, but it is unreadable in tracebacks and cannot be pickled. Python 3.15 adds a builtin `sentinel()` for exactly this case: unique, identity-compared, and readable when printed.
+
+```python
+MISSING = sentinel("MISSING")
+
+def find(user_id, default=MISSING):
+    if default is MISSING:
+        print("no default given")
+    else:
+        print(f"default is {default}")  # correctly distinguishes an explicit None
+
+find(1)          # Output: no default given
+find(1, None)    # Output: default is None
+```
+
 Similarly, using a dynamic expression or function call as a default parameter value can also lead to issues. For example:
 
 ```python

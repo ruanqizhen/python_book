@@ -118,6 +118,21 @@ for sublist in matrix:
         flattened.append(item)
 ```
 
+**New in Python 3.15**: comprehensions accept `*` / `**` unpacking directly, so the flattening above can be written as a single-level comprehension:
+
+```python
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+flattened = [*sublist for sublist in matrix]
+print(flattened)  # Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+The same works for dictionaries: `{**d for d in dicts}` merges several dictionaries into one (later keys overwrite earlier ones). The classic nested-loop form still works and shows the loop logic more explicitly, so learn that form first.
+
 Conversely, you can combine a list comprehension with slicing to group a flat list into a 2D list:
 
 ```python

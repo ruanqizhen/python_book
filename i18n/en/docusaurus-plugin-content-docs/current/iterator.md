@@ -135,6 +135,8 @@ print(result)  # Output: [1, 2, 3, 'a', 'b', 'c']
 
 While `chain()` behaves similarly to the `+` operator, `+` requires matching sequence types and allocates a new combined collection in memory. In contrast, `chain()` works with arbitrary iterables and yields values lazily, making it highly memory-efficient for large datasets.
 
+**Python 3.15 note**: the 3.15 docs name `[*a for a in iters]` a direct alternative to `itertools.chain()`. Keep in mind the comprehension builds a complete list, while `chain()` stays lazy and returns an iterator — for large datasets, `chain()` is still the right choice.
+
 #### Filtering
 
 The following functions filter datasets in specialized ways, similar to the [`filter()`](high_order#filter) function.

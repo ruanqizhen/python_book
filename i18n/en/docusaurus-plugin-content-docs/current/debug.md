@@ -12,6 +12,8 @@ When a critical error occurs at runtime, Python raises an [exception](exception)
 
 By analyzing the traceback from bottom to top, you can pinpoint exactly where and why the program failed. If the cause is not immediately clear, you can try running the program with different inputs or isolating suspicious parts of the code to verify your assumptions.
 
+Python 3.15's error messages also cover more cases — for example, deleting a near-miss attribute name now suggests the real one with a did-you-mean hint.
+
 ## print() Debugging
 
 If a program fails silently without raising an error, you can use a simple yet highly effective debugging technique: printing key variables and state information at strategic points during execution.
@@ -126,6 +128,10 @@ In a production environment, you should avoid logging at the `DEBUG` level becau
 To keep log files from growing indefinitely, implement log rotation. Python's `logging.handlers` module provides built-in handlers for this:
 * `RotatingFileHandler`: Automatically rolls over log files when they reach a certain size (e.g., keeping the last five 10MB log files).
 * `TimedRotatingFileHandler`: Rolls over log files based on time intervals (e.g., creating a new log file every midnight).
+
+## Beyond print(): Profilers
+
+`print()` and logging answer "what went wrong", but a slow program needs "where did the time go". Python 3.15 organizes profiling under the `profiling` package: `profiling.tracing` (moved from `cProfile`, which remains as an alias) for exact timing, plus the new `profiling.sampling` (codenamed Tachyon, sampling at up to 1 MHz) that can attach to a running process and produce flame graphs. The old `profile` module is deprecated (removal in 3.17) — don't use it.
 
 ## Assertions
 

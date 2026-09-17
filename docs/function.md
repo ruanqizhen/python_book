@@ -131,6 +131,21 @@ print(new_dict(2))    # 输出：[2]
 print(new_dict('a'))  # 输出：['a']
 ```
 
+如果 `None` 本身也是合法的输入值（即调用者可能真的想传 `None`），上面的写法就区分不出“没传参数”还是“传了 None”。以前的做法是私下造一个 `_MISSING = object()`，但它在报错信息里难认，也不支持 pickle。Python 3.15 新增了内置的 `sentinel()`，专门用于这种场合：唯一、按身份比较、打印出来可读。
+
+```python
+MISSING = sentinel("MISSING")
+
+def find(user_id, default=MISSING):
+    if default is MISSING:
+        print("没有提供 default")
+    else:
+        print(f"default 是 {default}")  # 即使 default 是 None 也能正确区分
+
+find(1)          # 输出：没有提供 default
+find(1, None)    # 输出：default 是 None
+```
+
 同样，使用可能会产生不同结果的函数作为参数默认值也会产生类似问题。比如：
 
 ```python

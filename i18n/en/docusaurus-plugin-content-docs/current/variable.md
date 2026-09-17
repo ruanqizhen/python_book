@@ -27,6 +27,7 @@ Data is divided into distinct types because different kinds of information requi
 
 * [Mapping Type](dict):
    * Dictionary (dict): A collection of key-value pairs where keys must be unique. E.g., `{'name': 'John', 'age': 30}`.
+   * Frozen dictionary (frozendict, Python 3.15+): Like a dictionary, but immutable; hashable when all keys and values are hashable, so it can be used as a dictionary key.
 
 * [None Type](calculation#comparing-variable-references):
    * NoneType: Represents the absence of a value (equivalent to `null` in other languages).

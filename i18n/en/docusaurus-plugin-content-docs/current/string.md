@@ -311,7 +311,7 @@ To bridge the gap between human text (`str`) and binary data (`bytes`), you must
 - `str.encode(encoding)`: Translates text into binary bytes.
 - `bytes.decode(encoding)`: Translates binary bytes back into text.
 
-Python uses **UTF-8** as its default encoding. To understand why encoding is necessary, let's look at its history:
+Python uses **UTF-8** as its default encoding. (As of 3.15, this default also covers file I/O and no longer follows the OS locale — see [File I/O](file_io).) To understand why encoding is necessary, let's look at its history:
 
 Early computers primarily processed English. The first standard was **ASCII** (American Standard Code for Information Interchange), which mapped 128 characters (letters, numbers, and basic punctuation) to numbers `0` through `127`. As computers spread globally, other nations created custom extensions to support their own alphabets. In China, standards like **GBK** and **GB2312** were developed. However, because different countries mapped different characters to the same byte values, opening a file with the wrong encoding led to garbled text (known as *mojibake*).
 

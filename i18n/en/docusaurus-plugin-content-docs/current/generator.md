@@ -134,6 +134,8 @@ for num in flatten_2d(nested_list):
 # Output: Prints 1, 2, 3, 4, 5, 6 sequentially
 ```
 
+**Python 3.15 note**: generator expressions also accept `*` unpacking, so `list((*L for L in lists))` flattens nested lists just like unpacking in comprehensions (PEP 798). That said, `yield from` remains the clearer way to write it — prefer it.
+
 ### Sending Data to Generators
 
 Generators are bi-directional: they can yield data to the caller, and they can receive data back. 

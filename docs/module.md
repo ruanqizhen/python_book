@@ -75,6 +75,16 @@ import tkinter as tk
 ```
 
 
+### 延迟导入（lazy import，Python 3.15+）
+
+按惯例 `import` 写在文件开头，但有些重型库（如 pandas）导入很慢，会拖慢程序启动。Python 3.15 新增了 `lazy` 软关键字：声明仍写在文件顶部、保持整洁，真正的导入推迟到第一次使用时才自动完成。
+
+```python
+lazy import pandas
+```
+
+也可以通过 `-X lazy_imports` 命令行选项或 `PYTHON_LAZY_IMPORTS` 环境变量全局开启。注意它只能用在模块作用域，不能写在函数或 try 语句块里。另外 `lazy` 是软关键字，以前把 `lazy` 当作变量名的代码不受影响。
+
 ### Python 标准库
 
 Python 有一个丰富的标准库，提供了许多内置模块，帮助用户执行各种常见任务。极大地丰富了 Python 的应用场景，这也是 Python 能够获得成功的重要原因之一。 下面列出了一些最常用的 Python 标准库模块及其简要描述：
@@ -233,6 +243,8 @@ Python 的 site-packages 目录是一个特殊的目录，用于存储第三方�
 2. 在 site-packages 目录下创建一个新的 .pth 文件，例如 mymodules.pth。
 3. 在 .pth 文件中，添加的目录路径，每行一个路径。比如： `/path/to/directory`
 4. 保存 .pth 文件。Python 将在下一次启动时自动读取这些路径。
+
+（Python 3.15 补充：新增了 `.start` 文件，旧 `.pth` 文件里写 `import ...` 行的做法已被静默弃用。本书只用 `.pth` 文件添加路径，不受影响。）
 
 ## 从 ZIP 文件中导入模块
 

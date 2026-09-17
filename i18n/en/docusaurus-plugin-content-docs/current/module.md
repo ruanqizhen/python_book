@@ -74,6 +74,16 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 ```
 
+### Lazy Imports (Python 3.15+)
+
+By convention `import` statements sit at the top of the file, but some heavy libraries (such as pandas) are slow to load and delay program startup. Python 3.15 adds the `lazy` soft keyword: the declaration stays at the top of the file, keeping things tidy, while the real import is deferred until first use and then happens transparently.
+
+```python
+lazy import pandas
+```
+
+Lazy imports can also be enabled globally via the `-X lazy_imports` command-line flag or the `PYTHON_LAZY_IMPORTS` environment variable. Note that `lazy import` is only allowed at module scope — not inside functions or `try` blocks. And since `lazy` is a soft keyword, existing code that uses `lazy` as a variable name keeps working.
+
 ### Python Standard Library
 
 Python has a rich standard library that provides many built-in modules to help users perform various common tasks. This greatly enriches Python's application scenarios and is one of the important reasons for Python's success. Below are some of the most commonly used Python standard library modules along with brief descriptions:
@@ -232,6 +242,8 @@ Python's `site-packages` directory is a special directory used to store third-pa
 2. Create a new `.pth` file in the `site-packages` directory, for example `mymodules.pth`.
 3. In the `.pth` file, add the directory paths, one path per line. For example: `/path/to/directory`
 4. Save the `.pth` file. Python will automatically read these paths on the next startup.
+
+(Python 3.15 note: `.start` files were added, and writing `import ...` lines inside `.pth` files is now silently deprecated. This book only uses `.pth` files to add paths, so nothing here is affected.)
 
 ## Importing Modules from ZIP Files
 

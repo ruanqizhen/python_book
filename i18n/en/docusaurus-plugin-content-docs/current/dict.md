@@ -299,6 +299,23 @@ print(merged_dict)  # Output: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
 
 We discuss dictionary unpacking extensively in the [Functions](function#variable-length-arguments) chapter.
 
+### Immutable Dictionaries (frozendict, Python 3.15+)
+
+Python 3.15 adds a builtin `frozendict`: a mapping that cannot be modified after creation. When all keys and values are hashable, a `frozendict` is itself hashable, so it can serve as a dictionary key or be placed in a set — something a regular `dict` cannot do. Note that it is not a subclass of `dict`.
+
+```python
+config = frozendict(host="localhost", port=8080)
+print(config)  # Output: frozendict({'host': 'localhost', 'port': 8080})
+
+# config["port"] = 9090  # Raises TypeError: does not support modification
+
+# When keys and values are hashable, it can be a key in another dictionary
+cache = {frozendict(a=1): "hit"}
+print(hash(frozendict(y=2, x=1)) == hash(frozendict(x=1, y=2)))  # Output: True
+```
+
+Typical uses are default configurations that must not be changed by accident, or treating a group of key-value pairs as a single key. Its relationship to `dict` mirrors that of `frozenset` to `set`: the mutable version for everyday reads and writes, the immutable version when you need a read-only guarantee or hashability.
+
 ## Common Dictionary Methods
 
 Other common dictionary methods include:
@@ -336,7 +353,7 @@ print(new_dict) # {'a': 0, 'b': 0, 'c': 0}
 
 ## Comparison of the Four Core Containers
 
-Python provides four core data containers: Lists, Tuples, Dictionaries, and Sets. Understanding their characteristics will help you select the right tool for the job.
+Python provides four core data containers: Lists, Tuples, Dictionaries, and Sets. Understanding their characteristics will help you select the right tool for the job. Python 3.15 adds an immutable dictionary (FrozenDict), the read-only counterpart of a dictionary (just as frozenset relates to set), which is also listed in the table below.
 
 ### Characteristics Comparison Table
 
@@ -346,6 +363,7 @@ Python provides four core data containers: Lists, Tuples, Dictionaries, and Sets
 | **Tuple** | `(a, b, c)` | **Yes** | **No** | Allowed | $O(n)$ | Structured records, multiple return values from functions, dictionary keys |
 | **Dict** | `{k: v}` | **Yes** *(3.7+)* | **Yes** | Keys unique, values can repeat | **$O(1)$** | Fast key-value retrieval, JSON data parsing |
 | **Set** | `{a, b, c}` | **No** | **Yes** | Elements unique | **$O(1)$** | Fast deduplication, mathematical set operations (intersection, union, difference) |
+| **FrozenDict** *(3.15+)* | `frozendict({k: v})` | **Yes** | **No** | Keys unique, values can repeat | **$O(1)$** | Read-only configs; usable as a dict key when hashable |
 
 ### Key Points Explained
 

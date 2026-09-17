@@ -177,6 +177,8 @@ with open('binary_file.bin', 'wb') as f:
 
 Different encodings write text data differently; refer to [Converting Between Strings and Bytes](string#converting-between-strings-and-bytes). When reading or writing text files, you should always specify the encoding explicitly (usually `'utf-8'`) to prevent errors on different systems:
 
+**Changed in Python 3.15**: calling `open()` without an `encoding` argument now defaults to UTF-8 on every platform, independent of the OS locale (previously it followed the locale — e.g. GBK on Chinese Windows — so omitting it risked mojibake). Specifying the encoding explicitly is still best practice, but now it documents intent; pass `encoding="locale"` if you really want the old locale-dependent behavior.
+
 ```python
 text = "Hello, World"
 
