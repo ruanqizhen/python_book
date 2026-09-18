@@ -120,7 +120,7 @@ If a function is written to work with a `Rectangle` instance (e.g., modifying it
 To follow LSP, we should redesign these classes so that `Square` does not inherit from `Rectangle`. Instead, both classes should inherit from a more general, abstract `Shape` class:
 
 ```python
-from abc import ABC
+from abc import ABC, abstractmethod
 
 class Shape(ABC):
     @abstractmethod

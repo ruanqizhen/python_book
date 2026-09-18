@@ -273,10 +273,11 @@ def main():
     num_processes = 72
     start_num = 1000000000
     end_num = 1000010000
-    step = (end_num - start_num) // num_processes
+    # Round up and clamp with min to stay in bounds, so every number is covered
+    step = (end_num - start_num + num_processes - 1) // num_processes
 
     chunks = [
-        (start_num + i * step, start_num + (i + 1) * step) for i in range(num_processes)
+        (start_num + i * step, min(start_num + (i + 1) * step, end_num)) for i in range(num_processes)
     ]
 
     start_time = time.time()

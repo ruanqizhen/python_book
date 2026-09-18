@@ -9,7 +9,7 @@ Pygame is a library designed specifically for writing video games. It provides w
 Because Pygame is a third-party package, you must install it using `pip`:
 
 ```bash
-pip install pygame
+pip install pygame numpy
 
 ```
 
@@ -48,7 +48,7 @@ paddle_speed = 5
 paddle = pygame.Rect(screen_width // 2 - paddle_width // 2, screen_height - 40, paddle_width, paddle_height)
 
 # Initialize ball position (Rect object, for collision detection)
-ball = pygame.Rect(random.randint(ball_radius, screen_width - ball_radius), 0, ball_radius * 2, ball_radius * 2)
+ball = pygame.Rect(random.randint(0, screen_width - ball_radius * 2), 0, ball_radius * 2, ball_radius * 2)
 ball_dx = random.choice([-1, 1]) * ball_speed
 ball_dy = ball_speed
 
@@ -215,7 +215,11 @@ def hit_others_check(a, b):
     # Calculate distance between ball centers
     dist_vec = a.position - b.position
     dist = np.linalg.norm(dist_vec)
-    
+
+    # Avoid division by zero when the two centers coincide exactly
+    if dist == 0:
+        return
+
     # If the distance between balls is less than the sum of their radii, they have collided
     if dist <= a.radius + b.radius:
         # Calculate collision normal direction (line connecting centers)

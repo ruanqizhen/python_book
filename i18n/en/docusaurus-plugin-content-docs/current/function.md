@@ -186,8 +186,14 @@ def print_all(*args):
     for arg in args:
         print(arg)
         
-print_all(1, 2)         # Output: 1 2
-print_all(1, 2, 3, 4)   # Output: 1 2 3 4
+print_all(1, 2)         # Output:
+                        # 1
+                        # 2
+print_all(1, 2, 3, 4)   # Output:
+                        # 1
+                        # 2
+                        # 3
+                        # 4
 ```
 
 In this function, the asterisk before `args` (short for arguments) indicates that it accepts any number of positional arguments. Under the hood, Python uses tuple packing to collect these arguments into a tuple named `args`. Note that this is for demonstration; Python's built-in `print()` function itself inherently accepts variable-length positional arguments, allowing calls like `print(1, 2)`.
@@ -241,7 +247,7 @@ Using both `*args` and `**kwargs` in a single function can quickly become confus
 
 Variable-length arguments provide flexibility, allowing a function to accept any number of parameters, which is very useful when dealing with an uncertain number of inputs. However, this can also make the code harder to understand and maintain, especially when the function performs complex operations. When designing our own functions, we need to carefully consider whether to use variable-length arguments.
 
-On the planet Pythora, the scenario that most requires variable-length arguments is when a wrapper function forwards arguments to an internal function that also accepts variable-length arguments. For example, Python has built-in functions for calculating the sum of data and the count of data items, both of which can accept a variable number of arguments. If we write a new function to calculate the average of several data items, then this new function also needs to support variable-length arguments:
+On the planet Pythora, the scenario that most requires variable-length arguments is when a wrapper function forwards arguments to an internal function that also accepts variable-length arguments. For example, Python's built-in `print()` function accepts a variable number of arguments (note: `sum()` and `len()` do not — they each take a single iterable). If we write a new function to calculate the average of several data items, then this new function also needs to support variable-length arguments:
 
 ```python
 def average(*numbers):
@@ -547,7 +553,7 @@ def custom_function():
     print("Hello, World!")
 
 # Call custom_function
-custom_function()  # Output: [Custom Print]: 
+custom_function()  # Output: [Custom Print]: Hello, World!
 ```
 
 This program defines a custom `print` nested function that shadows the built-in `print()`. When `print("Hello, World!")` is executed, the LEGB rule resolves to the local `print` definition first.

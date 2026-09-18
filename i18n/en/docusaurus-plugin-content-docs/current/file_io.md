@@ -229,11 +229,11 @@ import struct
 # Float to byte sequence
 num = 3.14159
 byte_seq = struct.pack('f', num)
-print(byte_seq)        # Output: b'\xdb\x0fI@'
+print(byte_seq)        # Output: b'\xd0\x0fI@'
 
 # Byte sequence back to float
 num_from_bytes = struct.unpack('f', byte_seq)[0]
-print(num_from_bytes)  # Output: 3.14159
+print(num_from_bytes)  # Output: 3.141590118408203 (a 32-bit float cannot represent 3.14159 exactly)
 ```
 
 The format string (e.g., `'f'`) specifies how to interpret the byte layout. Common format codes include:

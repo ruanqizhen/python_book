@@ -93,7 +93,7 @@ class Animal:
 # Usage:
 dog = Animal("Buddy", "Dog")
 
-print(Animal.name)     # Output: animal - accessing class attribute via class name
+print(Animal.name)     # Output: Animal - accessing class attribute via class name
 print(dog.name)        # Output: Buddy - accessing instance attribute via object
 ```
 
@@ -333,7 +333,7 @@ dog.speak()     # Output: I am a Golden Retriever named Buddy. I can bark.
 dog.wag_tail()  # Output: Buddy is wagging its tail.
 
 cat = Animal(species="Cat")
-cat.speak()     # Output: I am a cat
+cat.speak()     # Output: I am a Cat
 ```
 
 ### Checking Inheritance Relationships

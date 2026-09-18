@@ -48,7 +48,7 @@ class 侠客:
         if 本座.内力 <= 0:
             本座.内力 = 0
             本座.状态 = "重伤倒地"
-            输出(f"aaa {本座.名号} 吐出一口鲜血，支撑不住了！")
+            输出(f"{本座.名号} 吐出一口鲜血，支撑不住了！")
         else:
             输出(f"   {本座.名号} 剩余内力：{本座.内力}")
             等待(1) # 暂停一下，增加阅读沉浸感
@@ -141,7 +141,7 @@ If you run this program, the console will output something like the following:
 --- 第 4 回合 ---
 ⚔️ 西门吹雪 使出一招「太祖长拳」，击中了 叶孤城。
    造成了 14 点伤害。
-aaa 叶孤城 吐出一口鲜血，支撑不住了！
+叶孤城 吐出一口鲜血，支撑不住了！
 
 ==============================
 🏆 胜者：西门吹雪！江湖留下了他的传说。
@@ -198,8 +198,8 @@ obj = Test('hello world')
 print(repr(obj))  # Output: Test('hello world')
 
 # Examples of built-in types
-print(repr(123))        # Output: '123'
-print(repr([1, 2, 3]))  # Output: '[1, 2, 3]'
+print(repr(123))        # Output: 123
+print(repr([1, 2, 3]))  # Output: [1, 2, 3]
 ```
 
 Returning a format that mirrors the constructor syntax is a Python best practice, as it allows developers to easily inspect and recreate the object during debugging.
@@ -299,7 +299,7 @@ solve_sudoku(sudoku_puzzle)
 
 To solve any valid Sudoku puzzle, we can use a **backtracking** algorithm. Starting from the first empty cell, the program tries a candidate number and recursively attempts to solve the remaining board. If it encounters a dead-end (no valid numbers are left for a cell down the line), it rolls back the choice, returns to the previous cell, and tries the next candidate. This search continues until a valid configuration is found.
 
-While computationally more expensive than the elimination method, backtracking guarantees a solution for any solvable grid. If the puzzle has multiple solutions, the solver will print all valid solutions.
+While computationally more expensive than the elimination method, backtracking guarantees a solution for any solvable grid. Note that the program below stops after finding the first solution and prints only that one (the `return True` unwinds the recursion); to enumerate all solutions, remove the early return and let the search continue.
 
 The program is as follows:
 

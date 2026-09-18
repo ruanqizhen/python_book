@@ -76,7 +76,7 @@ In Python, you do not need to declare a variable before using it or specify its 
 
 The value of a variable can be a number, a string, or any other type of data.
 
-A variable's name is an [identifier](hello_world#identifier) and must follow Python's identifier rules: it can contain letters, numbers, and underscores (`_`), but cannot start with a number. E.g., `name_1` is valid, but `1_name` is not.
+A variable's name is an [identifier](hello_world#identifier) and must follow Python's identifier rules: it can contain letters (not just A–Z — Unicode letters such as Chinese characters are allowed too), numbers, and underscores (`_`), but cannot start with a number. E.g., `name_1` is valid, but `1_name` is not.
 
 Variable names are case-sensitive (`age` and `Age` are completely different variables). By convention (PEP 8), variable names should be written in lowercase, separating words with underscores (e.g., `user_age`).
 

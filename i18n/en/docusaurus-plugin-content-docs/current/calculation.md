@@ -58,7 +58,7 @@ print(oct(x))  # Output: '0o52'
 print(hex(x))  # Output: '0x2a'
 
 y = '0b101010'
-print(int(y, 2))  # Output: 42, automatically recognizes binary
+print(int(y, 0))  # Output: 42; base 0 means auto-detect the base from the prefix
 ```
 
 You can also use `int()` to convert floating-point numbers or numeric strings into integers.

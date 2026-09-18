@@ -88,7 +88,7 @@ del q                # 所有变量均被删除，调用析构函数销毁对象
 * `__pow__(self, power[, modulo])`: 定义乘方行为。
 
 
-Python 内置有一个 Fraction 类，它用于表示数学上的分数。我们下面编写一个简化版的 Fraction 类，用它来演示算术魔法方法的实现与使用。Fraction 类有两个属性分别表示分子和分母。它的实现方法如下：
+Python 标准库的 fractions 模块中有一个 Fraction 类，它用于表示数学上的分数（注意它不是内置类，使用前需要导入）。我们下面编写一个简化版的 Fraction 类，用它来演示算术魔法方法的实现与使用。Fraction 类有两个属性分别表示分子和分母。它的实现方法如下：
 
 ```python
 from math import gcd
@@ -334,7 +334,7 @@ lst = SortedList([3, 1, 2])
 print(lst)           # [1, 2, 3]
 lst.append(0)
 print(lst)           # [0, 1, 2, 3]
-lst[1] = 5           # 把第一个元素的值改为 5,之后，数据会重新排序
+lst[1] = 5           # 把第二个元素的值改为 5,之后，数据会重新排序
 print(lst)           # [0, 2, 3, 5]
 del lst[2]
 print(lst)           # [0, 2, 5]

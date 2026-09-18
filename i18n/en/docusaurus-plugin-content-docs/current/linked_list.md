@@ -102,7 +102,7 @@ The `LinkedList` class represents the list itself. It features a `head` attribut
 
 As shown in the implementation above, inserting a node at the head of a linked list (or inserting when the predecessor node is already known) has a time complexity of $O(1)$. However, the `append()` method must traverse the entire list to locate the tail before linking the new node, resulting in a time complexity of $O(n)$.
 
-In a singly linked list, deleting a specific node has a time complexity of $O(n)$ because we must traverse the list to find the node's predecessor. If we only needed to delete the *next* node after a given node, we could bypass traversal and perform the deletion in $O(1)$ time. In a doubly linked list, node deletion is always an $O(1)$ operation because every node maintains a direct reference to its predecessor.
+In a singly linked list, deleting a specific node has a time complexity of $O(n)$ because we must traverse the list to find the node's predecessor. If we only needed to delete the *next* node after a given node, we could bypass traversal and perform the deletion in $O(1)$ time. In a doubly linked list, node deletion is an $O(1)$ operation once the node to delete is already known, because every node maintains a direct reference to its predecessor. (Locating a node by value still requires an $O(n)$ traversal first.)
 
 
 
@@ -256,7 +256,7 @@ llist.reverse_recursive()
 llist.print_list()  # 1 -> 2 -> 3 -> 4 -> None
 ```
 
-Both iterative and recursive approaches run in $O(n)$ time, where $n$ is the number of nodes, because they process each node once. Since the reversal is performed in-place by updating existing pointers, the space complexity is $O(1)$.
+Both iterative and recursive approaches run in $O(n)$ time, where $n$ is the number of nodes, because they process each node once. The iterative version reuses the existing nodes, so its space complexity is $O(1)$; the recursive version builds a call stack of depth $n$, so its space complexity is $O(n)$.
 
 
 ### Detecting a Cycle
@@ -363,25 +363,28 @@ class LinkedList:
         print("None")
 
     def remove_nth_from_end(self, n):
-        first = self.head
-        second = self.head
+        fast = self.head
+        slow = self.head
 
-        # Advance the second pointer by n nodes.
+        # Let the fast pointer move n steps first
         for _ in range(n):
-            if not second.next:  # If n is equal to the length of the linked list
-                if second == self.head:  # Move head to the next node
-                    self.head = self.head.next
+            if fast is None:
+                print("n is greater than the length of the linked list")
                 return
-            second = second.next
+            fast = fast.next
 
-        # Move both pointers until the second reaches the end
-        while second:
-            second = second.next
-            prev = first
-            first = first.next
+        # If the fast pointer reaches None, the node to remove is the head node
+        if fast is None:
+            self.head = self.head.next
+            return
 
-        # Now, the first pointer points to the node to be removed
-        prev.next = first.next
+        # Move both pointers until the fast pointer reaches the last node
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+
+        # Now slow points to the (n+1)th node from the end; delete its next node
+        slow.next = slow.next.next
 
 # Using the LinkedList
 llist = LinkedList()

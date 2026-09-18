@@ -359,7 +359,8 @@ def requires_permission(permission):
             if user and hasattr(user, 'permissions') and user.permissions.get(permission):
                 return func(*args, **kwargs)
             
-            raise PermissionError(f"Insufficient permissions or unidentified user")
+            error_msg = f"User {user.name} lacks the {permission} permission" if user and hasattr(user, 'name') else "Insufficient permissions or unidentified user"
+            raise PermissionError(error_msg)
         return wrapper
     return decorator
 ```
@@ -396,7 +397,7 @@ Running this demonstration produces the following output:
 
 ```
 Manager Brown edited the document: Project Plan 2033
-Insufficient permissions or unidentified user
+User Alex lacks the edit permission
 ```
 
 ### Retry

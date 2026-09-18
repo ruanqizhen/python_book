@@ -240,11 +240,11 @@ import struct
 # 浮点数转换为字节序列
 num = 3.14159
 byte_seq = struct.pack('f', num)
-print(byte_seq)        # 输出类似于 b'\xdb\x0fI@'
+print(byte_seq)        # 输出类似于 b'\xd0\x0fI@'
 
 # 字节序列转换回浮点数
 num_from_bytes = struct.unpack('f', byte_seq)[0]
-print(num_from_bytes)  # 输出: 3.14159
+print(num_from_bytes)  # 输出: 3.141590118408203（单精度浮点数无法精确表示 3.14159）
 ```
 pack() 和 unpack() 函数在使用时需要一个格式字符串，这个格式字符串指定了如何解读和构造字节序列。常用格式包括：
 
@@ -480,7 +480,7 @@ for root, dirs, files in os.walk('/path/to/folder'):
 
 上面的程序使用 os.walk() 函数遍历指定的文件夹。对于每个遍历到的文件，然后，使用字符串方法 endswith() 检查文件名是否以 .txt 结尾，如果是，就打印出该文件的完整路径。
 
-此外，我们也可以使用 glob 模块中的 glob() 函数来查找文件。glob 最早是 UNIX 系统的一个程序，用来匹配文件路径，Python 在其 glob 模块中实现了类似功能。glob() 函数可以使用正则表达式来查找文件，这样我们就不必再手动检查每个文件了。比如，使用 glob 实现上面示例完全相同的功能：
+此外，我们也可以使用 glob 模块中的 glob() 函数来查找文件。glob 最早是 UNIX 系统的一个程序，用来匹配文件路径，Python 在其 glob 模块中实现了类似功能。glob() 函数可以使用通配符（`*`、`?`、`[]` 等，注意不是正则表达式）来匹配文件，这样我们就不必再手动检查每个文件了。比如，使用 glob 实现上面示例完全相同的功能：
 
 ```python
 import glob

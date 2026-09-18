@@ -258,6 +258,7 @@ result = list(starmap(pow, [(2, 3), (3, 2)]))
 print(result)  # Output: [8, 9]
 
 # Zip using the longest iterable as the reference
+from itertools import zip_longest
 result = list(zip_longest('ABCD', 'xy', fillvalue='-'))
 print(result)  # Output: [('A', 'x'), ('B', 'y'), ('C', '-'), ('D', '-')]
 ```

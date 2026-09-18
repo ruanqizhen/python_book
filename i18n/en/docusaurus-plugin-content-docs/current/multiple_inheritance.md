@@ -70,11 +70,12 @@ class ChairWithTableAttached(Chair, Table):
 
     # Override the description method
     def description(self):
-        # Below, we directly call the parent class methods using the class name.
-        # We cannot use the super() function here because we need to use multiple
-        # parent classes, and super() can only return one of them.
-        chair_desc = Chair.description(self)  
-        table_desc = Table.description(self)  
+        # Use Furniture's base description as the common part, avoiding duplicate
+        # output from super() cross-calls in multiple inheritance. (super() returns
+        # an MRO proxy that follows the whole chain — it is not limited to one parent.)
+        base_desc = Furniture.description(self)
+        chair_desc = base_desc + f"It has {self.number_of_legs} legs."
+        table_desc = base_desc + f"Table shape: {self.shape}."
         return f"Chair part: {chair_desc}  Table part: {table_desc}"
 
 # Example
@@ -265,7 +266,7 @@ class Table(TableclothMixin, Furniture):
         self.shape = shape
 
 
-class ChairWithTableAttached(Furniture, PillowPlacementMixin, TableclothMixin):
+class ChairWithTableAttached(PillowPlacementMixin, TableclothMixin, Furniture):
     def __init__(self, id, cost, number_of_legs=4, shape="round"):
         super().__init__(id, cost)
         self.number_of_legs = number_of_legs

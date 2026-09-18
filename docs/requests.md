@@ -120,7 +120,7 @@ try:
     # 设置 timeout=3 表示如果服务器在 3 秒内未响应，则主动放弃并抛出异常
     response = requests.get(url, timeout=3)
     
-    # raise_for_status() 会在状态码不是 200 级别（如 404, 500）时主动抛出异常
+    # raise_for_status() 会在状态码是 4xx/5xx（如 404、500）时主动抛出异常（3xx 重定向不会触发）
     response.raise_for_status()
     
     print("请求成功！")

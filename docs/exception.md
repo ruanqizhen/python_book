@@ -87,7 +87,7 @@ except IndexError:
 
 这个示例中，用户首先被要求输入一个数字。如果用户输入 0，则会触发除法操作的除零异常 ZeroDivisionError；如果用户输入的不是有效整数（例如输入字符串），在尝试转换为整数时会引发 ValueError 异常；如果用户输入的数字过小或过大，超出了 some_list 的索引范围，则会触发索引越界异常 IndexError。
 
-异常捕获是有顺序的（从上到下）。如果先捕获了 Exception（所有异常的基类），后面的 ValueError 永远不会被捕获。这是初学者常犯的错误。
+异常捕获是有顺序的（从上到下）。如果先捕获了 Exception（它是除 SystemExit、KeyboardInterrupt 等之外的几乎所有异常的基类；真正的顶层基类是 BaseException），后面的 ValueError 永远不会被捕获。这是初学者常犯的错误。
 
 如果多个异常的处理方式相同，也可以把它们写在同一个 except 语句中，比如：
 

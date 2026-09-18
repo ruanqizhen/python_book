@@ -218,7 +218,7 @@ df = pd.DataFrame(data)
 df.to_excel('my_data.xlsx', index=False)
 
 # Read the worksheet named 'Sheet1'
-df_2 = pd.read_excel('file.xlsx', sheet_name='Sheet1')
+df_2 = pd.read_excel('my_data.xlsx', sheet_name='Sheet1')
 
 # Display the DataFrame
 print(df_2)
@@ -306,7 +306,7 @@ df.set_index('City', inplace=True)
 
 # Select rows by row number
 print(df.iloc[0])      # Output the first row
-print(df.iloc[0, 2])   # Output the first and third rows
+print(df.iloc[[0, 2]])  # Output the first and third rows
 
 # Select rows by index
 print(df.loc['London'])   # Output the two rows with 'London' as the index
@@ -602,7 +602,6 @@ print(df.drop_duplicates())
 Output:
 
 ```
-   A    B   C
    A    B   C
 0  1  5.0  10
 1  2  6.0  11

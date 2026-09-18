@@ -87,7 +87,7 @@ Arithmetic magic methods allow you to redefine how arithmetic operators behave o
 * `__mod__(self, other)`: Defines modulo (remainder) behavior for the `%` operator.
 * `__pow__(self, power[, modulo])`: Defines exponentiation behavior for the `**` operator or the built-in `pow()` function.
 
-Python has a built-in `Fraction` class for representing mathematical fractions. Below, we write a simplified version of a `Fraction` class to demonstrate the implementation and usage of arithmetic magic methods. Our `Fraction` class has two attributes representing the numerator and denominator:
+Python's standard library `fractions` module provides a `Fraction` class for representing mathematical fractions (it is not a builtin). Below, we write a simplified version of a `Fraction` class to demonstrate the implementation and usage of arithmetic magic methods. Our `Fraction` class has two attributes representing the numerator and denominator:
 
 ```python
 from math import gcd
@@ -113,7 +113,7 @@ class Fraction:
 
     def __mul__(self, other):
         new_numerator = self.numerator * other.numerator
-        new_denominator = self.denominator * other.numerator
+        new_denominator = self.denominator * other.denominator
         return Fraction(new_numerator, new_denominator)
 
     def __truediv__(self, other):
@@ -333,7 +333,7 @@ lst = SortedList([3, 1, 2])
 print(lst)           # [1, 2, 3]
 lst.append(0)
 print(lst)           # [0, 1, 2, 3]
-lst[1] = 5           # Change the value of the first element to 5, then the data is re-sorted
+lst[1] = 5           # Change the value of the second element to 5, then the data is re-sorted
 print(lst)           # [0, 2, 3, 5]
 del lst[2]
 print(lst)           # [0, 2, 5]

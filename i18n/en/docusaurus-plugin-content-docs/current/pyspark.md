@@ -358,7 +358,12 @@ Running the above example yields the following result:
 You can also register UDFs to make them accessible inside SQL query strings:
 
 ```python
-spark.udf.register("format_name", format_name, StringType())
+# Register the plain Python function — do not double-wrap the already-decorated UDF
+def format_name_py(name):
+    first_name, last_name = name.split()
+    return f"{last_name}·{first_name}"
+
+spark.udf.register("format_name", format_name_py, StringType())
 
 ```
 
@@ -375,9 +380,8 @@ Write DataFrames back to relational databases via JDBC:
 df.write.mode("overwrite") \
         .jdbc(url=jdbc_url, table="processed_data", properties=connection_properties)
 
-# Append mode to write to partitioned table
+# Append mode (the truncate option only applies to overwrite mode, so it is removed here)
 df.write.mode("append") \
-        .option("truncate", "true") \
         .jdbc(url=jdbc_url, table="partitioned_data", properties=connection_properties)
 
 ```

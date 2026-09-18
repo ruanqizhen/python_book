@@ -55,7 +55,7 @@ For example, let's write a `Polynomial` class whose instances can be called to e
 ```python
 class Polynomial:
     def __init__(self, coefficients):
-        """coefficients is a list where the i-th element is the coefficient of x^i"""
+        """coefficients are in descending order: the first element is the coefficient of the highest power of x"""
         self.coefficients = coefficients
 
     def __call__(self, x):
@@ -155,6 +155,7 @@ print(getattr(animal, 'species'))  # Output: Dog
 print(hasattr(animal, 'speak'))  # Output: True
 
 # Set attribute value
+setattr(animal, 'species', 'Cat')
 print(animal.species)  # Output: Cat
 
 # Dynamically call a method

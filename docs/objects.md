@@ -56,7 +56,7 @@ print(type(type))     # 输出: <class 'type'>
 ```python
 class Polynomial:
     def __init__(self, coefficients):
-        """coefficients 是一个列表，其中第 i 个元素是 x^i 的系数"""
+        """coefficients 是一个按降幂排列的列表，第一个元素是最高次项的系数"""
         self.coefficients = coefficients
 
     def __call__(self, x):
