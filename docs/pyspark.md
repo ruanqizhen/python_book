@@ -52,7 +52,7 @@ spark.stop()
 
 ### 在 AWS 中使用 PySpark
 
-AWS 在很多服务中都已经集成了 PySpark，可以直接使用，非常方便。最为常用的两个服务一个是 AWS Glue；另一个是 AWS Athena。Glue 功能比较繁杂，可完成各类数据集成服务；Athena 则专注于数据查询和处理。这两个服务都提供了类似 [Jupyter Notebook](https://www.google.com/search?q=ide%23%E5%9F%BA%E4%BA%8E%E7%BD%91%E9%A1%B5%E7%9A%84%E7%BC%96%E7%A8%8B%E7%8E%AF%E5%A2%83) 的编程环境，并且它们内置了对 SparkSession 的管理，用户不再需要自己配置。在它们提供的编程环境中， `spark` 已经是一个直接可用的全局对象，直接调用即可。下文中的示例程序都是在 AWS Athena Notebook 中调试的。
+AWS 在很多服务中都已经集成了 PySpark，可以直接使用，非常方便。最为常用的两个服务一个是 AWS Glue；另一个是 AWS Athena。Glue 功能比较繁杂，可完成各类数据集成服务；Athena 则专注于数据查询和处理。这两个服务都提供了类似 [Jupyter Notebook](./ide) 的编程环境，并且它们内置了对 SparkSession 的管理，用户不再需要自己配置。在它们提供的编程环境中， `spark` 已经是一个直接可用的全局对象，直接调用即可。下文中的示例程序都是在 AWS Athena Notebook 中调试的。
 
 ### 连接和打开数据库
 
@@ -317,7 +317,7 @@ deduplicated_df = df.dropDuplicates(["employee_id"])
 
 PySpark 以及 SQL 语言内置的功能都是非常有限的，在大多数实际应用中，我们都需要编写一些用户自定义函数（User Defined Functions 缩写 UDF）来扩展功能。
 
-比如我们在查询一个数据库的时候，希望将“name”字符串中的姓和名顺序颠倒，并按照“姓·名”的格式显示。虽然 PySpark 内置函数中没有这个功能，但是，我们可以创建一个 UDF 实现这一功能。之后就可以在每一次查询中都调用这个功能了。创建 PySpark UDF 的方法非常简单，给一个普通的 Python 函数添加上 `@udf` [装饰器](https://www.google.com/search?q=decorator) 就可以把它定义为一个 UDF。
+比如我们在查询一个数据库的时候，希望将“name”字符串中的姓和名顺序颠倒，并按照“姓·名”的格式显示。虽然 PySpark 内置函数中没有这个功能，但是，我们可以创建一个 UDF 实现这一功能。之后就可以在每一次查询中都调用这个功能了。创建 PySpark UDF 的方法非常简单，给一个普通的 Python 函数添加上 `@udf` [装饰器](./decorator) 就可以把它定义为一个 UDF。
 
 下面是实现这一功能的演示代码
 

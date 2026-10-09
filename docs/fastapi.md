@@ -14,9 +14,9 @@
 FastAPI 之所以备受青睐，主要归功于以下几个核心特性：
 
 * **运行极快**：基于 Starlette 和 Pydantic 构建，其底层运行性能可与 NodeJS 和 Go 媲美，是目前 Python 生态中最快的 Web 框架之一。
-* **原生支持类型提示**：我们在[数据与变量](https://www.google.com/search?q=variable%23%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA)一节中介绍过的类型提示，在 FastAPI 中被发扬光大。它不仅能为开发者提供代码自动补全，还能在程序运行时实现严格的数据自动校验。
+* **原生支持类型提示**：我们在[数据与变量](./variable)一节中介绍过的类型提示，在 FastAPI 中被发扬光大。它不仅能为开发者提供代码自动补全，还能在程序运行时实现严格的数据自动校验。
 * **自动生成文档**：只需编写基本的路由代码，FastAPI 就会在后台自动生成符合 OpenAPI 标准的交互式接口文档（Swagger UI）。
-* **原生支持异步**：全面支持使用 `async def` 定义路由，能够完美配合[异步编程](https://www.google.com/search?q=asyncio)机制，轻松应对高并发场景。
+* **原生支持异步**：全面支持使用 `async def` 定义路由，能够完美配合[异步编程](./asyncio)机制，轻松应对高并发场景。
 
 
 
@@ -142,7 +142,7 @@ def get_knight_by_rank(rank: int):
 
 当客户端需要向服务器提交复杂的结构化数据（通常使用 HTTP POST 请求）时，例如上报一条最新的江湖情报，我们需要定义请求体的数据结构。
 
-FastAPI 深度集成了 **Pydantic** 库，用于定义数据模型。Pydantic 模型与之前介绍过的 [数据类（@dataclass）](https://www.google.com/search?q=class%23%E6%95%B0%E6%8D%AE%E7%B1%BB-dataclass) 类似，均依赖类型提示声明字段，但 Pydantic 提供了更为强大的数据运行时校验机制。
+FastAPI 深度集成了 **Pydantic** 库，用于定义数据模型。Pydantic 模型与之前介绍过的 [数据类（@dataclass）](./class) 类似，均依赖类型提示声明字段，但 Pydantic 提供了更为强大的数据运行时校验机制。
 
 ```python
 from fastapi import FastAPI
@@ -175,7 +175,7 @@ def create_report(report: IntelligenceReport):
 
 ## 异步路由与高并发处理
 
-如同我们在[多线程](https://www.google.com/search?q=multithread)和[异步编程](https://www.google.com/search?q=asyncio)章节中所讨论的，由于 GIL 的存在，Python 在处理 I/O 密集型高并发任务时，异步编程往往是更优的选择。
+如同我们在[多线程](./multithread)和[异步编程](./asyncio)章节中所讨论的，由于 GIL 的存在，Python 在处理 I/O 密集型高并发任务时，异步编程往往是更优的选择。
 
 FastAPI 原生支持异步路由。如果业务逻辑中涉及耗时的外部网络通信或数据库查询，可以直接使用 `async def` 定义路由，释放底层事件循环，从而极大提升系统的并发处理能力：
 
