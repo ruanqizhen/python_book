@@ -175,7 +175,7 @@ for chunk in stream:
 
 向云端发送请求时，网络波动、API 余额不足、甚至云端服务器崩溃都是可能发生的事情。一个健壮的 Python 程序必须能够优雅地处理这些异常，而不是直接崩溃。
 
-在使用大模型 API 时，强烈建议结合我们在[异常处理](https://www.google.com/search?q=exception)一章中学到的知识：
+在使用大模型 API 时，强烈建议结合我们在[异常处理](./exception)一章中学到的知识：
 
 ```python
 from openai import OpenAI, APIError, AuthenticationError, RateLimitError
