@@ -104,6 +104,20 @@ const config = {
         { name: 'og:title', content: 'The Python Codex - 你的 Python 编程进阶宝典' },
         { name: 'og:description', content: '开源、免费的 Python 电子书，涵盖从基础到实战的方方面面。' },
       ],
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: '链接',
+            items: [
+              { label: '返回主页', href: 'https://qizhen.xyz' },
+              { label: 'GitHub', href: 'https://github.com/ruanqizhen' },
+              { label: 'MIT License', href: 'https://github.com/ruanqizhen/python_book/blob/main/LICENSE' },
+            ],
+          },
+        ],
+        copyright: 'Copyright © 2026 阮奇桢',
+      },
     }
   ),
   plugins: [
