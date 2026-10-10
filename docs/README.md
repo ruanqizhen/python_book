@@ -1,3 +1,7 @@
+---
+description: 《The Python Codex》是一本开源的 Python 学习指南，包含丰富的代码示例、进阶技巧和面试准备内容。
+---
+
 # Python 教程
 
 ## 潘多拉宝库传世，奥圣山神仙授石
