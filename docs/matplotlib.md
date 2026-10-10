@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 * [UCI 机器学习数据集](https://archive.ics.uci.edu/)
 * [Kaggle 机器学习数据集](https://www.kaggle.com/datasets)
 
-有了下载地址，我们就可以使用 [Pandas](https://www.google.com/search?q=pandas) 库将数据加载到程序中。下面是装载数据集的示例代码：
+有了下载地址，我们就可以使用 [Pandas](./pandas) 库将数据加载到程序中。下面是装载数据集的示例代码：
 
 ```python
 import pandas as pd
